@@ -1,0 +1,50 @@
+@import 'src/styles/tools/spacing';
+@import 'src/styles/tools/color';
+@import 'src/styles/settings/variables/typography';
+
+.data-table {
+  width: 100%;
+  color: get-color(black-coral-20);
+  text-align: left;
+
+  th {
+    padding: 12px 14.5px;
+    color: get-color(black-coral-12);
+    border-bottom: 1px solid get-color(black-coral-10);
+    font-weight: $veera-font-weight-beta;
+    vertical-align: middle;
+  }
+
+  td {
+    padding: 12px 24px 12px 16px;
+    border-bottom: 1px solid get-color(black-coral-2);
+    vertical-align: middle;
+
+    .entity {
+      display: inline-flex;
+      align-items: center;
+      padding-left: 4px;
+      background-color: get-color(sapphire-blue-2);
+      border-radius: 4px;
+
+      span {
+        display: inline-flex;
+        font-size: $veera-font-size-80;
+        background-color: get-color(white);
+        padding: 0 4px;
+        border-radius: 4px;
+        margin: 2px 2px 2px 4px;
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      &:last-child {
+        td {
+          border-bottom: 0;
+        }
+      }
+    }
+  }
+}
