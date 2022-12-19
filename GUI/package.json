@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite --port 3000",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prettier": "prettier --write \"{,!(node_modules)/**/}*.{ts,tsx,js,json,css,less,scss}\""
   },
   "dependencies": {
     "react": "^18.2.0",
@@ -17,6 +18,7 @@
     "@types/react-dom": "^18.0.9",
     "@vitejs/plugin-react": "^3.0.0",
     "eslint-plugin-react": "^7.31.11",
+    "prettier": "^2.8.1",
     "typescript": "^4.9.3",
     "vite": "^4.0.0",
     "vite-plugin-svgr": "^2.4.0",
