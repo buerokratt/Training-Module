@@ -14,11 +14,13 @@
     "@fontsource/roboto": "^4.5.8",
     "@radix-ui/react-accessible-icon": "^1.0.1",
     "@radix-ui/react-select": "^1.1.2",
+    "@radix-ui/react-tabs": "^1.0.1",
     "@radix-ui/react-tooltip": "^1.0.2",
     "@tanstack/react-query": "^4.20.4",
     "@tanstack/react-table": "^8.7.4",
     "axios": "^1.2.1",
     "clsx": "^1.2.1",
+    "date-fns": "^2.29.3",
     "i18next": "^22.4.5",
     "i18next-browser-languagedetector": "^7.0.1",
     "react": "^18.2.0",
@@ -26,7 +28,8 @@
     "react-i18next": "^12.1.1",
     "react-icons": "^4.7.1",
     "react-router-dom": "^6.5.0",
-    "react-textarea-autosize": "^8.4.0"
+    "react-textarea-autosize": "^8.4.0",
+    "regexify-string": "^1.0.19"
   },
   "devDependencies": {
     "@types/node": "^18.11.17",

@@ -37,6 +37,7 @@
   "training": {
     "intents": {
       "title": "Teemad",
+      "commonIntents": "Common teemad",
       "searchIntentPlaceholder": "Otsi teemat",
       "addToModel": "Lisa mudelisse",
       "removeFromModel": "Eemalda mudelist",

@@ -37,6 +37,7 @@
   "training": {
     "intents": {
       "title": "Intents",
+      "commonIntents": "Common intents",
       "searchIntentPlaceholder": "Search for intent",
       "addToModel": "Add to model",
       "removeFromModel": "Remove from model",
