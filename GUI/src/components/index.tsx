@@ -4,7 +4,8 @@ import Header from './Header';
 import MainNavigation from './MainNavigation';
 import Icon from './Icon';
 import Track from './Track';
-import Tooltip from './Tooltip';
+import { FormInput, FormTextarea, FormSelect } from './FormElements';
 import DataTable from './DataTable';
+import Tooltip from './Tooltip';
 
-export { Layout, Button, Header, MainNavigation, Icon, Track, Tooltip, DataTable };
+export { Layout, Button, Header, MainNavigation, Icon, Track, Tooltip, DataTable, FormInput, FormTextarea, FormSelect };
