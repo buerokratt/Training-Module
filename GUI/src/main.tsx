@@ -29,6 +29,7 @@ const prepare = async () => {
   if (import.meta.env.DEV) {
     return worker.start();
   }
+  return Promise.resolve();
 };
 
 prepare().then(() => {
