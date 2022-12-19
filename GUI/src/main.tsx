@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
 import { setupWorker } from 'msw';
 import { QueryClient, QueryClientProvider, QueryFunction } from '@tanstack/react-query';
 
@@ -34,7 +35,9 @@ prepare().then(() => {
   ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
-        <App />
+        <BrowserRouter basename={import.meta.env.BASE_URL}>
+          <App />
+        </BrowserRouter>
       </QueryClientProvider>
     </React.StrictMode>,
   );
