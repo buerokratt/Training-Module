@@ -1,0 +1,48 @@
+{
+  "global": {
+    "save": "Salvesta",
+    "add": "Lisa",
+    "edit": "Muuda",
+    "delete": "Kustuta",
+    "cancel": "Tühista",
+    "modifiedAt": "Viimati muudetud",
+    "addNew": "Lisa uus"
+  },
+  "mainMenu": {
+    "menuLabel": "Põhinavigatsioon",
+    "closeMenu": "Kitsendan menüü",
+    "openMenuIcon": "Ava menüü ikoon",
+    "closeMenuIcon": "Sulge menüü ikoon",
+    "links": {
+      "training": "Treening",
+      "intents": "Teemad",
+      "regex": "REGEX",
+      "synonyms": "Sünonüümid",
+      "lookupTables": "Otsingutabelid",
+      "answers": "Vastused",
+      "forms": "Vormid",
+      "stories": "Kasutuslood",
+      "configuration": "Konfiguratsioon",
+      "historicalChats": "Ajaloolised vastlused",
+      "markIntents": "Märgenda teemasid",
+      "markChats": "Märgenda vestluseid",
+      "modelBankAndAnalytics": "Mudelipank ja analüütika",
+      "models": "Mudelid",
+      "intentsOverview": "Teemade ülevaade",
+      "modelComparison": "Mudelite võrdlus",
+      "testcases": "Testlood",
+      "simulation": "Simulatsioon"
+    }
+  },
+  "training": {
+    "intents": {
+      "title": "Teemad",
+      "searchIntentPlaceholder": "Otsi teemat",
+      "addToModel": "Lisa mudelisse",
+      "removeFromModel": "Eemalda mudelist",
+      "examples": "Näited",
+      "amountOfExamples": "Näidete arv",
+      "intentInModel": "Teema on mudelis"
+    }
+  }
+}

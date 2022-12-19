@@ -1,0 +1,48 @@
+{
+  "global": {
+    "save": "Save",
+    "add": "Add",
+    "edit": "Edit",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "modifiedAt": "Last modified at",
+    "addNew": "Add new"
+  },
+  "mainMenu": {
+    "menuLabel": "Main navigation",
+    "closeMenu": "Close menu",
+    "openIcon": "Open menu icon",
+    "closeIcon": "Close menu icon",
+    "links": {
+      "training": "Training",
+      "intents": "Intents",
+      "regex": "REGEX",
+      "synonyms": "Synonyms",
+      "lookupTables": "Lookup tables",
+      "answers": "Answers",
+      "forms": "Forms",
+      "stories": "Stories",
+      "configuration": "Configuration",
+      "historicalChats": "Historical chats",
+      "markIntents": "Mark intents",
+      "markChats": "Mark chats",
+      "modelBankAndAnalytics": "Model bank and analytics",
+      "models": "Models",
+      "intentsOverview": "Intents overview",
+      "modelComparison": "Modal comparison",
+      "testcases": "Testcases",
+      "simulation": "Simulation"
+    }
+  },
+  "training": {
+    "intents": {
+      "title": "Intents",
+      "searchIntentPlaceholder": "Search for intent",
+      "addToModel": "Add to model",
+      "removeFromModel": "Remove from model",
+      "examples": "Examples",
+      "amountOfExamples": "Amount of examples",
+      "intentInModel": "Intent is in model"
+    }
+  }
+}
