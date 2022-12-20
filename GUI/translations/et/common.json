@@ -7,7 +7,9 @@
     "cancel": "Tühista",
     "modifiedAt": "Viimati muudetud",
     "addNew": "Lisa uus",
-    "dependencies": "Sõltuvused"
+    "dependencies": "Sõltuvused",
+    "language": "Keel",
+    "choose": "Vali"
   },
   "mainMenu": {
     "menuLabel": "Põhinavigatsioon",
@@ -51,6 +53,10 @@
       "searchResponse": "Otsi vastust",
       "response": "Vastus",
       "newResponseTextPlaceholder": "Lisa vastuse tekst sellele mallile"
+    },
+    "configuration": {
+      "title": "Konfiguratsioon",
+      "pipeline": "Pipeline"
     }
   }
 }

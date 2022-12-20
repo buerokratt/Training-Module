@@ -64,7 +64,7 @@ const CommonIntents: FC = () => {
           orientation='vertical'
           onValueChange={handleTabsValueChange}
         >
-          <Tabs.List className='vertical-tabs__list' aria-label={t('training.intents.title') ?? ''}>
+          <Tabs.List className='vertical-tabs__list' aria-label={t('training.intents.title') || ''}>
             <div className='vertical-tabs__list-search'>
               <Track gap={8}>
                 <FormInput

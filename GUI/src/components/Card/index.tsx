@@ -1,10 +1,15 @@
-import { FC, PropsWithChildren } from 'react';
+import { FC, PropsWithChildren, ReactNode } from 'react';
 
 import './Card.scss';
 
-const Card: FC<PropsWithChildren> = ({ children }) => {
+type CardProps = {
+  header?: ReactNode;
+}
+
+const Card: FC<PropsWithChildren<CardProps>> = ({ header, children }) => {
   return (
     <div className='card'>
+      {header && <div className='card__header'>{header}</div>}
       <div className='card__body'>
         {children}
       </div>

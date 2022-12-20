@@ -7,7 +7,9 @@
     "cancel": "Cancel",
     "modifiedAt": "Last modified at",
     "addNew": "Add new",
-    "dependencies": "Dependencies"
+    "dependencies": "Dependencies",
+    "language": "Language",
+    "choose": "Choose"
   },
   "mainMenu": {
     "menuLabel": "Main navigation",
@@ -51,6 +53,10 @@
       "searchResponse": "Search response",
       "response": "Response",
       "newResponseTextPlaceholder": "Add a response text for this template"
+    },
+    "configuration": {
+      "title": "Configuration",
+      "pipeline": "Pipeline"
     }
   }
 }
