@@ -8,6 +8,7 @@
   display: flex;
   align-items: center;
   gap: get-spacing(paldiski);
+  width: 100%;
 
   &__label {
     font-size: $veera-font-size-100;

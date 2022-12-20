@@ -6,7 +6,8 @@
     "delete": "Kustuta",
     "cancel": "Tühista",
     "modifiedAt": "Viimati muudetud",
-    "addNew": "Lisa uus"
+    "addNew": "Lisa uus",
+    "dependencies": "Sõltuvused"
   },
   "mainMenu": {
     "menuLabel": "Põhinavigatsioon",
@@ -44,6 +45,12 @@
       "examples": "Näited",
       "amountOfExamples": "Näidete arv",
       "intentInModel": "Teema on mudelis"
+    },
+    "responses": {
+      "title": "Vastused",
+      "searchResponse": "Otsi vastust",
+      "response": "Vastus",
+      "newResponseTextPlaceholder": "Lisa vastuse tekst sellele mallile"
     }
   }
 }

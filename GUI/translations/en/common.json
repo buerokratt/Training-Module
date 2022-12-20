@@ -6,7 +6,8 @@
     "delete": "Delete",
     "cancel": "Cancel",
     "modifiedAt": "Last modified at",
-    "addNew": "Add new"
+    "addNew": "Add new",
+    "dependencies": "Dependencies"
   },
   "mainMenu": {
     "menuLabel": "Main navigation",
@@ -44,6 +45,12 @@
       "examples": "Examples",
       "amountOfExamples": "Amount of examples",
       "intentInModel": "Intent is in model"
+    },
+    "responses": {
+      "title": "Responses",
+      "searchResponse": "Search response",
+      "response": "Response",
+      "newResponseTextPlaceholder": "Add a response text for this template"
     }
   }
 }

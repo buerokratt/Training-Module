@@ -26,7 +26,7 @@ const FormTextarea = forwardRef<HTMLTextAreaElement, TextareaProps>((
   },
   ref,
 ) => {
-  const [currentLength, setCurrentLength] = useState(defaultValue || 0);
+  const [currentLength, setCurrentLength] = useState(String(defaultValue).length || 0);
   const textareaClasses = clsx(
     'textarea',
     disabled && 'textarea--disabled',
@@ -42,6 +42,7 @@ const FormTextarea = forwardRef<HTMLTextAreaElement, TextareaProps>((
           maxLength={maxLength} minRows={minRows}
           maxRows={maxRows}
           ref={ref}
+          defaultValue={defaultValue}
           {...rest}
         />
         {showMaxLength && (

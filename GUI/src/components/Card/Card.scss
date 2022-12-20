@@ -1,0 +1,11 @@
+@import 'src/styles/tools/spacing';
+@import 'src/styles/tools/color';
+@import 'src/styles/settings/variables/other';
+@import 'src/styles/settings/variables/typography';
+
+.card {
+  background-color: get-color(white);
+  border: 1px solid get-color(black-coral-2);
+  border-radius: $veera-radius-s;
+  padding: get-spacing(haapsalu);
+}

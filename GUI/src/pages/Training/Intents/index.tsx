@@ -14,7 +14,7 @@ import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import { Intent } from 'types/intent';
 import IntentExamplesTable from './IntentExamplesTable';
 
-const Training: FC = () => {
+const CommonIntents: FC = () => {
   const [selectedIntent, setSelectedIntent] = useState<Intent | null>(null);
   const { data: intents } = useQuery<Intent[]>({
     queryKey: ['common-intents'],
@@ -57,7 +57,7 @@ const Training: FC = () => {
 
   return (
     <>
-      <h1 className='h3'>{t('training.intents.commonIntents')}</h1>
+      <h1>{t('training.intents.commonIntents')}</h1>
       {intents && (
         <Tabs.Root
           className='vertical-tabs'
@@ -167,4 +167,4 @@ const Training: FC = () => {
   );
 };
 
-export default Training;
+export default CommonIntents;

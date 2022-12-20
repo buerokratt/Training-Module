@@ -3,6 +3,7 @@ import { rest } from 'msw';
 import { mainNavigationET } from './mainNavigation';
 import { intentsData } from './intents';
 import { examplesData } from './examples';
+import { responsesData } from './responses';
 
 export const handlers = [
   rest.get(`${import.meta.env.BASE_URL}main-navigation`, (req, res, ctx) => {
@@ -38,6 +39,12 @@ export const handlers = [
     return res(
       ctx.status(200),
       ctx.json(requestedExamples),
+    );
+  }),
+  rest.get(`${import.meta.env.BASE_URL}responses`, (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json(responsesData),
     );
   }),
 ];

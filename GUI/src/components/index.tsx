@@ -7,5 +7,21 @@ import Track from './Track';
 import { FormInput, FormTextarea, FormSelect } from './FormElements';
 import DataTable from './DataTable';
 import Tooltip from './Tooltip';
+import Card from './Card';
+import Label from './Label';
 
-export { Layout, Button, Header, MainNavigation, Icon, Track, Tooltip, DataTable, FormInput, FormTextarea, FormSelect };
+export {
+  Layout,
+  Button,
+  Header,
+  MainNavigation,
+  Icon,
+  Track,
+  Tooltip,
+  DataTable,
+  FormInput,
+  FormTextarea,
+  FormSelect,
+  Card,
+  Label,
+};
