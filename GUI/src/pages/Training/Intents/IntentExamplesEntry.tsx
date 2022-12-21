@@ -2,13 +2,15 @@ import { FC, Fragment, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import regexifyString from 'regexify-string';
 
-import { Button, Tooltip, Track } from 'components';
+import { Button, FormSelect, Tooltip, Track } from 'components';
+import { Entity } from 'types/entity';
 
 type IntentExamplesEntryProps = {
   value: string;
+  entities: Entity[];
 }
 
-const IntentExamplesEntry: FC<IntentExamplesEntryProps> = ({ value }) => {
+const IntentExamplesEntry: FC<IntentExamplesEntryProps> = ({ value, entities }) => {
   const { t } = useTranslation();
   const ref = useRef<HTMLParagraphElement>(null);
   const [editableEntity, setEditableEntity] = useState<string | null>(null);
@@ -26,9 +28,14 @@ const IntentExamplesEntry: FC<IntentExamplesEntryProps> = ({ value }) => {
     pattern: /\[(.+?)\]\((.+?)\)/gmu,
     decorator: (match, index, result) => (
       <Tooltip content={
-        <Track gap={4}>
-          <Button size='s' onClick={() => setEditableEntity(result?.[2] || null)}>{t('global.edit')}</Button>
-          <Button size='s' onClick={handleExampleEntityDelete}>{t('global.delete')}</Button>
+        <Track direction='vertical' gap={4} align='left' style={{ padding: 8 }}>
+          <h4>{result?.[1]}</h4>
+          <FormSelect label='' name='entity' options={entities.map((e) => ({ label: e.name, value: e.id + '' }))} />
+          <Track gap={4}>
+            <Button size='s' appearance='error'>{t('global.delete')}</Button>
+            <Button size='s' appearance='secondary'>{t('global.cancel')}</Button>
+            <Button size='s'>{t('global.save')}</Button>
+          </Track>
         </Track>
       }>
         <span className='entity'>{result?.[1]}<span>{result?.[2]}</span></span>

@@ -4,6 +4,7 @@ import { mainNavigationET } from './mainNavigation';
 import { intentsData } from './intents';
 import { examplesData } from './examples';
 import { responsesData } from './responses';
+import { entitiesData } from './entities';
 
 export const handlers = [
   rest.get(`${import.meta.env.BASE_URL}main-navigation`, (req, res, ctx) => {
@@ -45,6 +46,12 @@ export const handlers = [
     return res(
       ctx.status(200),
       ctx.json(responsesData),
+    );
+  }),
+  rest.get(`${import.meta.env.BASE_URL}entities`, (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json(entitiesData),
     );
   }),
 ];

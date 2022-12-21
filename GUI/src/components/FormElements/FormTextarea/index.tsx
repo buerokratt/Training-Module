@@ -26,7 +26,7 @@ const FormTextarea = forwardRef<HTMLTextAreaElement, TextareaProps>((
   },
   ref,
 ) => {
-  const [currentLength, setCurrentLength] = useState(String(defaultValue).length || 0);
+  const [currentLength, setCurrentLength] = useState(typeof defaultValue === 'string' && defaultValue.length || 0);
   const textareaClasses = clsx(
     'textarea',
     disabled && 'textarea--disabled',

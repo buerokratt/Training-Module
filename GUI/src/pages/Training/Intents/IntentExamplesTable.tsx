@@ -5,14 +5,16 @@ import { MdDeleteOutline, MdOutlineModeEditOutline, MdOutlineSave, MdAddCircle }
 
 import { Button, DataTable, FormInput, FormTextarea, Icon } from 'components';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
+import { Entity } from 'types/entity';
 import IntentExamplesEntry from './IntentExamplesEntry';
 
 type IntentExamplesTableProps = {
   examples: string[];
   onAddNewExample: (example: string) => void;
+  entities: Entity[];
 }
 
-const IntentExamplesTable: FC<IntentExamplesTableProps> = ({ examples, onAddNewExample }) => {
+const IntentExamplesTable: FC<IntentExamplesTableProps> = ({ examples, onAddNewExample, entities }) => {
   const { t } = useTranslation();
   const newExampleRef = useRef<HTMLTextAreaElement>(null);
   const [editableRow, setEditableRow] = useState<{ id: number; value: string; } | null>(null);
@@ -36,7 +38,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({ examples, onAddNewE
           defaultValue={editableRow.value}
           hideLabel
         />
-      ) : <IntentExamplesEntry value={props.getValue()} />,
+      ) : <IntentExamplesEntry value={props.getValue()} entities={entities} />,
     }),
     columnHelper.display({
       header: '',
@@ -81,7 +83,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({ examples, onAddNewE
         <td>
           <FormTextarea
             ref={newExampleRef}
-            label='Add new'
+            label={t('global.addNew')}
             name='newExample'
             minRows={1}
             placeholder={t('global.addNew') + '...' || ''}

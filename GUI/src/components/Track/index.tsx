@@ -30,6 +30,7 @@ const Track: FC<PropsWithChildren<TrackProps>> = (
     direction = 'horizontal',
     isMultiline = false,
     children,
+    style,
     ...rest
   },
 ) => {
@@ -43,6 +44,7 @@ const Track: FC<PropsWithChildren<TrackProps>> = (
         justifyContent: justifyMap[justify],
         flexDirection: direction === 'horizontal' ? 'row' : 'column',
         flexWrap: isMultiline ? 'wrap' : undefined,
+        ...style,
       }}
       {...rest}
     >

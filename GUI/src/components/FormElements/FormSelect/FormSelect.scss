@@ -16,6 +16,11 @@
     line-height: 24px;
   }
 
+  &__wrapper {
+    width: 100%;
+    position: relative;
+  }
+
   &__trigger {
     width: 100%;
     display: flex;
@@ -35,15 +40,30 @@
       font-size: $veera-font-size-250;
     }
 
-    &[data-placeholder] {
-      color: get-color(black-coral-6);
+    &[aria-expanded=true] {
+      border-color: get-color(sapphire-blue-10);
+      border-radius: 4px 4px 0 0;
+
+      + #{$self}__menu {
+        display: block;
+      }
+
+      .icon {
+        transform: rotate(180deg);
+      }
     }
   }
 
-  &__dropdown {
+  &__menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
     background-color: get-color(white);
     border-radius: 0 0 4px 4px;
     border: 1px solid get-color(black-coral-2);
+    border-top: 0;
   }
 
   &__option {

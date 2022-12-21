@@ -12,6 +12,7 @@ import {
 import { Button, FormInput, Icon, Tooltip, Track } from 'components';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import { Intent } from 'types/intent';
+import { Entity } from 'types/entity';
 import IntentExamplesTable from './IntentExamplesTable';
 
 const CommonIntents: FC = () => {
@@ -22,6 +23,9 @@ const CommonIntents: FC = () => {
   const { data: examples } = useQuery<string[]>({
     queryKey: [`common-intents/${selectedIntent?.id}/examples`, selectedIntent?.id],
     enabled: !!selectedIntent,
+  });
+  const { data: entities } = useQuery<Entity[]>({
+    queryKey: ['entities'],
   });
   const [filter, setFilter] = useState('');
   const [editingIntentTitle, setEditingIntentTitle] = useState<string | null>(null);
@@ -157,7 +161,13 @@ const CommonIntents: FC = () => {
                 </Track>
               </div>
               <div className='vertical-tabs__content'>
-                {examples && <IntentExamplesTable examples={examples} onAddNewExample={handleNewExample} />}
+                {examples &&
+                  <IntentExamplesTable
+                    examples={examples}
+                    onAddNewExample={handleNewExample}
+                    entities={entities ?? []}
+                  />
+                }
               </div>
             </Tabs.Content>
           )}
