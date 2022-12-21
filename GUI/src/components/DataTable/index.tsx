@@ -1,12 +1,28 @@
-import { FC, ReactNode } from 'react';
-import { ColumnDef, useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
+import { FC, ReactNode, useState } from 'react';
+import {
+  ColumnDef,
+  useReactTable,
+  getCoreRowModel,
+  flexRender,
+  getSortedRowModel,
+  SortingState, FilterFn, getFilteredRowModel,
+} from '@tanstack/react-table';
+import {
+  RankingInfo,
+  rankItem,
+} from '@tanstack/match-sorter-utils';
+import { MdUnfoldMore, MdExpandMore, MdExpandLess } from 'react-icons/md';
 
+import { Icon, Track } from 'components';
 import './DataTable.scss';
 
 type DataTableProps = {
   data: any;
   columns: ColumnDef<any, any>[];
   tableBodyPrefix?: ReactNode;
+  sortable?: boolean;
+  globalFilter?: string;
+  setGlobalFilter?: React.Dispatch<React.SetStateAction<string>>;
 }
 
 type ColumnMeta = {
@@ -15,13 +31,45 @@ type ColumnMeta = {
   }
 }
 
+declare module '@tanstack/table-core' {
+  interface FilterFns {
+    fuzzy: FilterFn<unknown>;
+  }
+
+  interface FilterMeta {
+    itemRank: RankingInfo;
+  }
+}
+
+
 type CustomColumnDef = ColumnDef<any> & ColumnMeta;
 
-const DataTable: FC<DataTableProps> = ({ data, columns, tableBodyPrefix }) => {
+const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
+  const itemRank = rankItem(row.getValue(columnId), value);
+  addMeta({
+    itemRank,
+  });
+  return itemRank.passed;
+};
+
+const DataTable: FC<DataTableProps> = ({ data, columns, tableBodyPrefix, sortable, globalFilter, setGlobalFilter }) => {
+  const [sorting, setSorting] = useState<SortingState>([]);
   const table = useReactTable({
     data,
     columns,
+    filterFns: {
+      fuzzy: fuzzyFilter,
+    },
+    state: {
+      sorting,
+      globalFilter,
+    },
+    onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn: fuzzyFilter,
+    onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    ...(sortable && { getSortedRowModel: getSortedRowModel() }),
   });
 
   return (
@@ -32,7 +80,19 @@ const DataTable: FC<DataTableProps> = ({ data, columns, tableBodyPrefix }) => {
           {headerGroup.headers.map((header) => (
             <th key={header.id} style={{ width: (header.column.columnDef as CustomColumnDef).meta?.size }}>
               {header.isPlaceholder ? null : (
-                flexRender(header.column.columnDef.header, header.getContext())
+                <Track gap={8} onClick={header.column.getToggleSortingHandler()}>
+                  {sortable && header.column.getCanSort() && (
+                    <>
+                      {{
+                        asc: <Icon icon={<MdExpandMore fontSize={20} />} size='medium' />,
+                        desc: <Icon icon={<MdExpandLess fontSize={20} />} size='medium' />,
+                      }[header.column.getIsSorted() as string] ?? (
+                        <Icon icon={<MdUnfoldMore fontSize={22} />} size='medium' />
+                      )}
+                    </>
+                  )}
+                  {flexRender(header.column.columnDef.header, header.getContext())}
+                </Track>
               )}
             </th>
           ))}

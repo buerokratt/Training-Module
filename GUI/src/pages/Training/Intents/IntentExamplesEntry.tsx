@@ -1,4 +1,4 @@
-import { FC, Fragment, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { FC, Fragment, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import regexifyString from 'regexify-string';
 
@@ -35,11 +35,7 @@ const IntentExamplesEntry: FC<IntentExamplesEntryProps> = ({ value }) => {
       </Tooltip>
     ),
     input: value,
-  }), [editableEntity, handleExampleEntityEdit, t, value]);
-
-  useLayoutEffect(() => {
-
-  }, []);
+  }), [t, value]);
 
   return (
     <p ref={ref}>

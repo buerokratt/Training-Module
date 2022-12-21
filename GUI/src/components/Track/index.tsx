@@ -1,6 +1,6 @@
-import { FC, PropsWithChildren } from 'react';
+import { FC, HTMLAttributes, PropsWithChildren } from 'react';
 
-type TrackProps = {
+type TrackProps = HTMLAttributes<HTMLDivElement> & {
   gap?: number;
   align?: 'left' | 'center' | 'right';
   justify?: 'start' | 'between' | 'center' | 'around' | 'end';
@@ -30,6 +30,7 @@ const Track: FC<PropsWithChildren<TrackProps>> = (
     direction = 'horizontal',
     isMultiline = false,
     children,
+    ...rest
   },
 ) => {
   return (
@@ -43,6 +44,7 @@ const Track: FC<PropsWithChildren<TrackProps>> = (
         flexDirection: direction === 'horizontal' ? 'row' : 'column',
         flexWrap: isMultiline ? 'wrap' : undefined,
       }}
+      {...rest}
     >
       {children}
     </div>
