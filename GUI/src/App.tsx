@@ -11,8 +11,8 @@ const App: FC = () => {
   return (
     <Routes>
       <Route element={<Layout />}>
-        <Route index element={<Navigate to='/treening/teemad/common-teemad' />} />
-        <Route path='/treening/teemad/common-teemad' element={<CommonIntents />} />
+        <Route index element={<Navigate to='/treening/treening/teemad' />} />
+        <Route path='/treening/treening/teemad' element={<CommonIntents />} />
         <Route path='/treening/vastused' element={<Responses />} />
         <Route path='/treening/konfiguratsioon' element={<Configuration />} />
         <Route path='/treening/kasutuslood' element={<Stories />} />

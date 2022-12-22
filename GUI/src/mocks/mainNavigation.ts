@@ -1,31 +1,34 @@
 export const mainNavigationET = [
   {
+    id: 'conversations',
+    label: 'Vestlus',
+    path: '/vestlus',
+    children: [],
+  },
+  {
+    id: 'training',
     label: 'Treening',
     path: '/treening',
     children: [
       {
         label: 'Treening',
-        path: '/treening/teemad',
+        path: '/treening/treening',
         children: [
           {
-            label: 'Common teemad',
-            path: '/treening/teemad/common-teemad',
-          },
-          {
-            label: 'Lokaalsed teemad',
-            path: '/treening/teemad/lokaalsed-teemad',
+            label: 'Teemad',
+            path: '/treening/treening/teemad',
           },
           {
             label: 'REGEX',
-            path: '/treening/teemad/regex',
+            path: '/treening/treening/regex',
           },
           {
             label: 'Sünonüümid',
-            path: '/treening/teemad/sunonuumid',
+            path: '/treening/treening/sunonuumid',
           },
           {
             label: 'Otsingutabelid',
-            path: '/treening/teemad/otsingutabelid',
+            path: '/treening/treening/otsingutabelid',
           },
         ],
       },
@@ -48,52 +51,73 @@ export const mainNavigationET = [
     ],
   },
   {
-    label: 'Ajaloolised vestlused',
-    path: '/ajaloolised-vestlused',
-    children: [
-      {
-        label: 'Märgenda teemasid',
-        path: '/ajaloolised-vestlused/margenda-teemasid',
-      },
-      {
-        label: 'Märgenda vestluseid',
-        path: '/ajaloolised-vestlused/margenda-vestluseid',
-      },
-    ],
-  },
-  {
-    label: 'Mudelipank ja analüütika',
-    path: '/mudelipank-analuutika',
-    children: [
-      {
-        label: 'Treening',
-        path: '/mudelipank-analuutika/treening',
-      },
-      {
-        label: 'Mudelid',
-        path: '/mudelipank-analuutika/mudelid',
-        children: [
-          {
-            label: 'Teemade ülevaade',
-            path: '/mudelipank-analuutika/mudelid/teemade-ulevaade',
-          },
-          {
-            label: 'Mudelite võrdlus',
-            path: '/mudelipank-analuutika/mudelid/mudelite-vordlus',
-          },
-        ],
-      },
-      {
-        label: 'Testlood',
-        path: '/mudelipank-analuutika/testlood',
-      },
-    ],
-  },
-  {
-    label: 'Simulatsioon',
-    path: '/simulatsioon',
+    id: 'analytics',
+    label: 'Analüütika',
+    path: '/analuutika',
     children: [],
   },
+  {
+    id: 'settings',
+    label: 'Haldus',
+    path: '/haldus',
+    children: [],
+  },
+  {
+    id: 'monitoring',
+    label: 'Seire',
+    path: '/seire',
+    children: [],
+  },
+  // {
+  //   id: 'historicalConversations',
+  //   label: 'Ajaloolised vestlused',
+  //   path: '/ajaloolised-vestlused',
+  //   children: [
+  //     {
+  //       label: 'Märgenda teemasid',
+  //       path: '/ajaloolised-vestlused/margenda-teemasid',
+  //     },
+  //     {
+  //       label: 'Märgenda vestluseid',
+  //       path: '/ajaloolised-vestlused/margenda-vestluseid',
+  //     },
+  //   ],
+  // },
+  // {
+  //   id: 'modelBankAndAnalytics',
+  //   label: 'Mudelipank ja analüütika',
+  //   path: '/mudelipank-analuutika',
+  //   children: [
+  //     {
+  //       label: 'Treening',
+  //       path: '/mudelipank-analuutika/treening',
+  //     },
+  //     {
+  //       label: 'Mudelid',
+  //       path: '/mudelipank-analuutika/mudelid',
+  //       children: [
+  //         {
+  //           label: 'Teemade ülevaade',
+  //           path: '/mudelipank-analuutika/mudelid/teemade-ulevaade',
+  //         },
+  //         {
+  //           label: 'Mudelite võrdlus',
+  //           path: '/mudelipank-analuutika/mudelid/mudelite-vordlus',
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       label: 'Testlood',
+  //       path: '/mudelipank-analuutika/testlood',
+  //     },
+  //   ],
+  // },
+  // {
+  //   id: 'simulation',
+  //   label: 'Simulatsioon',
+  //   path: '/simulatsioon',
+  //   children: [],
+  // },
 ];
 
 export const mainNavigationEN = [

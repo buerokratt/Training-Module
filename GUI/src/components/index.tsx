@@ -9,6 +9,7 @@ import DataTable from './DataTable';
 import Tooltip from './Tooltip';
 import Card from './Card';
 import Label from './Label';
+import Toast from './Toast';
 
 export {
   Layout,
@@ -24,4 +25,5 @@ export {
   FormSelect,
   Card,
   Label,
+  Toast,
 };

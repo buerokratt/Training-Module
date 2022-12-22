@@ -68,5 +68,10 @@
 
   &__option {
     padding: 8px 15px;
+
+    &:hover,
+    &:focus {
+      background-color: get-color(black-coral-0);
+    }
   }
 }

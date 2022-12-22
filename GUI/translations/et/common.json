@@ -10,7 +10,8 @@
     "dependencies": "Sõltuvused",
     "language": "Keel",
     "choose": "Vali",
-    "search": "Otsi"
+    "search": "Otsi",
+    "notification": "Teade"
   },
   "mainMenu": {
     "menuLabel": "Põhinavigatsioon",
@@ -47,7 +48,9 @@
       "removeFromModel": "Eemalda mudelist",
       "examples": "Näited",
       "amountOfExamples": "Näidete arv",
-      "intentInModel": "Teema on mudelis"
+      "intentInModel": "Teema on mudelis",
+      "upload": "Lae ülesse näited",
+      "download": "Lae alla näited"
     },
     "responses": {
       "title": "Vastused",

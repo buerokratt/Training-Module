@@ -10,7 +10,8 @@
     "dependencies": "Dependencies",
     "language": "Language",
     "choose": "Choose",
-    "search": "Search"
+    "search": "Search",
+    "notification": "Notification"
   },
   "mainMenu": {
     "menuLabel": "Main navigation",
@@ -47,7 +48,9 @@
       "removeFromModel": "Remove from model",
       "examples": "Examples",
       "amountOfExamples": "Amount of examples",
-      "intentInModel": "Intent is in model"
+      "intentInModel": "Intent is in model",
+      "upload": "Upload examples",
+      "download": "Download examples"
     },
     "responses": {
       "title": "Responses",

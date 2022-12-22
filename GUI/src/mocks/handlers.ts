@@ -7,7 +7,7 @@ import { responsesData } from './responses';
 import { entitiesData } from './entities';
 
 export const handlers = [
-  rest.get(`${import.meta.env.BASE_URL}main-navigation`, (req, res, ctx) => {
+  rest.get(`/api/main-navigation`, (req, res, ctx) => {
     return res(
       ctx.status(200),
       ctx.json({
@@ -15,7 +15,7 @@ export const handlers = [
       }),
     );
   }),
-  rest.get(`${import.meta.env.BASE_URL}common-intents`, (req, res, ctx) => {
+  rest.get(`/api/intents`, (req, res, ctx) => {
     const intents = intentsData.map((intent) => (
       {
         ...intent,
@@ -28,7 +28,7 @@ export const handlers = [
       ctx.json(intents),
     );
   }),
-  rest.get(`${import.meta.env.BASE_URL}common-intents/:id/examples`, (req, res, ctx) => {
+  rest.get(`/api/intents/:id/examples`, (req, res, ctx) => {
     const requestedExamples = (examplesData as Record<string, string[]>)[String(req.params.id)];
 
     if (!requestedExamples) {
@@ -42,13 +42,33 @@ export const handlers = [
       ctx.json(requestedExamples),
     );
   }),
-  rest.get(`${import.meta.env.BASE_URL}responses`, (req, res, ctx) => {
+  rest.post(`/api/intents/:id/examples`, async (req, res, ctx) => {
+    const { example } = await req.json();
+
+    if (example.length > 600) {
+      return res(
+        ctx.status(422),
+        ctx.json({
+          message: `Example length exceeds the maximum length of 600 characters`,
+        }),
+      );
+    }
+
+    return res(
+      ctx.status(200),
+      ctx.json({
+        id: new Date().getTime(),
+        example,
+      }),
+    );
+  }),
+  rest.get(`/api/responses`, (req, res, ctx) => {
     return res(
       ctx.status(200),
       ctx.json(responsesData),
     );
   }),
-  rest.get(`${import.meta.env.BASE_URL}entities`, (req, res, ctx) => {
+  rest.get(`/api/entities`, (req, res, ctx) => {
     return res(
       ctx.status(200),
       ctx.json(entitiesData),

@@ -1,6 +1,6 @@
 import { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as Tabs from '@radix-ui/react-tabs';
 import { format } from 'date-fns';
 import {
@@ -11,17 +11,21 @@ import {
 
 import { Button, FormInput, Icon, Tooltip, Track } from 'components';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
+import { useToast } from 'hooks/useToast';
 import { Intent } from 'types/intent';
 import { Entity } from 'types/entity';
+import { addExample } from 'services/intents';
 import IntentExamplesTable from './IntentExamplesTable';
 
 const CommonIntents: FC = () => {
+  const queryClient = useQueryClient();
+  const toast = useToast();
   const [selectedIntent, setSelectedIntent] = useState<Intent | null>(null);
   const { data: intents } = useQuery<Intent[]>({
-    queryKey: ['common-intents'],
+    queryKey: ['intents'],
   });
   const { data: examples } = useQuery<string[]>({
-    queryKey: [`common-intents/${selectedIntent?.id}/examples`, selectedIntent?.id],
+    queryKey: [`intents/${selectedIntent?.id}/examples`, selectedIntent?.id],
     enabled: !!selectedIntent,
   });
   const { data: entities } = useQuery<Entity[]>({
@@ -30,6 +34,23 @@ const CommonIntents: FC = () => {
   const [filter, setFilter] = useState('');
   const [editingIntentTitle, setEditingIntentTitle] = useState<string | null>(null);
   const { t } = useTranslation();
+
+  const addExamplesMutation = useMutation({
+    mutationFn: ({ intentId, example }: { intentId: string | number; example: string }) => {
+      return addExample(intentId, { example });
+    },
+    onSuccess: (data) => {
+      if (selectedIntent) {
+        queryClient.invalidateQueries({ queryKey: [`intents/${selectedIntent.id}/examples`] });
+      }
+      // TODO: Add correct notification on successful example
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: 'Message',
+      });
+    },
+  });
 
   useDocumentEscapeListener(() => setEditingIntentTitle(null));
 
@@ -44,24 +65,37 @@ const CommonIntents: FC = () => {
   if (!intents) return <>Loading...</>;
 
   const handleNewExample = (example: string) => {
-    // TODO: Add endpoint for mocking adding examples
+    if (!selectedIntent) return;
+    addExamplesMutation.mutate({ intentId: selectedIntent.id, example });
   };
 
-  const handleIntentTitleSave = () => {
+  const handleIntentTitleSave = (intentId: string | number) => {
     // TODO: Add endpoint for mocking intent title change
   };
 
-  const handleRemoveIntentFromModel = () => {
+  const handleRemoveIntentFromModel = (intentId: string | number) => {
     // TODO: Add endpoint for mocking intent removal from model
   };
 
-  const handleIntentDelete = () => {
+  const handleIntentCreate = () => {
+    // TODO: Add endpoint for mocking adding intent
+  };
+
+  const handleIntentDelete = (intentId: string | number) => {
     // TODO: Add endpoint for mocking deleting intent
+  };
+
+  const handleIntentExamplesUpload = (intentId: string | number) => {
+    // TODO: Add endpoint for mocking intent examples file upload
+  };
+
+  const handleIntentExamplesDownload = (intentId: string | number) => {
+    // TODO: Add endpoint for mocking intent examples download
   };
 
   return (
     <>
-      <h1>{t('training.intents.commonIntents')}</h1>
+      <h1>{t('training.intents.title')}</h1>
       {intents && (
         <Tabs.Root
           className='vertical-tabs'
@@ -79,7 +113,7 @@ const CommonIntents: FC = () => {
                   onChange={(e) => setFilter(e.target.value)}
                   hideLabel
                 />
-                <Button>{t('global.add')}</Button>
+                <Button onClick={handleIntentCreate} disabled={!filter}>{t('global.add')}</Button>
               </Track>
             </div>
 
@@ -114,8 +148,8 @@ const CommonIntents: FC = () => {
           {selectedIntent && (
             <Tabs.Content key={selectedIntent.intent} className='vertical-tabs__body' value={selectedIntent.intent}>
               <div className='vertical-tabs__content-header'>
-                <Track justify='between' gap={16}>
-                  <Track direction='vertical' align='left' gap={4}>
+                <Track direction='vertical' align='stretch' gap={8}>
+                  <Track justify='between'>
                     <Track gap={16}>
                       {editingIntentTitle ? (
                         <FormInput
@@ -129,7 +163,7 @@ const CommonIntents: FC = () => {
                         <h3>{selectedIntent.intent.replace(/^common_/, '')}</h3>
                       )}
                       {editingIntentTitle ? (
-                        <Button appearance='text' onClick={handleIntentTitleSave}>
+                        <Button appearance='text' onClick={() => handleIntentTitleSave(selectedIntent.id)}>
                           <Icon icon={<MdOutlineSave />} />
                           {t('global.save')}
                         </Button>
@@ -140,23 +174,27 @@ const CommonIntents: FC = () => {
                         </Button>
                       )}
                     </Track>
-                    {selectedIntent.description && <p>{selectedIntent.description}</p>}
+                    <p style={{ color: '#4D4F5D' }}>
+                      {`${t('global.modifiedAt')} ${format(new Date(selectedIntent.modifiedAt), 'dd.MM.yyyy')}`}
+                    </p>
                   </Track>
-                  <Track direction='vertical' align='right' gap={16}>
-                    <p>{`${t('global.modifiedAt')} ${format(new Date(selectedIntent.modifiedAt), 'dd.MM.yyyy')}`}</p>
-                    <Track gap={8}>
-                      {selectedIntent.inModel ? (
-                        <Button
-                          appearance='secondary'
-                          onClick={handleRemoveIntentFromModel}
-                        >
-                          {t('training.intents.removeFromModel')}
-                        </Button>
-                      ) : (
-                        <Button onClick={handleIntentDelete}>{t('training.intents.addToModel')}</Button>
-                      )}
-                      <Button appearance='error'>{t('global.delete')}</Button>
-                    </Track>
+                  <Track justify='end' gap={8}>
+                    <Button appearance='secondary'
+                            onClick={() => handleIntentExamplesUpload(selectedIntent.id)}>{t('training.intents.upload')}</Button>
+                    <Button appearance='secondary'
+                            onClick={() => handleIntentExamplesDownload(selectedIntent.id)}>{t('training.intents.download')}</Button>
+                    {selectedIntent.inModel ? (
+                      <Button
+                        appearance='secondary'
+                        onClick={() => handleRemoveIntentFromModel(selectedIntent.id)}
+                      >
+                        {t('training.intents.removeFromModel')}
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={() => handleIntentDelete(selectedIntent.id)}>{t('training.intents.addToModel')}</Button>
+                    )}
+                    <Button appearance='error'>{t('global.delete')}</Button>
                   </Track>
                 </Track>
               </div>

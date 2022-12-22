@@ -6,12 +6,13 @@ import { QueryClient, QueryClientProvider, QueryFunction } from '@tanstack/react
 
 import App from './App';
 import api from 'services/api';
+import { ToastProvider } from 'context/ToastContext';
 import { handlers } from 'mocks/handlers';
 import 'styles/main.scss';
 import '../i18n';
 
 const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
-  const { data } = await api.get(import.meta.env.BASE_URL + queryKey[0]);
+  const { data } = await api.get(queryKey[0] as string);
   return data;
 };
 
@@ -37,7 +38,9 @@ prepare().then(() => {
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
         <BrowserRouter basename={import.meta.env.BASE_URL}>
-          <App />
+          <ToastProvider>
+            <App />
+          </ToastProvider>
         </BrowserRouter>
       </QueryClientProvider>
     </React.StrictMode>,

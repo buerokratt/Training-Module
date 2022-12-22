@@ -18,9 +18,12 @@ type FormSelectProps = SelectHTMLAttributes<HTMLSelectElement> & {
   }[];
 }
 
+const itemToString = (item: ({ label: string, value: string } | null)) => {
+  return item ? item.value : '';
+};
+
 const FormSelect: FC<FormSelectProps> = ({ label, name, hideLabel, options, disabled, placeholder }) => {
   const { t } = useTranslation();
-  const items = options.map((o) => o.value);
   const {
     isOpen,
     selectedItem,
@@ -29,7 +32,7 @@ const FormSelect: FC<FormSelectProps> = ({ label, name, hideLabel, options, disa
     getMenuProps,
     highlightedIndex,
     getItemProps,
-  } = useSelect({ items });
+  } = useSelect({ items: options, itemToString });
 
   const selectClasses = clsx(
     'select',
@@ -43,14 +46,14 @@ const FormSelect: FC<FormSelectProps> = ({ label, name, hideLabel, options, disa
       {label && !hideLabel && <label htmlFor={name} className='select__label' {...getLabelProps()}>{label}</label>}
       <div className='select__wrapper'>
         <div className='select__trigger' {...getToggleButtonProps()}>
-          {selectedItem ?? placeholderValue}
+          {selectedItem?.label ?? placeholderValue}
           <Icon label='Dropdown icon' size='medium' icon={<MdArrowDropDown color='#5D6071' />} />
         </div>
         <ul className='select__menu' {...getMenuProps()}>
           {isOpen && (
-            items.map((item, index) => (
-              <li className='select__option' key={`${item}${index}`} {...getItemProps({ item, index })}>
-                {item}
+            options.map((item, index) => (
+              <li className='select__option' key={`${item.value}${index}`} {...getItemProps({ item, index })}>
+                {item.label}
               </li>
             ))
           )}
@@ -60,5 +63,6 @@ const FormSelect: FC<FormSelectProps> = ({ label, name, hideLabel, options, disa
     </div>
   );
 };
+
 
 export default FormSelect;

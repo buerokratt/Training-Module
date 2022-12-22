@@ -2,7 +2,7 @@ import { FC, HTMLAttributes, PropsWithChildren } from 'react';
 
 type TrackProps = HTMLAttributes<HTMLDivElement> & {
   gap?: number;
-  align?: 'left' | 'center' | 'right';
+  align?: 'left' | 'center' | 'right' | 'stretch';
   justify?: 'start' | 'between' | 'center' | 'around' | 'end';
   direction?: 'horizontal' | 'vertical';
   isMultiline?: boolean;
@@ -12,6 +12,7 @@ const alignMap = {
   left: 'flex-start',
   center: 'center',
   right: 'flex-end',
+  stretch: 'stretch',
 };
 
 const justifyMap = {

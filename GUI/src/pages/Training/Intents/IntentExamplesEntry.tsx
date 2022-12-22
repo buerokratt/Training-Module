@@ -32,9 +32,9 @@ const IntentExamplesEntry: FC<IntentExamplesEntryProps> = ({ value, entities }) 
           <h4>{result?.[1]}</h4>
           <FormSelect label='' name='entity' options={entities.map((e) => ({ label: e.name, value: e.id + '' }))} />
           <Track gap={4}>
-            <Button size='s' appearance='error'>{t('global.delete')}</Button>
-            <Button size='s' appearance='secondary'>{t('global.cancel')}</Button>
-            <Button size='s'>{t('global.save')}</Button>
+            <Button appearance='error'>{t('global.delete')}</Button>
+            <Button appearance='secondary'>{t('global.cancel')}</Button>
+            <Button>{t('global.save')}</Button>
           </Track>
         </Track>
       }>
@@ -42,7 +42,7 @@ const IntentExamplesEntry: FC<IntentExamplesEntryProps> = ({ value, entities }) 
       </Tooltip>
     ),
     input: value,
-  }), [t, value]);
+  }), [entities, t, value]);
 
   return (
     <p ref={ref}>
