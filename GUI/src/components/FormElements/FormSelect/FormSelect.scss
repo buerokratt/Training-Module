@@ -64,10 +64,17 @@
     border-radius: 0 0 4px 4px;
     border: 1px solid get-color(black-coral-2);
     border-top: 0;
+    z-index: 9998;
   }
 
   &__option {
     padding: 8px 15px;
+
+    &[aria-selected=true],
+    &--selected {
+      background-color: get-color(sapphire-blue-10);
+      color: get-color(white);
+    }
 
     &:hover,
     &:focus {

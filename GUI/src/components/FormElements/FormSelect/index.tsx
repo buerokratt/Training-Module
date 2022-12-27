@@ -1,4 +1,4 @@
-import { FC, SelectHTMLAttributes } from 'react';
+import { FC, SelectHTMLAttributes, useState } from 'react';
 import { useSelect } from 'downshift';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
@@ -22,17 +22,23 @@ const itemToString = (item: ({ label: string, value: string } | null)) => {
   return item ? item.value : '';
 };
 
-const FormSelect: FC<FormSelectProps> = ({ label, name, hideLabel, options, disabled, placeholder }) => {
+const FormSelect: FC<FormSelectProps> = ({ label, name, hideLabel, options, disabled, placeholder, defaultValue }) => {
   const { t } = useTranslation();
+  const defaultSelected = options.find((o) => o.value === defaultValue) || null;
+  const [selectedItem, setSelectedItem] = useState<{ label: string, value: string } | null>(defaultSelected);
   const {
     isOpen,
-    selectedItem,
     getToggleButtonProps,
     getLabelProps,
     getMenuProps,
     highlightedIndex,
     getItemProps,
-  } = useSelect({ items: options, itemToString });
+  } = useSelect({
+    items: options,
+    itemToString,
+    selectedItem,
+    onSelectedItemChange: ({ selectedItem: newSelectedItem }) => setSelectedItem(newSelectedItem ?? null),
+  });
 
   const selectClasses = clsx(
     'select',
@@ -52,14 +58,14 @@ const FormSelect: FC<FormSelectProps> = ({ label, name, hideLabel, options, disa
         <ul className='select__menu' {...getMenuProps()}>
           {isOpen && (
             options.map((item, index) => (
-              <li className='select__option' key={`${item.value}${index}`} {...getItemProps({ item, index })}>
+              <li className={clsx('select__option', { 'select__option--selected': highlightedIndex === index })}
+                  key={`${item.value}${index}`} {...getItemProps({ item, index })}>
                 {item.label}
               </li>
             ))
           )}
         </ul>
       </div>
-      <div tabIndex={0} />
     </div>
   );
 };

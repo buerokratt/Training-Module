@@ -68,56 +68,6 @@ export const mainNavigationET = [
     path: '/seire',
     children: [],
   },
-  // {
-  //   id: 'historicalConversations',
-  //   label: 'Ajaloolised vestlused',
-  //   path: '/ajaloolised-vestlused',
-  //   children: [
-  //     {
-  //       label: 'Märgenda teemasid',
-  //       path: '/ajaloolised-vestlused/margenda-teemasid',
-  //     },
-  //     {
-  //       label: 'Märgenda vestluseid',
-  //       path: '/ajaloolised-vestlused/margenda-vestluseid',
-  //     },
-  //   ],
-  // },
-  // {
-  //   id: 'modelBankAndAnalytics',
-  //   label: 'Mudelipank ja analüütika',
-  //   path: '/mudelipank-analuutika',
-  //   children: [
-  //     {
-  //       label: 'Treening',
-  //       path: '/mudelipank-analuutika/treening',
-  //     },
-  //     {
-  //       label: 'Mudelid',
-  //       path: '/mudelipank-analuutika/mudelid',
-  //       children: [
-  //         {
-  //           label: 'Teemade ülevaade',
-  //           path: '/mudelipank-analuutika/mudelid/teemade-ulevaade',
-  //         },
-  //         {
-  //           label: 'Mudelite võrdlus',
-  //           path: '/mudelipank-analuutika/mudelid/mudelite-vordlus',
-  //         },
-  //       ],
-  //     },
-  //     {
-  //       label: 'Testlood',
-  //       path: '/mudelipank-analuutika/testlood',
-  //     },
-  //   ],
-  // },
-  // {
-  //   id: 'simulation',
-  //   label: 'Simulatsioon',
-  //   path: '/simulatsioon',
-  //   children: [],
-  // },
 ];
 
 export const mainNavigationEN = [

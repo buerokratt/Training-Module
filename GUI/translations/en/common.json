@@ -11,7 +11,12 @@
     "language": "Language",
     "choose": "Choose",
     "search": "Search",
-    "notification": "Notification"
+    "notification": "Notification",
+    "active": "Active",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "on": "On",
+    "off": "Off"
   },
   "mainMenu": {
     "menuLabel": "Main navigation",
@@ -50,7 +55,8 @@
       "amountOfExamples": "Amount of examples",
       "intentInModel": "Intent is in model",
       "upload": "Upload examples",
-      "download": "Download examples"
+      "download": "Download examples",
+      "moreFromGithub": "More info from Github"
     },
     "responses": {
       "title": "Responses",
@@ -60,7 +66,11 @@
     },
     "configuration": {
       "title": "Configuration",
-      "pipeline": "Pipeline"
+      "pipeline": "Pipeline",
+      "epochs": "Epochs",
+      "randomSeed": "Random seed",
+      "threshold": "Threshold",
+      "policies": "Policies"
     },
     "stories": {
       "title": "Stories and rules",

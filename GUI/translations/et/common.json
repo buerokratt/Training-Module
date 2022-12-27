@@ -11,7 +11,12 @@
     "language": "Keel",
     "choose": "Vali",
     "search": "Otsi",
-    "notification": "Teade"
+    "notification": "Teade",
+    "active": "Aktiivne",
+    "activate": "Aktiveeri",
+    "deactivate": "Deaktiveeri",
+    "on": "Sees",
+    "off": "Väljas"
   },
   "mainMenu": {
     "menuLabel": "Põhinavigatsioon",
@@ -50,7 +55,8 @@
       "amountOfExamples": "Näidete arv",
       "intentInModel": "Teema on mudelis",
       "upload": "Lae ülesse näited",
-      "download": "Lae alla näited"
+      "download": "Lae alla näited",
+      "moreFromGithub": "Rohkem infot Githubist"
     },
     "responses": {
       "title": "Vastused",
@@ -60,7 +66,11 @@
     },
     "configuration": {
       "title": "Konfiguratsioon",
-      "pipeline": "Pipeline"
+      "pipeline": "Pipeline",
+      "epochs": "Epochs",
+      "randomSeed": "Random seed",
+      "threshold": "Threshold",
+      "policies": "Eeskirjad"
     },
     "stories": {
       "title": "Kasutuslood ja reeglid",

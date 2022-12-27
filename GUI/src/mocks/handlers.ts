@@ -5,6 +5,7 @@ import { intentsData } from './intents';
 import { examplesData } from './examples';
 import { responsesData } from './responses';
 import { entitiesData } from './entities';
+import { configurationData } from './configuration';
 
 export const handlers = [
   rest.get(`/api/main-navigation`, (req, res, ctx) => {
@@ -12,7 +13,7 @@ export const handlers = [
       ctx.status(200),
       ctx.json({
         data: mainNavigationET,
-      })
+      }),
     );
   }),
   rest.get(`/api/intents`, (req, res, ctx) => {
@@ -20,7 +21,7 @@ export const handlers = [
       ...intent,
       examplesCount: (examplesData as Record<string, string[]>)[
         String(intent.id)
-      ].length,
+        ].length,
     }));
 
     return res(ctx.status(200), ctx.json(intents));
@@ -33,13 +34,28 @@ export const handlers = [
       ctx.json({
         id: new Date().getTime(),
         ...newIntent,
-      })
+      }),
+    );
+  }),
+  rest.patch(`/api/intents/:id`, async (req, res, ctx) => {
+    const intent = intentsData.find((i) => i.id === Number(req.params.id));
+    const body = await req.json();
+
+    return res(
+      ctx.status(200),
+      ctx.json({
+        ...intent,
+        ...body,
+      }),
+    );
+  }),
+  rest.delete(`/api/intents/:id`, (req, res, ctx) => {
+    return res(
+      ctx.status(200),
     );
   }),
   rest.get(`/api/intents/:id/examples`, (req, res, ctx) => {
-    const requestedExamples = (examplesData as Record<string, string[]>)[
-      String(req.params.id)
-    ];
+    const requestedExamples = (examplesData as Record<string, string[]>)[String(req.params.id)];
 
     if (!requestedExamples) {
       return res(ctx.status(404));
@@ -55,7 +71,7 @@ export const handlers = [
         ctx.status(422),
         ctx.json({
           message: `Example length exceeds the maximum length of 600 characters`,
-        })
+        }),
       );
     }
 
@@ -64,13 +80,19 @@ export const handlers = [
       ctx.json({
         id: new Date().getTime(),
         example,
-      })
+      }),
     );
+  }),
+  rest.patch(`/api/intents/:id/examples`, async (req, res, ctx) => {
+
   }),
   rest.get(`/api/responses`, (req, res, ctx) => {
     return res(ctx.status(200), ctx.json(responsesData));
   }),
   rest.get(`/api/entities`, (req, res, ctx) => {
     return res(ctx.status(200), ctx.json(entitiesData));
+  }),
+  rest.get(`/api/active-configuration`, (req, res, ctx) => {
+    return res(ctx.status(200), ctx.json(configurationData));
   }),
 ];
