@@ -1,5 +1,12 @@
-import { createContext, FC, PropsWithChildren, ReactNode, useEffect, useMemo, useState } from 'react';
-import { createPortal } from 'react-dom';
+import {
+  createContext,
+  FC,
+  PropsWithChildren,
+  ReactNode,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import * as RadixToast from '@radix-ui/react-toast';
 
 import { Toast } from 'components';
@@ -10,13 +17,13 @@ export type ToastType = {
   type: 'info' | 'success' | 'error' | 'warning';
   title: string;
   message: ReactNode;
-}
+};
 
 type ToastTypeWithId = ToastType & { id: string };
 
 type ToastContextType = {
   open: (toast: ToastType) => void;
-}
+};
 
 export const ToastContext = createContext<ToastContextType>(null!);
 
@@ -35,17 +42,21 @@ export const ToastProvider: FC<PropsWithChildren> = ({ children }) => {
 
   useEffect(() => {
     console.log(toasts);
-  }, [toasts])
+  }, [toasts]);
 
   const contextValue = useMemo(() => ({ open }), []);
 
   return (
     <ToastContext.Provider value={contextValue}>
-      <RadixToast.Provider swipeDirection='right' label={t('global.notification') || 'Notification'}>
+      <RadixToast.Provider
+        swipeDirection="right"
+        label={t('global.notification') || 'Notification'}
+      >
         {children}
         {toasts.map((toast) => (
           <Toast key={toast.id} toast={toast} close={() => close(toast.id)} />
         ))}
+        <RadixToast.Viewport className="toast__list" />
       </RadixToast.Provider>
     </ToastContext.Provider>
   );

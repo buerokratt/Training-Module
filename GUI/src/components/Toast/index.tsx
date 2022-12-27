@@ -1,32 +1,51 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import * as RadixToast from '@radix-ui/react-toast';
-import { MdOutlineClose } from 'react-icons/md';
+import {
+  MdOutlineClose,
+  MdOutlineInfo,
+  MdCheckCircleOutline,
+  MdOutlineWarningAmber,
+  MdErrorOutline,
+} from 'react-icons/md';
+import clsx from 'clsx';
 
 import { Icon } from 'components';
 import type { ToastType } from 'context/ToastContext';
-import clsx from 'clsx';
+import './Toast.scss';
 
 type ToastProps = {
   toast: ToastType;
   close: () => void;
-}
+};
+
+const toastIcons = {
+  info: <MdOutlineInfo />,
+  success: <MdCheckCircleOutline />,
+  warning: <MdOutlineWarningAmber />,
+  error: <MdErrorOutline />,
+};
 
 const Toast: FC<ToastProps> = ({ toast, close }) => {
-  const toastClasses = clsx(
-    'toast',
-    `toast--${toast.type}`,
-  );
+  const [open, setOpen] = useState(true);
 
-  console.log(toast);
+  const toastClasses = clsx('toast', `toast--${toast.type}`);
 
   return (
-    <RadixToast.Root className={toastClasses} onEscapeKeyDown={() => close()}>
-      <RadixToast.Title className='toast__title'>{toast.title}</RadixToast.Title>
-      <RadixToast.Description asChild>
+    <RadixToast.Root
+      className={toastClasses}
+      onEscapeKeyDown={close}
+      open={open}
+      onOpenChange={setOpen}
+    >
+      <RadixToast.Title className="toast__title h5">
+        <Icon icon={toastIcons[toast.type]} />
+        {toast.title}
+      </RadixToast.Title>
+      <RadixToast.Description className="toast__content">
         {toast.message}
       </RadixToast.Description>
-      <RadixToast.Close onClick={() => close()}>
-        <Icon icon={<MdOutlineClose />} size='medium' />
+      <RadixToast.Close onClick={close} className="toast__close">
+        <Icon icon={<MdOutlineClose />} size="medium" />
       </RadixToast.Close>
     </RadixToast.Root>
   );
