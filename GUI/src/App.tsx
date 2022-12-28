@@ -6,6 +6,7 @@ import CommonIntents from 'pages/Training/Intents';
 import Responses from 'pages/Training/Responses';
 import Configuration from 'pages/Training/Configuration';
 import Stories from 'pages/Training/Stories';
+import StoriesDetail from 'pages/Training/Stories/StoriesDetail';
 
 const App: FC = () => {
   return (
@@ -16,6 +17,7 @@ const App: FC = () => {
         <Route path='/treening/vastused' element={<Responses />} />
         <Route path='/treening/konfiguratsioon' element={<Configuration />} />
         <Route path='/treening/kasutuslood' element={<Stories />} />
+        <Route path='/treening/kasutuslood/:id' element={<StoriesDetail />} />
       </Route>
     </Routes>
   );

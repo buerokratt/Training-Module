@@ -1,13 +1,64 @@
-import { FC, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import * as Tabs from '@radix-ui/react-tabs';
+import { useQuery } from '@tanstack/react-query';
+import { createColumnHelper } from '@tanstack/react-table';
+import { MdDeleteOutline, MdOutlineModeEditOutline } from 'react-icons/md';
 
-import { Button, FormInput, Track } from 'components';
+import { Button, DataTable, FormInput, Icon, Track } from 'components';
+import { Rule } from 'types/rule';
 
 const Stories: FC = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { data: rules } = useQuery<Rule[]>({
+    queryKey: ['rules'],
+  });
   const [selectedTab, setSelectedTab] = useState<string>('stories');
   const [filter, setFilter] = useState('');
+  const rulesColumnHelper = createColumnHelper<Rule>();
+
+  const rulesColumns = useMemo(() => [
+    rulesColumnHelper.accessor('rule', {
+      header: 'Rule',
+    }),
+    rulesColumnHelper.display({
+      header: '',
+      cell: (props) => (
+        <Button
+          appearance='text'
+          onClick={() => navigate(`/treening/kasutuslood/${props.row.original.id}`)}
+        >
+          <Icon
+            label={t('global.edit')}
+            icon={<MdOutlineModeEditOutline color={'rgba(0,0,0,0.54)'} />}
+          />
+          {t('global.edit')}
+        </Button>
+      ),
+      id: 'edit',
+      meta: {
+        size: '1%',
+      },
+    }),
+    rulesColumnHelper.display({
+      header: '',
+      cell: (props) => (
+        <Button appearance='text'>
+          <Icon
+            label={t('global.delete')}
+            icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />}
+          />
+          {t('global.delete')}
+        </Button>
+      ),
+      id: 'delete',
+      meta: {
+        size: '1%',
+      },
+    }),
+  ], [rulesColumnHelper, t]);
 
   const handleTabChange = (value: string) => {
     setFilter('');
@@ -33,19 +84,49 @@ const Stories: FC = () => {
           </Tabs.Trigger>
         </Tabs.List>
 
-        {selectedTab && (
-          <Tabs.Content key={selectedTab} className='vertical-tabs__body' value={selectedTab}>
-            <div className='vertical-tabs__content-header'>
-              <Track gap={16}>
-                <FormInput label='search' name='search' placeholder={t('global.search') + '...'} hideLabel />
-                <Button>{t('global.add')}</Button>
-              </Track>
-            </div>
-            <div className='verttical-tabs__content'>
+        <Tabs.Content className='vertical-tabs__body' value='stories'>
+          <div className='vertical-tabs__content-header'>
+            <Track gap={16}>
+              <FormInput
+                label='search'
+                name='search'
+                placeholder={t('global.search') + '...'}
+                hideLabel
+                onChange={(e) => setFilter(e.target.value)}
+              />
+              <Button>{t('global.add')}</Button>
+            </Track>
+          </div>
+          <div className='verttical-tabs__content'>
 
-            </div>
-          </Tabs.Content>
-        )}
+          </div>
+        </Tabs.Content>
+
+        <Tabs.Content className='vertical-tabs__body' value='rules'>
+          <div className='vertical-tabs__content-header'>
+            <Track gap={16}>
+              <FormInput
+                label='search'
+                name='search'
+                placeholder={t('global.search') + '...'}
+                hideLabel
+                onChange={(e) => setFilter(e.target.value)}
+              />
+              <Button>{t('global.add')}</Button>
+            </Track>
+          </div>
+          <div className='verttical-tabs__content'>
+            {rules && (
+              <DataTable
+                data={rules}
+                columns={rulesColumns}
+                disableHead
+                globalFilter={filter}
+                setGlobalFilter={setFilter}
+              />
+            )}
+          </div>
+        </Tabs.Content>
       </Tabs.Root>
     </>
   );

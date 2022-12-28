@@ -4,6 +4,7 @@ const instance = axios.create({
   baseURL: import.meta.env.BASE_URL + 'api/',
   headers: {
     Accept: 'application/json',
+    'Content-Type': 'application/json',
   },
   withCredentials: true,
 });

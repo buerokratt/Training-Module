@@ -23,6 +23,7 @@ type DataTableProps = {
   sortable?: boolean;
   globalFilter?: string;
   setGlobalFilter?: React.Dispatch<React.SetStateAction<string>>;
+  disableHead?: boolean;
 }
 
 type ColumnMeta = {
@@ -52,7 +53,17 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   return itemRank.passed;
 };
 
-const DataTable: FC<DataTableProps> = ({ data, columns, tableBodyPrefix, sortable, globalFilter, setGlobalFilter }) => {
+const DataTable: FC<DataTableProps> = (
+  {
+    data,
+    columns,
+    tableBodyPrefix,
+    sortable,
+    globalFilter,
+    setGlobalFilter,
+    disableHead,
+  },
+) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const table = useReactTable({
     data,
@@ -74,31 +85,33 @@ const DataTable: FC<DataTableProps> = ({ data, columns, tableBodyPrefix, sortabl
 
   return (
     <table className='data-table'>
-      <thead>
-      {table.getHeaderGroups().map((headerGroup) => (
-        <tr key={headerGroup.id}>
-          {headerGroup.headers.map((header) => (
-            <th key={header.id} style={{ width: (header.column.columnDef as CustomColumnDef).meta?.size }}>
-              {header.isPlaceholder ? null : (
-                <Track gap={8} onClick={header.column.getToggleSortingHandler()}>
-                  {sortable && header.column.getCanSort() && (
-                    <>
-                      {{
-                        asc: <Icon icon={<MdExpandMore fontSize={20} />} size='medium' />,
-                        desc: <Icon icon={<MdExpandLess fontSize={20} />} size='medium' />,
-                      }[header.column.getIsSorted() as string] ?? (
-                        <Icon icon={<MdUnfoldMore fontSize={22} />} size='medium' />
-                      )}
-                    </>
-                  )}
-                  {flexRender(header.column.columnDef.header, header.getContext())}
-                </Track>
-              )}
-            </th>
-          ))}
-        </tr>
-      ))}
-      </thead>
+      {!disableHead && (
+        <thead>
+        {table.getHeaderGroups().map((headerGroup) => (
+          <tr key={headerGroup.id}>
+            {headerGroup.headers.map((header) => (
+              <th key={header.id} style={{ width: (header.column.columnDef as CustomColumnDef).meta?.size }}>
+                {header.isPlaceholder ? null : (
+                  <Track gap={8} onClick={header.column.getToggleSortingHandler()}>
+                    {sortable && header.column.getCanSort() && (
+                      <>
+                        {{
+                          asc: <Icon icon={<MdExpandMore fontSize={20} />} size='medium' />,
+                          desc: <Icon icon={<MdExpandLess fontSize={20} />} size='medium' />,
+                        }[header.column.getIsSorted() as string] ?? (
+                          <Icon icon={<MdUnfoldMore fontSize={22} />} size='medium' />
+                        )}
+                      </>
+                    )}
+                    {flexRender(header.column.columnDef.header, header.getContext())}
+                  </Track>
+                )}
+              </th>
+            ))}
+          </tr>
+        ))}
+        </thead>
+      )}
       <tbody>
       {tableBodyPrefix}
       {table.getRowModel().rows.map((row) => (
