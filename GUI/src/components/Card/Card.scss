@@ -15,5 +15,7 @@
 
   &__header {
     border-bottom: 1px solid get-color(black-coral-2);
+    background-color: get-color(extra-light);
+    border-radius: $veera-radius-s $veera-radius-s 0 0;
   }
 }

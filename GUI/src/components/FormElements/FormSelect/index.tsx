@@ -16,13 +16,25 @@ type FormSelectProps = SelectHTMLAttributes<HTMLSelectElement> & {
     label: string;
     value: string;
   }[];
+  onSelectionChange?: (selection: { label: string, value: string } | null) => void;
 }
 
 const itemToString = (item: ({ label: string, value: string } | null)) => {
   return item ? item.value : '';
 };
 
-const FormSelect: FC<FormSelectProps> = ({ label, name, hideLabel, options, disabled, placeholder, defaultValue }) => {
+const FormSelect: FC<FormSelectProps> = (
+  {
+    label,
+    name,
+    hideLabel,
+    options,
+    disabled,
+    placeholder,
+    defaultValue,
+    onSelectionChange,
+  },
+) => {
   const { t } = useTranslation();
   const defaultSelected = options.find((o) => o.value === defaultValue) || null;
   const [selectedItem, setSelectedItem] = useState<{ label: string, value: string } | null>(defaultSelected);
@@ -37,7 +49,10 @@ const FormSelect: FC<FormSelectProps> = ({ label, name, hideLabel, options, disa
     items: options,
     itemToString,
     selectedItem,
-    onSelectedItemChange: ({ selectedItem: newSelectedItem }) => setSelectedItem(newSelectedItem ?? null),
+    onSelectedItemChange: ({ selectedItem: newSelectedItem }) => {
+      setSelectedItem(newSelectedItem ?? null);
+      if (onSelectionChange) onSelectionChange(newSelectedItem ?? null);
+    },
   });
 
   const selectClasses = clsx(

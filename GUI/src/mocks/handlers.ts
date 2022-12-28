@@ -8,6 +8,7 @@ import { entitiesData } from './entities';
 import { configurationData } from './configuration';
 import { storiesData } from './stories';
 import { rulesData } from './rules';
+import { slotsData } from './slots';
 
 export const handlers = [
   rest.get(`${import.meta.env.BASE_URL}api/main-navigation`, (req, res, ctx) => {
@@ -102,5 +103,8 @@ export const handlers = [
   }),
   rest.get(`${import.meta.env.BASE_URL}api/rules`, (req, res, ctx) => {
     return res(ctx.status(200), ctx.json(rulesData));
+  }),
+  rest.get(`${import.meta.env.BASE_URL}api/slots`, (req, res, ctx) => {
+    return res(ctx.status(200), ctx.json(slotsData));
   }),
 ];

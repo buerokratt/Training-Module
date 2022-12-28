@@ -19,41 +19,47 @@ export const mainNavigationET = [
             path: '/treening/treening/teemad',
           },
           {
-            label: 'REGEX',
-            path: '/treening/treening/regex',
+            label: 'Vastused',
+            path: '/treening/treening/vastused',
           },
           {
-            label: 'Sünonüümid',
-            path: '/treening/treening/sunonuumid',
+            label: 'Kasutuslood',
+            path: '/treening/treening/kasutuslood',
           },
           {
-            label: 'Otsingutabelid',
-            path: '/treening/treening/otsingutabelid',
+            label: 'Konfiguratsioon',
+            path: '/treening/treening/konfiguratsioon',
+          },
+          {
+            label: 'Vormid',
+            path: '/treening/treening/vormid',
+          },
+          {
+            label: 'Pilud',
+            path: '/treening/treening/pilud',
           },
         ],
       },
       {
-        label: 'Vastused',
-        path: '/treening/vastused',
-      },
-      {
-        label: 'Vormid',
-        path: '/treening/vormid',
-      },
-      {
-        label: 'Kasutuslood',
-        path: '/treening/kasutuslood',
-      },
-      {
-        label: 'Konfiguratsioon',
-        path: '/treening/konfiguratsioon',
+        label: 'Ajaloolised vestlused',
+        path: '/treening/ajaloolised-vestlused',
+        children: [
+          {
+            label: 'Märgenda teemasid',
+            path: '/treening/ajaloolised-vestlused/margenda-teemasid',
+          },
+          {
+            label: 'Mudelite võrdlus',
+            path: '/treening/ajaloolised-vestlused/mudelite-vordlus',
+          },
+        ],
       },
     ],
   },
   {
     id: 'analytics',
-    label: 'Analüütika',
-    path: '/analuutika',
+    label: 'Mudelipank ja analüütika',
+    path: '/mudelipank-ja-analuutika',
     children: [],
   },
   {

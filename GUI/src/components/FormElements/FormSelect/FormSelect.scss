@@ -74,11 +74,18 @@
     &--selected {
       background-color: get-color(sapphire-blue-10);
       color: get-color(white);
+
+      &:hover,
+      &:focus {
+        background-color: get-color(sapphire-blue-10);
+        color: get-color(white);
+      }
     }
 
     &:hover,
     &:focus {
       background-color: get-color(black-coral-0);
+      color: get-color(black-coral-20);
     }
   }
 }

@@ -77,6 +77,15 @@
       "title": "Kasutuslood ja reeglid",
       "stories": "Kasutuslood",
       "rules": "Reeglid"
+    },
+    "slots": {
+      "title": "Pilud",
+      "titleOne": "Pilu",
+      "newSlot": "Uus pilu",
+      "mapping": "Kaardistamine",
+      "slotName": "Pilu nimi",
+      "slotType": "Pilu tüüp",
+      "influenceConversation": "Mõjuta vestlust"
     }
   }
 }

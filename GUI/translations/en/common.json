@@ -77,6 +77,15 @@
       "title": "Stories and rules",
       "stories": "Stories",
       "rules": "Rules"
+    },
+    "slots": {
+      "title": "Slots",
+      "titleOne": "Slot",
+      "newSlot": "New slot",
+      "mapping": "Mapping",
+      "slotName": "Slot name",
+      "slotType": "Slot type",
+      "influenceConversation": "Influence conversation"
     }
   }
 }

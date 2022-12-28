@@ -58,7 +58,7 @@ const Stories: FC = () => {
         size: '1%',
       },
     }),
-  ], [rulesColumnHelper, t]);
+  ], [navigate, rulesColumnHelper, t]);
 
   const handleTabChange = (value: string) => {
     setFilter('');
