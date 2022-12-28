@@ -70,7 +70,8 @@
       "epochs": "Epochs",
       "randomSeed": "Random seed",
       "threshold": "Threshold",
-      "policies": "Eeskirjad"
+      "policies": "Eeskirjad",
+      "constrainSimilarities": "Piira sarnasusi"
     },
     "stories": {
       "title": "Kasutuslood ja reeglid",

@@ -5,6 +5,8 @@
 
 .switch {
   $self: &;
+  display: flex;
+  align-items: center;
 
   &__label {
     flex: 0 0 170px;

@@ -22,6 +22,10 @@
     flex: 1;
     display: flex;
     flex-direction: column;
+
+    &[data-state="inactive"] {
+      display: none;
+    }
   }
 
   &__content-header {

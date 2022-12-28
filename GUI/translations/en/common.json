@@ -70,7 +70,8 @@
       "epochs": "Epochs",
       "randomSeed": "Random seed",
       "threshold": "Threshold",
-      "policies": "Policies"
+      "policies": "Policies",
+      "constrainSimilarities": "Constrain similarities"
     },
     "stories": {
       "title": "Stories and rules",

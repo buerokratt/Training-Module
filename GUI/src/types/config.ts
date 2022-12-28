@@ -1,6 +1,10 @@
 export interface Policy {
+  readonly id: number;
   name: string;
   active: boolean;
+  randomSeed: number;
+  epochs: number;
+  constrainSimilarities: boolean;
 }
 
 export interface Config {

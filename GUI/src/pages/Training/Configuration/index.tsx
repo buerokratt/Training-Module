@@ -91,19 +91,29 @@ const Configuration: FC = () => {
           ))}
         </Tabs.List>
 
-        {selectedPolicy && (
-          <Tabs.Content key={selectedPolicy.name} value={selectedPolicy.name} className='vertical-tabs__body'>
-            <div className='vertical-tabs__content'></div>
+        {configurationData.policies.map((policy, index) => (
+          <Tabs.Content key={policy.id} value={policy.name} className='vertical-tabs__body'>
+            <div className='vertical-tabs__content'>
+              <Track direction='vertical' align='left' gap={8}>
+                <FormInput label={t('training.configuration.randomSeed')} defaultValue={policy.randomSeed}
+                           name={`policies[${index}].randomSeed`} />
+                <FormInput label={t('training.configuration.epochs')} defaultValue={policy.epochs}
+                           name={`policies[${index}].epochs`} />
+                <Switch label={t('training.configuration.constrainSimilarities')}
+                        defaultChecked={policy.constrainSimilarities}
+                        name={`policies[${index}].constrainSimilarities`} />
+              </Track>
+            </div>
             <div className='vertical-tabs__content-footer'>
-              {selectedPolicy.active ? (
+              {policy.active ? (
                 <Button appearance='error'
-                        onClick={() => handlePolicyDeactivate(selectedPolicy)}>{t('global.deactivate')}</Button>
+                        onClick={() => handlePolicyDeactivate(policy)}>{t('global.deactivate')}</Button>
               ) : (
-                <Button onClick={() => handlePolicyActivate(selectedPolicy)}>{t('global.activate')}</Button>
+                <Button onClick={() => handlePolicyActivate(policy)}>{t('global.activate')}</Button>
               )}
             </div>
           </Tabs.Content>
-        )}
+        ))}
       </Tabs.Root>
 
       <Card>
