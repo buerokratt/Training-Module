@@ -77,6 +77,10 @@
 
     &.nav__toggle--icon {
       padding-left: 8px;
+
+      .icon:first-child {
+        transform: none;
+      }
     }
   }
 
