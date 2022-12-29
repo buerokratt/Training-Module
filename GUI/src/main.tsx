@@ -27,7 +27,7 @@ const queryClient = new QueryClient({
 const worker = setupWorker(...handlers);
 
 const prepare = async () => {
-  if (import.meta.env.DEV) {
+  if (import.meta.env.MODE === 'development') {
     return worker.start();
   }
   return Promise.resolve();

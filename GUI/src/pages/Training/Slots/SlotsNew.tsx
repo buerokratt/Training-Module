@@ -1,7 +1,10 @@
 import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useQuery } from '@tanstack/react-query';
 
-import { Button, Card, FormInput, FormSelect, Track } from 'components';
+import { Button, Card, FormCheckboxes, FormInput, FormSelect, Switch, Track } from 'components';
+import { Intent } from 'types/intent';
+import { Entity } from 'types/entity';
 
 const slotTypes = [
   {
@@ -28,8 +31,12 @@ const influenceConversationTypes = [
 const SlotsNew: FC = () => {
   const { t } = useTranslation();
   const [selectedSlotType, setSelectedSlotType] = useState<string | null>(null);
-
-  console.log(selectedSlotType);
+  const { data: intents } = useQuery<Intent[]>({
+    queryKey: ['intents'],
+  });
+  const { data: entities } = useQuery<Entity[]>({
+    queryKey: ['entities'],
+  });
 
   return (
     <>
@@ -44,10 +51,9 @@ const SlotsNew: FC = () => {
             options={slotTypes}
             onSelectionChange={(selection) => setSelectedSlotType((selection?.value) || null)}
           />
-          <FormSelect
+          <Switch
             label={t('training.slots.influenceConversation')}
             name='influenceConversations'
-            options={influenceConversationTypes}
           />
         </Track>
       </Card>
@@ -57,8 +63,21 @@ const SlotsNew: FC = () => {
           <h2 className='h5'>{t('training.slots.mapping')}</h2>
         }>
           <Track direction='vertical' gap={8} align='left'>
-            <FormSelect label='Type' name='type' options={[{ label: 'form_entity', value: 'form_entity' }]} />
-            <FormSelect label='Entity' name='type' options={[]} />
+            {entities && (
+              <FormSelect
+                label='Entity'
+                name='type'
+                options={entities.map((entity) => ({ label: entity.name, value: String(entity.id) }))}
+              />
+            )}
+            {intents && <FormCheckboxes label='Intent' name='intent' items={intents.map((intent) => ({
+              label: intent.intent,
+              value: String(intent.id),
+            }))} />}
+            {intents && <FormCheckboxes label='Not intent' name='notIntent' items={intents.map((intent) => ({
+              label: intent.intent,
+              value: String(intent.id),
+            }))} />}
           </Track>
         </Card>
       )}
