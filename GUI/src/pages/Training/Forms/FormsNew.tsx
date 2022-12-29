@@ -21,11 +21,7 @@ const FormsNew: FC = () => {
   const intentsColumnHelper = createColumnHelper<Intent>();
 
   const slotsColumns = useMemo(() => [
-    slotsColumnHelper.accessor('name', {
-      cell: (props) => (
-        <FormCheckbox label="Slot" hideLabel name={} item={} />
-      )
-    }),
+    slotsColumnHelper.accessor('name', {}),
   ], [slotsColumnHelper]);
 
   const intentsColumns = useMemo(() => [
@@ -43,13 +39,13 @@ const FormsNew: FC = () => {
       <Track gap={16} align='left'>
         <div style={{ flex: 1 }}>
           <Card header={<h2 className='h5'>{t('training.forms.requiredSlots')}</h2>}>
-            <DataTable data={slots} columns={slotsColumns} disableHead />
+            {slots && <DataTable data={slots} columns={slotsColumns} disableHead />}
           </Card>
         </div>
 
         <div style={{ flex: 1 }}>
           <Card header={<h2 className='h5'>{t('training.forms.ignoredIntents')}</h2>}>
-            <DataTable data={intents} columns={intentsColumns} disableHead />
+            {intents && <DataTable data={intents} columns={intentsColumns} disableHead />}
           </Card>
         </div>
       </Track>
