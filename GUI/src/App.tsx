@@ -8,7 +8,9 @@ import Configuration from 'pages/Training/Configuration';
 import Stories from 'pages/Training/Stories';
 import StoriesDetail from 'pages/Training/Stories/StoriesDetail';
 import Slots from 'pages/Training/Slots';
-import SlotsNew from './pages/Training/Slots/SlotsNew';
+import SlotsNew from 'pages/Training/Slots/SlotsNew';
+import Forms from 'pages/Training/Forms';
+import FormsNew from 'pages/Training/Forms/FormsNew';
 
 const App: FC = () => {
   return (
@@ -22,6 +24,8 @@ const App: FC = () => {
         <Route path='/treening/treening/kasutuslood/:id' element={<StoriesDetail />} />
         <Route path='/treening/treening/pilud' element={<Slots />} />
         <Route path='/treening/treening/pilud/uus' element={<SlotsNew />} />
+        <Route path='/treening/treening/vormid' element={<Forms />} />
+        <Route path='/treening/treening/vormid/uus' element={<FormsNew />} />
       </Route>
     </Routes>
   );

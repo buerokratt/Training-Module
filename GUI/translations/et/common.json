@@ -89,6 +89,13 @@
       "slotName": "Pilu nimi",
       "slotType": "Pilu tüüp",
       "influenceConversation": "Mõjuta vestlust"
+    },
+    "forms": {
+      "title": "Vormid",
+      "titleOne": "Vorm",
+      "formName": "Vormi nimi",
+      "requiredSlots": "Kohustuslikud pilud",
+      "ignoredIntents": "Eiratud teemad"
     }
   }
 }

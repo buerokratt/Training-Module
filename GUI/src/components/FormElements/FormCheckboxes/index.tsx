@@ -13,8 +13,6 @@ type FormCheckboxesType = {
 }
 
 const FormCheckboxes: FC<FormCheckboxesType> = ({ label, name, hideLabel, items }) => {
-
-
   return (
     <div className='checkboxes' role='group'>
       {label && !hideLabel && <label className='checkboxes__label'>{label}</label>}

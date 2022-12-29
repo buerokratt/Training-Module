@@ -89,6 +89,13 @@
       "slotName": "Slot name",
       "slotType": "Slot type",
       "influenceConversation": "Influence conversation"
+    },
+    "forms": {
+      "title": "Forms",
+      "titleOne": "Form",
+      "formName": "Form name",
+      "requiredSlots": "Required slots",
+      "ignoredIntents": "Ignored intents"
     }
   }
 }
