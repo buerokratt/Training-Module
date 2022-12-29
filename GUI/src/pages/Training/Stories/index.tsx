@@ -8,16 +8,62 @@ import { MdDeleteOutline, MdOutlineModeEditOutline } from 'react-icons/md';
 
 import { Button, DataTable, FormInput, Icon, Track } from 'components';
 import { Rule } from 'types/rule';
+import { Story } from 'types/story';
 
 const Stories: FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { data: stories } = useQuery<Story[]>({
+    queryKey: ['stories'],
+  });
   const { data: rules } = useQuery<Rule[]>({
     queryKey: ['rules'],
   });
   const [selectedTab, setSelectedTab] = useState<string>('stories');
   const [filter, setFilter] = useState('');
+  const storiesColumnHelper = createColumnHelper<Story>();
   const rulesColumnHelper = createColumnHelper<Rule>();
+
+  const storiesColumns = useMemo(() => [
+    storiesColumnHelper.accessor('story', {
+      header: 'Story',
+    }),
+    storiesColumnHelper.display({
+      header: '',
+      cell: (props) => (
+        <Button
+          appearance='text'
+          onClick={() => navigate(`${props.row.original.id}`)}
+        >
+          <Icon
+            label={t('global.edit')}
+            icon={<MdOutlineModeEditOutline color={'rgba(0,0,0,0.54)'} />}
+          />
+          {t('global.edit')}
+        </Button>
+      ),
+      id: 'edit',
+      meta: {
+        size: '1%',
+      },
+    }),
+    storiesColumnHelper.display({
+      header: '',
+      cell: (props) => (
+        <Button appearance='text'>
+          <Icon
+            label={t('global.delete')}
+            icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />}
+          />
+          {t('global.delete')}
+        </Button>
+      ),
+      id: 'delete',
+      meta: {
+        size: '1%',
+      },
+    }),
+  ], [navigate, storiesColumnHelper, t]);
 
   const rulesColumns = useMemo(() => [
     rulesColumnHelper.accessor('rule', {
@@ -28,7 +74,7 @@ const Stories: FC = () => {
       cell: (props) => (
         <Button
           appearance='text'
-          onClick={() => navigate(`/treening/kasutuslood/${props.row.original.id}`)}
+          onClick={() => navigate(`reeglid/${props.row.original.id}`)}
         >
           <Icon
             label={t('global.edit')}
@@ -88,7 +134,7 @@ const Stories: FC = () => {
           <div className='vertical-tabs__content-header'>
             <Track gap={16}>
               <FormInput
-                label='search'
+                label={t('global.search')}
                 name='search'
                 placeholder={t('global.search') + '...'}
                 hideLabel
@@ -97,8 +143,15 @@ const Stories: FC = () => {
               <Button>{t('global.add')}</Button>
             </Track>
           </div>
-          <div className='verttical-tabs__content'>
-
+          <div className='vertical-tabs__content'>
+            {stories && (
+              <DataTable
+                data={stories}
+                columns={storiesColumns}
+                globalFilter={filter}
+                setGlobalFilter={setFilter}
+              />
+            )}
           </div>
         </Tabs.Content>
 
@@ -106,7 +159,7 @@ const Stories: FC = () => {
           <div className='vertical-tabs__content-header'>
             <Track gap={16}>
               <FormInput
-                label='search'
+                label={t('global.search')}
                 name='search'
                 placeholder={t('global.search') + '...'}
                 hideLabel
@@ -115,12 +168,11 @@ const Stories: FC = () => {
               <Button>{t('global.add')}</Button>
             </Track>
           </div>
-          <div className='verttical-tabs__content'>
+          <div className='vertical-tabs__content'>
             {rules && (
               <DataTable
                 data={rules}
                 columns={rulesColumns}
-                disableHead
                 globalFilter={filter}
                 setGlobalFilter={setFilter}
               />
