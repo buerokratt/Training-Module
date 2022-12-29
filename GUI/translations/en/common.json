@@ -71,7 +71,10 @@
       "randomSeed": "Random seed",
       "threshold": "Threshold",
       "policies": "Policies",
-      "constrainSimilarities": "Constrain similarities"
+      "priority": "Priority",
+      "maxHistory": "Max history",
+      "checkForContradictions": "Check for contradictions",
+      "coreFallbackThreshold": "Core fallback threshold"
     },
     "stories": {
       "title": "Stories and rules",

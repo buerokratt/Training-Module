@@ -95,13 +95,26 @@ const Configuration: FC = () => {
           <Tabs.Content key={policy.id} value={policy.name} className='vertical-tabs__body'>
             <div className='vertical-tabs__content'>
               <Track direction='vertical' align='left' gap={8}>
-                <FormInput label={t('training.configuration.randomSeed')} defaultValue={policy.randomSeed}
-                           name={`policies[${index}].randomSeed`} />
-                <FormInput label={t('training.configuration.epochs')} defaultValue={policy.epochs}
-                           name={`policies[${index}].epochs`} />
-                <Switch label={t('training.configuration.constrainSimilarities')}
-                        defaultChecked={policy.constrainSimilarities}
-                        name={`policies[${index}].constrainSimilarities`} />
+                <FormInput label={t('training.configuration.priority')} name={`policies[${index}].priority`}
+                           defaultValue={policy.priority} type='number' />
+                {'maxHistory' in policy && (
+                  <FormInput label={t('training.configuration.maxHistory')} name={`policies[${index}].maxHistory`}
+                             defaultValue={policy.maxHistory} type='number' />
+                )}
+                {'epochs' in policy && (
+                  <FormInput label={t('training.configuration.epochs')} name={`policies[${index}].epochs`}
+                             defaultValue={policy.epochs} type='number' />
+                )}
+                {'coreFallbackThreshold' in policy && (
+                  <FormInput label={t('training.configuration.coreFallbackThreshold')}
+                             name={`policies[${index}].coreFallbackThreshold`}
+                             defaultValue={policy.coreFallbackThreshold} type='number' />
+                )}
+                {'checkForContradictions' in policy && (
+                  <Switch label={t('training.configuration.checkForContradictions')}
+                          defaultChecked={policy.checkForContradictions}
+                          name={`policies[${index}].checkForContradictions`} />
+                )}
               </Track>
             </div>
             <div className='vertical-tabs__content-footer'>

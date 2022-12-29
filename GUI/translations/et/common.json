@@ -71,7 +71,10 @@
       "randomSeed": "Random seed",
       "threshold": "Threshold",
       "policies": "Eeskirjad",
-      "constrainSimilarities": "Piira sarnasusi"
+      "priority": "Priority",
+      "maxHistory": "Max history",
+      "checkForContradictions": "Check for contradictions",
+      "coreFallbackThreshold": "Core fallback threshold"
     },
     "stories": {
       "title": "Kasutuslood ja reeglid",
