@@ -1,4 +1,5 @@
 export interface MenuItem {
+  id?: string;
   label: string;
   path: string | null;
   target?: '_blank' | '_self';

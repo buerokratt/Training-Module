@@ -8,6 +8,7 @@
   background-color: get-color(sapphire-blue-10);
   overflow: auto;
   scrollbar-width: none;
+  transition: width .1s ease-out;
 
   &::-webkit-scrollbar {
     display: none;
@@ -72,6 +73,10 @@
       + ul {
         display: block;
       }
+    }
+
+    &.nav__toggle--icon {
+      padding-left: 8px;
     }
   }
 
