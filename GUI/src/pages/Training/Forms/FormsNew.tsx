@@ -21,12 +21,30 @@ const FormsNew: FC = () => {
   const intentsColumnHelper = createColumnHelper<Intent>();
 
   const slotsColumns = useMemo(() => [
-    slotsColumnHelper.accessor('name', {}),
-  ], [slotsColumnHelper]);
+    slotsColumnHelper.accessor('name', {
+      cell: (props) => (
+        <FormCheckbox
+          label={t('training.forms.requiredSlots')}
+          hideLabel
+          name='requiredSlots'
+          item={{ label: props.getValue(), value: props.getValue() }}
+        />
+      ),
+    }),
+  ], [slotsColumnHelper, t]);
 
   const intentsColumns = useMemo(() => [
-    intentsColumnHelper.accessor('intent', {}),
-  ], [intentsColumnHelper]);
+    intentsColumnHelper.accessor('intent', {
+      cell: (props) => (
+        <FormCheckbox
+          label={t('training.forms.ignoredIntents')}
+          hideLabel
+          name='ignoredIntents'
+          item={{ label: props.getValue(), value: props.getValue() }}
+        />
+      ),
+    }),
+  ], [intentsColumnHelper, t]);
 
   return (
     <>
@@ -38,14 +56,74 @@ const FormsNew: FC = () => {
 
       <Track gap={16} align='left'>
         <div style={{ flex: 1 }}>
-          <Card header={<h2 className='h5'>{t('training.forms.requiredSlots')}</h2>}>
-            {slots && <DataTable data={slots} columns={slotsColumns} disableHead />}
+          <Card header={
+            <Track direction='vertical' align='left' style={{ margin: '-16px' }}>
+              <h2
+                className='h5'
+                style={{
+                  padding: 16,
+                  width: '100%',
+                  borderBottom: '1px solid #D2D3D8',
+                }}
+              >
+                {t('training.forms.requiredSlots')}
+              </h2>
+              <div style={{ width: '100%', padding: 16 }}>
+                <FormInput
+                  label={t('global.search')}
+                  name='slotsSearch'
+                  placeholder={t('global.search') + '...'}
+                  hideLabel
+                  onChange={(e) => setSlotsFilter(e.target.value)}
+                />
+              </div>
+            </Track>
+          }>
+            {slots && (
+              <DataTable
+                data={slots}
+                columns={slotsColumns}
+                disableHead
+                globalFilter={slotsFilter}
+                setGlobalFilter={setSlotsFilter}
+              />
+            )}
           </Card>
         </div>
 
         <div style={{ flex: 1 }}>
-          <Card header={<h2 className='h5'>{t('training.forms.ignoredIntents')}</h2>}>
-            {intents && <DataTable data={intents} columns={intentsColumns} disableHead />}
+          <Card header={
+            <Track direction='vertical' align='left' style={{ margin: '-16px' }}>
+              <h2
+                className='h5'
+                style={{
+                  padding: 16,
+                  width: '100%',
+                  borderBottom: '1px solid #D2D3D8',
+                }}
+              >
+                {t('training.forms.ignoredIntents')}
+              </h2>
+              <div style={{ width: '100%', padding: 16 }}>
+                <FormInput
+                  label={t('global.search')}
+                  name='intentsSearch'
+                  placeholder={t('global.search') + '...'}
+                  hideLabel
+                  onChange={(e) => setIntentsFilter(e.target.value)}
+                />
+              </div>
+            </Track>
+          }>
+            {intents && (
+              <DataTable
+                data={intents}
+                columns={intentsColumns}
+                disableHead
+                globalFilter={intentsFilter}
+                setGlobalFilter={setIntentsFilter}
+              />
+            )}
           </Card>
         </div>
       </Track>

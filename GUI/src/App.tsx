@@ -11,6 +11,7 @@ import Slots from 'pages/Training/Slots';
 import SlotsNew from 'pages/Training/Slots/SlotsNew';
 import Forms from 'pages/Training/Forms';
 import FormsNew from 'pages/Training/Forms/FormsNew';
+import History from 'pages/HistoricalConversations/History';
 
 const App: FC = () => {
   return (
@@ -26,6 +27,7 @@ const App: FC = () => {
         <Route path='/treening/treening/pilud/uus' element={<SlotsNew />} />
         <Route path='/treening/treening/vormid' element={<Forms />} />
         <Route path='/treening/treening/vormid/uus' element={<FormsNew />} />
+        <Route path='/treening/ajaloolised-veslused/ajalugu' element={<History />} />
       </Route>
     </Routes>
   );
