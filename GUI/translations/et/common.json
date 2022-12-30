@@ -16,7 +16,8 @@
     "activate": "Aktiveeri",
     "deactivate": "Deaktiveeri",
     "on": "Sees",
-    "off": "Väljas"
+    "off": "Väljas",
+    "back": "Tagasi"
   },
   "mainMenu": {
     "menuLabel": "Põhinavigatsioon",
@@ -97,6 +98,9 @@
       "formName": "Vormi nimi",
       "requiredSlots": "Kohustuslikud pilud",
       "ignoredIntents": "Eiratud teemad"
+    },
+    "actions": {
+      "title": "Tegevused"
     }
   }
 }

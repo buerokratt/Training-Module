@@ -3,13 +3,16 @@
 @import 'src/styles/settings/variables/other';
 @import 'src/styles/settings/variables/typography';
 
-.card {
+.graph {
+  flex: 1;
+  height: calc(100% + 32px);
+  display: flex;
+  flex-direction: column;
   background-color: get-color(white);
-  border: 1px solid get-color(black-coral-2);
-  border-radius: $veera-radius-s;
+  margin: -16px -16px -16px 0;
+  border-left: 1px solid get-color(black-coral-2);
 
   &__header,
-  &__body,
   &__footer {
     padding: get-spacing(haapsalu);
   }
@@ -22,5 +25,9 @@
 
   &__footer {
     border-top: 1px solid get-color(black-coral-2);
+  }
+
+  &__body {
+    flex: 1;
   }
 }

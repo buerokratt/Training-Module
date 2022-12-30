@@ -16,7 +16,8 @@
     "activate": "Activate",
     "deactivate": "Deactivate",
     "on": "On",
-    "off": "Off"
+    "off": "Off",
+    "back": "Back"
   },
   "mainMenu": {
     "menuLabel": "Main navigation",
@@ -97,6 +98,9 @@
       "formName": "Form name",
       "requiredSlots": "Required slots",
       "ignoredIntents": "Ignored intents"
+    },
+    "actions": {
+      "title": "Actions"
     }
   }
 }
