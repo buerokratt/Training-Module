@@ -10,6 +10,7 @@ import Tooltip from './Tooltip';
 import Card from './Card';
 import Label from './Label';
 import Toast from './Toast';
+import Popover from './Popover';
 
 export {
   Layout,
@@ -29,4 +30,5 @@ export {
   Toast,
   FormCheckboxes,
   FormCheckbox,
+  Popover,
 };

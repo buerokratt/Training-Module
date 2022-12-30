@@ -56,7 +56,8 @@
       "intentInModel": "Intent is in model",
       "upload": "Upload examples",
       "download": "Download examples",
-      "moreFromGithub": "More info from Github"
+      "moreFromGithub": "More info from Github",
+      "entity": "Entity"
     },
     "responses": {
       "title": "Responses",

@@ -56,7 +56,8 @@
       "intentInModel": "Teema on mudelis",
       "upload": "Lae ülesse näited",
       "download": "Lae alla näited",
-      "moreFromGithub": "Rohkem infot Githubist"
+      "moreFromGithub": "Rohkem infot Githubist",
+      "entity": "Olem"
     },
     "responses": {
       "title": "Vastused",
