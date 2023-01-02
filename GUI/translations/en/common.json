@@ -17,7 +17,13 @@
     "deactivate": "Deactivate",
     "on": "On",
     "off": "Off",
-    "back": "Back"
+    "back": "Back",
+    "from": "From",
+    "to": "To",
+    "view": "View",
+    "resultCount": "Result count",
+    "paginationNavigation": "Pagination navigation",
+    "gotoPage": "Goto page"
   },
   "mainMenu": {
     "menuLabel": "Main navigation",
@@ -101,6 +107,15 @@
     },
     "actions": {
       "title": "Actions"
+    },
+    "historicalConversations": {
+      "title": "History",
+      "search": "Search conversations",
+      "startTime": "Start time",
+      "endTime": "End time",
+      "name": "Name",
+      "label": "Label",
+      "comment": "Comment"
     }
   }
 }

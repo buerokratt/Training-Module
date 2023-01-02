@@ -45,8 +45,8 @@ export const mainNavigationET = [
         path: '/treening/ajaloolised-vestlused',
         children: [
           {
-            label: 'Märgenda teemasid',
-            path: '/treening/ajaloolised-vestlused/margenda-teemasid',
+            label: 'Ajalugu',
+            path: '/treening/ajaloolised-vestlused/ajalugu',
           },
           {
             label: 'Mudelite võrdlus',
@@ -78,98 +78,78 @@ export const mainNavigationET = [
 
 export const mainNavigationEN = [
   {
+    id: 'conversations',
+    label: 'Conversations',
+    path: '/conversations',
+    children: [],
+  },
+  {
+    id: 'training',
     label: 'Training',
     path: '/training',
     children: [
       {
         label: 'Training',
-        path: '/training/intents',
+        path: '/training/training',
         children: [
           {
-            label: 'Common intents',
-            path: '/training/intents/common-intents',
+            label: 'Intents',
+            path: '/training/training/intents',
           },
           {
-            label: 'Local intents',
-            path: '/training/intents/local-intents',
+            label: 'Responses',
+            path: '/training/training/responses',
           },
           {
-            label: 'REGEX',
-            path: '/training/intents/regex',
+            label: 'Stories',
+            path: '/training/training/stories',
           },
           {
-            label: 'Synonyms',
-            path: '/training/intents/synonyms',
+            label: 'Configuration',
+            path: '/training/training/configuration',
           },
           {
-            label: 'Lookup tables',
-            path: '/training/intents/lookup-tables',
+            label: 'Forms',
+            path: '/training/training/forms',
+          },
+          {
+            label: 'Slots',
+            path: '/training/training/slots',
           },
         ],
       },
       {
-        label: 'Answers',
-        path: '/training/answers',
-      },
-      {
-        label: 'Forms',
-        path: '/training/forms',
-      },
-      {
-        label: 'Stories',
-        path: '/training/stories',
-      },
-      {
-        label: 'Configuration',
-        path: '/training/configuration',
+        label: 'Historical conversations',
+        path: '/training/historical-conversations',
+        children: [
+          {
+            label: 'History',
+            path: '/training/historical-conversations/history',
+          },
+          {
+            label: 'NLU Training',
+            path: '/training/historical-conversations/nlu-training',
+          },
+        ],
       },
     ],
   },
   {
-    label: 'Historical conversations',
-    path: '/historical-conversations',
-    children: [
-      {
-        label: 'Mark intents',
-        path: '/historical-conversations/mark-intents',
-      },
-      {
-        label: 'Mark conversations',
-        path: '/historical-conversations/mark-conversations',
-      },
-    ],
-  },
-  {
+    id: 'analytics',
     label: 'Model bank and analytics',
     path: '/model-bank-and-analytics',
-    children: [
-      {
-        label: 'Training',
-        path: '/model-bank-and-analytics/training',
-      },
-      {
-        label: 'Models',
-        path: '/model-bank-and-analytics/models',
-        children: [
-          {
-            label: 'Intents overview',
-            path: '/model-bank-and-analytics/models/intents-overview',
-          },
-          {
-            label: 'Model comparison',
-            path: '/model-bank-and-analytics/models/model-comparison',
-          },
-        ],
-      },
-      {
-        label: 'Testcases',
-        path: '/model-bank-and-analytics/testcases',
-      },
-    ],
+    children: [],
   },
   {
-    label: 'Simulation',
-    path: '/simulation',
+    id: 'settings',
+    label: 'Settings',
+    path: '/settings',
+    children: [],
+  },
+  {
+    id: 'monitoring',
+    label: 'Monitoring',
+    path: '/monitoring',
     children: [],
   },
 ];

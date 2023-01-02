@@ -1,28 +1,40 @@
-import { FC, ReactNode, useState } from 'react';
+import React, { FC, ReactNode, useId, useState } from 'react';
 import {
   ColumnDef,
   useReactTable,
   getCoreRowModel,
   flexRender,
   getSortedRowModel,
-  SortingState, FilterFn, getFilteredRowModel,
+  SortingState, FilterFn, getFilteredRowModel, VisibilityState, getPaginationRowModel, PaginationState,
 } from '@tanstack/react-table';
 import {
   RankingInfo,
   rankItem,
 } from '@tanstack/match-sorter-utils';
-import { MdUnfoldMore, MdExpandMore, MdExpandLess } from 'react-icons/md';
+import {
+  MdUnfoldMore,
+  MdExpandMore,
+  MdExpandLess,
+  MdOutlineEast,
+  MdOutlineWest,
+} from 'react-icons/md';
+import { useTranslation } from 'react-i18next';
 
 import { Icon, Track } from 'components';
 import './DataTable.scss';
+import clsx from 'clsx';
+import { Link } from 'react-router-dom';
 
 type DataTableProps = {
   data: any;
   columns: ColumnDef<any, any>[];
   tableBodyPrefix?: ReactNode;
   sortable?: boolean;
+  pagination?: PaginationState;
   globalFilter?: string;
   setGlobalFilter?: React.Dispatch<React.SetStateAction<string>>;
+  columnVisibility?: VisibilityState,
+  setColumnVisibility?: React.Dispatch<React.SetStateAction<VisibilityState>>,
   disableHead?: boolean;
 }
 
@@ -59,11 +71,16 @@ const DataTable: FC<DataTableProps> = (
     columns,
     tableBodyPrefix,
     sortable,
+    pagination,
     globalFilter,
     setGlobalFilter,
+    columnVisibility,
+    setColumnVisibility,
     disableHead,
   },
 ) => {
+  const id = useId();
+  const { t } = useTranslation();
   const [sorting, setSorting] = useState<SortingState>([]);
   const table = useReactTable({
     data,
@@ -74,55 +91,117 @@ const DataTable: FC<DataTableProps> = (
     state: {
       sorting,
       globalFilter,
+      columnVisibility,
+      pagination,
     },
     onGlobalFilterChange: setGlobalFilter,
+    onColumnVisibilityChange: setColumnVisibility,
     globalFilterFn: fuzzyFilter,
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
     ...(sortable && { getSortedRowModel: getSortedRowModel() }),
   });
 
   return (
-    <table className='data-table'>
-      {!disableHead && (
-        <thead>
-        {table.getHeaderGroups().map((headerGroup) => (
-          <tr key={headerGroup.id}>
-            {headerGroup.headers.map((header) => (
-              <th key={header.id} style={{ width: (header.column.columnDef as CustomColumnDef).meta?.size }}>
-                {header.isPlaceholder ? null : (
-                  <Track gap={8} onClick={header.column.getToggleSortingHandler()}>
-                    {sortable && header.column.getCanSort() && (
-                      <>
-                        {{
-                          asc: <Icon icon={<MdExpandMore fontSize={20} />} size='medium' />,
-                          desc: <Icon icon={<MdExpandLess fontSize={20} />} size='medium' />,
-                        }[header.column.getIsSorted() as string] ?? (
-                          <Icon icon={<MdUnfoldMore fontSize={22} />} size='medium' />
-                        )}
-                      </>
-                    )}
-                    {flexRender(header.column.columnDef.header, header.getContext())}
-                  </Track>
-                )}
-              </th>
+    <div className='data-table__wrapper'>
+      <table className='data-table'>
+        {!disableHead && (
+          <thead>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <tr key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <th key={header.id} style={{ width: (header.column.columnDef as CustomColumnDef).meta?.size }}>
+                  {header.isPlaceholder ? null : (
+                    <Track gap={8} onClick={header.column.getToggleSortingHandler()}>
+                      {sortable && header.column.getCanSort() && (
+                        <>
+                          {{
+                            asc: <Icon icon={<MdExpandMore fontSize={20} />} size='medium' />,
+                            desc: <Icon icon={<MdExpandLess fontSize={20} />} size='medium' />,
+                          }[header.column.getIsSorted() as string] ?? (
+                            <Icon icon={<MdUnfoldMore fontSize={22} />} size='medium' />
+                          )}
+                        </>
+                      )}
+                      {flexRender(header.column.columnDef.header, header.getContext())}
+                    </Track>
+                  )}
+                </th>
+              ))}
+            </tr>
+          ))}
+          </thead>
+        )}
+        <tbody>
+        {tableBodyPrefix}
+        {table.getRowModel().rows.map((row) => (
+          <tr key={row.id}>
+            {row.getVisibleCells().map((cell) => (
+              <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
             ))}
           </tr>
         ))}
-        </thead>
+        </tbody>
+      </table>
+      {pagination && (
+        <div className='data-table__pagination-wrapper'>
+          {table.getPageCount() > table.getState().pagination.pageSize && (
+            <div className='data-table__pagination'>
+              <button
+                className='previous'
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+              >
+                <MdOutlineWest />
+              </button>
+              <nav role='navigation' aria-label={t('global.paginationNavigation') || ''}>
+                <ul className='links'>
+                  {[...Array(table.getPageCount())].map((_, index) => (
+                    <li
+                      key={`${id}-${index}`}
+                      className={clsx({ 'active': table.getState().pagination.pageIndex === index })}
+                    >
+                      <Link
+                        to={`?page=${index + 1}`}
+                        aria-label={t('global.gotoPage') + index}
+                        aria-current={table.getState().pagination.pageIndex === index}
+                      >
+                        {index + 1}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+              <button
+                className='next'
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+              >
+                <MdOutlineEast />
+              </button>
+            </div>
+          )}
+          <div className='data-table__page-size'>
+            <label htmlFor={id}>{t('global.resultCount')}</label>
+            <select
+              id={id}
+              value={table.getState().pagination.pageSize}
+              onChange={e => {
+                table.setPageSize(Number(e.target.value));
+              }}
+            >
+              {[10, 20, 30, 40, 50].map(pageSize => (
+                <option key={pageSize} value={pageSize}>
+                  {pageSize}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
       )}
-      <tbody>
-      {tableBodyPrefix}
-      {table.getRowModel().rows.map((row) => (
-        <tr key={row.id}>
-          {row.getVisibleCells().map((cell) => (
-            <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
-          ))}
-        </tr>
-      ))}
-      </tbody>
-    </table>
+    </div>
   );
 };
 

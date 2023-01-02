@@ -10,6 +10,7 @@ import { storiesData } from './stories';
 import { rulesData } from './rules';
 import { slotsData } from './slots';
 import { formsData } from './forms';
+import { conversationsData } from './conversations';
 
 export const handlers = [
   rest.get(`${import.meta.env.BASE_URL}api/main-navigation`, (req, res, ctx) => {
@@ -110,5 +111,8 @@ export const handlers = [
   }),
   rest.get(`${import.meta.env.BASE_URL}api/forms`, (req, res, ctx) => {
     return res(ctx.status(200), ctx.json(formsData));
-  })
+  }),
+  rest.get(`${import.meta.env.BASE_URL}api/conversations`, (req, res, ctx) => {
+    return res(ctx.status(200), ctx.json(conversationsData));
+  }),
 ];

@@ -27,7 +27,7 @@ const App: FC = () => {
         <Route path='/treening/treening/pilud/uus' element={<SlotsNew />} />
         <Route path='/treening/treening/vormid' element={<Forms />} />
         <Route path='/treening/treening/vormid/uus' element={<FormsNew />} />
-        <Route path='/treening/ajaloolised-veslused/ajalugu' element={<History />} />
+        <Route path='/treening/ajaloolised-vestlused/ajalugu' element={<History />} />
       </Route>
     </Routes>
   );

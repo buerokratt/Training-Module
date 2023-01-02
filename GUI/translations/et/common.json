@@ -17,7 +17,13 @@
     "deactivate": "Deaktiveeri",
     "on": "Sees",
     "off": "Väljas",
-    "back": "Tagasi"
+    "back": "Tagasi",
+    "from": "Alates",
+    "to": "Kuni",
+    "view": "Vaata",
+    "resultCount": "Kuvan korraga",
+    "paginationNavigation": "Paginatsiooni navigatsioon",
+    "gotoPage": "Mine lehele"
   },
   "mainMenu": {
     "menuLabel": "Põhinavigatsioon",
@@ -101,6 +107,15 @@
     },
     "actions": {
       "title": "Tegevused"
+    },
+    "historicalConversations": {
+      "title": "Ajalugu",
+      "search": "Otsi üle vestluste",
+      "startTime": "Algusaeg",
+      "endTime": "Lõppaeg",
+      "name": "Nimi",
+      "label": "Pealkiri",
+      "comment": "Kommentaar"
     }
   }
 }
