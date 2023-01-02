@@ -12,6 +12,7 @@ import Label from './Label';
 import Toast from './Toast';
 import Popover from './Popover';
 import Collapsible from './Collapsible';
+import Box from './Box';
 
 export {
   Layout,
@@ -33,4 +34,5 @@ export {
   FormCheckbox,
   Popover,
   Collapsible,
+  Box,
 };

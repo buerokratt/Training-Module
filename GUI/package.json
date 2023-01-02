@@ -32,12 +32,12 @@
     "i18next-browser-languagedetector": "^7.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-draggable": "^4.4.5",
     "react-i18next": "^12.1.1",
     "react-icons": "^4.7.1",
     "react-router-dom": "^6.5.0",
     "react-text-selection-popover": "^2.0.2",
     "react-textarea-autosize": "^8.4.0",
+    "reactflow": "^11.4.0",
     "regexify-string": "^1.0.19"
   },
   "devDependencies": {

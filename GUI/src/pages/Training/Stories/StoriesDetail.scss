@@ -31,3 +31,68 @@
     flex: 1;
   }
 }
+
+.react-flow {
+  &__node {
+    padding: 8px;
+    border-radius: 4px;
+
+    &.selectable {
+      box-shadow: none;
+    }
+
+    &.start,
+    &.end {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      font-size: 20px;
+      color: get-color(white);
+      border: 0;
+    }
+
+    &.start {
+      background-color: get-color(sea-green-10);
+    }
+
+    &.end {
+      background-color: get-color(jasper-10);
+    }
+
+    &.intent {
+      background-color: get-color(sapphire-blue-0);
+      border: 1px solid get-color(sapphire-blue-2);
+    }
+
+    &.response {
+      background-color: get-color(dark-tangerine-0);
+      border-color: get-color(dark-tangerine-4);
+    }
+
+    &.forms {
+      background-color: get-color(sea-green-1);
+      border-color: get-color(sea-green-3);
+    }
+
+    &.actions {
+      background-color: get-color(jasper-1);
+      border-color: get-color(jasper-3);
+    }
+  }
+
+  &__edge-path {
+    stroke: get-color(black-coral-10);
+    stroke-width: 2px;
+  }
+
+  &__arrowhead {
+    polyline {
+      stroke: get-color(black-coral-10);
+      fill: get-color(black-coral-10);
+      stroke-linejoin: bevel;
+    }
+  }
+}
