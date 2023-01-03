@@ -115,7 +115,8 @@
       "endTime": "Lõppaeg",
       "name": "Nimi",
       "label": "Pealkiri",
-      "comment": "Kommentaar"
+      "comment": "Kommentaar",
+      "appeals": "Pöördumised"
     }
   }
 }

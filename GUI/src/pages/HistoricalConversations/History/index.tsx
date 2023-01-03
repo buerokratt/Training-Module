@@ -1,7 +1,7 @@
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
-import { createColumnHelper, VisibilityState } from '@tanstack/react-table';
+import { createColumnHelper, PaginationState, VisibilityState } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { MdOutlineRemoveRedEye } from 'react-icons/md';
 
@@ -12,6 +12,10 @@ const History: FC = () => {
   const { t } = useTranslation();
   const [filter, setFilter] = useState('');
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  });
   const { data: conversations } = useQuery<Conversation[]>({
     queryKey: ['conversations'],
   });
@@ -91,10 +95,8 @@ const History: FC = () => {
           setGlobalFilter={setFilter}
           columnVisibility={columnVisibility}
           setColumnVisibility={setColumnVisibility}
-          pagination={{
-            pageIndex: 0,
-            pageSize: 10,
-          }}
+          pagination={pagination}
+          setPagination={setPagination}
         />
       </Card>
     </>

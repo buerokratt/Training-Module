@@ -31,6 +31,7 @@ type DataTableProps = {
   tableBodyPrefix?: ReactNode;
   sortable?: boolean;
   pagination?: PaginationState;
+  setPagination?: React.Dispatch<React.SetStateAction<PaginationState>>;
   globalFilter?: string;
   setGlobalFilter?: React.Dispatch<React.SetStateAction<string>>;
   columnVisibility?: VisibilityState,
@@ -72,6 +73,7 @@ const DataTable: FC<DataTableProps> = (
     tableBodyPrefix,
     sortable,
     pagination,
+    setPagination,
     globalFilter,
     setGlobalFilter,
     columnVisibility,
@@ -92,15 +94,16 @@ const DataTable: FC<DataTableProps> = (
       sorting,
       globalFilter,
       columnVisibility,
-      pagination,
+      ...{ pagination },
     },
     onGlobalFilterChange: setGlobalFilter,
     onColumnVisibilityChange: setColumnVisibility,
     globalFilterFn: fuzzyFilter,
     onSortingChange: setSorting,
+    onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
+    ...(pagination && { getPaginationRowModel: getPaginationRowModel() }),
     ...(sortable && { getSortedRowModel: getSortedRowModel() }),
   });
 
@@ -165,6 +168,7 @@ const DataTable: FC<DataTableProps> = (
                     >
                       <Link
                         to={`?page=${index + 1}`}
+                        onClick={() => table.setPageIndex(index)}
                         aria-label={t('global.gotoPage') + index}
                         aria-current={table.getState().pagination.pageIndex === index}
                       >
@@ -176,7 +180,9 @@ const DataTable: FC<DataTableProps> = (
               </nav>
               <button
                 className='next'
-                onClick={() => table.nextPage()}
+                onClick={() => {
+                  table.nextPage();
+                }}
                 disabled={!table.getCanNextPage()}
               >
                 <MdOutlineEast />

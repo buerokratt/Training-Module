@@ -70,8 +70,7 @@
   &__option {
     padding: 8px 15px;
 
-    &[aria-selected=true],
-    &--selected {
+    &[aria-selected=true] {
       background-color: get-color(sapphire-blue-10);
       color: get-color(white);
 

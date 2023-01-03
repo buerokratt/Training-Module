@@ -49,8 +49,8 @@ export const mainNavigationET = [
             path: '/treening/ajaloolised-vestlused/ajalugu',
           },
           {
-            label: 'Mudelite võrdlus',
-            path: '/treening/ajaloolised-vestlused/mudelite-vordlus',
+            label: 'Pöördumised',
+            path: '/treening/ajaloolised-vestlused/poordumised',
           },
         ],
       },
@@ -127,8 +127,8 @@ export const mainNavigationEN = [
             path: '/training/historical-conversations/history',
           },
           {
-            label: 'NLU Training',
-            path: '/training/historical-conversations/nlu-training',
+            label: 'Appeals',
+            path: '/training/historical-conversations/appeals',
           },
         ],
       },

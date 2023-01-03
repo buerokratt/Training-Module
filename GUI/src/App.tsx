@@ -12,6 +12,7 @@ import SlotsNew from 'pages/Training/Slots/SlotsNew';
 import Forms from 'pages/Training/Forms';
 import FormsNew from 'pages/Training/Forms/FormsNew';
 import History from 'pages/HistoricalConversations/History';
+import Appeals from 'pages/HistoricalConversations/Appeals';
 
 const App: FC = () => {
   return (
@@ -28,6 +29,7 @@ const App: FC = () => {
         <Route path='/treening/treening/vormid' element={<Forms />} />
         <Route path='/treening/treening/vormid/uus' element={<FormsNew />} />
         <Route path='/treening/ajaloolised-vestlused/ajalugu' element={<History />} />
+        <Route path='/treening/ajaloolised-vestlused/poordumised' element={<Appeals />} />
       </Route>
     </Routes>
   );

@@ -60,6 +60,10 @@
     gap: 15px;
     margin: 0 auto;
 
+    + .data-table__page-size {
+      margin-left: 0;
+    }
+
     .next,
     .previous {
       display: flex;

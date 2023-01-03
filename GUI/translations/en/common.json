@@ -115,7 +115,8 @@
       "endTime": "End time",
       "name": "Name",
       "label": "Label",
-      "comment": "Comment"
+      "comment": "Comment",
+      "appeals": "Appeals"
     }
   }
 }
