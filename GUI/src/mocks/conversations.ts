@@ -32,3 +32,25 @@ export const conversationsData = [
     comment: 'Aenean lacinia bibendum nulla sed consectetur.',
   },
 ];
+
+export const singleConversation = {
+  id: 1,
+  messages: [
+    {
+      name: 'Meelis Mets',
+      message: 'Elit Consectetur?',
+      sentAt: new Date(),
+    },
+    {
+      name: 'Meelis Mets',
+      message: 'Elit Integer posuere erat a ante venenatis dapibus posuere velit aliquet.',
+      sentAt: new Date(),
+    },
+    {
+      name: 'Jaan Tamm',
+      message: 'Fermentum Bibendum Cras',
+      sentAt: new Date(),
+    },
+  ],
+};
+

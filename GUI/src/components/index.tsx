@@ -13,6 +13,8 @@ import Toast from './Toast';
 import Popover from './Popover';
 import Collapsible from './Collapsible';
 import Box from './Box';
+import Drawer from './Drawer';
+import Chat from './Chat';
 
 export {
   Layout,
@@ -35,4 +37,6 @@ export {
   Popover,
   Collapsible,
   Box,
+  Drawer,
+  Chat,
 };

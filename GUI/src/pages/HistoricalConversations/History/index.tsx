@@ -5,21 +5,22 @@ import { createColumnHelper, PaginationState, VisibilityState } from '@tanstack/
 import { format } from 'date-fns';
 import { MdOutlineRemoveRedEye } from 'react-icons/md';
 
-import { Button, Card, DataTable, FormInput, FormSelect, Icon, Tooltip, Track } from 'components';
-import { Conversation } from 'types/conversation';
+import { Button, Card, Chat, DataTable, Drawer, FormInput, FormSelect, Icon, Tooltip, Track } from 'components';
+import { ConversationTeaser } from 'types/conversation';
 
 const History: FC = () => {
   const { t } = useTranslation();
   const [filter, setFilter] = useState('');
+  const [selectedConversation, setSelectedConversation] = useState<ConversationTeaser | null>(null);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
   });
-  const { data: conversations } = useQuery<Conversation[]>({
+  const { data: conversations } = useQuery<ConversationTeaser[]>({
     queryKey: ['conversations'],
   });
-  const columnHelper = createColumnHelper<Conversation>();
+  const columnHelper = createColumnHelper<ConversationTeaser>();
 
   const conversationColumns = useMemo(() => [
     columnHelper.accessor('startTime', {
@@ -57,7 +58,7 @@ const History: FC = () => {
     columnHelper.display({
       id: 'detail',
       cell: (props) => (
-        <Button appearance='text'>
+        <Button appearance='text' onClick={() => setSelectedConversation(props.row.original)}>
           <Icon icon={<MdOutlineRemoveRedEye color={'rgba(0,0,0,0.54)'} />} />
           {t('global.view')}
         </Button>
@@ -99,6 +100,12 @@ const History: FC = () => {
           setPagination={setPagination}
         />
       </Card>
+
+      {selectedConversation && (
+        <Drawer title={selectedConversation.name} onClose={() => setSelectedConversation(null)}>
+          <Chat conversationId={selectedConversation.id} />
+        </Drawer>
+      )}
     </>
   );
 };
