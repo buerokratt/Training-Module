@@ -5,7 +5,18 @@ import { createColumnHelper, PaginationState, VisibilityState } from '@tanstack/
 import { format } from 'date-fns';
 import { MdOutlineRemoveRedEye } from 'react-icons/md';
 
-import { Button, Card, Chat, DataTable, Drawer, FormInput, FormSelect, Icon, Tooltip, Track } from 'components';
+import {
+  Button,
+  Card,
+  HistoricalChat,
+  DataTable,
+  Drawer,
+  FormInput,
+  FormSelect,
+  Icon,
+  Tooltip,
+  Track,
+} from 'components';
 import { ConversationTeaser } from 'types/conversation';
 
 const History: FC = () => {
@@ -103,7 +114,7 @@ const History: FC = () => {
 
       {selectedConversation && (
         <Drawer title={selectedConversation.name} onClose={() => setSelectedConversation(null)}>
-          <Chat conversationId={selectedConversation.id} />
+          <HistoricalChat conversationId={selectedConversation.id} />
         </Drawer>
       )}
     </>

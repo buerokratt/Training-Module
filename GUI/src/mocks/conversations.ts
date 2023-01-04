@@ -37,19 +37,34 @@ export const singleConversation = {
   id: 1,
   messages: [
     {
-      name: 'Meelis Mets',
-      message: 'Elit Consectetur?',
+      name: 'Bürokratt',
+      message: 'Malesuada Ipsum!',
       sentAt: new Date(),
-    },
-    {
-      name: 'Meelis Mets',
-      message: 'Elit Integer posuere erat a ante venenatis dapibus posuere velit aliquet.',
-      sentAt: new Date(),
+      type: 'bot',
     },
     {
       name: 'Jaan Tamm',
       message: 'Fermentum Bibendum Cras',
       sentAt: new Date(),
+      type: 'client',
+    },
+    {
+      name: 'Meelis Mets',
+      message: 'Elit Consectetur?',
+      sentAt: new Date(),
+      type: 'client-support',
+    },
+    {
+      name: 'Meelis Mets',
+      message: 'Elit Integer posuere erat a ante venenatis dapibus posuere velit aliquet.',
+      sentAt: new Date(),
+      type: 'client-support',
+    },
+    {
+      name: 'Jaan Tamm',
+      message: 'Fermentum Bibendum Cras',
+      sentAt: new Date(),
+      type: 'client',
     },
   ],
 };

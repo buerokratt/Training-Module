@@ -4,6 +4,7 @@
 @import 'src/styles/settings/variables/typography';
 
 .chat {
+  $self: &;
   height: 100%;
   overflow: auto;
   display: flex;
@@ -12,6 +13,8 @@
   padding: 0 16px 16px;
   color: get-color(black-coral-20);
   justify-content: flex-end;
+  //transform: rotate(180deg);
+  //direction: rtl;
 
   &__group {
     display: flex;
@@ -19,6 +22,43 @@
     gap: 4px;
     padding-left: 56px;
     position: relative;
+    //transform: rotate(180deg);
+    //direction: ltr;
+
+    &--bot {
+      #{$self} {
+        &__group-initials {
+          background-color: get-color(sapphire-blue-10);
+        }
+
+        &__group-name {
+          color: get-color(sapphire-blue-10);
+        }
+
+        &__message-text {
+          background-color: get-color(sapphire-blue-10);
+          color: get-color(white);
+        }
+      }
+    }
+
+    &--client {
+
+    }
+
+    &--client-support {
+      #{$self} {
+        &__group-initials {
+          background-color: get-color(black-coral-10);
+          color: get-color(white);
+        }
+
+        &__message-text {
+          background-color: get-color(black-coral-10);
+          color: get-color(white);
+        }
+      }
+    }
   }
 
   &__group-initials {
@@ -63,6 +103,8 @@
     padding: 4px 8px;
     background-color: get-color(black-coral-0);
     border-radius: 8px 8px 8px 4px;
+    font-size: $veera-font-size-100;
+    line-height: $veera-line-height-500;
   }
 
   &__message-date {

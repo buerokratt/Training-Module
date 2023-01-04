@@ -16,4 +16,5 @@ export interface Message {
   name: string;
   message: string;
   sentAt: string;
+  type: 'bot' | 'client' | 'client-support';
 }
