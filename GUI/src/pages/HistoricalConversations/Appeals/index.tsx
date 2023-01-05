@@ -54,7 +54,7 @@ const Appeals: FC = () => {
         size: '1%',
       },
     }),
-  ], [columnHelper, t]);
+  ], [columnHelper, intents, t]);
 
   if (!appeals) return <>Loading...</>;
 
@@ -63,8 +63,13 @@ const Appeals: FC = () => {
       <h1>{t('training.historicalConversations.appeals')}</h1>
 
       <Card>
-        <FormInput label={t('global.search')} hideLabel name='searchIntent'
-                   onChange={(e) => setFilter(e.target.value)} />
+        <FormInput
+          label={t('global.search')}
+          hideLabel
+          name='searchIntent'
+          placeholder={t('training.historicalConversations.searchIntent') + '...'}
+          onChange={(e) => setFilter(e.target.value)}
+        />
       </Card>
 
       <Card>

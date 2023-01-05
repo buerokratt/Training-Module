@@ -116,7 +116,14 @@
       "name": "Nimi",
       "label": "Pealkiri",
       "comment": "Kommentaar",
-      "appeals": "Pöördumised"
+      "appeals": "Pöördumised",
+      "searchIntent": "Otsi teemasid"
+    },
+    "mba": {
+      "intentsOverview": "Teemade ülevaade",
+      "modelInUse": "Kasutusesolev mudel",
+      "trained": "Treenitud",
+      "precision": "Täpsus"
     }
   }
 }

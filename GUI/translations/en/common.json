@@ -116,7 +116,14 @@
       "name": "Name",
       "label": "Label",
       "comment": "Comment",
-      "appeals": "Appeals"
+      "appeals": "Appeals",
+      "searchIntent": "Search intent"
+    },
+    "mba": {
+      "intentsOverview": "Intents overview",
+      "modelInUse": "Model in use",
+      "trained": "Trained",
+      "precision": "Precision"
     }
   }
 }

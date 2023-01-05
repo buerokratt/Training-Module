@@ -54,13 +54,29 @@ export const mainNavigationET = [
           },
         ],
       },
+      {
+        label: 'Mudelipank ja analüütika',
+        path: '/treening/mudelipank-ja-analuutika',
+        children: [
+          {
+            label: 'Teemade ülevaade',
+            path: '/treening/mudelipank-ja-analuutika/teemade-ulevaade',
+          },
+          {
+            label: 'Mudelite võrdlus',
+            path: '/treening/mudelipank-ja-analuutika/mudelite-vordlus',
+          },
+          {
+            label: 'Testlood',
+            path: '/treening/mudelipank-ja-analuutika/testlood',
+          },
+        ],
+      },
+      {
+        label: 'Treeni uus mudel',
+        path: '/treening/treeni-uus-mudel',
+      },
     ],
-  },
-  {
-    id: 'analytics',
-    label: 'Mudelipank ja analüütika',
-    path: '/mudelipank-ja-analuutika',
-    children: [],
   },
   {
     id: 'settings',
@@ -132,13 +148,29 @@ export const mainNavigationEN = [
           },
         ],
       },
+      {
+        label: 'Model bank and analytics',
+        path: '/training/model-bank-and-analytics',
+        children: [
+          {
+            label: 'Intents overview',
+            path: '/training/model-bank-and-analytics/intents-overview',
+          },
+          {
+            label: 'Model comparison',
+            path: '/training/model-bank-and-analytics/model-comparison',
+          },
+          {
+            label: 'Testcases',
+            path: '/training/model-bank-and-analytics/testcases',
+          },
+        ],
+      },
+      {
+        label: 'Train new model',
+        path: '/training/train-new-model',
+      },
     ],
-  },
-  {
-    id: 'analytics',
-    label: 'Model bank and analytics',
-    path: '/model-bank-and-analytics',
-    children: [],
   },
   {
     id: 'settings',
