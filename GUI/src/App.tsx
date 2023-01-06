@@ -14,6 +14,7 @@ import FormsNew from 'pages/Training/Forms/FormsNew';
 import History from 'pages/HistoricalConversations/History';
 import Appeals from 'pages/HistoricalConversations/Appeals';
 import IntentsOverview from 'pages/ModelBankAndAnalytics/IntentsOverview';
+import Testcases from 'pages/ModelBankAndAnalytics/Testcases';
 
 const App: FC = () => {
   return (
@@ -32,6 +33,7 @@ const App: FC = () => {
         <Route path='/treening/ajaloolised-vestlused/ajalugu' element={<History />} />
         <Route path='/treening/ajaloolised-vestlused/poordumised' element={<Appeals />} />
         <Route path='/treening/mudelipank-ja-analuutika/teemade-ulevaade' element={<IntentsOverview />} />
+        <Route path='/treening/mudelipank-ja-analuutika/testlood' element={<Testcases />} />
       </Route>
     </Routes>
   );

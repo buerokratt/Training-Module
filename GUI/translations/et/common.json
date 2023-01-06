@@ -123,7 +123,14 @@
       "intentsOverview": "Teemade ülevaade",
       "modelInUse": "Kasutusesolev mudel",
       "trained": "Treenitud",
-      "precision": "Täpsus"
+      "precision": "Täpsus",
+      "testcases": "Testlood",
+      "intent": "Teema",
+      "examples": "Näited",
+      "yield": "Saagikus",
+      "suggestion": "Soovitus",
+      "addExamples": "Lisa uusi näiteid",
+      "gotoExample": "Mine näitesse"
     }
   }
 }

@@ -92,7 +92,7 @@ export const intentsReportData = {
   common_tervitus: {
     precision: 0.8636363636363636,
     recall: 0.8260869565217391,
-    'f1-score': 0.8444444444444444,
+    'f1-score': 0.29999,
     support: 23,
     confused_with: {
       common_kompliment_botile: 1,
@@ -183,17 +183,5 @@ export const intentsReportData = {
       common_roppused: 3,
       common_eitamine: 2,
     },
-  },
-  'macro avg': {
-    precision: 0.8825182091826377,
-    recall: 0.8498850815724991,
-    'f1-score': 0.8621415375576694,
-    support: 825,
-  },
-  'weighted avg': {
-    precision: 0.8722638822431353,
-    recall: 0.8654545454545455,
-    'f1-score': 0.8652668262504953,
-    support: 825,
   },
 };

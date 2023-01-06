@@ -13,6 +13,7 @@ import { formsData } from './forms';
 import { conversationsData, singleConversation } from './conversations';
 import { appealsData } from './appeals';
 import { intentsReportData } from './intentsReport';
+import { testStoriesData } from './testStories';
 
 export const handlers = [
   rest.get(`${import.meta.env.BASE_URL}api/main-navigation`, (req, res, ctx) => {
@@ -125,5 +126,8 @@ export const handlers = [
   }),
   rest.get(`${import.meta.env.BASE_URL}api/intents-report`, (req, res, ctx) => {
     return res(ctx.status(200), ctx.json(intentsReportData));
+  }),
+  rest.get(`${import.meta.env.BASE_URL}api/test-stories`, (req, res, ctx) => {
+    return res(ctx.status(200), ctx.json(testStoriesData));
   }),
 ];
