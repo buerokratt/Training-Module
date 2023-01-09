@@ -23,7 +23,8 @@
     "view": "View",
     "resultCount": "Result count",
     "paginationNavigation": "Pagination navigation",
-    "gotoPage": "Goto page"
+    "gotoPage": "Goto page",
+    "name": "Name"
   },
   "mainMenu": {
     "menuLabel": "Main navigation",
@@ -130,7 +131,15 @@
       "yield": "Yield",
       "suggestion": "Suggestion",
       "addExamples": "Add new examples",
-      "gotoExample": "Go to example"
+      "gotoExample": "Go to example",
+      "modelComparison": "Model comparison",
+      "selectedModel": "Selected model",
+      "downloadModel": "Download model",
+      "viewIntentsPrecision": "View intents precision",
+      "activateModel": "Activate model",
+      "allModels": "All models",
+      "lastTrained": "Last trained",
+      "live": "Live"
     }
   }
 }

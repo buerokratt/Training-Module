@@ -23,7 +23,8 @@
     "view": "Vaata",
     "resultCount": "Kuvan korraga",
     "paginationNavigation": "Paginatsiooni navigatsioon",
-    "gotoPage": "Mine lehele"
+    "gotoPage": "Mine lehele",
+    "name": "Nimi"
   },
   "mainMenu": {
     "menuLabel": "Põhinavigatsioon",
@@ -130,7 +131,15 @@
       "yield": "Saagikus",
       "suggestion": "Soovitus",
       "addExamples": "Lisa uusi näiteid",
-      "gotoExample": "Mine näitesse"
+      "gotoExample": "Mine näitesse",
+      "modelComparison": "Mudelite võrdlus",
+      "selectedModel": "Valitud mudel",
+      "downloadModel": "Lae mudel alla",
+      "viewIntentsPrecision": "Vaata teemade täpsust",
+      "activateModel": "Võta mudel kasutusele",
+      "allModels": "Kõik mudelid",
+      "lastTrained": "Viimati treenitud",
+      "live": "Live"
     }
   }
 }
