@@ -5,12 +5,14 @@
 
 .graph {
   flex: 1;
-  height: calc(100% + 32px);
   display: flex;
   flex-direction: column;
   background-color: get-color(white);
-  margin: -16px -16px -16px 0;
   border-left: 1px solid get-color(black-coral-2);
+  position: sticky;
+  right: -16px;
+  top: -16px;
+  height: calc(100vh - 105px);
 
   &__header,
   &__footer {
@@ -36,6 +38,14 @@
   &__node {
     padding: 8px;
     border-radius: 4px;
+    color: get-color(black);
+    font-size: $veera-font-size-100;
+    line-height: $veera-line-height-500;
+
+    &-default {
+      width: 320px;
+      overflow-wrap: break-word;
+    }
 
     &.selectable {
       box-shadow: none;

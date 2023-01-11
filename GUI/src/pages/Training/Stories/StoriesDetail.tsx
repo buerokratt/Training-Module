@@ -1,8 +1,17 @@
 import { FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
-import { MdOutlineEdit, MdPlayCircleFilled } from 'react-icons/md';
-import ReactFlow, { addEdge, Background, Connection, MarkerType, Node, useEdgesState, useNodesState } from 'reactflow';
+import { MdOutlineEdit, MdPlayCircleFilled, MdOutlineStop } from 'react-icons/md';
+import ReactFlow, {
+  addEdge,
+  Background,
+  Connection,
+  MarkerType,
+  Node,
+  useEdgesState,
+  useNodesState,
+} from 'reactflow';
+import { useNavigate } from 'react-router-dom';
 import 'reactflow/dist/style.css';
 
 import { Box, Button, Collapsible, Icon, Track } from 'components';
@@ -31,6 +40,7 @@ const initialNodes: Node[] = [
 
 const StoriesDetail: FC = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { data: intents } = useQuery<Intent[]>({
     queryKey: ['intents'],
   });
@@ -45,6 +55,10 @@ const StoriesDetail: FC = () => {
 
   const handleNodeAdd = ({ label, className }: { label: string; className: string }) => {
     setNodes((prevNodes) => {
+      const prevNode = prevNodes[prevNodes.length - 1];
+      if (prevNode.type === 'output') return prevNodes;
+      const newNodeY = (prevNode.position.y + (prevNode.height || 0)) + (4 * GRID_UNIT);
+
       setEdges((prevEdges) => [...edges, {
         id: `edge-${prevEdges.length}`,
         source: prevNodes[prevNodes.length - 1].id,
@@ -58,8 +72,7 @@ const StoriesDetail: FC = () => {
         ...prevNodes,
         {
           id: String(prevNodes.length + 1),
-          type: 'default',
-          position: { x: (prevNodes.length * 9) * GRID_UNIT, y: 4 * GRID_UNIT },
+          position: { x: (12 * GRID_UNIT) - 160 + 32, y: newNodeY },
           data: {
             label,
           },
@@ -69,9 +82,39 @@ const StoriesDetail: FC = () => {
     });
   };
 
+  const handleGraphSave = () => {
+    setNodes((prevNodes) => {
+      const prevNode = prevNodes[prevNodes.length - 1];
+      if (prevNode.type === 'output') return prevNodes;
+      const newNodeY = (prevNode.position.y + (prevNode.height || 0)) + (4 * GRID_UNIT);
+
+      setEdges((prevEdges) => [...edges, {
+        id: `edge-${prevEdges.length}`,
+        source: prevNodes[prevNodes.length - 1].id,
+        target: String(prevNodes.length + 1),
+        markerEnd: {
+          type: MarkerType.ArrowClosed,
+        },
+      }]);
+
+      return [
+        ...prevNodes,
+        {
+          id: String(prevNodes.length + 1),
+          type: 'output',
+          position: { x: 12 * GRID_UNIT, y: newNodeY },
+          data: {
+            label: <MdOutlineStop />,
+          },
+          className: 'end',
+        },
+      ];
+    });
+  };
+
   return (
-    <Track gap={16} align='left' style={{ height: '100%' }}>
-      <div style={{ flex: 1, maxWidth: 'calc(100% / 3)', height: '100%', overflow: 'auto' }}>
+    <Track gap={16} align='left' style={{ margin: '-16px' }}>
+      <div style={{ flex: 1, maxWidth: 'calc(100% / 3)', padding: '16px 0 16px 16px' }}>
         <Track direction='vertical' gap={16} align='stretch'>
           {intents && (
             <Collapsible title={t('training.intents.title')} defaultOpen>
@@ -129,7 +172,6 @@ const StoriesDetail: FC = () => {
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             onConnect={onConnect}
-            // fitView
             snapToGrid
             snapGrid={[GRID_UNIT, GRID_UNIT]}
             defaultViewport={{ x: 0, y: 0, zoom: 0 }}
@@ -141,9 +183,9 @@ const StoriesDetail: FC = () => {
         </div>
         <div className='graph__footer'>
           <Track gap={16} justify='end'>
-            <Button appearance='secondary'>{t('global.back')}</Button>
+            <Button appearance='secondary' onClick={() => navigate(-1)}>{t('global.back')}</Button>
             <Button appearance='error'>{t('global.delete')}</Button>
-            <Button>{t('global.save')}</Button>
+            <Button onClick={() => handleGraphSave()}>{t('global.save')}</Button>
           </Track>
         </div>
       </div>
