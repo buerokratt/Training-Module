@@ -12,6 +12,7 @@
     "choose": "Vali",
     "search": "Otsi",
     "notification": "Teade",
+    "notificationError": "Veateade",
     "active": "Aktiivne",
     "activate": "Aktiveeri",
     "deactivate": "Deaktiveeri",
@@ -24,7 +25,10 @@
     "resultCount": "Kuvan korraga",
     "paginationNavigation": "Paginatsiooni navigatsioon",
     "gotoPage": "Mine lehele",
-    "name": "Nimi"
+    "name": "Nimi",
+    "yes": "Jah",
+    "no": "Ei",
+    "removeValidation": "Oled sa kindel?"
   },
   "mainMenu": {
     "menuLabel": "Põhinavigatsioon",
@@ -71,7 +75,10 @@
       "title": "Vastused",
       "searchResponse": "Otsi vastust",
       "response": "Vastus",
-      "newResponseTextPlaceholder": "Lisa vastuse tekst sellele mallile"
+      "newResponseTextPlaceholder": "Lisa vastuse tekst sellele mallile",
+      "deleteResponse": "Kustuta vastus",
+      "responseName": "Vastuse nimetus",
+      "responseText": "Vastuse tekst"
     },
     "configuration": {
       "title": "Konfiguratsioon",

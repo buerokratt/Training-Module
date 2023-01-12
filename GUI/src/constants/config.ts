@@ -1,0 +1,1 @@
+export const RESPONSE_TEXT_LENGTH = 450;

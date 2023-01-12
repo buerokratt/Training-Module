@@ -1,21 +1,35 @@
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
+import { useForm } from 'react-hook-form';
+import { AxiosError } from 'axios';
 import { MdDeleteOutline, MdOutlineModeEditOutline, MdOutlineSave } from 'react-icons/md';
 
-import { Button, Card, DataTable, FormInput, FormTextarea, Icon, Label, Track } from 'components';
+import { Button, Card, DataTable, Dialog, FormInput, FormTextarea, Icon, Label, Track } from 'components';
+import { RESPONSE_TEXT_LENGTH } from 'constants/config';
 import type { Responses as ResponsesType } from 'types/response';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
+import { useToast } from 'hooks/useToast';
+import { addResponse, deleteResponse, editResponse } from 'services/responses';
+
+type NewResponse = {
+  name: string;
+  text: string;
+}
 
 const Responses: FC = () => {
   const { t } = useTranslation();
+  const toast = useToast();
+  const queryClient = useQueryClient();
   const { data: responses } = useQuery<ResponsesType>({
     queryKey: ['responses'],
   });
   const [addFormVisible, setAddFormVisible] = useState(false);
-  const [editableRow, setEditableRow] = useState<{ id: number; value: string; } | null>(null);
+  const [editableRow, setEditableRow] = useState<{ id: string | number; text: string; } | null>(null);
+  const [deletableRow, setDeletableRow] = useState<string | number | null>(null);
   const [filter, setFilter] = useState('');
+  const { register, handleSubmit } = useForm<NewResponse>();
 
   const formattedResponses = useMemo(() => responses ? Object.keys(responses).map((r, i) => ({
     id: i,
@@ -25,15 +39,77 @@ const Responses: FC = () => {
 
   useDocumentEscapeListener(() => setEditableRow(null));
 
-  const handleResponseDelete = async () => {
-    //TODO: Add mock endpoint for deleting a response
-  };
+  const responseSaveMutation = useMutation({
+    mutationFn: ({ id, text }: { id: string | number, text: string }) => editResponse(id, { text }),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['responses']);
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: 'Response saved',
+      });
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
+    onSettled: () => setEditableRow(null),
+  });
 
-  const handleNewResponseSubmit = async () => {
-    //TODO: Add mock endpoint for adding new response
-  };
+  const responseDeleteMutation = useMutation({
+    mutationFn: ({ id }: { id: string | number }) => deleteResponse(id),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['responses']);
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: 'Response deleted',
+      });
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
+    onSettled: () => setDeletableRow(null),
+  });
 
-  const handleEditableRow = async (response: { id: number; value: string }) => {
+  const newResponseMutation = useMutation({
+    mutationFn: (data: NewResponse) => {
+      const newResponseData = {
+        ...data,
+        name: 'utter_' + data.name,
+      };
+      return addResponse(newResponseData);
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['responses']);
+      setAddFormVisible(false);
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: 'New response added',
+      });
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
+  });
+
+  const handleNewResponseSubmit = handleSubmit(async (data) => {
+    newResponseMutation.mutate(data);
+  });
+
+  const handleEditableRow = async (response: { id: string | number; text: string }) => {
     setEditableRow(response);
   };
 
@@ -71,8 +147,9 @@ const Responses: FC = () => {
           label='label'
           name='name'
           defaultValue={props.getValue()}
-          hideLabel minRows={1}
-          maxLength={400}
+          hideLabel
+          minRows={1}
+          maxLength={RESPONSE_TEXT_LENGTH}
           showMaxLength
         />
       ) : (
@@ -85,13 +162,16 @@ const Responses: FC = () => {
       cell: (props) => (
         <>
           {editableRow && editableRow.id === props.row.original.id ? (
-            <Button appearance='text'>
+            <Button appearance='text'
+                    onClick={() => responseSaveMutation.mutate(editableRow)}>
               <Icon label={t('global.save')} icon={<MdOutlineSave color={'rgba(0,0,0,0.54)'} />} />
               {t('global.save')}
             </Button>
           ) : (
-            <Button appearance='text'
-                    onClick={() => handleEditableRow({ id: props.row.original.id, value: props.row.original.text })}>
+            <Button
+              appearance='text'
+              onClick={() => handleEditableRow({ id: props.row.original.id, text: props.row.original.text })}
+            >
               <Icon label={t('global.edit')} icon={<MdOutlineModeEditOutline color={'rgba(0,0,0,0.54)'} />} />
               {t('global.edit')}
             </Button>
@@ -105,8 +185,8 @@ const Responses: FC = () => {
     }),
     columnHelper.display({
       id: 'delete',
-      cell: () => (
-        <Button appearance='text' onClick={handleResponseDelete}>
+      cell: (props) => (
+        <Button appearance='text' onClick={() => setDeletableRow(props.row.original.id)}>
           <Icon label={t('global.delete')} icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />} />
           {t('global.delete')}
         </Button>
@@ -122,29 +202,36 @@ const Responses: FC = () => {
   return (
     <>
       <h1>{t('training.responses.title')}</h1>
+
       <Card>
         <Track gap={16}>
           <FormInput
             label={t('training.responses.searchResponse')}
             name='responseSearch'
             placeholder={t('training.responses.searchResponse') + '...'}
-            onChange={(e) => setFilter(e.target.value)}
             hideLabel
+            onChange={(e) => setFilter(e.target.value)}
           />
           <Button onClick={() => setAddFormVisible(true)}>
             {t('global.add')}
           </Button>
         </Track>
       </Card>
+
       {addFormVisible && (
         <Card>
           <Track justify='between' gap={16}>
             <div style={{ flex: 1 }}>
-              <Track gap={16} align='left'>
-                <FormInput label='responseName' name='responseName' defaultValue='utter_' hideLabel />
+              <Track gap={16}>
+                <p>utter_</p>
+                <FormInput
+                  {...register('name')}
+                  label={t('training.responses.responseName')}
+                  hideLabel
+                />
                 <FormTextarea
-                  label='responseText'
-                  name='responseText'
+                  {...register('text')}
+                  label={t('training.responses.responseText')}
                   placeholder={t('training.responses.newResponseTextPlaceholder') || ''}
                   minRows={1}
                   hideLabel
@@ -158,6 +245,7 @@ const Responses: FC = () => {
           </Track>
         </Card>
       )}
+
       <Card>
         <DataTable
           data={formattedResponses}
@@ -167,6 +255,27 @@ const Responses: FC = () => {
           setGlobalFilter={setFilter}
         />
       </Card>
+
+      {/* TODO: Refactor dialog content */}
+      {deletableRow !== null && (
+        <Dialog
+          title={t('training.responses.deleteResponse')}
+          onClose={() => setDeletableRow(null)}
+          footer={
+            <>
+              <Button appearance='secondary' onClick={() => setDeletableRow(null)}>{t('global.no')}</Button>
+              <Button
+                appearance='error'
+                onClick={() => responseDeleteMutation.mutate({ id: deletableRow })}
+              >
+                {t('global.yes')}
+              </Button>
+            </>
+          }
+        >
+          <p>{t('global.removeValidation')}</p>
+        </Dialog>
+      )}
     </>
   );
 };

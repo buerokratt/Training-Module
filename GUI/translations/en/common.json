@@ -12,6 +12,7 @@
     "choose": "Choose",
     "search": "Search",
     "notification": "Notification",
+    "notificationError": "Error",
     "active": "Active",
     "activate": "Activate",
     "deactivate": "Deactivate",
@@ -24,7 +25,10 @@
     "resultCount": "Result count",
     "paginationNavigation": "Pagination navigation",
     "gotoPage": "Goto page",
-    "name": "Name"
+    "name": "Name",
+    "yes": "Yes",
+    "no": "No",
+    "removeValidation": "Are you sure?"
   },
   "mainMenu": {
     "menuLabel": "Main navigation",
@@ -71,7 +75,10 @@
       "title": "Responses",
       "searchResponse": "Search response",
       "response": "Response",
-      "newResponseTextPlaceholder": "Add a response text for this template"
+      "newResponseTextPlaceholder": "Add a response text for this template",
+      "deleteResponse": "Delete response",
+      "responseName": "Response name",
+      "responseText": "Response text"
     },
     "configuration": {
       "title": "Configuration",
