@@ -3,27 +3,25 @@ import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as Tabs from '@radix-ui/react-tabs';
 import { format } from 'date-fns';
-import {
-  MdCheckCircleOutline,
-  MdOutlineModeEditOutline,
-  MdOutlineSave,
-} from 'react-icons/md';
+import { MdCheckCircleOutline } from 'react-icons/md';
 
-import { Button, FormInput, Icon, Tooltip, Track } from 'components';
-import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
+import { Button, Card, FormInput, Icon, Switch, Tooltip, Track } from 'components';
 import { useToast } from 'hooks/useToast';
 import { Intent } from 'types/intent';
 import { Entity } from 'types/entity';
-import { addExample, addIntent, editIntent } from 'services/intents';
+import { addExample } from 'services/intents';
 import IntentExamplesTable from './IntentExamplesTable';
-import { AxiosError } from 'axios';
 
-const Intents: FC = () => {
+const CommonIntents: FC = () => {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const toast = useToast();
+  const [commonIntentsEnabled, setCommonIntentsEnabled] = useState(true);
   const [selectedIntent, setSelectedIntent] = useState<Intent | null>(null);
+  const [filter, setFilter] = useState('');
   const { data: intents } = useQuery<Intent[]>({
     queryKey: ['intents'],
+    enabled: commonIntentsEnabled,
   });
   const { data: examples } = useQuery<string[]>({
     queryKey: [`intents/${selectedIntent?.id}/examples`, selectedIntent?.id],
@@ -32,11 +30,6 @@ const Intents: FC = () => {
   const { data: entities } = useQuery<Entity[]>({
     queryKey: ['entities'],
   });
-  const [filter, setFilter] = useState('');
-  const [editingIntentTitle, setEditingIntentTitle] = useState<string | null>(
-    null,
-  );
-  const { t } = useTranslation();
 
   const addExamplesMutation = useMutation({
     mutationFn: ({ intentId, example }: { intentId: string | number; example: string; }) => {
@@ -56,8 +49,6 @@ const Intents: FC = () => {
     },
   });
 
-  useDocumentEscapeListener(() => setEditingIntentTitle(null));
-
   const filteredIntents = useMemo(
     () =>
       intents ? intents.filter((intent) => intent.intent.includes(filter)) : [],
@@ -66,55 +57,12 @@ const Intents: FC = () => {
 
   const handleTabsValueChange = useCallback(
     (value: string) => {
-      setEditingIntentTitle(null);
       if (!intents) return;
       const selectedIntent = intents.find((intent) => intent.intent === value);
       if (selectedIntent) setSelectedIntent(selectedIntent);
     },
     [intents],
   );
-
-  const newIntentMutation = useMutation({
-    mutationFn: (data: { name: string }) => addIntent(data),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries(['intents']);
-      toast.open({
-        type: 'success',
-        title: t('global.notification'),
-        message: 'New intent added',
-      });
-    },
-    onError: (error: AxiosError) => {
-      toast.open({
-        type: 'error',
-        title: t('global.notificationError'),
-        message: error.message,
-      });
-    },
-    onSettled: () => setFilter(''),
-  });
-
-  const intentEditMutation = useMutation({
-    mutationFn: ({ id, name }: { id: string | number, name: string }) => editIntent(id, { name }),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries(['intents']);
-      toast.open({
-        type: 'success',
-        title: t('global.notification'),
-        message: 'Intent title saved',
-      });
-    },
-    onError: (error: AxiosError) => {
-      toast.open({
-        type: 'error',
-        title: t('global.notificationError'),
-        message: error.message,
-      });
-    },
-    onSettled: () => setEditingIntentTitle(null),
-  });
-
-  if (!intents) return <>Loading...</>;
 
   const handleNewExample = (example: string) => {
     if (!selectedIntent) return;
@@ -137,10 +85,38 @@ const Intents: FC = () => {
     // TODO: Add endpoint for mocking intent examples download
   };
 
+  // const handleFilterValueChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+  //   debounce(() => setFilter(e.target.value), 300);
+  // }, []);
+
   return (
     <>
-      <h1>{t('training.intents.title')}</h1>
-      {intents && (
+      <h1>{t('training.intents.commonIntents')}</h1>
+
+      <Card>
+        <Track gap={16}>
+          <div style={{ minWidth: 187 }}>
+            <p>{t('training.intents.commonIntents')}</p>
+            <p style={{
+              fontSize: 14,
+              lineHeight: 1.5,
+              textDecoration: 'underline',
+            }}>
+              {/* TODO: change githubi link url */}
+              <a href='#'>{t('training.intents.moreFromGithub')}</a>
+            </p>
+          </div>
+          <Switch
+            label={t('training.intents.commonIntents')}
+            hideLabel
+            name='commonIntents'
+            defaultChecked={commonIntentsEnabled}
+            onCheckedChange={setCommonIntentsEnabled}
+          />
+        </Track>
+      </Card>
+
+      {commonIntentsEnabled && intents && (
         <Tabs.Root
           className='vertical-tabs'
           orientation='vertical'
@@ -162,9 +138,6 @@ const Intents: FC = () => {
                   onChange={(e) => setFilter(e.target.value)}
                   hideLabel
                 />
-                <Button onClick={() => newIntentMutation.mutate({ name: filter })} disabled={!filter}>
-                  {t('global.add')}
-                </Button>
               </Track>
             </div>
 
@@ -214,40 +187,7 @@ const Intents: FC = () => {
                 <Track direction='vertical' align='stretch' gap={8}>
                   <Track justify='between'>
                     <Track gap={16}>
-                      {editingIntentTitle ? (
-                        <FormInput
-                          label='Intent title'
-                          name='intentTitle'
-                          value={editingIntentTitle}
-                          onChange={(e) =>
-                            setEditingIntentTitle(e.target.value)
-                          }
-                          hideLabel
-                        />
-                      ) : (
-                        <h3>{selectedIntent.intent}</h3>
-                      )}
-                      {editingIntentTitle ? (
-                        <Button
-                          appearance='text'
-                          onClick={() =>
-                            intentEditMutation.mutate({ id: selectedIntent.id, name: editingIntentTitle })
-                          }
-                        >
-                          <Icon icon={<MdOutlineSave />} />
-                          {t('global.save')}
-                        </Button>
-                      ) : (
-                        <Button
-                          appearance='text'
-                          onClick={() =>
-                            setEditingIntentTitle(selectedIntent.intent)
-                          }
-                        >
-                          <Icon icon={<MdOutlineModeEditOutline />} />
-                          {t('global.edit')}
-                        </Button>
-                      )}
+                      <h3>{selectedIntent.intent}</h3>
                     </Track>
                     <p style={{ color: '#4D4F5D' }}>
                       {`${t('global.modifiedAt')} ${format(
@@ -310,4 +250,4 @@ const Intents: FC = () => {
   );
 };
 
-export default Intents;
+export default CommonIntents;

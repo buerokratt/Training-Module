@@ -2,7 +2,8 @@ import { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 
 import { Layout } from 'components';
-import CommonIntents from 'pages/Training/Intents';
+import Intents from 'pages/Training/Intents';
+import CommonIntents from 'pages/Training/Intents/CommonIntents';
 import Responses from 'pages/Training/Responses';
 import Configuration from 'pages/Training/Configuration';
 import Stories from 'pages/Training/Stories';
@@ -22,7 +23,8 @@ const App: FC = () => {
     <Routes>
       <Route element={<Layout />}>
         <Route index element={<Navigate to='/treening/treening/teemad' />} />
-        <Route path='/treening/treening/teemad' element={<CommonIntents />} />
+        <Route path='/treening/treening/teemad' element={<Intents />} />
+        <Route path='/treening/treening/avalikud-teemad' element={<CommonIntents />} />
         <Route path='/treening/treening/vastused' element={<Responses />} />
         <Route path='/treening/treening/konfiguratsioon' element={<Configuration />} />
         <Route path='/treening/treening/kasutuslood' element={<Stories />} />

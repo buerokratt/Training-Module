@@ -19,6 +19,10 @@ export const mainNavigationET = [
             path: '/treening/treening/teemad',
           },
           {
+            label: 'Avalikud teemad',
+            path: '/treening/treening/avalikud-teemad',
+          },
+          {
             label: 'Vastused',
             path: '/treening/treening/vastused',
           },

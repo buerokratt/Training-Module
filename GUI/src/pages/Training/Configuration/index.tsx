@@ -128,23 +128,6 @@ const Configuration: FC = () => {
           </Tabs.Content>
         ))}
       </Tabs.Root>
-
-      <Card>
-        <Track gap={16}>
-          <div style={{ minWidth: 187 }}>
-            <p>{t('training.intents.commonIntents')}</p>
-            <p style={{
-              fontSize: 14,
-              lineHeight: 1.5,
-              textDecoration: 'underline',
-            }}>
-              {/* TODO: change githubi link url */}
-              <a href='#'>{t('training.intents.moreFromGithub')}</a>
-            </p>
-          </div>
-          <Switch label='Common intents' hideLabel name='commonIntents' defaultChecked={true} />
-        </Track>
-      </Card>
     </>
   );
 };

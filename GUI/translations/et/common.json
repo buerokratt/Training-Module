@@ -34,32 +34,12 @@
     "menuLabel": "Põhinavigatsioon",
     "closeMenu": "Kitsendan menüü",
     "openMenuIcon": "Ava menüü ikoon",
-    "closeMenuIcon": "Sulge menüü ikoon",
-    "links": {
-      "training": "Treening",
-      "intents": "Teemad",
-      "regex": "REGEX",
-      "synonyms": "Sünonüümid",
-      "lookupTables": "Otsingutabelid",
-      "answers": "Vastused",
-      "forms": "Vormid",
-      "stories": "Kasutuslood",
-      "configuration": "Konfiguratsioon",
-      "historicalChats": "Ajaloolised vastlused",
-      "markIntents": "Märgenda teemasid",
-      "markChats": "Märgenda vestluseid",
-      "modelBankAndAnalytics": "Mudelipank ja analüütika",
-      "models": "Mudelid",
-      "intentsOverview": "Teemade ülevaade",
-      "modelComparison": "Mudelite võrdlus",
-      "testcases": "Testlood",
-      "simulation": "Simulatsioon"
-    }
+    "closeMenuIcon": "Sulge menüü ikoon"
   },
   "training": {
     "intents": {
       "title": "Teemad",
-      "commonIntents": "Common teemad",
+      "commonIntents": "Avalikud teemad",
       "searchIntentPlaceholder": "Otsi teemat",
       "addToModel": "Lisa mudelisse",
       "removeFromModel": "Eemalda mudelist",
