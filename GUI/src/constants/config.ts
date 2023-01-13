@@ -1,1 +1,2 @@
 export const RESPONSE_TEXT_LENGTH = 450;
+export const INTENT_EXAMPLE_LENGTH = 600;

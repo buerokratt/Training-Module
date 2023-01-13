@@ -1,29 +1,58 @@
 import { CSSProperties, FC, Fragment, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import regexifyString from 'regexify-string';
+import { useMutation } from '@tanstack/react-query';
 import { Popover } from 'react-text-selection-popover';
+import { AxiosError } from 'axios';
 
 import { Button, FormSelect, Tooltip, Track } from 'components';
 import { Entity } from 'types/entity';
+import { useToast } from 'hooks/useToast';
+import { deleteEntity } from 'services/entities';
+import { useForm } from 'react-hook-form';
 
 type IntentExamplesEntryProps = {
   value: string;
   entities: Entity[];
+  onEntityAdd: (example: string) => void;
 }
 
-const IntentExamplesEntry: FC<IntentExamplesEntryProps> = ({ value, entities }) => {
+const IntentExamplesEntry: FC<IntentExamplesEntryProps> = ({ value, entities, onEntityAdd }) => {
   const { t } = useTranslation();
+  const toast = useToast();
   const [ref, setRef] = useState<HTMLElement | null>(null);
   const [editableEntity, setEditableEntity] = useState<string | null>(null);
+  const { register, handleSubmit } = useForm<{ entity: string }>({
+    mode: 'onChange',
+    shouldUnregister: true,
+  });
 
-  const handleExampleEntityDelete = () => {
-    // TODO: Add mock endpoint for deleting entity
-  };
+  const entityDeleteMutation = useMutation({
+    mutationFn: ({ id }: { id: string | number }) => deleteEntity(id),
+    onSuccess: () => {
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: 'Entity deleted from example',
+      });
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
+  });
 
   const handleExampleEntityEdit = () => {
     if (!editableEntity) return;
     // TODO: Add endpoint for mocking entity edit
   };
+
+  const handleEntityAdd = handleSubmit((data) => {
+    console.log(data);
+  });
 
   const parsedEntry = useMemo(() => regexifyString({
     pattern: /\[(.+?)\]\((.+?)\)/gmu,
@@ -31,10 +60,20 @@ const IntentExamplesEntry: FC<IntentExamplesEntryProps> = ({ value, entities }) 
       <Tooltip content={
         <Track direction='vertical' gap={4} align='left' style={{ padding: 8 }}>
           <h4>{result?.[1]}</h4>
-          <FormSelect label='' name='entity' options={entities.map((e) => ({ label: e.name, value: e.id + '' }))} />
+          <FormSelect
+            label={t('training.intents.entity')}
+            hideLabel
+            name='entity'
+            defaultValue={entities.find((e) => e.name === result?.[2])?.id + ''}
+            options={entities.map((e) => ({ label: e.name, value: e.id + '' }))}
+          />
           <Track gap={4}>
-            <Button appearance='error'>{t('global.delete')}</Button>
-            <Button appearance='secondary'>{t('global.cancel')}</Button>
+            <Button
+              appearance='error'
+              onClick={() => entityDeleteMutation.mutate({ id: value })}
+            >
+              {t('global.delete')}
+            </Button>
             <Button>{t('global.save')}</Button>
           </Track>
         </Track>
@@ -43,7 +82,7 @@ const IntentExamplesEntry: FC<IntentExamplesEntryProps> = ({ value, entities }) 
       </Tooltip>
     ),
     input: value,
-  }), [entities, t, value]);
+  }), [entities, entityDeleteMutation, t, value]);
 
   return (
     <>
@@ -57,12 +96,14 @@ const IntentExamplesEntry: FC<IntentExamplesEntryProps> = ({ value, entities }) 
 
             const popoverStyles = {
               position: 'absolute',
+              minWidth: '340px',
               left: `${clientRect.left + clientRect.width / 2}px`,
               top: `${clientRect.top - 7}px`,
               background: 'white',
               borderRadius: '4px',
-              filter: ' drop-shadow(0px 0px 20px rgba(0, 0, 0, 0.25))',
+              filter: 'drop-shadow(0px 0px 20px rgba(0, 0, 0, 0.25))',
               transform: 'translate(-50%, -100%)',
+              userSelect: 'none',
             } as CSSProperties;
 
             const arrowStyles = {
@@ -76,23 +117,22 @@ const IntentExamplesEntry: FC<IntentExamplesEntryProps> = ({ value, entities }) 
             } as CSSProperties;
 
             return (
-              <div style={popoverStyles} onClickCapture={(e) => console.log(e)}>
+              <div style={popoverStyles}>
                 <Track
                   direction='vertical'
                   gap={4}
-                  align='left'
+                  align='stretch'
                   style={{ padding: 16 }}
                 >
                   <h4>{textContent}</h4>
                   <FormSelect
+                    {...register('entity')}
                     label={t('training.intents.entity')}
                     hideLabel
-                    name='entity'
                     options={entities.map((e) => ({ label: e.name, value: e.id + '' }))}
                   />
-                  <Track gap={4}>
-                    <Button appearance='secondary'>{t('global.cancel')}</Button>
-                    <Button>{t('global.add')}</Button>
+                  <Track gap={4} justify='end'>
+                    <Button onClick={handleEntityAdd}>{t('global.add')}</Button>
                   </Track>
                 </Track>
                 <span style={arrowStyles}></span>

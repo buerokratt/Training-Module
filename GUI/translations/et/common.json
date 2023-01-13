@@ -49,7 +49,8 @@
       "upload": "Lae ülesse näited",
       "download": "Lae alla näited",
       "moreFromGithub": "Rohkem infot Githubist",
-      "entity": "Olem"
+      "entity": "Olem",
+      "deleteExample": "Kustuta näide"
     },
     "responses": {
       "title": "Vastused",

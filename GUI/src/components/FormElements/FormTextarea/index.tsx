@@ -47,13 +47,16 @@ const FormTextarea = forwardRef<HTMLTextAreaElement, TextareaProps>((
       <div className='textarea__wrapper'>
         <TextareaAutosize
           id={id}
-          onChange={handleOnChange}
           maxLength={maxLength}
           minRows={minRows}
           maxRows={maxRows}
           ref={ref}
           defaultValue={defaultValue}
           aria-label={hideLabel ? label : undefined}
+          onChange={(e) => {
+            if (onChange) onChange(e);
+            handleOnChange(e);
+          }}
           {...rest}
         />
         {showMaxLength && (

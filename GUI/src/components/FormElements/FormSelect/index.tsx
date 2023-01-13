@@ -7,7 +7,6 @@ import { MdArrowDropDown } from 'react-icons/md';
 import { Icon } from 'components';
 import './FormSelect.scss';
 
-
 type FormSelectProps = SelectHTMLAttributes<HTMLSelectElement> & {
   label: string;
   name: string;
@@ -33,6 +32,7 @@ const FormSelect: FC<FormSelectProps> = (
     placeholder,
     defaultValue,
     onSelectionChange,
+    onChange,
   },
 ) => {
   const id = useId();

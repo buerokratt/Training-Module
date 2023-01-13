@@ -31,7 +31,6 @@
     "downshift": "^7.0.5",
     "i18next": "^22.4.5",
     "i18next-browser-languagedetector": "^7.0.1",
-    "lodash.debounce": "^4.0.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.41.5",
@@ -41,7 +40,8 @@
     "react-text-selection-popover": "^2.0.2",
     "react-textarea-autosize": "^8.4.0",
     "reactflow": "^11.4.0",
-    "regexify-string": "^1.0.19"
+    "regexify-string": "^1.0.19",
+    "usehooks-ts": "^2.9.1"
   },
   "devDependencies": {
     "@types/lodash.debounce": "^4.0.7",

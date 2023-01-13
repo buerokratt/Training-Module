@@ -3,13 +3,14 @@ import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as Tabs from '@radix-ui/react-tabs';
 import { format } from 'date-fns';
+import { AxiosError } from 'axios';
 import { MdCheckCircleOutline } from 'react-icons/md';
 
-import { Button, Card, FormInput, Icon, Switch, Tooltip, Track } from 'components';
+import { Button, Card, Dialog, FormInput, Icon, Switch, Tooltip, Track } from 'components';
 import { useToast } from 'hooks/useToast';
 import { Intent } from 'types/intent';
 import { Entity } from 'types/entity';
-import { addExample } from 'services/intents';
+import { addExample, deleteIntent, editIntent } from 'services/intents';
 import IntentExamplesTable from './IntentExamplesTable';
 
 const CommonIntents: FC = () => {
@@ -18,6 +19,7 @@ const CommonIntents: FC = () => {
   const toast = useToast();
   const [commonIntentsEnabled, setCommonIntentsEnabled] = useState(true);
   const [selectedIntent, setSelectedIntent] = useState<Intent | null>(null);
+  const [deletableIntent, setDeletableIntent] = useState<string | number | null>(null);
   const [filter, setFilter] = useState('');
   const { data: intents } = useQuery<Intent[]>({
     queryKey: ['intents'],
@@ -47,6 +49,51 @@ const CommonIntents: FC = () => {
         message: 'New example added',
       });
     },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
+  });
+
+  const intentModelMutation = useMutation({
+    mutationFn: ({ id, data }: { id: string | number, data: { inModel: boolean } }) => editIntent(id, data),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['intents']);
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: 'Intent updated',
+      });
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
+  });
+
+  const deleteIntentMutation = useMutation({
+    mutationFn: ({ id }: { id: string | number }) => deleteIntent(id),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['intents']);
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: 'Intent deleted',
+      });
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
   });
 
   const filteredIntents = useMemo(
@@ -69,25 +116,16 @@ const CommonIntents: FC = () => {
     addExamplesMutation.mutate({ intentId: selectedIntent.id, example });
   };
 
-  const handleRemoveIntentFromModel = (intentId: string | number) => {
-    // TODO: Add endpoint for mocking intent removal from model
-  };
-
-  const handleIntentDelete = (intentId: string | number) => {
-    // TODO: Add endpoint for mocking deleting intent
-  };
-
   const handleIntentExamplesUpload = (intentId: string | number) => {
     // TODO: Add endpoint for mocking intent examples file upload
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.click();
   };
 
   const handleIntentExamplesDownload = (intentId: string | number) => {
     // TODO: Add endpoint for mocking intent examples download
   };
-
-  // const handleFilterValueChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-  //   debounce(() => setFilter(e.target.value), 300);
-  // }, []);
 
   return (
     <>
@@ -217,19 +255,24 @@ const CommonIntents: FC = () => {
                       <Button
                         appearance='secondary'
                         onClick={() =>
-                          handleRemoveIntentFromModel(selectedIntent.id)
+                          intentModelMutation.mutate({ id: selectedIntent.id, data: { inModel: false } })
                         }
                       >
                         {t('training.intents.removeFromModel')}
                       </Button>
                     ) : (
-                      <Button
-                        onClick={() => handleIntentDelete(selectedIntent.id)}
-                      >
+                      <Button onClick={() =>
+                        intentModelMutation.mutate({ id: selectedIntent.id, data: { inModel: true } })
+                      }>
                         {t('training.intents.addToModel')}
                       </Button>
                     )}
-                    <Button appearance='error'>{t('global.delete')}</Button>
+                    <Button
+                      appearance='error'
+                      onClick={() => setDeletableIntent(selectedIntent.id)}
+                    >
+                      {t('global.delete')}
+                    </Button>
                   </Track>
                 </Track>
               </div>
@@ -245,6 +288,26 @@ const CommonIntents: FC = () => {
             </Tabs.Content>
           )}
         </Tabs.Root>
+      )}
+
+      {deletableIntent !== null && (
+        <Dialog
+          title={t('training.responses.deleteResponse')}
+          onClose={() => setDeletableIntent(null)}
+          footer={
+            <>
+              <Button appearance='secondary' onClick={() => setDeletableIntent(null)}>{t('global.no')}</Button>
+              <Button
+                appearance='error'
+                onClick={() => deleteIntentMutation.mutate({ id: deletableIntent })}
+              >
+                {t('global.yes')}
+              </Button>
+            </>
+          }
+        >
+          <p>{t('global.removeValidation')}</p>
+        </Dialog>
       )}
     </>
   );
