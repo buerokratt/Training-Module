@@ -11,12 +11,12 @@ import StoriesDetail from 'pages/Training/Stories/StoriesDetail';
 import Slots from 'pages/Training/Slots';
 import SlotsNew from 'pages/Training/Slots/SlotsNew';
 import Forms from 'pages/Training/Forms';
-import FormsNew from 'pages/Training/Forms/FormsNew';
 import History from 'pages/HistoricalConversations/History';
 import Appeals from 'pages/HistoricalConversations/Appeals';
 import IntentsOverview from 'pages/ModelBankAndAnalytics/IntentsOverview';
 import Testcases from 'pages/ModelBankAndAnalytics/Testcases';
 import Models from 'pages/ModelBankAndAnalytics/Models';
+import FormsDetail from './pages/Training/Forms/FormsDetail';
 
 const App: FC = () => {
   return (
@@ -32,7 +32,8 @@ const App: FC = () => {
         <Route path='/treening/treening/pilud' element={<Slots />} />
         <Route path='/treening/treening/pilud/uus' element={<SlotsNew />} />
         <Route path='/treening/treening/vormid' element={<Forms />} />
-        <Route path='/treening/treening/vormid/uus' element={<FormsNew />} />
+        <Route path='/treening/treening/vormid/uus' element={<FormsDetail mode="new"/>} />
+        <Route path='/treening/treening/vormid/:id' element={<FormsDetail mode="edit" />} />
         <Route path='/treening/ajaloolised-vestlused/ajalugu' element={<History />} />
         <Route path='/treening/ajaloolised-vestlused/poordumised' element={<Appeals />} />
         <Route path='/treening/mudelipank-ja-analuutika/teemade-ulevaade' element={<IntentsOverview />} />

@@ -14,7 +14,7 @@ import { useForm } from 'react-hook-form';
 type IntentExamplesEntryProps = {
   value: string;
   entities: Entity[];
-  onEntityAdd: (example: string) => void;
+  onEntityAdd?: (example: string) => void;
 }
 
 const IntentExamplesEntry: FC<IntentExamplesEntryProps> = ({ value, entities, onEntityAdd }) => {

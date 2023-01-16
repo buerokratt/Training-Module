@@ -1,19 +1,45 @@
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { MdDeleteOutline, MdOutlineModeEditOutline } from 'react-icons/md';
 
-import { Button, Card, DataTable, FormInput, Icon, Track } from 'components';
+import { Button, Card, DataTable, Dialog, FormInput, Icon, Track } from 'components';
 import { Form } from 'types/form';
+import { useToast } from 'hooks/useToast';
+import { deleteForm } from 'services/forms';
 
 const Forms: FC = () => {
   const { t } = useTranslation();
+  const toast = useToast();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [filter, setFilter] = useState('');
+  const [deletableForm, setDeletableForm] = useState<string | number | null>(null);
   const { data: forms } = useQuery<Form[]>({
     queryKey: ['forms'],
+  });
+
+  const deleteFormMutation = useMutation({
+    mutationFn: ({ id }: { id: string | number }) => deleteForm(id),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['forms']);
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: 'Form deleted',
+      });
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
+    onSettled: () => setDeletableForm(null),
   });
 
   const columnHelper = createColumnHelper<Form>();
@@ -27,7 +53,7 @@ const Forms: FC = () => {
       cell: (props) => (
         <Button
           appearance='text'
-          // onClick={() => navigate(`/treening/kasutuslood/${props.row.original.id}`)}
+          onClick={() => navigate(`/treening/treening/vormid/${props.row.original.id}`)}
         >
           <Icon
             label={t('global.edit')}
@@ -43,8 +69,8 @@ const Forms: FC = () => {
     }),
     columnHelper.display({
       header: '',
-      cell: () => (
-        <Button appearance='text'>
+      cell: (props) => (
+        <Button appearance='text' onClick={() => setDeletableForm(props.row.original.id)}>
           <Icon
             label={t('global.delete')}
             icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />}
@@ -57,7 +83,7 @@ const Forms: FC = () => {
         size: '1%',
       },
     }),
-  ], [columnHelper, t]);
+  ], [columnHelper, navigate, t]);
 
   if (!forms) return <>Loading...</>;
 
@@ -79,6 +105,26 @@ const Forms: FC = () => {
       }>
         <DataTable data={forms} columns={formsColumns} globalFilter={filter} setGlobalFilter={setFilter} />
       </Card>
+
+      {deletableForm !== null && (
+        <Dialog
+          title={t('training.responses.deleteResponse')}
+          onClose={() => setDeletableForm(null)}
+          footer={
+            <>
+              <Button appearance='secondary' onClick={() => setDeletableForm(null)}>{t('global.no')}</Button>
+              <Button
+                appearance='error'
+                onClick={() => deleteFormMutation.mutate({ id: deletableForm })}
+              >
+                {t('global.yes')}
+              </Button>
+            </>
+          }
+        >
+          <p>{t('global.removeValidation')}</p>
+        </Dialog>
+      )}
     </>
   );
 };

@@ -1,14 +1,29 @@
-import { FC, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useQuery } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
+import { useForm } from 'react-hook-form';
+import { createColumnHelper } from '@tanstack/react-table';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useNavigate, useParams } from 'react-router-dom';
+import { MdOutlineArrowBack } from 'react-icons/md';
 
 import { Button, Card, DataTable, FormCheckbox, FormInput, Track } from 'components';
 import { Intent } from 'types/intent';
 import { Slot } from 'types/slot';
-import { createColumnHelper } from '@tanstack/react-table';
+import { FormCreateDTO } from 'types/form';
+import { createForm, editForm } from 'services/forms';
+import { useToast } from 'hooks/useToast';
 
-const FormsNew: FC = () => {
+type FormsDetailProps = {
+  mode: 'new' | 'edit';
+}
+
+const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
   const { t } = useTranslation();
+  const toast = useToast();
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const params = useParams();
   const [slotsFilter, setSlotsFilter] = useState('');
   const [intentsFilter, setIntentsFilter] = useState('');
   const { data: slots } = useQuery<Slot[]>({
@@ -17,8 +32,58 @@ const FormsNew: FC = () => {
   const { data: intents } = useQuery<Intent[]>({
     queryKey: ['intents'],
   });
+
+  const { register, handleSubmit, reset } = useForm<FormCreateDTO>();
+
+  useEffect(() => {
+    if (mode === 'edit') {
+      // TODO: reset form to correct values
+      reset({ form: 'custom_fallback_form' });
+    }
+  }, [mode, reset]);
+
   const slotsColumnHelper = createColumnHelper<Slot>();
   const intentsColumnHelper = createColumnHelper<Intent>();
+
+  const newFormMutation = useMutation({
+    mutationFn: (data: { form: string }) => createForm(data),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['forms']);
+      navigate('/treening/treening/vormid');
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: 'New form added',
+      });
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
+  });
+
+  const formEditMutation = useMutation({
+    mutationFn: ({ id, data }: { id: string | number, data: { form: string } }) => editForm(id, data),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['forms']);
+      navigate('/treening/treening/vormid');
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: 'Form changes saved',
+      });
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
+  });
 
   const slotsColumns = useMemo(() => [
     slotsColumnHelper.accessor('name', {
@@ -46,12 +111,26 @@ const FormsNew: FC = () => {
     }),
   ], [intentsColumnHelper, t]);
 
+  const handleNewFormSave = handleSubmit((data) => {
+    if (mode === 'edit' && params.id) {
+      formEditMutation.mutate({ id: params.id, data: { form: data.form } });
+    } else {
+      newFormMutation.mutate({ form: data.form });
+    }
+  });
+
   return (
     <>
-      <h1>{t('training.forms.titleOne')}</h1>
+      <Track gap={16}>
+        <Button appearance='icon' onClick={() => navigate('/treening/treening/vormid')}>
+          <MdOutlineArrowBack />
+        </Button>
+        <h1>{t('training.forms.titleOne')}</h1>
+        <Button onClick={handleNewFormSave} style={{ marginLeft: 'auto' }}>{t('global.save')}</Button>
+      </Track>
 
       <Card>
-        <FormInput label={t('training.forms.formName')} name='formName' />
+        <FormInput {...register('form')} label={t('training.forms.formName')} />
       </Card>
 
       <Track gap={16} align='left'>
@@ -127,12 +206,8 @@ const FormsNew: FC = () => {
           </Card>
         </div>
       </Track>
-
-      <Track justify='end'>
-        <Button>{t('global.save')}</Button>
-      </Track>
     </>
   );
 };
 
-export default FormsNew;
+export default FormsDetail;
