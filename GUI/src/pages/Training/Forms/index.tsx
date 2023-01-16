@@ -103,7 +103,7 @@ const Forms: FC = () => {
           <Button onClick={() => navigate('/treening/treening/vormid/uus')}>{t('global.add')}</Button>
         </Track>
       }>
-        <DataTable data={forms} columns={formsColumns} globalFilter={filter} setGlobalFilter={setFilter} />
+        <DataTable data={forms} columns={formsColumns} globalFilter={filter} setGlobalFilter={setFilter} sortable />
       </Card>
 
       {deletableForm !== null && (

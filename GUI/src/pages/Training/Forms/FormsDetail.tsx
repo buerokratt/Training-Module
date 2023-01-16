@@ -111,7 +111,7 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
     }),
   ], [intentsColumnHelper, t]);
 
-  const handleNewFormSave = handleSubmit((data) => {
+  const handleFormSave = handleSubmit((data) => {
     if (mode === 'edit' && params.id) {
       formEditMutation.mutate({ id: params.id, data: { form: data.form } });
     } else {
@@ -126,7 +126,7 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
           <MdOutlineArrowBack />
         </Button>
         <h1>{t('training.forms.titleOne')}</h1>
-        <Button onClick={handleNewFormSave} style={{ marginLeft: 'auto' }}>{t('global.save')}</Button>
+        <Button onClick={handleFormSave} style={{ marginLeft: 'auto' }}>{t('global.save')}</Button>
       </Track>
 
       <Card>

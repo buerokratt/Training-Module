@@ -13,7 +13,16 @@ type SwitchProps = InputHTMLAttributes<HTMLInputElement> & {
   onCheckedChange?: (checked: boolean) => void;
 }
 
-const Switch: FC<SwitchProps> = ({ onLabel, offLabel, name, label, hideLabel, defaultChecked, onCheckedChange }) => {
+const Switch: FC<SwitchProps> = (
+  {
+    onLabel,
+    offLabel,
+    label,
+    hideLabel,
+    defaultChecked,
+    onCheckedChange,
+  },
+) => {
   const id = useId();
   const { t } = useTranslation();
   const onValueLabel = onLabel || t('global.on');

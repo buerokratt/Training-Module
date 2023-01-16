@@ -9,7 +9,7 @@ import Configuration from 'pages/Training/Configuration';
 import Stories from 'pages/Training/Stories';
 import StoriesDetail from 'pages/Training/Stories/StoriesDetail';
 import Slots from 'pages/Training/Slots';
-import SlotsNew from 'pages/Training/Slots/SlotsNew';
+import SlotsDetail from 'pages/Training/Slots/SlotsDetail';
 import Forms from 'pages/Training/Forms';
 import History from 'pages/HistoricalConversations/History';
 import Appeals from 'pages/HistoricalConversations/Appeals';
@@ -30,10 +30,11 @@ const App: FC = () => {
         <Route path='/treening/treening/kasutuslood' element={<Stories />} />
         <Route path='/treening/treening/kasutuslood/:id' element={<StoriesDetail />} />
         <Route path='/treening/treening/pilud' element={<Slots />} />
-        <Route path='/treening/treening/pilud/uus' element={<SlotsNew />} />
+        <Route path='/treening/treening/pilud/uus' element={<SlotsDetail mode='new' />} />
+        <Route path='/treening/treening/pilud/:id' element={<SlotsDetail mode='edit' />} />
         <Route path='/treening/treening/vormid' element={<Forms />} />
-        <Route path='/treening/treening/vormid/uus' element={<FormsDetail mode="new"/>} />
-        <Route path='/treening/treening/vormid/:id' element={<FormsDetail mode="edit" />} />
+        <Route path='/treening/treening/vormid/uus' element={<FormsDetail mode='new' />} />
+        <Route path='/treening/treening/vormid/:id' element={<FormsDetail mode='edit' />} />
         <Route path='/treening/ajaloolised-vestlused/ajalugu' element={<History />} />
         <Route path='/treening/ajaloolised-vestlused/poordumised' element={<Appeals />} />
         <Route path='/treening/mudelipank-ja-analuutika/teemade-ulevaade' element={<IntentsOverview />} />
