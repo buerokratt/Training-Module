@@ -85,14 +85,16 @@
       "mapping": "Mapping",
       "slotName": "Slot name",
       "slotType": "Slot type",
-      "influenceConversation": "Influence conversation"
+      "influenceConversation": "Influence conversation",
+      "deleteSlot": "Delete slot"
     },
     "forms": {
       "title": "Forms",
       "titleOne": "Form",
       "formName": "Form name",
       "requiredSlots": "Required slots",
-      "ignoredIntents": "Ignored intents"
+      "ignoredIntents": "Ignored intents",
+      "deleteForm": "Delete form"
     },
     "actions": {
       "title": "Actions"
@@ -123,11 +125,14 @@
       "modelComparison": "Model comparison",
       "selectedModel": "Selected model",
       "downloadModel": "Download model",
+      "downloadDataset": "Download dataset",
       "viewIntentsPrecision": "View intents precision",
       "activateModel": "Activate model",
       "allModels": "All models",
       "lastTrained": "Last trained",
-      "live": "Live"
+      "live": "Live",
+      "compareResults": "Compare results",
+      "deleteModel": "Delete model"
     }
   }
 }

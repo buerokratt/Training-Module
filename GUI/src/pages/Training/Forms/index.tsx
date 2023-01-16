@@ -108,7 +108,7 @@ const Forms: FC = () => {
 
       {deletableForm !== null && (
         <Dialog
-          title={t('training.responses.deleteResponse')}
+          title={t('training.forms.deleteForm')}
           onClose={() => setDeletableForm(null)}
           footer={
             <>

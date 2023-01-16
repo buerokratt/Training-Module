@@ -18,3 +18,10 @@ export const modelsData = [
     active: false,
   },
 ];
+
+export const selectedModelData = {
+  id: 1,
+  name: '20220322-155051-potential-proton.tar.gz',
+  lastTrained: new Date(),
+  active: true,
+};

@@ -108,7 +108,7 @@ const Slots: FC = () => {
 
       {deletableSlot !== null && (
         <Dialog
-          title={t('training.responses.deleteResponse')}
+          title={t('training.slots.deleteSlot')}
           onClose={() => setDeletableSlot(null)}
           footer={
             <>

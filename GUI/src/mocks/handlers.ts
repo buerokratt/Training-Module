@@ -14,7 +14,7 @@ import { conversationsData, singleConversation } from './conversations';
 import { appealsData } from './appeals';
 import { intentsReportData } from './intentsReport';
 import { testStoriesData } from './testStories';
-import { modelsData } from './models';
+import { modelsData, selectedModelData } from './models';
 
 export const handlers = [
   rest.get(`${import.meta.env.BASE_URL}api/main-navigation`, (req, res, ctx) => {
@@ -133,5 +133,8 @@ export const handlers = [
   }),
   rest.get(`${import.meta.env.BASE_URL}api/models`, (req, res, ctx) => {
     return res(ctx.status(200), ctx.json(modelsData));
+  }),
+  rest.get(`${import.meta.env.BASE_URL}api/selected-model`, (req, res, ctx) => {
+    return res(ctx.status(200), ctx.json(selectedModelData));
   }),
 ];

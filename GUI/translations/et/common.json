@@ -85,14 +85,16 @@
       "mapping": "Kaardistamine",
       "slotName": "Pilu nimi",
       "slotType": "Pilu tüüp",
-      "influenceConversation": "Mõjuta vestlust"
+      "influenceConversation": "Mõjuta vestlust",
+      "deleteSlot": "Kustuta pilu"
     },
     "forms": {
       "title": "Vormid",
       "titleOne": "Vorm",
       "formName": "Vormi nimi",
       "requiredSlots": "Kohustuslikud pilud",
-      "ignoredIntents": "Eiratud teemad"
+      "ignoredIntents": "Eiratud teemad",
+      "deleteForm": "Kustuta vorm"
     },
     "actions": {
       "title": "Tegevused"
@@ -123,11 +125,14 @@
       "modelComparison": "Mudelite võrdlus",
       "selectedModel": "Valitud mudel",
       "downloadModel": "Lae mudel alla",
+      "downloadDataset": "Lae andmestik alla",
       "viewIntentsPrecision": "Vaata teemade täpsust",
       "activateModel": "Võta mudel kasutusele",
       "allModels": "Kõik mudelid",
       "lastTrained": "Viimati treenitud",
-      "live": "Live"
+      "live": "Live",
+      "compareResults": "Võrdle tulemusi",
+      "deleteModel": "Kustuta mudel"
     }
   }
 }
