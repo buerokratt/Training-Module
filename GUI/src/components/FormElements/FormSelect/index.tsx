@@ -25,14 +25,12 @@ const itemToString = (item: ({ label: string, value: string } | null)) => {
 const FormSelect: FC<FormSelectProps> = (
   {
     label,
-    name,
     hideLabel,
     options,
     disabled,
     placeholder,
     defaultValue,
     onSelectionChange,
-    onChange,
   },
 ) => {
   const id = useId();

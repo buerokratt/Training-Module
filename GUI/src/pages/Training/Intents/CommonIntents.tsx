@@ -120,6 +120,7 @@ const CommonIntents: FC = () => {
     // TODO: Add endpoint for mocking intent examples file upload
     const input = document.createElement('input');
     input.type = 'file';
+    input.accept = '.csv';
     input.click();
   };
 
