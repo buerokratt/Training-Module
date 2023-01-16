@@ -9,12 +9,16 @@ import { format } from 'date-fns';
 import { Button, Card, DataTable, FormInput, FormSelect, Icon, Track } from 'components';
 import { IntentsReport } from 'types/intentsReport';
 import { truncateNumber } from 'utils/truncateNumber';
+import { Model } from 'types/model';
 
 const IntentsOverview: FC = () => {
   const { t } = useTranslation();
   const [filter, setFilter] = useState('');
   const { data: intentsReport } = useQuery<IntentsReport>({
     queryKey: ['intents-report'],
+  });
+  const { data: models } = useQuery<Model[]>({
+    queryKey: ['models'],
   });
 
   const formattedIntentsReport = useMemo(
@@ -33,8 +37,12 @@ const IntentsOverview: FC = () => {
     columnHelper.display({
       id: 'detail',
       cell: (props) => (
-        // TODO: Add correct link to example
-        <Link to='#' style={{ color: '#005AA3' }}>
+        <Link
+          to={props.row.original.intent.startsWith('common')
+            ? `/treening/treening/avalikud-teemad?intent=${props.row.original.intent}#tabs`
+            : `/treening/treening/teemad?intent=${props.row.original.intent}#tabs`
+          }
+          style={{ color: '#005AA3' }}>
           {t('training.mba.gotoExample')}
         </Link>
       ),
@@ -102,7 +110,7 @@ const IntentsOverview: FC = () => {
             props.row.original['f1-score'] >= 0.8
               ? '#D9E9DF'
               : props.row.original['f1-score'] <= 0.3 ? '#F7DBDB' : undefined,
-        }}>{t('training.mba.addExamples')}</div>
+        }}>{props.row.original.support < 30 ? t('training.mba.addExamples') : <>&nbsp;</>}</div>
       ),
     }),
   ], [columnHelper, t]);
@@ -113,22 +121,23 @@ const IntentsOverview: FC = () => {
 
       <Card>
         <Track gap={16}>
-          {/* TODO: Replace hardcoded select options */}
-          <FormSelect label='folder' hideLabel name='' options={[
-            {
-              label: '20220322-155051-potential-proton.tar.gz',
-              value: '1',
-            },
-          ]} defaultValue={'1'} />
+          {models && (
+            <FormSelect
+              label={t('training.mba.modelInUse')}
+              hideLabel
+              name='model'
+              options={models.map((model) => ({ label: model.name, value: String(model.id) }))}
+              defaultValue={models.find((model) => model.active)?.id + ''}
+            />
+          )}
           <Button>{t('global.choose')}</Button>
           <Track gap={8} style={{ whiteSpace: 'nowrap', color: '#308653' }}>
             <Icon icon={<MdOutlineSettingsInputAntenna />} size='medium' />
             <p>{t('training.mba.modelInUse')}</p>
           </Track>
-          <p style={{
-            color: '#4D4F5D',
-            whiteSpace: 'nowrap',
-          }}>{t('training.mba.trained')}: {format(new Date(), 'dd.MM.yyyy')}</p>
+          <p style={{ color: '#4D4F5D', whiteSpace: 'nowrap' }}>
+            {t('training.mba.trained')}: {format(new Date(), 'dd.MM.yyyy')}
+          </p>
         </Track>
       </Card>
 

@@ -1,4 +1,5 @@
-import { FC, useCallback, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as Tabs from '@radix-ui/react-tabs';
@@ -22,8 +23,10 @@ const Intents: FC = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const toast = useToast();
+  const [searchParams] = useSearchParams();
   const [filter, setFilter] = useState('');
   const [editingIntentTitle, setEditingIntentTitle] = useState<string | null>(null);
+  const [selectedTab, setSelectedTab] = useState<string | null>(null);
   const [selectedIntent, setSelectedIntent] = useState<Intent | null>(null);
   const [deletableIntent, setDeletableIntent] = useState<string | number | null>(null);
   const { data: intents } = useQuery<Intent[]>({
@@ -36,6 +39,17 @@ const Intents: FC = () => {
   const { data: entities } = useQuery<Entity[]>({
     queryKey: ['entities'],
   });
+
+  useEffect(() => {
+    const queryIntentName = searchParams.get('intent');
+    if (intents && queryIntentName) {
+      const queryIntent = intents.find((intent) => intent.intent === queryIntentName);
+      if (queryIntent) {
+        setSelectedIntent(queryIntent);
+        setSelectedTab(queryIntentName);
+      }
+    }
+  }, [intents, searchParams]);
 
   const addExamplesMutation = useMutation({
     mutationFn: ({ intentId, example }: { intentId: string | number; example: string; }) => {
@@ -113,7 +127,10 @@ const Intents: FC = () => {
       setEditingIntentTitle(null);
       if (!intents) return;
       const selectedIntent = intents.find((intent) => intent.intent === value);
-      if (selectedIntent) setSelectedIntent(selectedIntent);
+      if (selectedIntent) {
+        setSelectedIntent(selectedIntent);
+        setSelectedTab(selectedIntent.intent);
+      }
     },
     [intents],
   );
@@ -182,8 +199,10 @@ const Intents: FC = () => {
       <h1>{t('training.intents.title')}</h1>
       {intents && (
         <Tabs.Root
+          id="tabs"
           className='vertical-tabs'
           orientation='vertical'
+          value={selectedTab ?? undefined}
           onValueChange={handleTabsValueChange}
         >
           <Tabs.List
