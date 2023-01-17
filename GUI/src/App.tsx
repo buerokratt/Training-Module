@@ -16,7 +16,8 @@ import Appeals from 'pages/HistoricalConversations/Appeals';
 import IntentsOverview from 'pages/ModelBankAndAnalytics/IntentsOverview';
 import Testcases from 'pages/ModelBankAndAnalytics/Testcases';
 import Models from 'pages/ModelBankAndAnalytics/Models';
-import FormsDetail from './pages/Training/Forms/FormsDetail';
+import FormsDetail from 'pages/Training/Forms/FormsDetail';
+import ModelsDetail from 'pages/ModelBankAndAnalytics/Models/ModelsDetail';
 
 const App: FC = () => {
   return (
@@ -40,6 +41,7 @@ const App: FC = () => {
         <Route path='/treening/mudelipank-ja-analuutika/teemade-ulevaade' element={<IntentsOverview />} />
         <Route path='/treening/mudelipank-ja-analuutika/testlood' element={<Testcases />} />
         <Route path='/treening/mudelipank-ja-analuutika/mudelite-vordlus' element={<Models />} />
+        <Route path='/treening/mudelipank-ja-analuutika/mudelite-vordlus/:id' element={<ModelsDetail />} />
       </Route>
     </Routes>
   );

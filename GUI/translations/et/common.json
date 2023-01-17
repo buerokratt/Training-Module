@@ -132,7 +132,8 @@
       "lastTrained": "Viimati treenitud",
       "live": "Live",
       "compareResults": "Võrdle tulemusi",
-      "deleteModel": "Kustuta mudel"
+      "deleteModel": "Kustuta mudel",
+      "modelResults": "Mudeli tulemused"
     }
   }
 }

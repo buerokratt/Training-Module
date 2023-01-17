@@ -132,7 +132,8 @@
       "lastTrained": "Last trained",
       "live": "Live",
       "compareResults": "Compare results",
-      "deleteModel": "Delete model"
+      "deleteModel": "Delete model",
+      "modelResults": "Model results"
     }
   }
 }

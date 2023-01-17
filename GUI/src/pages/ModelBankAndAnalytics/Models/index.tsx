@@ -1,11 +1,11 @@
 import { FC, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { createColumnHelper } from '@tanstack/react-table';
+import { createColumnHelper, Row } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
 import { AxiosError } from 'axios';
-import { MdCheckCircleOutline } from 'react-icons/md';
+import { MdOutlineSettingsInputAntenna } from 'react-icons/md';
 
 import { Button, Card, DataTable, Dialog, Icon, Track } from 'components';
 import { Model } from 'types/model';
@@ -16,10 +16,8 @@ const Models: FC = () => {
   const { t } = useTranslation();
   const toast = useToast();
   const queryClient = useQueryClient();
+  const [selectedModel, setSelectedModel] = useState<Model>();
   const [deletableModel, setDeletableModel] = useState<string | number | null>(null);
-  const { data: selectedModel } = useQuery<Model>({
-    queryKey: ['selected-model'],
-  });
   const { data: models } = useQuery<Model[]>({
     queryKey: ['models'],
   });
@@ -49,11 +47,16 @@ const Models: FC = () => {
   const modelsColumns = useMemo(() => [
     columnHelper.accessor('name', {
       header: t('global.name') || '',
+      cell: (props) => (
+        <Button appearance='text' onClick={() => setSelectedModel(props.row.original)}>
+          {props.getValue()}
+        </Button>
+      ),
     }),
     columnHelper.display({
       id: 'compare',
       cell: (props) => (
-        <Link to='#' style={{ color: '#005AA3' }}>
+        <Link to={String(props.row.original.id)} style={{ color: '#005AA3' }}>
           {t('training.mba.compareResults')}
         </Link>
       ),
@@ -68,14 +71,14 @@ const Models: FC = () => {
     columnHelper.accessor('active', {
       header: t('training.mba.live') || '',
       cell: (props) => props.getValue() ? (
-        <Icon
-          icon={
-            <MdCheckCircleOutline
-              color={'rgba(0, 0, 0, 0.54)'}
-            />
-          }
-        />
+        <Track gap={8} style={{ whiteSpace: 'nowrap', color: '#308653' }}>
+          <Icon icon={<MdOutlineSettingsInputAntenna fontSize={24} />} size='medium' />
+          <p>{t('training.mba.modelInUse')}</p>
+        </Track>
       ) : null,
+      meta: {
+        size: '1%',
+      },
     }),
   ], [columnHelper, t]);
 
@@ -92,14 +95,27 @@ const Models: FC = () => {
             <Button appearance='secondary'>{t('training.mba.viewIntentsPrecision')}</Button>
             <Button appearance='error'
                     onClick={() => setDeletableModel(selectedModel.id)}>{t('global.delete')}</Button>
-            <Button appearance='success'>{t('training.mba.activateModel')}</Button>
+            {selectedModel.active ? (
+              <Track gap={8} style={{ whiteSpace: 'nowrap', color: '#308653' }}>
+                <Icon icon={<MdOutlineSettingsInputAntenna fontSize={24} />} size='medium' />
+                <p>{t('training.mba.modelInUse')}</p>
+              </Track>
+            ) : (
+              <Button appearance='success'>{t('training.mba.activateModel')}</Button>
+            )}
           </Track>
         </Card>
       )}
 
       {models && (
         <Card header={<h2 className='h3'>{t('training.mba.allModels')}</h2>}>
-          <DataTable data={models} columns={modelsColumns} />
+          <DataTable data={models} columns={modelsColumns} sortable meta={
+            {
+              getRowStyles: (row: Row<Model>) => ({
+                backgroundColor: row.original.id === selectedModel?.id ? '#E1E2E5' : undefined,
+              }),
+            }
+          } />
         </Card>
       )}
 
