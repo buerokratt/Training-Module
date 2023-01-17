@@ -6,6 +6,7 @@ import { MdCheckCircleOutline } from 'react-icons/md';
 
 import { Button, Card, FormInput, FormSelect, Icon, Switch, Tooltip, Track } from 'components';
 import { Config, Policy } from 'types/config';
+import { useForm } from 'react-hook-form';
 
 const Configuration: FC = () => {
   const { t } = useTranslation();
@@ -13,6 +14,8 @@ const Configuration: FC = () => {
   const { data: configurationData } = useQuery<Config>({
     queryKey: ['active-configuration'],
   });
+
+  const { register, handleSubmit } = useForm();
 
   if (!configurationData) return <>Loading...</>;
 
@@ -29,13 +32,21 @@ const Configuration: FC = () => {
     // TODO: Add endpoint for deactivating config policy
   };
 
+  const handleConfigSave = handleSubmit((data) => {
+
+  });
+
   return (
     <>
-      <h1>{t('training.configuration.title')}</h1>
+      <Track gap={16}>
+        <h1>{t('training.configuration.title')}</h1>
+        <Button onClick={handleConfigSave} style={{ marginLeft: 'auto' }}>{t('global.save')}</Button>
+      </Track>
+
       <Card header={
         <FormSelect
+          {...register('recipe')}
           label={t('training.configuration.pipeline')}
-          name='recipe'
           defaultValue={configurationData.recipe}
           options={[
             { label: configurationData.recipe, value: configurationData.recipe },
@@ -43,24 +54,24 @@ const Configuration: FC = () => {
       }>
         <Track direction='vertical' align='left' gap={8}>
           <FormSelect
+            {...register('language')}
             label={t('global.language')}
-            name='language'
             defaultValue={configurationData.language}
             options={['et', 'en'].map((l) => ({ label: l, value: l }))}
           />
           <FormInput
+            {...register('pipeline.epochs')}
             label={t('training.configuration.epochs')}
-            name='pipeline.epochs'
             defaultValue={configurationData.pipeline.epochs}
             type='number' />
           <FormInput
+            {...register('pipeline.randomSeed')}
             label={t('training.configuration.randomSeed')}
-            name='pipeline.randomSeed'
             defaultValue={configurationData.pipeline.randomSeed}
             type='number' />
           <FormInput
+            {...register('pipeline.threshold')}
             label={t('training.configuration.threshold')}
-            name='pipeline.threshold'
             defaultValue={configurationData.pipeline.threshold}
             type='number' />
         </Track>
@@ -95,25 +106,38 @@ const Configuration: FC = () => {
           <Tabs.Content key={policy.id} value={policy.name} className='vertical-tabs__body'>
             <div className='vertical-tabs__content'>
               <Track direction='vertical' align='left' gap={8}>
-                <FormInput label={t('training.configuration.priority')} name={`policies[${index}].priority`}
-                           defaultValue={policy.priority} type='number' />
+                <FormInput
+                  label={t('training.configuration.priority')}
+                  name={`policies[${index}].priority`}
+                  defaultValue={policy.priority} type='number'
+                />
                 {'maxHistory' in policy && (
-                  <FormInput label={t('training.configuration.maxHistory')} name={`policies[${index}].maxHistory`}
-                             defaultValue={policy.maxHistory} type='number' />
+                  <FormInput
+                    label={t('training.configuration.maxHistory')}
+                    name={`policies[${index}].maxHistory`}
+                    defaultValue={policy.maxHistory} type='number'
+                  />
                 )}
                 {'epochs' in policy && (
-                  <FormInput label={t('training.configuration.epochs')} name={`policies[${index}].epochs`}
-                             defaultValue={policy.epochs} type='number' />
+                  <FormInput
+                    label={t('training.configuration.epochs')}
+                    name={`policies[${index}].epochs`}
+                    defaultValue={policy.epochs} type='number'
+                  />
                 )}
                 {'coreFallbackThreshold' in policy && (
-                  <FormInput label={t('training.configuration.coreFallbackThreshold')}
-                             name={`policies[${index}].coreFallbackThreshold`}
-                             defaultValue={policy.coreFallbackThreshold} type='number' />
+                  <FormInput
+                    label={t('training.configuration.coreFallbackThreshold')}
+                    name={`policies[${index}].coreFallbackThreshold`}
+                    defaultValue={policy.coreFallbackThreshold} type='number'
+                  />
                 )}
                 {'checkForContradictions' in policy && (
-                  <Switch label={t('training.configuration.checkForContradictions')}
-                          defaultChecked={policy.checkForContradictions}
-                          name={`policies[${index}].checkForContradictions`} />
+                  <Switch
+                    label={t('training.configuration.checkForContradictions')}
+                    defaultChecked={policy.checkForContradictions}
+                    name={`policies[${index}].checkForContradictions`}
+                  />
                 )}
               </Track>
             </div>
