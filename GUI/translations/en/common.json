@@ -133,7 +133,8 @@
       "live": "Live",
       "compareResults": "Compare results",
       "deleteModel": "Delete model",
-      "modelResults": "Model results"
+      "modelResults": "Model results",
+      "testStoryExists": "Test story exists"
     }
   }
 }

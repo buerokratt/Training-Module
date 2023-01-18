@@ -133,7 +133,8 @@
       "live": "Live",
       "compareResults": "Võrdle tulemusi",
       "deleteModel": "Kustuta mudel",
-      "modelResults": "Mudeli tulemused"
+      "modelResults": "Mudeli tulemused",
+      "testStoryExists": "Testlugu on olemas"
     }
   }
 }
