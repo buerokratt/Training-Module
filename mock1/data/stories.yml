@@ -1,0 +1,7 @@
+version: "3.0"
+
+stories:
+- story: andmekaitse_küsimused
+  steps:
+  - intent: andmekaitse_küsimused
+  - action: utter_andmekaitse_küsimused
