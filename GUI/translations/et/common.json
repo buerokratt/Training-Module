@@ -29,7 +29,9 @@
     "yes": "Jah",
     "no": "Ei",
     "removeValidation": "Oled sa kindel?",
-    "logout": "Logi välja"
+    "logout": "Logi välja",
+    "enabled": "Aktiveeritud",
+    "reset": "Algväärtusta"
   },
   "mainMenu": {
     "menuLabel": "Põhinavigatsioon",
@@ -72,7 +74,8 @@
       "priority": "Priority",
       "maxHistory": "Max history",
       "checkForContradictions": "Check for contradictions",
-      "coreFallbackThreshold": "Core fallback threshold"
+      "coreFallbackThreshold": "Core fallback threshold",
+      "moreFromKratid": "Rohkem infot kratid.ee"
     },
     "stories": {
       "title": "Kasutuslood ja reeglid",

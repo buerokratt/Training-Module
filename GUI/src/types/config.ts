@@ -1,21 +1,31 @@
 export interface Policy {
   readonly id: number;
   name: string;
-  active: boolean;
+  enabled: boolean;
   priority: number;
   epochs?: number;
-  maxHistory?: number;
-  checkForContradictions?: boolean;
-  coreFallbackThreshold?: number;
+  max_history?: number;
+  core_fallback_threshold?: number;
+  enable_fallback_prediction?: boolean;
+}
+
+export interface PipelineComponent {
+  name: string;
+  enabled: boolean;
+  analyzer?: string;
+  min_ngram?: number;
+  max_ngram?: number;
+  entity_recognition?: boolean;
+  epochs?: number;
+  random_seed?: number;
+  case_sensitive?: boolean;
+  use_regexes?: boolean;
+  threshold?: number;
 }
 
 export interface Config {
   recipe: string;
   language: string;
-  pipeline: {
-    epochs: number;
-    randomSeed: number;
-    threshold: number;
-  };
+  pipeline: PipelineComponent[];
   policies: Policy[];
 }

@@ -29,7 +29,9 @@
     "yes": "Yes",
     "no": "No",
     "removeValidation": "Are you sure?",
-    "logout": "Logout"
+    "logout": "Logout",
+    "enabled": "Enabled",
+    "reset": "Reset"
   },
   "mainMenu": {
     "menuLabel": "Main navigation",
@@ -72,7 +74,8 @@
       "priority": "Priority",
       "maxHistory": "Max history",
       "checkForContradictions": "Check for contradictions",
-      "coreFallbackThreshold": "Core fallback threshold"
+      "coreFallbackThreshold": "Core fallback threshold",
+      "moreFromKratid": "More info from kratid.ee"
     },
     "stories": {
       "title": "Stories and rules",

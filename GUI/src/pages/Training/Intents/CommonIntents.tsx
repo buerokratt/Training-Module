@@ -166,7 +166,7 @@ const CommonIntents: FC = () => {
             label={t('training.intents.commonIntents')}
             hideLabel
             name='commonIntents'
-            defaultChecked={commonIntentsEnabled}
+            checked={commonIntentsEnabled}
             onCheckedChange={setCommonIntentsEnabled}
           />
         </Track>
