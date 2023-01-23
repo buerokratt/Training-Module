@@ -1,0 +1,73 @@
+version: "3.0"
+nlu:
+- regex: asukoht
+  examples: |
+    - abja[- ]paluoja
+    - antsla
+    - elva
+    - haapsalu
+    - harju
+    - hiiu
+    - ida[- ]viru
+    - jõgeva
+    - jõhvi
+    - järva
+    - kallaste
+    - kärdla
+    - karksi[- ]nuia
+    - kehra
+    - keila
+    - kilingi[- ]nõmme
+    - kiviõli
+    - kohtla[- ]järve
+    - kunda
+    - kuressaare
+    - lihula
+    - loksa
+    - lääne
+    - lääne[- ]viru
+    - maardu
+    - mõisaküla
+    - mustvee
+    - narva
+    - narva[- ]jõesuu
+    - otepää
+    - paide
+    - paldiski
+    - pärnu
+    - põltsamaa
+    - põlva
+    - püssi
+    - rakvere
+    - rapla
+    - räpina
+    - saaremaa
+    - saue
+    - sillamäe
+    - sindi
+    - suure[- ]jaani
+    - tallinn
+    - tamsalu
+    - tapa
+    - tartu
+    - tõrva
+    - türi
+    - valga
+    - viljandi
+    - võhma
+    - võru
+    - võsu
+    - tabasalu
+    - ulu
+    - jõelähtme
+    - jüri
+    - sõmeru
+    - peetri
+    - saku
+    - viimsi
+    - väike[- ]maarja
+    - värska
+    - pajusti
+    - kõrveküla
+    - pealinn
+

@@ -1,0 +1,14 @@
+stories:
+- story: tervitus
+  steps:
+  - user: |
+      tere
+    intent: common_tervitus
+  - action: utter_common_tervitus
+
+- story: hüvasti jätmine
+  steps:
+  - user: |
+      headaega
+    intent: common_hüvasti_jätmine
+  - action: utter_common_hüvasti_jätmine
