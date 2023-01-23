@@ -28,7 +28,8 @@
     "name": "Nimi",
     "yes": "Jah",
     "no": "Ei",
-    "removeValidation": "Oled sa kindel?"
+    "removeValidation": "Oled sa kindel?",
+    "logout": "Logi välja"
   },
   "mainMenu": {
     "menuLabel": "Põhinavigatsioon",

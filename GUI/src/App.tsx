@@ -2,6 +2,8 @@ import { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 
 import { Layout } from 'components';
+import useUserInfoStore from 'store/store';
+import { UserInfo } from 'types/userInfo';
 import Intents from 'pages/Training/Intents';
 import CommonIntents from 'pages/Training/Intents/CommonIntents';
 import Responses from 'pages/Training/Responses';
@@ -18,8 +20,15 @@ import Testcases from 'pages/ModelBankAndAnalytics/Testcases';
 import Models from 'pages/ModelBankAndAnalytics/Models';
 import FormsDetail from 'pages/Training/Forms/FormsDetail';
 import ModelsDetail from 'pages/ModelBankAndAnalytics/Models/ModelsDetail';
+import { useQuery } from '@tanstack/react-query';
 
 const App: FC = () => {
+  const store = useUserInfoStore();
+  const { data: userInfo } = useQuery<UserInfo>({
+    queryKey: ['cs-custom-jwt-userinfo'],
+    onSuccess: (data) => store.setUserInfo(data),
+  });
+
   return (
     <Routes>
       <Route element={<Layout />}>

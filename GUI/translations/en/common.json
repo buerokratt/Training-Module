@@ -28,7 +28,8 @@
     "name": "Name",
     "yes": "Yes",
     "no": "No",
-    "removeValidation": "Are you sure?"
+    "removeValidation": "Are you sure?",
+    "logout": "Logout"
   },
   "mainMenu": {
     "menuLabel": "Main navigation",
