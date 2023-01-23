@@ -108,8 +108,11 @@
       "name": "Name",
       "label": "Label",
       "comment": "Comment",
-      "appeals": "Appeals",
-      "searchIntent": "Search intent"
+      "appeals": "Client messages",
+      "appeal": "Client message",
+      "searchIntent": "Search intent",
+      "searchAppeals": "Search apeals",
+      "deleteAppeal": "Delete appeal"
     },
     "mba": {
       "intentsOverview": "Intents overview",

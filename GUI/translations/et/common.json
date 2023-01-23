@@ -109,7 +109,10 @@
       "label": "Pealkiri",
       "comment": "Kommentaar",
       "appeals": "Pöördumised",
-      "searchIntent": "Otsi teemasid"
+      "appeal": "Pöördumine",
+      "searchIntent": "Otsi teemasid",
+      "searchAppeals": "Otsi pöördumisi",
+      "deleteAppeal": "Kustuta pöördumine"
     },
     "mba": {
       "intentsOverview": "Teemade ülevaade",
