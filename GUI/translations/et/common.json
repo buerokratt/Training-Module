@@ -88,14 +88,14 @@
       "rules": "Reeglid"
     },
     "slots": {
-      "title": "Pilud",
-      "titleOne": "Pilu",
-      "newSlot": "Uus pilu",
+      "title": "Mälukohad",
+      "titleOne": "Mälukoht",
+      "newSlot": "Uus mälukoht",
       "mapping": "Kaardistamine",
-      "slotName": "Pilu nimi",
-      "slotType": "Pilu tüüp",
+      "slotName": "Mälukoha nimi",
+      "slotType": "Mälukoha tüüp",
       "influenceConversation": "Mõjuta vestlust",
-      "deleteSlot": "Kustuta pilu"
+      "deleteSlot": "Kustuta mälukoht"
     },
     "forms": {
       "title": "Vormid",

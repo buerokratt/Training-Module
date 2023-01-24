@@ -42,9 +42,9 @@ const App: FC = () => {
         <Route path='/treening/treening/kasutuslood' element={<Stories />} />
         <Route path='/treening/treening/kasutuslood/uus' element={<StoriesDetail />} />
         <Route path='/treening/treening/kasutuslood/:id' element={<StoriesDetail />} />
-        <Route path='/treening/treening/pilud' element={<Slots />} />
-        <Route path='/treening/treening/pilud/uus' element={<SlotsDetail mode='new' />} />
-        <Route path='/treening/treening/pilud/:id' element={<SlotsDetail mode='edit' />} />
+        <Route path='/treening/treening/malukohad' element={<Slots />} />
+        <Route path='/treening/treening/malukohad/uus' element={<SlotsDetail mode='new' />} />
+        <Route path='/treening/treening/malukohad/:id' element={<SlotsDetail mode='edit' />} />
         <Route path='/treening/treening/vormid' element={<Forms />} />
         <Route path='/treening/treening/vormid/uus' element={<FormsDetail mode='new' />} />
         <Route path='/treening/treening/vormid/:id' element={<FormsDetail mode='edit' />} />

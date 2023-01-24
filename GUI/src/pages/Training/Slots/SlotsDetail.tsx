@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { AxiosError } from 'axios';
 import { MdOutlineArrowBack } from 'react-icons/md';
 
@@ -46,7 +46,7 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
     queryKey: ['entities'],
   });
 
-  const { register, handleSubmit, reset } = useForm<SlotCreateDTO>({
+  const { register, control, handleSubmit, reset } = useForm<SlotCreateDTO>({
     mode: 'onChange',
     shouldUnregister: true,
   });
@@ -61,7 +61,7 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
     mutationFn: (data: SlotCreateDTO) => createSlot(data),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['slots']);
-      navigate('/treening/treening/pilud');
+      navigate('/treening/treening/malukohad');
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -81,7 +81,7 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
     mutationFn: ({ id, data }: { id: string | number, data: SlotEditDTO }) => editSlot(id, data),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['slots']);
-      navigate('/treening/treening/pilud');
+      navigate('/treening/treening/malukohad');
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -108,7 +108,7 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
   return (
     <>
       <Track gap={16}>
-        <Button appearance='icon' onClick={() => navigate('/treening/treening/pilud')}>
+        <Button appearance='icon' onClick={() => navigate('/treening/treening/malukohad')}>
           <MdOutlineArrowBack />
         </Button>
         <h1>{t('training.slots.titleOne')}</h1>
@@ -118,25 +118,32 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
       <Card>
         <Track direction='vertical' align='left' gap={8}>
           <FormInput {...register('name')} label={t('training.slots.slotName')} />
-          <FormSelect
-            {...register('type')}
-            label={t('training.slots.slotType')}
-            options={slotTypes}
-            onSelectionChange={(selection) => setSelectedSlotType((selection?.value) || null)}
-          />
-          <Switch
-            {...register('influenceConversation')}
-            label={t('training.slots.influenceConversation')}
-          />
+          <Controller name='type' control={control} render={({ field }) =>
+            <FormSelect
+              {...field}
+              label={t('training.slots.slotType')}
+              options={slotTypes}
+              onSelectionChange={(selection) => {
+                setSelectedSlotType((selection?.value) || null);
+                field.onChange(selection);
+              }}
+            />
+          } />
+          <Controller name='influenceConversation' control={control} render={({ field }) =>
+            <Switch
+              {...field}
+              label={t('training.slots.influenceConversation')}
+            />
+          } />
         </Track>
       </Card>
 
-      {selectedSlotType === 'entity' && (
+      {selectedSlotType && (
         <Card header={
           <h2 className='h5'>{t('training.slots.mapping')}</h2>
         }>
           <Track direction='vertical' gap={8} align='left'>
-            {entities && (
+            {entities && selectedSlotType === 'entity' && (
               <FormSelect
                 {...register('mappings.entity')}
                 label='Entity'

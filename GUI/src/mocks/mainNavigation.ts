@@ -43,8 +43,8 @@ export const mainNavigationET = [
             path: '/treening/treening/vormid',
           },
           {
-            label: 'Pilud',
-            path: '/treening/treening/pilud',
+            label: 'Mälukohad',
+            path: '/treening/treening/malukohad',
           },
         ],
       },

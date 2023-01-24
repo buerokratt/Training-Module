@@ -5,8 +5,8 @@ export interface Slot {
   influenceConversation: boolean;
   mappings?: {
     entity: string | null;
-    intent: string | null;
-    notIntent: string | null;
+    intent: string[] | null;
+    notIntent: string[] | null;
   };
 }
 
