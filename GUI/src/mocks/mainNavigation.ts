@@ -23,6 +23,10 @@ export const mainNavigationET = [
             path: '/treening/treening/avalikud-teemad',
           },
           {
+            label: 'Teemade järeltreenimine',
+            path: '/treening/treening/teemade-jareltreenimine',
+          },
+          {
             label: 'Vastused',
             path: '/treening/treening/vastused',
           },
@@ -115,6 +119,14 @@ export const mainNavigationEN = [
           {
             label: 'Intents',
             path: '/training/training/intents',
+          },
+          {
+            label: 'Common intents',
+            path: '/training/training/common-intents',
+          },
+          {
+            label: 'Intents follow-up training',
+            path: '/training/training/intents-follow-up-training',
           },
           {
             label: 'Responses',

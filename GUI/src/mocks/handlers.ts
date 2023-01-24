@@ -17,6 +17,7 @@ import { testStoriesData } from './testStories';
 import { modelsData, selectedModelData } from './models';
 import { resultsData } from './results';
 import { userInfoData } from './userInfo';
+import { userProfileSettingsData } from './userProfileSettings';
 
 export const handlers = [
   rest.get(`${import.meta.env.BASE_URL}api/main-navigation`, (req, res, ctx) => {
@@ -144,5 +145,8 @@ export const handlers = [
   }),
   rest.get(import.meta.env.BASE_URL + 'api/cs-custom-jwt-userinfo', (req, res, ctx) => {
     return res(ctx.json(userInfoData));
+  }),
+  rest.get(import.meta.env.BASE_URL + 'api/cs-get-user-profile-settings', (req, res, ctx) => {
+    return res(ctx.json(userProfileSettingsData));
   }),
 ];
