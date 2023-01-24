@@ -40,6 +40,7 @@ const App: FC = () => {
         <Route path='/treening/treening/vastused' element={<Responses />} />
         <Route path='/treening/treening/konfiguratsioon' element={<Configuration />} />
         <Route path='/treening/treening/kasutuslood' element={<Stories />} />
+        <Route path='/treening/treening/kasutuslood/uus' element={<StoriesDetail />} />
         <Route path='/treening/treening/kasutuslood/:id' element={<StoriesDetail />} />
         <Route path='/treening/treening/pilud' element={<Slots />} />
         <Route path='/treening/treening/pilud/uus' element={<SlotsDetail mode='new' />} />

@@ -16,3 +16,10 @@ export const storiesData = [
     story: 'interactive_story_1',
   },
 ];
+
+export const singleStoryData = [
+  {
+    id: 1,
+    story: 'happy path',
+  },
+];

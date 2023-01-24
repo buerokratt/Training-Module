@@ -6,7 +6,7 @@ import { examplesData } from './examples';
 import { responsesData } from './responses';
 import { entitiesData } from './entities';
 import { configurationData } from './configuration';
-import { storiesData } from './stories';
+import { singleStoryData, storiesData } from './stories';
 import { rulesData } from './rules';
 import { slotsData } from './slots';
 import { formsData } from './forms';
@@ -109,6 +109,9 @@ export const handlers = [
   }),
   rest.get(`${import.meta.env.BASE_URL}api/stories`, (req, res, ctx) => {
     return res(ctx.status(200), ctx.json(storiesData));
+  }),
+  rest.get(`${import.meta.env.BASE_URL}api/stories/:id`, (req, res, ctx) => {
+    return res(ctx.status(200), ctx.json(singleStoryData));
   }),
   rest.get(`${import.meta.env.BASE_URL}api/rules`, (req, res, ctx) => {
     return res(ctx.status(200), ctx.json(rulesData));

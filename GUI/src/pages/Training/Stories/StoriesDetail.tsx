@@ -1,4 +1,4 @@
-import { FC, useCallback } from 'react';
+import { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { MdOutlineEdit, MdPlayCircleFilled, MdOutlineStop } from 'react-icons/md';
@@ -11,12 +11,13 @@ import ReactFlow, {
   useEdgesState,
   useNodesState,
 } from 'reactflow';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import 'reactflow/dist/style.css';
 
 import { Box, Button, Collapsible, Icon, Track } from 'components';
 import { Intent } from 'types/intent';
 import { Responses } from 'types/response';
+import { Story } from 'types/story';
 import './StoriesDetail.scss';
 
 const GRID_UNIT = 16;
@@ -41,6 +42,12 @@ const initialNodes: Node[] = [
 const StoriesDetail: FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { id } = useParams();
+  const [editableTitle, setEditableTitle] = useState<string | null>(null);
+  const { data: story } = useQuery<Story>({
+    queryKey: [`stories/${id}`],
+    enabled: !!id,
+  });
   const { data: intents } = useQuery<Intent[]>({
     queryKey: ['intents'],
   });
