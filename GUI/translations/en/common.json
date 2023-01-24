@@ -55,6 +55,7 @@
       "entity": "Entity",
       "entityName": "Entity name",
       "deleteExample": "Delete example",
+      "deleteRegex": "Delete regex",
       "followupTraining": "Intents follow-up training",
       "entities": "Entities",
       "regex": "REGEX",

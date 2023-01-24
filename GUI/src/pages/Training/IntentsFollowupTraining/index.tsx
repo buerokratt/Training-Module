@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import * as Tabs from '@radix-ui/react-tabs';
 
 import Entities from './Entities';
+import Regex from './Regex';
 
 const IntentsFollowupTraining: FC = () => {
   const { t } = useTranslation();
@@ -37,7 +38,7 @@ const IntentsFollowupTraining: FC = () => {
         </Tabs.Content>
 
         <Tabs.Content key='regex' value='regex' className='vertical-tabs__body'>
-
+          <Regex />
         </Tabs.Content>
       </Tabs.Root>
     </>

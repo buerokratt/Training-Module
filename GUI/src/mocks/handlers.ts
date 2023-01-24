@@ -18,6 +18,7 @@ import { modelsData, selectedModelData } from './models';
 import { resultsData } from './results';
 import { userInfoData } from './userInfo';
 import { userProfileSettingsData } from './userProfileSettings';
+import { regexData, singleRegexData } from './regex';
 
 export const handlers = [
   rest.get(`${import.meta.env.BASE_URL}api/main-navigation`, (req, res, ctx) => {
@@ -103,6 +104,12 @@ export const handlers = [
   }),
   rest.get(`${import.meta.env.BASE_URL}api/entities`, (req, res, ctx) => {
     return res(ctx.status(200), ctx.json(entitiesData));
+  }),
+  rest.get(`${import.meta.env.BASE_URL}api/regex`, (req, res, ctx) => {
+    return res(ctx.status(200), ctx.json(regexData));
+  }),
+  rest.get(`${import.meta.env.BASE_URL}api/regex/:id`, (req, res, ctx) => {
+    return res(ctx.status(200), ctx.json(singleRegexData));
   }),
   rest.get(`${import.meta.env.BASE_URL}api/active-configuration`, (req, res, ctx) => {
     return res(ctx.status(200), ctx.json(configurationData));

@@ -77,7 +77,8 @@ const Entities: FC = () => {
 
   const entityDeleteMutation = useMutation({
     mutationFn: ({ id }: { id: string | number }) => deleteEntity(id),
-    onSuccess: () => {
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['entities']);
       toast.open({
         type: 'success',
         title: t('global.notification'),
