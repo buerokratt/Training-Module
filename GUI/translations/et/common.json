@@ -53,7 +53,12 @@
       "download": "Lae alla näited",
       "moreFromGithub": "Rohkem infot Githubist",
       "entity": "Olem",
-      "deleteExample": "Kustuta näide"
+      "entityName": "Olemi nimetus",
+      "deleteExample": "Kustuta näide",
+      "followupTraining": "Teemade järeltreenimine",
+      "entities": "Olemid",
+      "regex": "REGEX",
+      "deleteEntity": "Kustuta olem"
     },
     "responses": {
       "title": "Vastused",

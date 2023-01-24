@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 
 import { Layout } from 'components';
 import useUserInfoStore from 'store/store';
@@ -20,7 +21,7 @@ import Testcases from 'pages/ModelBankAndAnalytics/Testcases';
 import Models from 'pages/ModelBankAndAnalytics/Models';
 import FormsDetail from 'pages/Training/Forms/FormsDetail';
 import ModelsDetail from 'pages/ModelBankAndAnalytics/Models/ModelsDetail';
-import { useQuery } from '@tanstack/react-query';
+import IntentsFollowupTraining from 'pages/Training/IntentsFollowupTraining';
 
 const App: FC = () => {
   const store = useUserInfoStore();
@@ -35,6 +36,7 @@ const App: FC = () => {
         <Route index element={<Navigate to='/treening/treening/teemad' />} />
         <Route path='/treening/treening/teemad' element={<Intents />} />
         <Route path='/treening/treening/avalikud-teemad' element={<CommonIntents />} />
+        <Route path='/treening/treening/teemade-jareltreenimine' element={<IntentsFollowupTraining />} />
         <Route path='/treening/treening/vastused' element={<Responses />} />
         <Route path='/treening/treening/konfiguratsioon' element={<Configuration />} />
         <Route path='/treening/treening/kasutuslood' element={<Stories />} />

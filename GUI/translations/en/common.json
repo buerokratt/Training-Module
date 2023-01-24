@@ -53,7 +53,12 @@
       "download": "Download examples",
       "moreFromGithub": "More info from Github",
       "entity": "Entity",
-      "deleteExample": "Delete example"
+      "entityName": "Entity name",
+      "deleteExample": "Delete example",
+      "followupTraining": "Intents follow-up training",
+      "entities": "Entities",
+      "regex": "REGEX",
+      "deleteEntity": "Delete entity"
     },
     "responses": {
       "title": "Responses",
