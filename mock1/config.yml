@@ -23,7 +23,7 @@ policies:
    - name: MemoizationPolicy
      priority: 3
    - name: TEDPolicy
-     priority: 3
+     priority: 1
      max_history: 5
      epochs: 60
    - name: RulePolicy
