@@ -179,6 +179,48 @@ const Configuration: FC = () => {
                     }
                   />
                 )}
+                {'epochs' in comp && (
+                  <FormInput
+                    {...register(`pipeline.${index}.epochs`)}
+                    label='epochs'
+                    type='number'
+                    defaultValue={comp.epochs} />
+                )}
+                {'random_seed' in comp && (
+                  <FormInput
+                    {...register(`pipeline.${index}.random_seed`)}
+                    label='random_seed'
+                    type='number'
+                    defaultValue={comp.random_seed} />
+                )}
+                {'case_sensitive' in comp && (
+                  <Controller
+                    name={`pipeline.${index}.case_sensitive`}
+                    control={control}
+                    render={({ field }) =>
+                      <Switch
+                        {...field}
+                        onCheckedChange={field.onChange}
+                        label='case_sensitive'
+                        checked={field.value}
+                      />
+                    }
+                  />
+                )}
+                {'use_regexes' in comp && (
+                  <Controller
+                    name={`pipeline.${index}.use_regexes`}
+                    control={control}
+                    render={({ field }) =>
+                      <Switch
+                        {...field}
+                        onCheckedChange={field.onChange}
+                        label='use_regexes'
+                        checked={field.value}
+                      />
+                    }
+                  />
+                )}
                 <Controller
                   name={`pipeline.${index}.enabled`}
                   control={control}
