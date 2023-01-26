@@ -5,3 +5,10 @@ stories:
   steps:
   - intent: andmekaitse_küsimused
   - action: utter_andmekaitse_küsimused
+  
+- story: Deactivate custom fallback form
+  steps:
+  - action: custom_fallback_form
+  - slot_was_set:
+    - asukoht: Tallinn
+  - action: action_react_to_affirm_deny_in_custom_fallback_form
