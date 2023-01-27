@@ -1,5 +1,5 @@
 stories:
-- story: tervitus
+- story: common_tervitus
   steps:
   - user: |
       tere
