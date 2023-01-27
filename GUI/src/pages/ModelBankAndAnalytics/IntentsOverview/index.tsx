@@ -6,7 +6,7 @@ import { createColumnHelper } from '@tanstack/react-table';
 import { MdOutlineSettingsInputAntenna } from 'react-icons/md';
 import { format } from 'date-fns';
 
-import { Button, Card, DataTable, FormInput, FormSelect, Icon, Track } from 'components';
+import { Button, Card, DataTable, FormInput, FormSelect, Icon, Tooltip, Track } from 'components';
 import { IntentsReport } from 'types/intentsReport';
 import { truncateNumber } from 'utils/truncateNumber';
 import { Model } from 'types/model';
@@ -74,7 +74,7 @@ const IntentsOverview: FC = () => {
       ),
     }),
     columnHelper.accessor('recall', {
-      header: t('training.mba.yield') || '',
+      header: t('training.mba.recall') || '',
       cell: (props) => (
         <div style={{
           margin: '-12px -24px -12px -16px',
@@ -87,7 +87,11 @@ const IntentsOverview: FC = () => {
       ),
     }),
     columnHelper.accessor('f1-score', {
-      header: 'F1',
+      header: () => (
+        <Tooltip content={t('training.mba.f1Tooltip')}>
+          <span>{t('training.mba.f1') || ''}</span>
+        </Tooltip>
+      ),
       cell: (props) => (
         <div style={{
           margin: '-12px -24px -12px -16px',
@@ -110,7 +114,9 @@ const IntentsOverview: FC = () => {
             props.row.original['f1-score'] >= 0.8
               ? '#D9E9DF'
               : props.row.original['f1-score'] <= 0.3 ? '#F7DBDB' : undefined,
-        }}>{props.row.original.support < 30 ? t('training.mba.addExamples') : <>&nbsp;</>}</div>
+        }}>
+          {props.row.original.support < 30 ? t('training.mba.addExamples') : <>&nbsp;</>}
+        </div>
       ),
     }),
   ], [columnHelper, t]);
