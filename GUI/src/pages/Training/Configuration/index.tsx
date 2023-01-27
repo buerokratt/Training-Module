@@ -119,7 +119,7 @@ const Configuration: FC = () => {
       <Tabs.Root className='vertical-tabs' orientation='vertical' onValueChange={handlePipelineTabsValueChange}>
         <Tabs.List className='vertical-tabs__list' aria-label={t('training.configuration.pipeline') || ''}>
           {configurationData.pipeline.map((comp, index) => (
-            <Tabs.Trigger key={`${comp.name}-${index}`} value={comp.name} className='vertical-tabs__trigger'>
+            <Tabs.Trigger key={`${comp.name}-${index}`} value={`${comp.name}-${index}`} className='vertical-tabs__trigger'>
               <Track gap={16}>
                 <span style={{ flex: 1 }}>{comp.name}</span>
                 {comp.enabled && (
@@ -142,7 +142,7 @@ const Configuration: FC = () => {
         </Tabs.List>
 
         {configurationData.pipeline.map((comp, index) => (
-          <Tabs.Content key={comp.name} value={comp.name} className='vertical-tabs__body'>
+          <Tabs.Content key={comp.name} value={`${comp.name}-${index}`} className='vertical-tabs__body'>
             <div className='vertical-tabs__content'>
               <Track direction='vertical' align='left' gap={8}>
                 {'analyzer' in comp && (

@@ -17,6 +17,10 @@ export const configurationData = {
     {
       name: 'CountVectorsFeaturizer',
       enabled: true,
+    },
+    {
+      name: 'CountVectorsFeaturizer',
+      enabled: true,
       analyzer: 'char_wb',
       min_ngram: 1,
       max_ngram: 4,
@@ -33,10 +37,6 @@ export const configurationData = {
       enabled: false,
       case_sensitive: true,
       use_regexes: true,
-    },
-    {
-      name: 'EntitySynonymMapper',
-      enabled: true,
     },
     {
       name: 'FallbackClassifier',
