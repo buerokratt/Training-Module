@@ -6,7 +6,7 @@ stories:
     intent: common_tervitus
   - action: utter_common_tervitus
 
-- story: hüvasti jätmine
+- story: common_hüvasti_jätmine
   steps:
   - user: |
       headaega
