@@ -235,6 +235,8 @@ const Responses: FC = () => {
                   placeholder={t('training.responses.newResponseTextPlaceholder') || ''}
                   minRows={1}
                   hideLabel
+                  maxLength={RESPONSE_TEXT_LENGTH}
+                  showMaxLength
                 />
               </Track>
             </div>
