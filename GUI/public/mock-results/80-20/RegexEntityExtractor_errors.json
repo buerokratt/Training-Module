@@ -1,0 +1,15 @@
+[
+  {
+    "text": "mitu inimest harjumaal on",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "asukoht",
+        "start": 13,
+        "end": 18,
+        "value": "harju",
+        "extractor": "RegexEntityExtractor"
+      }
+    ]
+  }
+]

@@ -5,14 +5,16 @@ import * as Tabs from '@radix-ui/react-tabs';
 import { useQuery } from '@tanstack/react-query';
 import { MdOutlineArrowBack } from 'react-icons/md';
 
-import { Button, FormSelect, Track } from 'components';
-import { ResultBundle } from 'types/result';
+import { Button, Card, FormSelect, Track } from 'components';
+import { ResultBundle, ResultFile } from 'types/result';
+import { format } from 'date-fns';
 
 const ModelsDetail: FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const params = useParams();
   const [selectedBundle, setSelectedBundle] = useState<ResultBundle | null>(null);
+  const [selectedFile, setSelectedFile] = useState<ResultFile | null>(null);
   const { data: resultsData } = useQuery<ResultBundle[]>({
     queryKey: [`results/${params.id}`],
     enabled: !!params.id,
@@ -32,7 +34,10 @@ const ModelsDetail: FC = () => {
       <Tabs.Root
         className='vertical-tabs'
         orientation='vertical'
-        onValueChange={(value) => setSelectedBundle(resultsData.find((bundle) => bundle.name === value) || null)}
+        onValueChange={(value) => {
+          setSelectedBundle(resultsData.find((bundle) => bundle.name === value) || null);
+          setSelectedFile(null);
+        }}
       >
         <Tabs.List
           className='vertical-tabs__list'
@@ -62,15 +67,42 @@ const ModelsDetail: FC = () => {
                 hideLabel
                 options={selectedBundle.files.map((file) => ({
                   label: file.fileName,
-                  value: file.fileName,
+                  value: file.fileUri,
                 }))}
+                onSelectionChange={(selection) => setSelectedFile(selectedBundle?.files.find((f) => f.fileUri === selection?.value) || null)}
               />
             </div>
             <div className='vertical-tabs__content' style={{ padding: 0 }}>
               <Track align='stretch'>
                 <div style={{ flex: 1, borderRight: '1px solid #D2D3D8' }}>
+                  {selectedFile && (
+                    <Card
+                      borderless
+                      header={
+                        <strong>{t('training.mba.lastModified', { date: format(new Date(selectedFile.lastModified), 'dd.MM.yyyy') })}</strong>}
+                    >
+                      {selectedFile.fileUri.endsWith('.png') ? (
+                        <img src={selectedFile.fileUri} width='100%' alt='' />
+                      ) : (
+                        <iframe width='100%' height={500} src={selectedFile.fileUri} />
+                      )}
+                    </Card>
+                  )}
                 </div>
                 <div style={{ flex: 1 }}>
+                  {selectedFile && (
+                    <Card
+                      borderless
+                      header={
+                        <strong>{t('training.mba.lastModified', { date: format(new Date(selectedFile.lastModified), 'dd.MM.yyyy') })}</strong>}
+                    >
+                      {selectedFile.fileUri.endsWith('.png') ? (
+                        <img src={selectedFile.fileUri} width='100%' alt='' />
+                      ) : (
+                        <iframe width='100%' height={500} src={selectedFile.fileUri} />
+                      )}
+                    </Card>
+                  )}
                 </div>
               </Track>
             </div>

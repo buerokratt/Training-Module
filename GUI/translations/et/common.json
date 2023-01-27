@@ -152,7 +152,8 @@
       "deleteModel": "Kustuta mudel",
       "modelResults": "Mudeli tulemused",
       "testStoryExists": "Testlugu on olemas",
-      "exampleCountLow": "Näidete arv madal"
+      "exampleCountLow": "Näidete arv madal",
+      "lastModified": "Viimati muudetud {{date}}"
     }
   }
 }

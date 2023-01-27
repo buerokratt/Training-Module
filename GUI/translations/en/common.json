@@ -151,7 +151,8 @@
       "compareResults": "Compare results",
       "deleteModel": "Delete model",
       "modelResults": "Model results",
-      "testStoryExists": "Test story exists"
+      "testStoryExists": "Test story exists",
+      "lastModified": "Last modified at {{date}}"
     }
   }
 }
