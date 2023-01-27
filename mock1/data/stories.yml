@@ -12,3 +12,14 @@ stories:
   - slot_was_set:
     - asukoht: Tallinn
   - action: action_react_to_affirm_deny_in_custom_fallback_form
+
+- story: test
+  steps:
+  - intent: test
+  - action: utter_test
+  - checkpoint: check_stuff
+
+- story: test2
+  steps:
+  - checkpoint: check_stuff
+  - action: utter_common_hüvasti_jätmine
