@@ -130,7 +130,17 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
       </Track>
 
       <Card>
-        <FormInput {...register('form')} label={t('training.forms.formName')} />
+        <Track direction='vertical' gap={8} align='left'>
+          <FormInput {...register('form')} label={t('training.forms.formName')} />
+          <Track gap={8} style={{ width: '100%' }}>
+            <p>utter_ask_</p>
+            <FormInput
+              name='ask'
+              label={t('training.responses.formName')}
+              hideLabel
+            />
+          </Track>
+        </Track>
       </Card>
 
       <Track gap={16} align='left'>
