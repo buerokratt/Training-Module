@@ -2,21 +2,21 @@ export const entitiesData = [
   {
     id: 1,
     name: 'asukoht',
-    relatedIntent: 'common_teenus_ilm',
+    relatedIntents: ['common_teenus_ilm'],
   },
   {
     id: 2,
     name: 'nimi',
-    relatedIntent: null,
+    relatedIntents: null,
   },
   {
     id: 3,
     name: 'aadress',
-    relatedIntent: null,
+    relatedIntents: null,
   },
   {
     id: 4,
     name: 'asutus',
-    relatedIntent: null,
+    relatedIntents: null,
   },
 ];

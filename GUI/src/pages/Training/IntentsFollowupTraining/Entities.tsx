@@ -5,7 +5,7 @@ import { createColumnHelper } from '@tanstack/react-table';
 import { AxiosError } from 'axios';
 import { MdDeleteOutline, MdOutlineModeEditOutline, MdOutlineSave } from 'react-icons/md';
 
-import { Button, DataTable, Dialog, FormInput, Icon, Track } from 'components';
+import { Button, DataTable, Dialog, FormInput, Icon, Tooltip, Track } from 'components';
 import { Entity } from 'types/entity';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import { useToast } from 'hooks/useToast';
@@ -107,16 +107,26 @@ const Entities: FC = () => {
           defaultValue={editableRow.name}
           hideLabel
         />
-      ) : props.row.original.relatedIntent ? (
-        <Link
-          style={{ color: '#005AA3' }}
-          to={props.row.original.relatedIntent?.startsWith('common')
-            ? `/treening/treening/avalikud-teemad?intent=${props.row.original.relatedIntent}#tabs`
-            : `/treening/treening/teemad?intent=${props.row.original.relatedIntent}#tabs`
-          }
-        >
-          {props.getValue()}
-        </Link>
+      ) : props.row.original.relatedIntents ? (
+        <Tooltip content={
+          <Track direction='vertical' align='left'>
+            <strong>{t('training.intents.title')}</strong>
+            {props.row.original.relatedIntents.map((intent) => (
+              <Link
+                key={intent}
+                style={{ color: '#005AA3' }}
+                to={intent.startsWith('common')
+                  ? `/treening/treening/avalikud-teemad?intent=${intent}#tabs`
+                  : `/treening/treening/teemad?intent=${intent}#tabs`
+                }
+              >
+                {intent}
+              </Link>
+            ))}
+          </Track>
+        }>
+          <span style={{ color: '#005AA3' }}>{props.getValue()}</span>
+        </Tooltip>
       ) : props.getValue(),
     }),
     columnHelper.display({
