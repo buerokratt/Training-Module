@@ -56,9 +56,11 @@
       "entityName": "Entity name",
       "deleteExample": "Delete example",
       "deleteRegex": "Delete regex",
+      "deleteRegexExample": "Delete regex example",
       "followupTraining": "Intents follow-up training",
       "entities": "Entities",
       "regex": "REGEX",
+      "regexExampleTitle": "Regex example title",
       "deleteEntity": "Delete entity"
     },
     "responses": {

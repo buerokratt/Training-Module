@@ -31,6 +31,7 @@ const FormSelect: FC<FormSelectProps> = (
     placeholder,
     defaultValue,
     onSelectionChange,
+    ...rest
   },
 ) => {
   const id = useId();
@@ -63,7 +64,7 @@ const FormSelect: FC<FormSelectProps> = (
   const placeholderValue = placeholder || t('global.choose');
 
   return (
-    <div className={selectClasses}>
+    <div className={selectClasses} style={rest.style}>
       {label && !hideLabel && <label htmlFor={id} className='select__label' {...getLabelProps()}>{label}</label>}
       <div className='select__wrapper'>
         <div className='select__trigger' {...getToggleButtonProps()}>

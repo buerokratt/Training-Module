@@ -22,6 +22,7 @@ import Models from 'pages/ModelBankAndAnalytics/Models';
 import FormsDetail from 'pages/Training/Forms/FormsDetail';
 import ModelsDetail from 'pages/ModelBankAndAnalytics/Models/ModelsDetail';
 import IntentsFollowupTraining from 'pages/Training/IntentsFollowupTraining';
+import RegexDetail from 'pages/Training/IntentsFollowupTraining/RegexDetail';
 
 const App: FC = () => {
   const store = useUserInfoStore();
@@ -37,6 +38,7 @@ const App: FC = () => {
         <Route path='/treening/treening/teemad' element={<Intents />} />
         <Route path='/treening/treening/avalikud-teemad' element={<CommonIntents />} />
         <Route path='/treening/treening/teemade-jareltreenimine' element={<IntentsFollowupTraining />} />
+        <Route path='/treening/treening/teemade-jareltreenimine/regex/:id' element={<RegexDetail />} />
         <Route path='/treening/treening/vastused' element={<Responses />} />
         <Route path='/treening/treening/konfiguratsioon' element={<Configuration />} />
         <Route path='/treening/treening/kasutuslood' element={<Stories />} />

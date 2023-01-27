@@ -1,13 +1,22 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as Tabs from '@radix-ui/react-tabs';
+import { useSearchParams } from 'react-router-dom';
 
 import Entities from './Entities';
 import Regex from './Regex';
 
 const IntentsFollowupTraining: FC = () => {
   const { t } = useTranslation();
+  const [searchParams] = useSearchParams();
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
+
+  useEffect(() => {
+    const queryTab = searchParams.get('tab');
+    if (queryTab) {
+      setSelectedTab(queryTab);
+    }
+  }, [searchParams]);
 
   return (
     <>

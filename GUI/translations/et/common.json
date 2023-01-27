@@ -56,9 +56,11 @@
       "entityName": "Olemi nimetus",
       "deleteExample": "Kustuta näide",
       "deleteRegex": "Kustuta regex",
+      "deleteRegexExample": "Kustuta regex näide",
       "followupTraining": "Teemade järeltreenimine",
       "entities": "Olemid",
       "regex": "REGEX",
+      "regexExampleTitle": "Regex näite pealkiri",
       "deleteEntity": "Kustuta olem"
     },
     "responses": {
