@@ -1,6 +1,12 @@
 version: "3.0"
 rules:
 - rule: common_tervitus
+  conversation_start: true
+  steps:
+  - intent: common_tervitus
+  - action: utter_common_esimene_tervitus
+
+- rule: common_tervitus
   steps:
   - intent: common_tervitus
   - action: utter_common_tervitus
