@@ -8,8 +8,8 @@ import { AxiosError } from 'axios';
 import { MdOutlineSettingsInputAntenna } from 'react-icons/md';
 
 import { Button, Card, DataTable, Dialog, Icon, Track } from 'components';
-import { Model } from 'types/model';
-import { deleteModel } from 'services/models';
+import { Model, UpdateModelDTO } from 'types/model';
+import { activateModel, deleteModel } from 'services/models';
 import { useToast } from 'hooks/useToast';
 
 const Models: FC = () => {
@@ -17,9 +17,30 @@ const Models: FC = () => {
   const toast = useToast();
   const queryClient = useQueryClient();
   const [selectedModel, setSelectedModel] = useState<Model>();
+  const [modelConfirmation, setModelConfirmation] = useState<string | number | null>(null);
   const [deletableModel, setDeletableModel] = useState<string | number | null>(null);
   const { data: models } = useQuery<Model[]>({
     queryKey: ['models'],
+  });
+
+  const activateModelMutation = useMutation({
+    mutationFn: ({ id, data }: { id: string | number, data: UpdateModelDTO }) => activateModel(id, data),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['models', 'selected-model']);
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: 'Model activated',
+      });
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
+    onSettled: () => setModelConfirmation(null),
   });
 
   const deleteModelMutation = useMutation({
@@ -101,7 +122,8 @@ const Models: FC = () => {
                 <p>{t('training.mba.modelInUse')}</p>
               </Track>
             ) : (
-              <Button appearance='success'>{t('training.mba.activateModel')}</Button>
+              <Button appearance='success'
+                      onClick={() => setModelConfirmation(selectedModel.id)}>{t('training.mba.activateModel')}</Button>
             )}
           </Track>
         </Card>
@@ -129,6 +151,29 @@ const Models: FC = () => {
               <Button
                 appearance='error'
                 onClick={() => deleteModelMutation.mutate({ id: deletableModel })}
+              >
+                {t('global.yes')}
+              </Button>
+            </>
+          }
+        >
+          <p>{t('global.removeValidation')}</p>
+        </Dialog>
+      )}
+
+      {selectedModel && modelConfirmation !== null && (
+        <Dialog
+          title={t('training.mba.activateModel')}
+          onClose={() => setModelConfirmation(null)}
+          footer={
+            <>
+              <Button appearance='secondary' onClick={() => setModelConfirmation(null)}>{t('global.no')}</Button>
+              <Button
+                appearance='error'
+                onClick={() => activateModelMutation.mutate({
+                  id: modelConfirmation,
+                  data: { name: selectedModel.name, active: true },
+                })}
               >
                 {t('global.yes')}
               </Button>

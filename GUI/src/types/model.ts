@@ -4,3 +4,6 @@ export interface Model {
   lastTrained: string;
   active: boolean;
 }
+
+export interface UpdateModelDTO extends Omit<Model, 'id' | 'lastTrained'> {
+}

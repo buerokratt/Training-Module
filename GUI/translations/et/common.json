@@ -151,7 +151,7 @@
       "viewIntentsPrecision": "Vaata teemade täpsust",
       "activateModel": "Võta mudel kasutusele",
       "allModels": "Kõik mudelid",
-      "lastTrained": "Viimati treenitud",
+      "lastTrained": "Mudeli treenimise aeg",
       "live": "Live",
       "compareResults": "Võrdle tulemusi",
       "deleteModel": "Kustuta mudel",
