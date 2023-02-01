@@ -158,6 +158,9 @@ export const handlers = [
   rest.get(`${import.meta.env.BASE_URL}api/results/:id`, (req, res, ctx) => {
     return res(ctx.status(200), ctx.json(resultsData));
   }),
+  rest.get(import.meta.env.BASE_URL + 'api/examples', (req, res, ctx) => {
+    return res(ctx.json(examplesData['1']));
+  }),
   rest.get(import.meta.env.BASE_URL + 'api/cs-custom-jwt-userinfo', (req, res, ctx) => {
     return res(ctx.json(userInfoData));
   }),
@@ -180,7 +183,7 @@ export const handlers = [
       ctx.json(endedChatsData),
     );
   }),
-    rest.get(import.meta.env.BASE_URL + 'api/cs-get-messages-by-chat-id', (req, res, ctx) => {
+  rest.get(import.meta.env.BASE_URL + 'api/cs-get-messages-by-chat-id', (req, res, ctx) => {
     return res(
       ctx.status(200),
       ctx.json(chatMessagesData),

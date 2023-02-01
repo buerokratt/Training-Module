@@ -2,13 +2,13 @@ import { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as Tabs from '@radix-ui/react-tabs';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
+import { MdCheckCircleOutline } from 'react-icons/md';
 
-import { Button, Dialog, Icon, Tooltip, Track } from 'components';
+import { Button, Dialog, FormSelect, Icon, Tooltip, Track } from 'components';
 import { TestStory } from 'types/testStory';
 import { deleteTestStory } from 'services/testStories';
 import { useToast } from 'hooks/useToast';
-import { AxiosError } from 'axios';
-import { MdCheckCircleOutline } from 'react-icons/md';
 
 const Testcases: FC = () => {
   const { t } = useTranslation();
@@ -19,6 +19,9 @@ const Testcases: FC = () => {
   const [deletableTest, setDeletableTest] = useState<string | number | null>(null);
   const { data: testStories } = useQuery<TestStory[]>({
     queryKey: ['test-stories'],
+  });
+  const { data: examples } = useQuery<string[]>({
+    queryKey: ['examples'],
   });
 
   const deleteTestMutation = useMutation({
@@ -52,6 +55,10 @@ const Testcases: FC = () => {
     },
     [testStories],
   );
+
+  const handleTestSave = () => {
+
+  }
 
   if (!testStories) return <>Loading...</>;
 
@@ -115,10 +122,28 @@ const Testcases: FC = () => {
               </Track>
             </div>
             <div className='vertical-tabs__content'>
-
+              <Track direction='vertical' align='left' gap={8}>
+                <Track gap={16} style={{ width: '100%' }}>
+                  <p style={{ flex: 1 }}>intent</p>
+                  <p style={{ flex: 1 }}>{selectedTest.steps.intent}</p>
+                  <div style={{ flex: 2 }}>
+                    <FormSelect
+                      name='userResponse'
+                      label={t('training.mba.userResponse')}
+                      hideLabel
+                      options={examples?.map((e) => ({ label: e, value: e })) || []}
+                    />
+                  </div>
+                </Track>
+                <Track gap={16} style={{ width: '100%' }}>
+                  <p style={{ flex: 1 }}>action</p>
+                  <p style={{ flex: 1 }}>{selectedTest.steps.action}</p>
+                  <p style={{ flex: 2 }}></p>
+                </Track>
+              </Track>
             </div>
             <div className='vertical-tabs__content-footer'>
-              <Button>{t('global.save')}</Button>
+              <Button onClick={handleTestSave}>{t('global.save')}</Button>
             </div>
           </Tabs.Content>
         )}
