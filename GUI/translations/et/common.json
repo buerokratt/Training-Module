@@ -80,6 +80,7 @@
       "response": "Vastus",
       "newResponseTextPlaceholder": "Lisa vastuse tekst sellele mallile",
       "deleteResponse": "Kustuta vastus",
+      "deleteStory": "Kustuta kasutuslugu",
       "responseName": "Vastuse nimetus",
       "responseText": "Vastuse tekst"
     },

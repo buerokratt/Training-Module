@@ -80,6 +80,7 @@
       "response": "Response",
       "newResponseTextPlaceholder": "Add a response text for this template",
       "deleteResponse": "Delete response",
+      "deleteStory": "Delete story",
       "responseName": "Response name",
       "responseText": "Response text"
     },

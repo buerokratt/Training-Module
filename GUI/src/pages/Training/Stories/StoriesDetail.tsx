@@ -1,6 +1,6 @@
 import { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { MdOutlineEdit, MdPlayCircleFilled, MdOutlineStop } from 'react-icons/md';
 import ReactFlow, {
   addEdge,
@@ -12,14 +12,17 @@ import ReactFlow, {
   useNodesState,
 } from 'reactflow';
 import { useNavigate, useParams } from 'react-router-dom';
+import { AxiosError } from 'axios';
 import 'reactflow/dist/style.css';
 
-import { Box, Button, Collapsible, Icon, Track } from 'components';
+import { Box, Button, Collapsible, Dialog, Icon, Track } from 'components';
 import { Intent } from 'types/intent';
 import { Responses } from 'types/response';
 import { Story } from 'types/story';
 import { Form } from 'types/form';
 import CustomNode from './CustomNode';
+import { deleteIntent } from 'services/intents';
+import { useToast } from 'hooks/useToast';
 import './StoriesDetail.scss';
 
 const GRID_UNIT = 16;
@@ -49,6 +52,9 @@ const StoriesDetail: FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams();
+  const toast = useToast();
+  const queryClient = useQueryClient();
+  const [deleteConfirmation, setDeleteConfirmation] = useState(false);
   const [editableTitle, setEditableTitle] = useState<string | null>(null);
   const { data: story } = useQuery<Story>({
     queryKey: [`stories/${id}`],
@@ -62,6 +68,26 @@ const StoriesDetail: FC = () => {
   });
   const { data: forms } = useQuery<Form[]>({
     queryKey: ['forms'],
+  });
+
+  const deleteStoryMutation = useMutation({
+    mutationFn: ({ id }: { id: string | number }) => deleteIntent(id),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['stories']);
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: 'Intent deleted',
+      });
+      navigate(import.meta.env.BASE_URL + 'treening/treening/kasutuslood');
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
   });
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -241,11 +267,31 @@ const StoriesDetail: FC = () => {
         <div className='graph__footer'>
           <Track gap={16} justify='end'>
             <Button appearance='secondary' onClick={() => navigate(-1)}>{t('global.back')}</Button>
-            <Button appearance='error'>{t('global.delete')}</Button>
+            <Button appearance='error' onClick={() => setDeleteConfirmation(true)}>{t('global.delete')}</Button>
             <Button onClick={() => handleGraphSave()}>{t('global.save')}</Button>
           </Track>
         </div>
       </div>
+
+      {id && deleteConfirmation && (
+        <Dialog
+          title={t('training.responses.deleteStory')}
+          onClose={() => setDeleteConfirmation(false)}
+          footer={
+            <>
+              <Button appearance='secondary' onClick={() => setDeleteConfirmation(false)}>{t('global.no')}</Button>
+              <Button
+                appearance='error'
+                onClick={() => deleteStoryMutation.mutate({ id })}
+              >
+                {t('global.yes')}
+              </Button>
+            </>
+          }
+        >
+          <p>{t('global.removeValidation')}</p>
+        </Dialog>
+      )}
     </Track>
   );
 };
