@@ -41,6 +41,7 @@
     color: get-color(black);
     font-size: $veera-font-size-100;
     line-height: $veera-line-height-500;
+    min-width: 400px;
 
     &-default {
       width: 320px;
@@ -62,6 +63,7 @@
       font-size: 20px;
       color: get-color(white);
       border: 0;
+      min-width: revert;
     }
 
     &.start {

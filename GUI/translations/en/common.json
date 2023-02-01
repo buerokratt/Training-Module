@@ -45,6 +45,8 @@
     "closeIcon": "Close menu icon"
   },
   "training": {
+    "intent": "intent",
+    "response": "response",
     "intents": {
       "title": "Intents",
       "commonIntents": "Common intents",

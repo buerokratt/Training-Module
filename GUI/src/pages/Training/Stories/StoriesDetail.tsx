@@ -18,9 +18,25 @@ import { Box, Button, Collapsible, Icon, Track } from 'components';
 import { Intent } from 'types/intent';
 import { Responses } from 'types/response';
 import { Story } from 'types/story';
+import { Form } from 'types/form';
+import IntentNode from './IntentNode';
+import ResponseNode from './ResponseNode';
+import FormNode from './FormNode';
+import SlotNode from './SlotNode';
+import ConditionNode from './ConditionNode';
+import ActionNode from './ActionNode';
 import './StoriesDetail.scss';
 
 const GRID_UNIT = 16;
+
+const nodeTypes = {
+  intentNode: IntentNode,
+  responseNode: ResponseNode,
+  formNode: FormNode,
+  slotNode: SlotNode,
+  conditionNode: ConditionNode,
+  actionNode: ActionNode,
+};
 
 const initialNodes: Node[] = [
   {
@@ -54,13 +70,16 @@ const StoriesDetail: FC = () => {
   const { data: responses } = useQuery<Responses>({
     queryKey: ['responses'],
   });
+  const { data: forms } = useQuery<Form[]>({
+    queryKey: ['forms'],
+  });
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
   const onConnect = useCallback((params: Connection) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
 
-  const handleNodeAdd = ({ label, className }: { label: string; className: string }) => {
+  const handleNodeAdd = ({ label, type, className }: { label: string; type: string, className: string }) => {
     setNodes((prevNodes) => {
       const prevNode = prevNodes[prevNodes.length - 1];
       if (prevNode.type === 'output') return prevNodes;
@@ -80,6 +99,7 @@ const StoriesDetail: FC = () => {
         {
           id: String(prevNodes.length + 1),
           position: { x: (12 * GRID_UNIT) - 160 + 32, y: newNodeY },
+          type: 'intentNode',
           data: {
             label,
           },
@@ -127,7 +147,14 @@ const StoriesDetail: FC = () => {
             <Collapsible title={t('training.intents.title')} defaultOpen>
               <Track direction='vertical' align='stretch' gap={4}>
                 {intents.map((intent) =>
-                  <button key={intent.id} onClick={() => handleNodeAdd({ label: intent.intent, className: 'intent' })}>
+                  <button
+                    key={intent.id}
+                    onClick={() => handleNodeAdd({
+                      label: intent.intent,
+                      type: 'intentNode',
+                      className: 'intent',
+                    })}
+                  >
                     <Box color='blue'>
                       {intent.intent}
                     </Box>
@@ -141,8 +168,14 @@ const StoriesDetail: FC = () => {
             <Collapsible title={t('training.responses.title')} defaultOpen>
               <Track direction='vertical' align='stretch' gap={4}>
                 {Object.keys(responses).map((response, index) => (
-                  <button key={`${responses[response].text}-${index}`}
-                          onClick={() => handleNodeAdd({ label: response, className: 'response' })}>
+                  <button
+                    key={`${responses[response].text}-${index}`}
+                    onClick={() => handleNodeAdd({
+                      label: response,
+                      type: 'responseNode',
+                      className: 'response',
+                    })}
+                  >
                     <Box color='yellow'>
                       {response}
                     </Box>
@@ -152,9 +185,26 @@ const StoriesDetail: FC = () => {
             </Collapsible>
           )}
 
-          <Collapsible title={t('training.forms.title')} defaultOpen>
-
-          </Collapsible>
+          {forms && (
+            <Collapsible title={t('training.forms.title')} defaultOpen>
+              <Track direction='vertical' align='stretch' gap={4}>
+                {forms.map((form) => (
+                  <button
+                    key={form.id}
+                    onClick={() => handleNodeAdd({
+                      label: form.form,
+                      type: 'formNode',
+                      className: 'form',
+                    })}
+                  >
+                    <Box color='green'>
+                      {form.form}
+                    </Box>
+                  </button>
+                ))}
+              </Track>
+            </Collapsible>
+          )}
 
           <Collapsible title={t('training.actions.title')}>
 
@@ -184,6 +234,7 @@ const StoriesDetail: FC = () => {
             defaultViewport={{ x: 0, y: 0, zoom: 0 }}
             minZoom={1}
             maxZoom={1}
+            nodeTypes={nodeTypes}
           >
             <Background color='#D2D3D8' gap={16} lineWidth={2} />
           </ReactFlow>

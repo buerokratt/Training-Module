@@ -45,6 +45,8 @@
     "closeMenuIcon": "Sulge menüü ikoon"
   },
   "training": {
+    "intent": "teema",
+    "response": "vastus",
     "intents": {
       "title": "Teemad",
       "commonIntents": "Avalikud teemad",
