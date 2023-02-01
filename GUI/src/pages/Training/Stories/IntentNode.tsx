@@ -1,20 +1,32 @@
 import { FC, memo } from 'react';
-import { NodeProps, Handle, Position } from 'reactflow';
 import { useTranslation } from 'react-i18next';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import { useQuery } from '@tanstack/react-query';
-import { MdOutlineDelete } from 'react-icons/all';
+import { MdOutlineDelete } from 'react-icons/md';
 
 import { Button, FormSelect, Icon, Track } from 'components';
 import { Entity } from 'types/entity';
 
-const IntentNode: FC<NodeProps> = (props) => {
+type NodeDataProps = {
+  data: {
+    label: string;
+    onDelete: (id: string) => void;
+    type: string;
+  }
+}
+
+const IntentNode: FC<NodeDataProps> = ({ data }) => {
   const { t } = useTranslation();
-  const { data, isConnectable } = props;
   const { data: entities } = useQuery<Entity[]>({
     queryKey: ['entities'],
   });
-  const { control } = useForm<{ entities: { label: string; value: string }[] }>();
+  const { control } = useForm<{ entities: { label: string; value: string }[] }>({
+    defaultValues: {
+      entities: [
+        { label: t('training.intents.entity') || '', value: '' },
+      ],
+    },
+  });
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'entities',
@@ -22,21 +34,14 @@ const IntentNode: FC<NodeProps> = (props) => {
 
   return (
     <>
-      <Handle
-        type='target'
-        position={Position.Top}
-        isConnectable={isConnectable}
-      />
-
       <Track direction='vertical' gap={4} align='left'>
         {'label' in data && (<p><strong>{t('training.intent')}: {data.label}</strong></p>)}
         <p>entity:</p>
 
         {fields.map((item, index) => (
-          <Track style={{ width: '100%' }}>
+          <Track key={item.id} style={{ width: '100%' }}>
             <div style={{ flex: 1 }}>
               <Controller
-                key={item.id}
                 name={`entities.${index}.value` as const}
                 control={control}
                 render={({ field }) => (
@@ -64,12 +69,6 @@ const IntentNode: FC<NodeProps> = (props) => {
           {t('global.add')}
         </Button>
       </Track>
-
-      <Handle
-        type='source'
-        position={Position.Bottom}
-        isConnectable={isConnectable}
-      />
     </>
   );
 };

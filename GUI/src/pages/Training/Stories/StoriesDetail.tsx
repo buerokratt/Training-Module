@@ -19,23 +19,13 @@ import { Intent } from 'types/intent';
 import { Responses } from 'types/response';
 import { Story } from 'types/story';
 import { Form } from 'types/form';
-import IntentNode from './IntentNode';
-import ResponseNode from './ResponseNode';
-import FormNode from './FormNode';
-import SlotNode from './SlotNode';
-import ConditionNode from './ConditionNode';
-import ActionNode from './ActionNode';
+import CustomNode from './CustomNode';
 import './StoriesDetail.scss';
 
 const GRID_UNIT = 16;
 
 const nodeTypes = {
-  intentNode: IntentNode,
-  responseNode: ResponseNode,
-  formNode: FormNode,
-  slotNode: SlotNode,
-  conditionNode: ConditionNode,
-  actionNode: ActionNode,
+  customNode: CustomNode,
 };
 
 const initialNodes: Node[] = [
@@ -79,6 +69,13 @@ const StoriesDetail: FC = () => {
 
   const onConnect = useCallback((params: Connection) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
 
+  const handleNodeDelete = (id: string) => {
+    setNodes((prevNodes) => {
+      const deleteIndex = prevNodes.findIndex((n) => n.id === id);
+      return prevNodes.slice(0, deleteIndex);
+    });
+  };
+
   const handleNodeAdd = ({ label, type, className }: { label: string; type: string, className: string }) => {
     setNodes((prevNodes) => {
       const prevNode = prevNodes[prevNodes.length - 1];
@@ -99,9 +96,11 @@ const StoriesDetail: FC = () => {
         {
           id: String(prevNodes.length + 1),
           position: { x: (12 * GRID_UNIT) - 160 + 32, y: newNodeY },
-          type: 'intentNode',
+          type: 'customNode',
           data: {
             label,
+            onDelete: handleNodeDelete,
+            type,
           },
           className,
         },
