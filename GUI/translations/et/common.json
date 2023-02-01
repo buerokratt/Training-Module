@@ -31,7 +31,9 @@
     "removeValidation": "Oled sa kindel?",
     "logout": "Logi välja",
     "enabled": "Aktiveeritud",
-    "reset": "Algväärtusta"
+    "reset": "Algväärtusta",
+    "present": "Kohal",
+    "away": "Eemal"
   },
   "mainMenu": {
     "menuLabel": "Põhinavigatsioon",
@@ -155,5 +157,39 @@
       "exampleCountLow": "Näidete arv madal",
       "lastModified": "Viimati muudetud {{date}}"
     }
+  },
+  "roles": {
+    "ROLE_ADMINISTRATOR": "Administraator",
+    "ROLE_SERVICE_MANAGER": "Teenuse haldur",
+    "ROLE_CUSTOMER_SUPPORT_AGENT": "Nõustaja",
+    "ROLE_CHATBOT_TRAINER": "Vestlusroboti treener",
+    "ROLE_ANALYST": "Analüütik",
+    "ROLE_UNAUTHENTICATED": "Autentimata"
+  },
+  "settings": {
+    "users": {
+      "title": "Kasutajad",
+      "name": "Nimi",
+      "idCode": "Isikukood",
+      "role": "Roll",
+      "displayName": "Tiitel",
+      "email": "E-post",
+      "addUser": "Lisa kasutaja",
+      "editUser": "Muuda kasutajat",
+      "deleteUser": "Kustuta kasutaja",
+      "fullName": "Ees- ja perekonnanimi",
+      "userRoles": "Kasutaja roll(id)",
+      "autoCorrector": "Autokorrektor",
+      "emailNotifications": "Märguanded e-postile",
+      "soundNotifications": "Häälmärguanded",
+      "popupNotifications": "Pop-up märguanded",
+      "newUnansweredChat": "Uus vastamata vestlus",
+      "newForwardedChat": "Uus suunatud vestlus",
+      "useAutocorrect": "Teksti autokorrektor"
+    }
+  },
+  "chat": {
+    "unanswered": "Vastamata",
+    "forwarded": "Suunatud"
   }
 }

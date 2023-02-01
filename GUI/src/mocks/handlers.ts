@@ -19,6 +19,7 @@ import { resultsData } from './results';
 import { userInfoData } from './userInfo';
 import { userProfileSettingsData } from './userProfileSettings';
 import { regexData, singleRegexData } from './regex';
+import { activeChatsData } from './activeChats';
 
 export const handlers = [
   rest.get(`${import.meta.env.BASE_URL}api/main-navigation`, (req, res, ctx) => {
@@ -158,5 +159,15 @@ export const handlers = [
   }),
   rest.get(import.meta.env.BASE_URL + 'api/cs-get-user-profile-settings', (req, res, ctx) => {
     return res(ctx.json(userProfileSettingsData));
+  }),
+  rest.get(import.meta.env.BASE_URL + 'api/cs-get-customer-support-activity', (req, res, ctx) => {
+    return res(ctx.json({
+      idCode: 'EE49902216518',
+      active: 'true',
+      status: 'idle',
+    }));
+  }),
+  rest.get(import.meta.env.BASE_URL + 'api/cs-get-all-active-chats', (req, res, ctx) => {
+    return res(ctx.json(activeChatsData));
   }),
 ];

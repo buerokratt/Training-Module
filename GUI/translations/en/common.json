@@ -31,7 +31,9 @@
     "removeValidation": "Are you sure?",
     "logout": "Logout",
     "enabled": "Enabled",
-    "reset": "Reset"
+    "reset": "Reset",
+    "present": "Present",
+    "away": "Away"
   },
   "mainMenu": {
     "menuLabel": "Main navigation",
@@ -154,5 +156,39 @@
       "testStoryExists": "Test story exists",
       "lastModified": "Last modified at {{date}}"
     }
+  },
+  "roles": {
+    "ROLE_ADMINISTRATOR": "Administrator",
+    "ROLE_SERVICE_MANAGER": "Service manager",
+    "ROLE_CUSTOMER_SUPPORT_AGENT": "Customer support",
+    "ROLE_CHATBOT_TRAINER": "Chatbot trainer",
+    "ROLE_ANALYST": "Analyst",
+    "ROLE_UNAUTHENTICATED": "Unauthenticated"
+  },
+  "settings": {
+    "users": {
+      "title": "Users",
+      "name": "Name",
+      "idCode": "ID code",
+      "role": "Role",
+      "displayName": "User title",
+      "email": "E-mail",
+      "addUser": "Add user",
+      "editUser": "Edit user",
+      "deleteUser": "Delete user",
+      "fullName": "First- and lastname",
+      "userRoles": "User role(s)",
+      "autoCorrector": "Auto corrector",
+      "emailNotifications": "Notifications to e-mail",
+      "soundNotifications": "Sound notifications",
+      "popupNotifications": "Popup notifications",
+      "newUnansweredChat": "New unanswered chat",
+      "newForwardedChat": "New forwarded chat",
+      "useAutocorrect": "Text auto corrector"
+    }
+  },
+  "chat": {
+    "unanswered": "Unanswered",
+    "forwarded": "Forwarded"
   }
 }
