@@ -124,7 +124,7 @@
       "name": "Nimi",
       "label": "Pealkiri",
       "comment": "Kommentaar",
-      "appeals": "Pöördumised",
+      "appeals": "Kliendi pöördumised",
       "appeal": "Pöördumine",
       "searchIntent": "Otsi teemasid",
       "searchAppeals": "Otsi pöördumisi",

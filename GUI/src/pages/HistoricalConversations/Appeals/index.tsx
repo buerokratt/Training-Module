@@ -1,14 +1,15 @@
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createColumnHelper } from '@tanstack/react-table';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
+import { useForm } from 'react-hook-form';
 import { MdDeleteOutline } from 'react-icons/md';
 
-import { Button, Card, DataTable, Dialog, FormInput, FormSelect, Icon } from 'components';
+import { Button, Card, DataTable, Dialog, FormInput, FormSelect, Icon, Track } from 'components';
 import { Appeal } from 'types/appeal';
 import { Intent } from 'types/intent';
-import { deleteAppeal } from 'services/appeals';
+import { addAppeal, deleteAppeal } from 'services/appeals';
 import { useToast } from 'hooks/useToast';
 
 const Appeals: FC = () => {
@@ -16,6 +17,7 @@ const Appeals: FC = () => {
   const queryClient = useQueryClient();
   const toast = useToast();
   const [filter, setFilter] = useState('');
+  const [addFormVisible, setAddFormVisible] = useState(false);
   const [processedAppeals, setProcessedAppeals] = useState<Record<string, string | null> | null>(null);
   const [deletableAppeal, setDeletableAppeal] = useState<string | number | null>(null);
   const { data: appeals } = useQuery<Appeal[]>({
@@ -28,6 +30,31 @@ const Appeals: FC = () => {
   });
   const { data: intents } = useQuery<Intent[]>({
     queryKey: ['intents'],
+  });
+  const { register, handleSubmit } = useForm<{ message: string }>();
+
+  const newAppealMutation = useMutation({
+    mutationFn: (data: { message: string }) => addAppeal(data),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['responses']);
+      setAddFormVisible(false);
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: 'New appeal added',
+      });
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
+  });
+
+  const handleNewAppealSubmit = handleSubmit(async (data) => {
+    newAppealMutation.mutate(data);
   });
 
   const deleteAppealMutation = useMutation({
@@ -47,6 +74,7 @@ const Appeals: FC = () => {
         message: error.message,
       });
     },
+    onSettled: () => setDeletableAppeal(null),
   });
 
   const columnHelper = createColumnHelper<Appeal>();
@@ -112,14 +140,39 @@ const Appeals: FC = () => {
       <h1>{t('training.historicalConversations.appeals')}</h1>
 
       <Card>
-        <FormInput
-          label={t('global.search')}
-          hideLabel
-          name='searchIntent'
-          placeholder={t('training.historicalConversations.searchAppeals') + '...'}
-          onChange={(e) => setFilter(e.target.value)}
-        />
+        <Track gap={16}>
+          <FormInput
+            label={t('global.search')}
+            hideLabel
+            name='searchIntent'
+            placeholder={t('training.historicalConversations.searchAppeals') + '...'}
+            onChange={(e) => setFilter(e.target.value)}
+          />
+          <Button onClick={() => setAddFormVisible(true)}>
+            {t('global.add')}
+          </Button>
+        </Track>
       </Card>
+
+      {addFormVisible && (
+        <Card>
+          <Track justify='between' gap={16}>
+            <div style={{ flex: 1 }}>
+              <Track gap={16}>
+                <FormInput
+                  {...register('message')}
+                  label={t('training.responses.responseName')}
+                  hideLabel
+                />
+              </Track>
+            </div>
+            <Track gap={16}>
+              <Button appearance='secondary' onClick={() => setAddFormVisible(false)}>{t('global.cancel')}</Button>
+              <Button onClick={handleNewAppealSubmit}>{t('global.save')}</Button>
+            </Track>
+          </Track>
+        </Card>
+      )}
 
       <Card>
         <DataTable
