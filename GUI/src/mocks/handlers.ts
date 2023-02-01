@@ -20,6 +20,10 @@ import { userInfoData } from './userInfo';
 import { userProfileSettingsData } from './userProfileSettings';
 import { regexData, singleRegexData } from './regex';
 import { activeChatsData } from './activeChats';
+import { endedChatsData } from './endedChats';
+import { chatMessagesData } from './chatMessages';
+import { activeChatMessages } from './activeChatMessages';
+import { Message } from 'types/message';
 
 export const handlers = [
   rest.get(`${import.meta.env.BASE_URL}api/main-navigation`, (req, res, ctx) => {
@@ -169,5 +173,21 @@ export const handlers = [
   }),
   rest.get(import.meta.env.BASE_URL + 'api/cs-get-all-active-chats', (req, res, ctx) => {
     return res(ctx.json(activeChatsData));
+  }),
+  rest.get(import.meta.env.BASE_URL + 'api/cs-get-all-ended-chats', (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json(endedChatsData),
+    );
+  }),
+    rest.get(import.meta.env.BASE_URL + 'api/cs-get-messages-by-chat-id', (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json(chatMessagesData),
+    );
+  }),
+  rest.get(import.meta.env.BASE_URL + 'api/cs-get-messages-by-chat-id/:id', (req, res, ctx) => {
+    const requestedChatMessages = (activeChatMessages as Record<string, Message[]>)[String(req.params.id)];
+    return res(ctx.json(requestedChatMessages));
   }),
 ];

@@ -33,7 +33,10 @@
     "enabled": "Aktiveeritud",
     "reset": "Algväärtusta",
     "present": "Kohal",
-    "away": "Eemal"
+    "away": "Eemal",
+    "idCode": "Isikukood",
+    "status": "Staatus",
+    "anonymous": "Anonüümne"
   },
   "mainMenu": {
     "menuLabel": "Põhinavigatsioon",
@@ -190,6 +193,24 @@
   },
   "chat": {
     "unanswered": "Vastamata",
-    "forwarded": "Suunatud"
+    "forwarded": "Suunatud",
+    "redirectedMessage": "{{from}} suunas vestluse kasutajale {{to}} {{date}}",
+    "clientLeft": "",
+    "history": {
+      "title": "Ajalugu",
+      "searchChats": "Otsi üle vestluste",
+      "startTime": "Algusaeg",
+      "endTime": "Lõppaeg",
+      "csaName": "Nõustaja nimi",
+      "contact": "Kontaktandmed",
+      "comment": "Kommentaar",
+      "label": "Märksõna",
+      "nps": "NPS",
+      "forwarded": "Suunatud"
+    },
+    "status": {
+      "active": "Aktiivne",
+      "ended": "Lõpetatud"
+    }
   }
 }

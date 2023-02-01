@@ -33,7 +33,10 @@
     "enabled": "Enabled",
     "reset": "Reset",
     "present": "Present",
-    "away": "Away"
+    "away": "Away",
+    "idCode": "ID code",
+    "status": "Status",
+    "anonymous": "Anonymous"
   },
   "mainMenu": {
     "menuLabel": "Main navigation",
@@ -189,6 +192,23 @@
   },
   "chat": {
     "unanswered": "Unanswered",
-    "forwarded": "Forwarded"
+    "forwarded": "Forwarded",
+    "redirectedMessage": "{{from}} redirected the conversation to user {{to}} {{date}}",
+    "history": {
+      "title": "History",
+      "searchChats": "Search chats",
+      "startTime": "Start time",
+      "endTime": "End time",
+      "csaName": "Customer support name",
+      "contact": "Contact",
+      "comment": "Comment",
+      "label": "Label",
+      "nps": "NPS",
+      "forwarded": "Forwarded"
+    },
+    "status": {
+      "active": "Active",
+      "ended": "Ended"
+    }
   }
 }
