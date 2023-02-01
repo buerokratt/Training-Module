@@ -3,7 +3,7 @@ import { Handle, NodeProps, Position } from 'reactflow';
 import { useTranslation } from 'react-i18next';
 import { MdOutlineDelete } from 'react-icons/md';
 
-import { Button, Icon } from 'components';
+import { Button, Icon, Track } from 'components';
 import IntentNode from './IntentNode';
 import ResponseNode from './ResponseNode';
 import FormNode from './FormNode';
@@ -34,8 +34,11 @@ const CustomNode: FC<NodeProps & NodeDataProps> = (props) => {
         isConnectable={isConnectable}
       />
 
-      {data.type === 'intentNode' && <IntentNode data={data} />}
-      {data.type === 'responseNode' && <ResponseNode data={data} />}
+      <Track direction='vertical' gap={4} align='left'>
+        {data.type === 'intentNode' && <IntentNode data={data} />}
+        {data.type === 'responseNode' && <ResponseNode data={data} />}
+        {data.type === 'formNode' && <FormNode data={data} />}
+      </Track>
 
       <Handle
         type='source'

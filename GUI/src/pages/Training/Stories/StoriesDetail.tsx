@@ -196,7 +196,7 @@ const StoriesDetail: FC = () => {
                       className: 'form',
                     })}
                   >
-                    <Box color='green'>
+                    <Box color='gray'>
                       {form.form}
                     </Box>
                   </button>

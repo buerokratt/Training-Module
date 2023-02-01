@@ -48,6 +48,12 @@
       overflow-wrap: break-word;
     }
 
+    .select__label,
+    .switch__label,
+    .input__label {
+      flex: 0 0 100px;
+    }
+
     &.selectable {
       box-shadow: none;
     }
@@ -84,12 +90,12 @@
       border-color: get-color(dark-tangerine-4);
     }
 
-    &.forms {
-      background-color: get-color(sea-green-1);
-      border-color: get-color(sea-green-3);
+    &.form {
+      background-color: get-color(black-coral-1);
+      border-color: get-color(black-coral-3);
     }
 
-    &.actions {
+    &.action {
       background-color: get-color(jasper-1);
       border-color: get-color(jasper-3);
     }

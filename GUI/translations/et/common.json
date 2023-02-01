@@ -45,8 +45,12 @@
     "closeMenuIcon": "Sulge menüü ikoon"
   },
   "training": {
-    "intent": "teema",
-    "response": "vastus",
+    "intent": "Teema",
+    "response": "Vastus",
+    "conditions": "Tingimused",
+    "form": "Vorm",
+    "slot": "Slot",
+    "checkpoints": "Checkpoints",
     "intents": {
       "title": "Teemad",
       "commonIntents": "Avalikud teemad",

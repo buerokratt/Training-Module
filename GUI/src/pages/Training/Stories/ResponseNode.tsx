@@ -1,8 +1,6 @@
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Track } from 'components';
-
 type NodeDataProps = {
   data: {
     label: string;
@@ -16,9 +14,7 @@ const ResponseNode: FC<NodeDataProps> = ({ data }) => {
 
   return (
     <>
-      <Track direction='vertical' gap={4} align='left'>
-        {'label' in data && (<p><strong>{t('training.response')}: {data.label}</strong></p>)}
-      </Track>
+      {'label' in data && (<p><strong>{t('training.response')}: {data.label}</strong></p>)}
     </>
   );
 };

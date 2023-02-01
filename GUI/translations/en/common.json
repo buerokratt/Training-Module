@@ -47,6 +47,10 @@
   "training": {
     "intent": "intent",
     "response": "response",
+    "conditions": "Conditions",
+    "form": "Form",
+    "slot": "Slot",
+    "checkpoints": "Checkpoints",
     "intents": {
       "title": "Intents",
       "commonIntents": "Common intents",
