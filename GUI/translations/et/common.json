@@ -211,6 +211,29 @@
     "status": {
       "active": "Aktiivne",
       "ended": "Lõpetatud"
+    },
+    "event": {
+      "answered": "Vestlus lõppes rahuldava vastusega",
+      "terminated": "Vestlus lõpetati muudel põhjustel",
+      "client-left": "Vestlus lõppes kuna kasutaja lahkus",
+      "client-left-with-accepted": "",
+      "client-left-with-no-resolution": "",
+      "client-left-for-unknown-reason": "",
+      "accepted": "",
+      "hate-speech": "",
+      "other": "",
+      "response-sent-to-client-email": "",
+      "authenticate": "Palume toimingu sooritamiseks isik tuvastada",
+      "ask-permission": "Palume toimingu sooritamiseks nõusolekut",
+      "ask-permission-accepted": "Nõusolek toimingu sooritamiseks antud",
+      "ask-permission-rejected": "Nõusolekust toimingu sooritamiseks keelduti",
+      "ask-permission-ignored": "Nõusolekut toimingu sooritamiseks eirati",
+      "redirected": "{{from}} suunas vestluse kasutajale {{to}} {{date}}",
+      "contact-information": "Palume sisestada oma kontaktandmed",
+      "contact-information-rejected": "Kasutaja keeldus kontaktinfot jagamast",
+      "requested-chat-forward": "Suunamise päring edastati kasutajale",
+      "requested-chat-forward-accepted": "Kasutaja nõustus suunamisega, vestlus lõpetatud",
+      "requested-chat-forward-rejected": "Kasutaja keeldus suunamisest"
     }
   }
 }

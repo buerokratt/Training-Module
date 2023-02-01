@@ -53,15 +53,23 @@ const HistoricalChat: FC<ChatProps> = ({ chat }) => {
           });
         }
       } else {
-        groupedMessages.push({
-          name: message.authorRole === 'end-user'
-            ? endUserFullName
-            : message.authorRole === 'backoffice-user'
-              ? `${message.authorFirstName} ${message.authorLastName}`
-              : message.authorRole,
-          type: message.authorRole,
-          messages: [message],
-        });
+        if (!message.event || message.event === 'greeting') {
+          groupedMessages.push({
+            name: message.authorRole === 'end-user'
+              ? endUserFullName
+              : message.authorRole === 'backoffice-user'
+                ? `${message.authorFirstName} ${message.authorLastName}`
+                : message.authorRole,
+            type: message.authorRole,
+            messages: [message],
+          });
+        } else {
+          groupedMessages.push({
+            name: '',
+            type: 'event',
+            messages: [message],
+          });
+        }
       }
     });
     setMessageGroups(groupedMessages);
