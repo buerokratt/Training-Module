@@ -53,6 +53,8 @@
     "slot": "Slot",
     "checkpoints": "Checkpoints",
     "value": "väärtus",
+    "newIntent": "Uus teema",
+    "intentName": "Teema nimi",
     "intents": {
       "title": "Teemad",
       "commonIntents": "Avalikud teemad",
@@ -60,6 +62,7 @@
       "addToModel": "Lisa mudelisse",
       "removeFromModel": "Eemalda mudelist",
       "examples": "Näited",
+      "example": "Näide",
       "amountOfExamples": "Näidete arv",
       "intentInModel": "Teema on mudelis",
       "upload": "Lae ülesse näited",
@@ -84,7 +87,8 @@
       "deleteResponse": "Kustuta vastus",
       "deleteStory": "Kustuta kasutuslugu",
       "responseName": "Vastuse nimetus",
-      "responseText": "Vastuse tekst"
+      "responseText": "Vastuse tekst",
+      "addNewResponse": "Lisa uus vastus"
     },
     "configuration": {
       "title": "Konfiguratsioon",

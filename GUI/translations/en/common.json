@@ -53,6 +53,8 @@
     "slot": "Slot",
     "checkpoints": "Checkpoints",
     "value": "Value",
+    "newIntent": "New intent",
+    "intentName": "Intent name",
     "intents": {
       "title": "Intents",
       "commonIntents": "Common intents",
@@ -60,6 +62,7 @@
       "addToModel": "Add to model",
       "removeFromModel": "Remove from model",
       "examples": "Examples",
+      "example": "Example",
       "amountOfExamples": "Amount of examples",
       "intentInModel": "Intent is in model",
       "upload": "Upload examples",
@@ -84,7 +87,8 @@
       "deleteResponse": "Delete response",
       "deleteStory": "Delete story",
       "responseName": "Response name",
-      "responseText": "Response text"
+      "responseText": "Response text",
+      "addNewResponse": "Add new response"
     },
     "configuration": {
       "title": "Configuration",

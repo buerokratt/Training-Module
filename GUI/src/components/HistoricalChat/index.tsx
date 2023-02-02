@@ -1,15 +1,19 @@
 import { FC, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 import clsx from 'clsx';
 
-import { Button, Dialog, FormInput, FormSelect, Track } from 'components';
 import { ReactComponent as BykLogoWhite } from 'assets/logo-white.svg';
 import { Chat as ChatType } from 'types/chat';
 import { Message } from 'types/message';
-import { Intent } from 'types/intent';
+import { useToast } from 'hooks/useToast';
+import { addExample } from 'services/intents';
+import { addResponse } from 'services/responses';
 import ChatMessage from './ChatMessage';
 import ChatEvent from './ChatEvent';
+import NewExampleModal from './NewExampleModal';
+import NewResponseModal from './NewResponseModal';
 import './HistoricalChat.scss';
 
 type ChatProps = {
@@ -22,16 +26,68 @@ type GroupedMessage = {
   messages: Message[];
 }
 
+type NewResponse = {
+  name: string;
+  text: string;
+}
+
 const HistoricalChat: FC<ChatProps> = ({ chat }) => {
   const { t } = useTranslation();
+  const toast = useToast();
   const chatRef = useRef<HTMLDivElement>(null);
   const [markedMessage, setMarkedMessage] = useState<Message | null>(null);
   const [messageGroups, setMessageGroups] = useState<GroupedMessage[]>([]);
   const { data: messages } = useQuery<Message[]>({
     queryKey: [`cs-get-messages-by-chat-id/${chat.id}`],
   });
-  const { data: intents } = useQuery<Intent[]>({
-    queryKey: ['intents'],
+
+  const addExamplesMutation = useMutation({
+    mutationFn: (data: {
+      example: string;
+      intent: string;
+      newIntent: boolean;
+      intentName?: string;
+    }) => addExample(data.intent, { example: data.example }),
+    onSuccess: async () => {
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: 'New example added',
+      });
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
+    onSettled: () => setMarkedMessage(null),
+  });
+
+  const addResponseMutation = useMutation({
+    mutationFn: (data: NewResponse) => {
+      const newResponseData = {
+        ...data,
+        name: 'utter_' + data.name,
+      };
+      return addResponse(newResponseData);
+    },
+    onSuccess: async () => {
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: 'New response added',
+      });
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
+    onSettled: () => setMarkedMessage(null),
   });
 
   const endUserFullName = chat.endUserFirstName !== '' && chat.endUserLastName !== ''
@@ -102,7 +158,11 @@ const HistoricalChat: FC<ChatProps> = ({ chat }) => {
                     <div className='historical-chat__group-name'>{group.name}</div>
                     <div className='historical-chat__messages'>
                       {group.messages.map((message, i) => (
-                        <ChatMessage message={message} key={`message-${i}`} onMessageClick={(message) => setMarkedMessage(message)} />
+                        <ChatMessage
+                          message={message}
+                          key={`message-${i}`}
+                          onMessageClick={(message) => setMarkedMessage(message)}
+                        />
                       ))}
                     </div>
                   </>
@@ -115,30 +175,22 @@ const HistoricalChat: FC<ChatProps> = ({ chat }) => {
       </div>
 
       {markedMessage && (
-        // TODO: Modify modal with correct data
-        <Dialog
-          title='Euismod Egestas Elit'
-          onClose={() => setMarkedMessage(null)}
-          footer={
-            <>
-              <Button appearance='secondary' onClick={() => setMarkedMessage(null)}>
-                {t('global.cancel')}
-              </Button>
-              <Button>{t('global.save')}</Button>
-            </>
-          }
-        >
-          <Track direction='vertical' gap={16}>
-            <FormInput label='Nullam Ullamcorper' name='test1' defaultValue={markedMessage.content} />
-            {intents && (
-              <FormSelect
-                label='Etiam Vestibulum'
-                name='test2'
-                options={intents.map((intent) => ({ label: intent.intent, value: String(intent.id) }))}
-              />
-            )}
-          </Track>
-        </Dialog>
+        <>
+          {markedMessage.authorRole === 'end-user' && (
+            <NewExampleModal
+              message={markedMessage}
+              setMessage={setMarkedMessage}
+              onSubmitExample={(data) => addExamplesMutation.mutate(data)}
+            />
+          )}
+          {markedMessage.authorRole === 'backoffice-user' && (
+            <NewResponseModal
+              message={markedMessage}
+              setMessage={setMarkedMessage}
+              onSubmitResponse={(data) => addResponseMutation.mutate(data)}
+            />
+          )}
+        </>
       )}
     </>
   );
