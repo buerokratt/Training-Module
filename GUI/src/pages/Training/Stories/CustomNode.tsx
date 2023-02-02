@@ -8,6 +8,7 @@ import IntentNode from './IntentNode';
 import ResponseNode from './ResponseNode';
 import FormNode from './FormNode';
 import SlotNode from './SlotNode';
+import ActionNode from './ActionNode';
 
 type NodeDataProps = {
   data: {
@@ -40,6 +41,7 @@ const CustomNode: FC<NodeProps & NodeDataProps> = (props) => {
         {data.type === 'responseNode' && <ResponseNode data={data} />}
         {data.type === 'formNode' && <FormNode data={data} />}
         {data.type === 'slotNode' && <SlotNode data={data} />}
+        {data.type === 'actionNode' && <ActionNode data={data} />}
       </Track>
 
       <Handle

@@ -28,7 +28,7 @@ const FormNode: FC<NodeDataProps> = ({ data }) => {
               <Switch
                 {...field}
                 label='active_loop'
-                checked={true}
+                defaultChecked={true}
               />
             )}
           />

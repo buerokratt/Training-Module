@@ -107,7 +107,13 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     });
   };
 
-  const handleNodeAdd = ({ label, type, className }: { label: string; type: string, className: string }) => {
+  const handleNodeAdd = (
+    {
+      label,
+      type,
+      className,
+      checkpoint,
+    }: { label: string; type: string, className: string, checkpoint?: boolean }) => {
     setNodes((prevNodes) => {
       const prevNode = prevNodes[prevNodes.length - 1];
       if (prevNode.type === 'output') return prevNodes;
@@ -132,6 +138,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
             label,
             onDelete: handleNodeDelete,
             type,
+            checkpoint
           },
           className,
         },
@@ -263,7 +270,54 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
           )}
 
           <Collapsible title={t('training.actions.title')}>
-
+            <Track direction='vertical' align='stretch' gap={4}>
+              <button
+                onClick={() => handleNodeAdd({
+                  label: 'Checkpoints:',
+                  type: 'actionNode',
+                  className: 'action',
+                  checkpoint: true,
+                })}
+              >
+                <Box color='orange'>checkpoints</Box>
+              </button>
+              <button
+                onClick={() => handleNodeAdd({
+                  label: 'conversation_start: true',
+                  type: 'actionNode',
+                  className: 'action',
+                })}
+              >
+                <Box color='orange'>conversation_start</Box>
+              </button>
+              <button
+                onClick={() => handleNodeAdd({
+                  label: 'action_listen: true',
+                  type: 'actionNode',
+                  className: 'action',
+                })}
+              >
+                <Box color='orange'>action_listen</Box>
+              </button>
+              <button
+                onClick={() => handleNodeAdd({
+                  label: 'action_restart: true',
+                  type: 'actionNode',
+                  className: 'action',
+                })}
+              >
+                <Box color='orange'>action_restart</Box>
+              </button>
+              <button
+                onClick={() => handleNodeAdd({
+                  label: 'wait_for_user_input: true',
+                  type: 'actionNode',
+                  className: 'action',
+                })}
+              >
+                <Box color='orange'>wait_for_user_input</Box>
+              </button>
+            </Track>
           </Collapsible>
         </Track>
       </div>
