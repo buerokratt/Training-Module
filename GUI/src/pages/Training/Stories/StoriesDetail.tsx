@@ -1,7 +1,12 @@
 import { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { MdOutlineEdit, MdPlayCircleFilled, MdOutlineStop } from 'react-icons/md';
+import {
+  MdPlayCircleFilled,
+  MdOutlineStop,
+  MdOutlineSave,
+  MdOutlineModeEditOutline,
+} from 'react-icons/md';
 import ReactFlow, {
   addEdge,
   Background,
@@ -15,16 +20,17 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import 'reactflow/dist/style.css';
 
-import { Box, Button, Collapsible, Dialog, Icon, Track } from 'components';
+import { Box, Button, Collapsible, Dialog, FormInput, Icon, Track } from 'components';
 import { Intent } from 'types/intent';
 import { Responses } from 'types/response';
-import { Story } from 'types/story';
+import { Story, StoryDTO } from 'types/story';
 import { Form } from 'types/form';
 import { Slot } from 'types/slot';
-import { deleteIntent } from 'services/intents';
 import { useToast } from 'hooks/useToast';
+import { addStory, deleteStory, editStory } from 'services/stories';
 import CustomNode from './CustomNode';
 import './StoriesDetail.scss';
+import useDocumentEscapeListener from '../../../hooks/useDocumentEscapeListener';
 
 const GRID_UNIT = 16;
 
@@ -75,8 +81,48 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     queryKey: ['slots'],
   });
 
+  useDocumentEscapeListener(() => setEditableTitle(null));
+
+  const addStoryMutation = useMutation({
+    mutationFn: (data: StoryDTO) => addStory(data),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['stories']);
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: 'Story added',
+      });
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
+  });
+
+  const editStoryMutation = useMutation({
+    mutationFn: ({ id, data }: { id: string | number, data: StoryDTO }) => editStory(id, data),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['stories']);
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: 'Story added',
+      });
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
+  });
+
   const deleteStoryMutation = useMutation({
-    mutationFn: ({ id }: { id: string | number }) => deleteIntent(id),
+    mutationFn: ({ id }: { id: string | number }) => deleteStory(id),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['stories']);
       toast.open({
@@ -138,7 +184,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
             label,
             onDelete: handleNodeDelete,
             type,
-            checkpoint
+            checkpoint,
           },
           className,
         },
@@ -174,6 +220,16 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
         },
       ];
     });
+
+    if (mode === 'new') {
+      // TODO: provide correct data for new story
+      addStoryMutation.mutate({ story: 'test' });
+    }
+    if (mode === 'edit') {
+      if (!id) return;
+      // TODO: provide correct data for editable story
+      editStoryMutation.mutate({ id, data: { story: 'test' } });
+    }
   };
 
   const handleGraphReset = () => {
@@ -325,11 +381,42 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
       <div className='graph'>
         <div className='graph__header'>
           <Track gap={16}>
-            <h2 className='h3'>{mode === 'new' ? t('global.title') : 'Cursus Nibh Ullamcorper'}</h2>
-            <Button appearance='text'>
-              <Icon icon={<MdOutlineEdit />} />
-              {t('global.edit')}
-            </Button>
+            {editableTitle ? (
+              <FormInput
+                label='Story title'
+                name='storyTitle'
+                value={editableTitle}
+                onChange={(e) =>
+                  setEditableTitle(e.target.value)
+                }
+                hideLabel
+              />
+            ) : (
+              <h2 className='h3'>{mode === 'new' ? t('global.title') : 'Cursus Nibh Ullamcorper'}</h2>
+            )}
+            {editableTitle ? (
+              <Button
+                appearance='text'
+                onClick={() =>
+                  mode === 'new'
+                    ? addStoryMutation.mutate({ story: 'test' })
+                    : id ? editStoryMutation.mutate({ id, data: { story: 'test' } }) : undefined
+                }
+              >
+                <Icon icon={<MdOutlineSave />} />
+                {t('global.save')}
+              </Button>
+            ) : (
+              <Button
+                appearance='text'
+                onClick={() =>
+                  setEditableTitle(mode === 'new' ? t('global.title') : 'Cursus Nibh Ullamcorper')
+                }
+              >
+                <Icon icon={<MdOutlineModeEditOutline />} />
+                {t('global.edit')}
+              </Button>
+            )}
           </Track>
         </div>
         <div className='graph__body'>
