@@ -104,6 +104,11 @@
       background-color: get-color(orange-3);
       border: 1px solid get-color(orange-5);
     }
+
+    &.condition {
+      background-color: get-color(sea-green-1);
+      border: 1px solid get-color(sea-green-3);
+    }
   }
 
   &__node-delete {

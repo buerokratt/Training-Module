@@ -325,6 +325,20 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
             </Collapsible>
           )}
 
+          <Collapsible title={t('training.conditions')}>
+            <Track direction='vertical' align='stretch' gap={4}>
+              <button
+                onClick={() => handleNodeAdd({
+                  label: '',
+                  type: 'conditionNode',
+                  className: 'condition',
+                })}
+              >
+                <Box color='green'>condition</Box>
+              </button>
+            </Track>
+          </Collapsible>
+
           <Collapsible title={t('training.actions.title')}>
             <Track direction='vertical' align='stretch' gap={4}>
               <button
