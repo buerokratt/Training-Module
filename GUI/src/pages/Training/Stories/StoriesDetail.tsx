@@ -20,9 +20,10 @@ import { Intent } from 'types/intent';
 import { Responses } from 'types/response';
 import { Story } from 'types/story';
 import { Form } from 'types/form';
-import CustomNode from './CustomNode';
+import { Slot } from 'types/slot';
 import { deleteIntent } from 'services/intents';
 import { useToast } from 'hooks/useToast';
+import CustomNode from './CustomNode';
 import './StoriesDetail.scss';
 
 const GRID_UNIT = 16;
@@ -36,7 +37,7 @@ const initialNodes: Node[] = [
     id: '1',
     type: 'input',
     position: {
-      x: 12 * GRID_UNIT,
+      x: 14 * GRID_UNIT,
       y: GRID_UNIT,
     },
     data: {
@@ -48,13 +49,14 @@ const initialNodes: Node[] = [
   },
 ];
 
-const StoriesDetail: FC = () => {
+const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const { id } = useParams();
+  const navigate = useNavigate();
   const toast = useToast();
   const queryClient = useQueryClient();
   const [deleteConfirmation, setDeleteConfirmation] = useState(false);
+  const [restartConfirmation, setRestartConfirmation] = useState(false);
   const [editableTitle, setEditableTitle] = useState<string | null>(null);
   const { data: story } = useQuery<Story>({
     queryKey: [`stories/${id}`],
@@ -68,6 +70,9 @@ const StoriesDetail: FC = () => {
   });
   const { data: forms } = useQuery<Form[]>({
     queryKey: ['forms'],
+  });
+  const { data: slots } = useQuery<Slot[]>({
+    queryKey: ['slots'],
   });
 
   const deleteStoryMutation = useMutation({
@@ -164,6 +169,11 @@ const StoriesDetail: FC = () => {
     });
   };
 
+  const handleGraphReset = () => {
+    setNodes(initialNodes);
+    setRestartConfirmation(false);
+  };
+
   return (
     <Track gap={16} align='left' style={{ margin: '-16px' }}>
       <div style={{ flex: 1, maxWidth: 'calc(100% / 3)', padding: '16px 0 16px 16px' }}>
@@ -190,7 +200,7 @@ const StoriesDetail: FC = () => {
           )}
 
           {responses && (
-            <Collapsible title={t('training.responses.title')} defaultOpen>
+            <Collapsible title={t('training.responses.title')}>
               <Track direction='vertical' align='stretch' gap={4}>
                 {Object.keys(responses).map((response, index) => (
                   <button
@@ -211,7 +221,7 @@ const StoriesDetail: FC = () => {
           )}
 
           {forms && (
-            <Collapsible title={t('training.forms.title')} defaultOpen>
+            <Collapsible title={t('training.forms.title')}>
               <Track direction='vertical' align='stretch' gap={4}>
                 {forms.map((form) => (
                   <button
@@ -231,6 +241,27 @@ const StoriesDetail: FC = () => {
             </Collapsible>
           )}
 
+          {slots && (
+            <Collapsible title={t('training.slots.title')}>
+              <Track direction='vertical' align='stretch' gap={4}>
+                {slots.map((slot) => (
+                  <button
+                    key={slot.id}
+                    onClick={() => handleNodeAdd({
+                      label: slot.name,
+                      type: 'slotNode',
+                      className: 'slot',
+                    })}
+                  >
+                    <Box color='dark-blue'>
+                      {slot.name}
+                    </Box>
+                  </button>
+                ))}
+              </Track>
+            </Collapsible>
+          )}
+
           <Collapsible title={t('training.actions.title')}>
 
           </Collapsible>
@@ -240,7 +271,7 @@ const StoriesDetail: FC = () => {
       <div className='graph'>
         <div className='graph__header'>
           <Track gap={16}>
-            <h2 className='h3'>Cursus Nibh Ullamcorper</h2>
+            <h2 className='h3'>{mode === 'new' ? t('global.title') : 'Cursus Nibh Ullamcorper'}</h2>
             <Button appearance='text'>
               <Icon icon={<MdOutlineEdit />} />
               {t('global.edit')}
@@ -267,7 +298,10 @@ const StoriesDetail: FC = () => {
         <div className='graph__footer'>
           <Track gap={16} justify='end'>
             <Button appearance='secondary' onClick={() => navigate(-1)}>{t('global.back')}</Button>
-            <Button appearance='error' onClick={() => setDeleteConfirmation(true)}>{t('global.delete')}</Button>
+            <Button appearance='secondary' onClick={() => setRestartConfirmation(true)}>{t('global.reset')}</Button>
+            {mode === 'edit' && (
+              <Button appearance='error' onClick={() => setDeleteConfirmation(true)}>{t('global.delete')}</Button>
+            )}
             <Button onClick={() => handleGraphSave()}>{t('global.save')}</Button>
           </Track>
         </div>
@@ -283,6 +317,26 @@ const StoriesDetail: FC = () => {
               <Button
                 appearance='error'
                 onClick={() => deleteStoryMutation.mutate({ id })}
+              >
+                {t('global.yes')}
+              </Button>
+            </>
+          }
+        >
+          <p>{t('global.removeValidation')}</p>
+        </Dialog>
+      )}
+
+      {restartConfirmation && (
+        <Dialog
+          title={t('global.reset')}
+          onClose={() => setRestartConfirmation(false)}
+          footer={
+            <>
+              <Button appearance='secondary' onClick={() => setRestartConfirmation(false)}>{t('global.no')}</Button>
+              <Button
+                appearance='error'
+                onClick={handleGraphReset}
               >
                 {t('global.yes')}
               </Button>

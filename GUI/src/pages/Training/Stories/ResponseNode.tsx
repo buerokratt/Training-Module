@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 type NodeDataProps = {
@@ -19,4 +19,4 @@ const ResponseNode: FC<NodeDataProps> = ({ data }) => {
   );
 };
 
-export default ResponseNode;
+export default memo(ResponseNode);

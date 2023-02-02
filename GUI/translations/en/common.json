@@ -36,7 +36,8 @@
     "away": "Away",
     "idCode": "ID code",
     "status": "Status",
-    "anonymous": "Anonymous"
+    "anonymous": "Anonymous",
+    "title": "Title"
   },
   "mainMenu": {
     "menuLabel": "Main navigation",
@@ -51,6 +52,7 @@
     "form": "Form",
     "slot": "Slot",
     "checkpoints": "Checkpoints",
+    "value": "Value",
     "intents": {
       "title": "Intents",
       "commonIntents": "Common intents",

@@ -36,7 +36,8 @@
     "away": "Eemal",
     "idCode": "Isikukood",
     "status": "Staatus",
-    "anonymous": "Anonüümne"
+    "anonymous": "Anonüümne",
+    "title": "Pealkiri"
   },
   "mainMenu": {
     "menuLabel": "Põhinavigatsioon",
@@ -51,6 +52,7 @@
     "form": "Vorm",
     "slot": "Slot",
     "checkpoints": "Checkpoints",
+    "value": "väärtus",
     "intents": {
       "title": "Teemad",
       "commonIntents": "Avalikud teemad",

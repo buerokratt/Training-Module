@@ -95,6 +95,11 @@
       border: 1px solid get-color(black-coral-3);
     }
 
+    &.slot {
+      background-color: get-color(sapphire-blue-3);
+      border: 1px solid get-color(sapphire-blue-5);
+    }
+
     &.action {
       background-color: get-color(jasper-1);
       border: 1px solid get-color(jasper-3);
