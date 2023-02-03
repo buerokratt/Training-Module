@@ -1,0 +1,9 @@
+version: "3.9"
+services:
+  training_module:
+    container_name: training_module
+    build:
+      context: .
+      target: web
+    ports:
+      - '80:80'
