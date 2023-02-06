@@ -6,7 +6,7 @@ curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/respo
 ```
 ##### Add mock data from response.json file
 ```
-curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/response/_bulk" -ku admin:admin --data-binary "@mock/response.json"
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/response/_bulk" -ku admin:admin --data-binary "@mock/responses.json"
 ```
 ##### Test query to index to validate that mock data is there
 ```
