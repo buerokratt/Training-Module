@@ -2,11 +2,11 @@
 ## Responses
 ##### Create response index
 ```
-curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/response" -ku admin:admin --data-binary "@responses/response-field_mappings.json"
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/response" -ku admin:admin --data-binary "@fieldMappings/response-field_mappings.json"
 ```
 ##### Add mock data from response.json file
 ```
-curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/response/_bulk" -ku admin:admin --data-binary "@responses/response.json"
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/response/_bulk" -ku admin:admin --data-binary "@mock/response.json"
 ```
 ##### Test query to index to validate that mock data is there
 ```
@@ -14,7 +14,7 @@ curl -H 'Content-Type: application/json' -X GET "http://localhost:9200/response/
 ```
 ##### Templates for searching responses
 ```
-curl -L -X POST 'http://localhost:9200/_scripts/response-with-name-and-text' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@responses/response-with-name-and-text.json"
+curl -L -X POST 'http://localhost:9200/_scripts/response-with-name-and-text' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/response-with-name-and-text.json"
 ```
 ##### Test template
 ```
