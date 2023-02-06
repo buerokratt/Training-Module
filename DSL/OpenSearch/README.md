@@ -2,7 +2,7 @@
 ## Responses
 ##### Create response index
 ```
-curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/response" -ku admin:admin --data-binary "@fieldMappings/response-field_mappings.json"
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/response" -ku admin:admin --data-binary "@fieldMappings/responses.json"
 ```
 ##### Add mock data from response.json file
 ```
