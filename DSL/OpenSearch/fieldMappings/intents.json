@@ -1,0 +1,12 @@
+{
+  "mappings" : {
+    "properties" : {
+      "intent" : {
+        "type" : "text"
+      },
+      "examples" : {
+        "type" : "text"
+      }
+    }
+  }
+}
