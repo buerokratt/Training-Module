@@ -1,0 +1,37 @@
+{
+  "script": {
+    "lang": "mustache",
+    "source": {
+      "size": 0,
+      "aggs": {
+        "hot": {
+          "terms": {
+            "field": "intent"
+          },
+          "aggs": {
+            "examples_counts": {
+              "value_count": {
+                "field": "examples.raw"
+              }
+            }
+          }
+        }
+      },
+      "query": {
+        "bool": {
+          "must": [
+            {
+              "query_string": {
+                "query": "*{{intent}}*",
+                "default_field": "intent"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "params": {
+      "intent": ""
+    }
+  }
+}

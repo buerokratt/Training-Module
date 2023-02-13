@@ -1,0 +1,24 @@
+{
+  "mappings" : {
+    "properties" : {
+      "intent" : {
+        "type" : "text",
+        "fielddata": true,
+        "fields": {
+          "raw": {
+            "type": "keyword"
+          }
+        }
+      },
+      "examples" : {
+        "type" : "text",
+        "fielddata": true,
+        "fields": {
+          "raw": {
+            "type": "keyword"
+          }
+        }
+      }
+    }
+  }
+}
