@@ -1,0 +1,8 @@
+{
+  "intent": "{{hits.0._source.intent}}",
+  "examples": [
+    {{#each hits.0._source.examples}}
+      "{{this}}"{{#unless @last}},{{/unless}}
+    {{/each}}
+  ]
+}
