@@ -1,0 +1,49 @@
+extractRequestData:
+  assign:
+    cookie: ${incoming.headers.cookie}
+
+extractTokenData:
+  call: http.post
+  args:
+    # TODO: replace with env variable and correct path to TIM endpoint
+    url: http://localhost:8080/mock-tim-custom-jwt-userinfo
+    headers:
+      cookie: ${cookie}
+    body:
+      # TODO: pass cookie name correctly to TIM
+      cookieName: "customJwtCookie"
+  result: jwtResult
+
+validateAdministrator:
+  switch:
+    # TODO: use correct structure when request is made against TIM
+    - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
+      next: getIntentsExampleCount
+  next: returnUnauthorized
+
+getIntentsExampleCount:
+  call: http.post
+  args:
+    url: http://localhost:9200/intents/_search/template
+    body:
+      id: "intents-with-examples-count"
+      params:
+        intent: ''
+  result: getIntentsResult
+
+mapIntentsData:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/dmapper/get-intents-with-examples-count
+    body:
+      buckets: ${getIntentsResult.response.body.aggregations.hot.buckets}
+  result: intentsData
+  next: returnSuccess
+
+returnSuccess:
+  return: ${intentsData.response.body}
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
+  next: end
