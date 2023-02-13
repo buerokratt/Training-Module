@@ -1,0 +1,45 @@
+extractRequestData:
+  assign:
+    cookie: ${incoming.headers.cookie}
+
+extractTokenData:
+  call: http.post
+  args:
+    # TODO: replace with env variable and correct path to TIM endpoint
+    url: http://localhost:8080/mock-tim-custom-jwt-userinfo
+    headers:
+      cookie: ${cookie}
+    body:
+      # TODO: pass cookie name correctly to TIM
+      cookieName: "customJwtCookie"
+  result: jwtResult
+
+validateAdministrator:
+  switch:
+    # TODO: use correct structure when request is made against TIM
+    - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
+      next: getRules
+  next: returnUnauthorized
+
+getRules:
+  call: http.get
+  args:
+    url: http://host.docker.internal:9200/rules/_search
+  result: getRulesResult
+
+mapRulesData:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/dmapper/get-rules
+    body:
+      hits: ${getRulesResult.response.body.hits.hits}
+  result: rulesData
+  next: returnSuccess
+
+returnSuccess:
+  return: ${rulesData.response.body}
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
+  next: end

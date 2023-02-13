@@ -49,3 +49,16 @@ curl -L -X POST 'http://localhost:9200/_scripts/intents-with-examples-count' -H 
 ```
 curl -L -X GET 'http://localhost:9200/intents/_search/template' -H 'Content-Type: application/json' --data-raw '{"id": "intents-with-examples-count", "params": {"intent": "andmekaitse"}}'
 ```
+## Rules
+##### Create rules index
+```
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/rules" -ku admin:admin --data-binary "@fieldMappings/rules.json"
+```
+##### Add mock data from rules.json file
+```
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/rules/_bulk" -ku admin:admin --data-binary "@mock/rules.json"
+```
+##### Test query to index to validate that mock data is there
+```
+curl -H 'Content-Type: application/json' -X GET "http://localhost:9200/rules/_search?pretty=true" -ku admin:admin -d' {"query":{"match":{"rule":"common_tervitus"}}}'
+```
