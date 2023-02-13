@@ -1,0 +1,7 @@
+{
+  "intents": [
+    {{#each hits}}
+     "{{_source.intent}}"{{#unless @last}},{{/unless}}
+    {{/each}}
+  ]
+}

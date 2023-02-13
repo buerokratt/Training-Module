@@ -20,3 +20,32 @@ curl -L -X POST 'http://localhost:9200/_scripts/response-with-name-and-text' -H 
 ```
 curl -L -X GET 'http://localhost:9200/response/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "response-with-name-and-text", "params": {"response_name": "fallback", "response_text": "kas"}}'
 ```
+## Intents
+##### Create intents index
+```
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/intents" -ku admin:admin --data-binary "@fieldMappings/intents.json"
+```
+##### Add mock data from intents.json file
+```
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/intents/_bulk" -ku admin:admin --data-binary "@mock/intents.json"
+```
+##### Test query to index to validate that mock data is there
+```
+curl -H 'Content-Type: application/json' -X GET "http://localhost:9200/intents/_search?pretty=true" -ku admin:admin -d' {"query":{"match":{"intent":"common_tervitus"}}}'
+```
+##### Templates for searching intents
+```
+curl -L -X POST 'http://localhost:9200/_scripts/intent-with-name' -H 'Content-Type: application/json' --data-binary "@templates/intent-with-name.json"
+```
+##### Test template
+```
+curl -L -X GET 'http://localhost:9200/intents/_search/template' -H 'Content-Type: application/json' --data-raw '{"id": "intent-with-name", "params": {"intent": "andmekaitse"}}'
+```
+##### Templates for getting intents with example count
+```
+curl -L -X POST 'http://localhost:9200/_scripts/intents-with-examples-count' -H 'Content-Type: application/json' --data-binary "@templates/intents-with-examples-count.json"
+```
+##### Test template
+```
+curl -L -X GET 'http://localhost:9200/intents/_search/template' -H 'Content-Type: application/json' --data-raw '{"id": "intents-with-examples-count", "params": {"intent": "andmekaitse"}}'
+```
