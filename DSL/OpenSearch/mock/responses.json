@@ -1,0 +1,12 @@
+{"index":{"_id":"1"}}
+{"name":"utter_andmekaitse_küsimused","text":"kõik on kaitstud"}
+{"index":{"_id":"2"}}
+{"name":"utter_fallback_kontroll","text":"Jäi arusaamatuks, kas soovisite, et suunan edasi?"}
+{"index":{"_id":"3"}}
+{"name":"utter_mille_kohta_küsimus_käis","text":"Kas küsimus käis selle teema kohta: {intent}? (Jah/Ei)"}
+{"index":{"_id":"4"}}
+{"name":"utter_not_confident","text":"Ma ei saanud päris täpselt aru."}
+{"index":{"_id":"5"}}
+{"name":"utter_ei_pakkunud_õigesti","text":"Ma pean natuke juurde õppima, et oskaksin sellele vastata."}
+{"index":{"_id":"6"}}
+{"name":"utter_ask_direct_to_customer_support_form_affirm_deny","text":"Kas suunan teid klienditeenindajale? (Jah/Ei)"}
