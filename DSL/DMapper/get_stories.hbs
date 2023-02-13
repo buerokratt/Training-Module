@@ -1,0 +1,9 @@
+{
+  "stories": [
+    {{#each hits}}
+      {
+          "story": "{{_source.story}}"
+      }{{#unless @last}},{{/unless}}
+    {{/each}}
+  ]
+}
