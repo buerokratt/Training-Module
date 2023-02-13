@@ -1,0 +1,6 @@
+{"index":{"_id":"1"}}
+{"rule":"common_tervitus","steps":[{"intent":"common_tervitus"}, {"action": "utter_common_tervitus"}]}
+{"index":{"_id":"2"}}
+{"rule":"rahvaarv_olemas","steps":[{"intent":"rahvaarv"}, {"action": "utter_rahvaarv_puudu"}]}
+{"index":{"_id":"3"}}
+{"rule":"kompliment","steps":[{"intent":"kompliment"}, {"action": "utter_kompliment"}]}
