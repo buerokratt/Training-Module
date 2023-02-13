@@ -62,3 +62,16 @@ curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/rules
 ```
 curl -H 'Content-Type: application/json' -X GET "http://localhost:9200/rules/_search?pretty=true" -ku admin:admin -d' {"query":{"match":{"rule":"common_tervitus"}}}'
 ```
+## Stories
+##### Create stories index
+```
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/stories" -ku admin:admin --data-binary "@fieldMappings/stories.json"
+```
+##### Add mock data from stories.json file
+```
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/stories/_bulk" -ku admin:admin --data-binary "@mock/stories.json"
+```
+##### Test query to index to validate that mock data is there
+```
+curl -H 'Content-Type: application/json' -X GET "http://localhost:9200/stories/_search?pretty=true" -ku admin:admin -d' {"query":{"match":{"story":"tervitamine"}}}'
+```
