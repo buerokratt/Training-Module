@@ -1,7 +1,6 @@
 assign_values:
   assign:
-    responseName: ${incoming.body.response_name}
-    responseText: ${incoming.body.response_text}
+    params: ${incoming.body}
 
 extractRequestData:
   assign:
@@ -21,66 +20,18 @@ extractTokenData:
 validateAdministrator:
   switch:
     - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
-      next: validateValues
-  next: returnUnauthorized
-
-validateValues:
-  switch:
-    # TODO: use correct structure when request is made against TIM
-    - condition: ${responseName.length > 0 && responseText.length > 0}
       next: getResponsesWithNameAndText
-    - condition: ${responseName.length > 0}
-      next: getResponsesWithName
-    - condition: ${responseText.length > 0}
-      next: getResponsesWithText
-  next: getResponses
+  next: returnUnauthorized
 
 getResponsesWithNameAndText:
   call: http.post
   args:
-    url: http://host.docker.internal:9200/response/_search
+    url: http://host.docker.internal:9200/response/_search/template
     body:
-      query:
-        bool:
-          must:
-            - match:
-                name: ${responseName}
-            - match:
-                text: ${responseText}
+      id: "response-with-name-and-text"
+      params: ${params}
   result: getResponsesResult
   next: mapResponsesData
-
-getResponsesWithName:
-  call: http.post
-  args:
-    url: http://host.docker.internal:9200/response/_search
-    body:
-      query:
-        bool:
-          must:
-            - match:
-                name: ${responseName}
-  result: getResponsesResult
-  next: mapResponsesData
-
-getResponsesWithText:
-  call: http.post
-  args:
-    url: http://host.docker.internal:9200/response/_search
-    body:
-      query:
-        bool:
-          must:
-            - match:
-                text: ${responseText}
-  result: getResponsesResult
-  next: mapResponsesData
-
-getResponses:
-  call: http.post
-  args:
-    url: http://host.docker.internal:9200/response/_search
-  result: getResponsesResult
 
 mapResponsesData:
   call: http.post
