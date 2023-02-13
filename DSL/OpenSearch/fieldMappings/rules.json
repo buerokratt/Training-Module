@@ -1,0 +1,19 @@
+{
+  "mappings" : {
+    "properties" : {
+      "rule" : {
+        "type" : "text"
+        },
+      "steps" : {
+        "properties" : {
+          "intent" : {
+            "type" : "text"
+          },
+          "action" : {
+            "type" : "text"
+          }
+        }
+      }
+    }
+  }
+}

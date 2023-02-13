@@ -1,0 +1,9 @@
+{
+  "rules": [
+    {{#each hits}}
+      {
+          "rule": "{{_source.rule}}"
+      }{{#unless @last}},{{/unless}}
+    {{/each}}
+  ]
+}
