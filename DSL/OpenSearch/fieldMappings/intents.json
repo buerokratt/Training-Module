@@ -2,10 +2,22 @@
   "mappings" : {
     "properties" : {
       "intent" : {
-        "type" : "text"
+        "type" : "text",
+        "fielddata": true,
+        "fields": {
+          "raw": {
+            "type": "keyword"
+          }
+        }
       },
       "examples" : {
-        "type" : "text"
+        "type" : "text",
+        "fielddata": true,
+        "fields": {
+          "raw": {
+            "type": "keyword"
+          }
+        }
       }
     }
   }
