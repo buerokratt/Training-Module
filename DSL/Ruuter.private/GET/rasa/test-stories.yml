@@ -21,11 +21,11 @@ validateAdministrator:
       next: getTestStories
   next: returnUnauthorized
 
-#getTestStories:
-#  call: http.get
-#  args:
-#    url: http://host.docker.internal:9200/test-stories/_search
-#  result: getTestStoriesResult
+getTestStories:
+  call: http.get
+  args:
+    url: http://host.docker.internal:9200/test-stories/_search
+  result: getTestStoriesResult
 
 mapTestStoriesData:
   call: http.post
