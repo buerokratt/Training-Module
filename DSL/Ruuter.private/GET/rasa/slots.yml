@@ -18,26 +18,26 @@ validateAdministrator:
   switch:
     # TODO: use correct structure when request is made against TIM
     - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
-      next: getTestStories
+      next: getSlots
   next: returnUnauthorized
 
-getTestStories:
+getSlots:
   call: http.get
   args:
-    url: http://host.docker.internal:9200/test-stories/_search
-  result: getTestStoriesResult
+    url: http://host.docker.internal:9200/slots/_search
+  result: getSlotsResult
 
-mapTestStoriesData:
+mapSlotsData:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/dmapper/get-test-stories
+    url: http://host.docker.internal:3000/dmapper/get-slots
     body:
-      hits: ${getTestStoriesResult.response.body.hits.hits}
-  result: testStoriesData
+      hits: ${getSlotsResult.response.body.hits.hits}
+  result: slotsData
   next: returnSuccess
 
 returnSuccess:
-  return: ${testStoriesData.response.body}
+  return: ${slotsData.response.body}
   next: end
 
 returnUnauthorized:
