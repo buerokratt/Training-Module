@@ -88,3 +88,16 @@ curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/test-
 ```
 curl -H 'Content-Type: application/json' -X GET "http://localhost:9200/test-stories/_search?pretty=true" -ku admin:admin -d' {"query":{"match":{"story":"common_tervitus"}}}'
 ```
+## Slots
+##### Create slots index
+```
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/slots" -ku admin:admin --data-binary "@fieldMappings/slots.json"
+```
+##### Add mock data from slots.json file
+```
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/slots/_bulk" -ku admin:admin --data-binary "@mock/slots.json"
+```
+##### Test query to index to validate that mock data is there
+```
+curl -H 'Content-Type: application/json' -X GET "http://localhost:9200/slots/_search?pretty=true" -ku admin:admin -d' {"query":{"match":{"slot":"affirm_deny"}}}'
+```
