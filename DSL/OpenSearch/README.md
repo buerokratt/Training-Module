@@ -75,6 +75,27 @@ curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/stori
 ```
 curl -H 'Content-Type: application/json' -X GET "http://localhost:9200/stories/_search?pretty=true" -ku admin:admin -d' {"query":{"match":{"story":"tervitamine"}}}'
 ```
+## Test stories
+##### Create test stories index
+```
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/test-stories" -ku admin:admin --data-binary "@fieldMappings/test-stories.json"
+```
+##### Add mock data from test-stories.json file
+```
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/test-stories/_bulk" -ku admin:admin --data-binary "@mock/test-stories.json"
+```
+##### Test query to index to validate that mock data is there
+```
+curl -H 'Content-Type: application/json' -X GET "http://localhost:9200/test-stories/_search?pretty=true" -ku admin:admin -d' {"query":{"match":{"story":"common_tervitus"}}}'
+```
+##### Templates for searching test stories
+```
+curl -L -X POST 'http://localhost:9200/_scripts/test-story-name' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/test-story-name.json"
+```
+##### Test template
+```
+curl -L -X GET 'http://localhost:9200/test-stories/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "test-story-name", "params": {"test-story-name": "common_tervitus"}}'
+```
 ## Forms
 ##### Create forms index
 ```
