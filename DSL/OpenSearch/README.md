@@ -75,3 +75,16 @@ curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/stori
 ```
 curl -H 'Content-Type: application/json' -X GET "http://localhost:9200/stories/_search?pretty=true" -ku admin:admin -d' {"query":{"match":{"story":"tervitamine"}}}'
 ```
+## Forms
+##### Create forms index
+```
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/forms" -ku admin:admin --data-binary "@fieldMappings/forms.json"
+```
+##### Add mock data from forms.json file
+```
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/forms/_bulk" -ku admin:admin --data-binary "@mock/forms.json"
+```
+##### Test query to index to validate that mock data is there
+```
+curl -H 'Content-Type: application/json' -X GET "http://localhost:9200/forms/_search?pretty=true" -ku admin:admin -d' {"query":{"match":{"form":"custom_fallback_form"}}}'
+```
