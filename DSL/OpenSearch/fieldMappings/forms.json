@@ -1,0 +1,12 @@
+{
+  "mappings" : {
+    "properties" : {
+      "form" : {
+        "type" : "text"
+      },
+      "required_slots" : {
+        "type": "text"
+      }
+    }
+  }
+}

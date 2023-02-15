@@ -96,16 +96,16 @@ curl -L -X POST 'http://localhost:9200/_scripts/test-story-name' -H 'Content-Typ
 ```
 curl -L -X GET 'http://localhost:9200/test-stories/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "test-story-name", "params": {"test-story-name": "common_tervitus"}}'
 ```
-## Slots
-##### Create slots index
+## Forms
+##### Create forms index
 ```
-curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/slots" -ku admin:admin --data-binary "@fieldMappings/slots.json"
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/forms" -ku admin:admin --data-binary "@fieldMappings/forms.json"
 ```
-##### Add mock data from slots.json file
+##### Add mock data from forms.json file
 ```
-curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/slots/_bulk" -ku admin:admin --data-binary "@mock/slots.json"
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/forms/_bulk" -ku admin:admin --data-binary "@mock/forms.json"
 ```
 ##### Test query to index to validate that mock data is there
 ```
-curl -H 'Content-Type: application/json' -X GET "http://localhost:9200/slots/_search?pretty=true" -ku admin:admin -d' {"query":{"match":{"slot":"affirm_deny"}}}'
+curl -H 'Content-Type: application/json' -X GET "http://localhost:9200/forms/_search?pretty=true" -ku admin:admin -d' {"query":{"match":{"form":"custom_fallback_form"}}}'
 ```
