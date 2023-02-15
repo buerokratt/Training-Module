@@ -1,0 +1,24 @@
+{
+  "stories": [
+      {{#each hits}}
+        {
+         "story": "{{_source.story}}",
+         "steps": [
+            {{#each _source.steps as |step|}}
+              {
+                  {{#if step.user}}
+                  "user": "{{step.user}}"
+                  {{/if}}
+                  {{#if step.intent}},
+                  "intent": "{{step.intent}}"
+                  {{/if}}
+                  {{#if step.action}}
+                  "action": "{{step.action}}"
+                  {{/if}}
+                  }{{#unless @last}},{{/unless}}
+              {{/each}}
+            ]
+        }{{#unless @last}},{{/unless}}
+      {{/each}}
+  ]
+}
