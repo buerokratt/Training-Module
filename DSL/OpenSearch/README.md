@@ -130,3 +130,16 @@ curl -L -X POST 'http://localhost:9200/_scripts/entity-with-name' -H 'Content-Ty
 ```
 curl -L -X GET 'http://localhost:9200/entities/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "entity-with-name", "params": {"entity": "common_tervitus"}}'
 ```
+## Regexes
+##### Create regexes index
+```
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/regexes" -ku admin:admin --data-binary "@fieldMappings/regexes.json"
+```
+##### Add mock data from regexes.json file
+```
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/regexes/_bulk" -ku admin:admin --data-binary "@mock/regexes.json"
+```
+##### Test query to index to validate that mock data is there
+```
+curl -H 'Content-Type: application/json' -X GET "http://localhost:9200/regexes/_search?pretty=true" -ku admin:admin -d' {"query":{"match":{"regex":"asukoht"}}}'
+```
