@@ -1,0 +1,9 @@
+{
+  "mappings" : {
+    "properties" : {
+      "entity" : {
+        "type" : "text"
+      }
+    }
+  }
+}
