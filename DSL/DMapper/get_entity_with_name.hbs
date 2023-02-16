@@ -1,0 +1,7 @@
+{{#each hits}}
+    {{#if _source.entity}}
+        true
+    {{/if}}
+    {{#unless @last}},{{/unless}}
+{{/each}}
+false
