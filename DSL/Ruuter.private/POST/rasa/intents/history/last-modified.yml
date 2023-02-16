@@ -1,11 +1,11 @@
-extractRequestData:
+assign_values:
   assign:
+    params: ${incoming.body}
     cookie: ${incoming.headers.cookie}
 
 extractTokenData:
   call: http.post
   args:
-    # TODO: replace with env variable and correct path to TIM endpoint
     url: http://localhost:8080/mock-tim-custom-jwt-userinfo
     headers:
       cookie: ${cookie}
@@ -16,23 +16,24 @@ extractTokenData:
 
 validateAdministrator:
   switch:
-    # TODO: use correct structure when request is made against TIM
     - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
-      next: getIntents
+      next: getIntentLastChanged
   next: returnUnauthorized
 
-getIntents:
-  call: http.get
+getIntentLastChanged:
+  call: http.post
   args:
-    url: http://host.docker.internal:9200/intents/_search
-  result: getIntentsResult
+    url: https://host.docker.internal:8443/get-intent-last-changed
+    body:
+      intent: ${params.intent}
+  result: getIntentLastChangedResult
 
 mapIntentsData:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/dmapper/get-intents
+    url: http://host.docker.internal:3000/dmapper/get-intent-last-changed
     body:
-      hits: ${getIntentsResult.response.body.hits.hits}
+      intent: ${getIntentLastChangedResult.response.body}
   result: intentsData
   next: returnSuccess
 
