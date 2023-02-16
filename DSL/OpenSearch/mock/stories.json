@@ -1,6 +1,6 @@
 {"index":{"_id":"1"}}
-{"story":"andmekaitse_küsimused","steps":[{"intent":"andmekaitse_küsimused"}, {"action": "utter_andmekaitse_küsimused"}]}
+{"story":"andmekaitse_kÃ¼simused","steps":[{"intent":"andmekaitse_kÃ¼simused"}, {"action": "utter_andmekaitse_kÃ¼simused"}]}
 {"index":{"_id":"2"}}
-{"story":"valimised","steps":[{"intent":"e_valimised"}, {"action": "utter_andmekaitse_küsimused"}]}
+{"story":"valimised","steps":[{"intent":"e_valimised"}, {"action": "utter_andmekaitse_kï¿½simused"}]}
 {"index":{"_id":"3"}}
 {"story":"tervitamine","steps":[{"intent":"common_tervitus"}, {"action": "utter_common_tervitus"}]}
