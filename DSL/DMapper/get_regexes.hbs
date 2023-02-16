@@ -2,12 +2,13 @@
   "regexes": [
     {{#each hits}}
       {
-       "regex": "{{_source.regex}}",
-       "examples": [
-         {{#each _source.examples}}
-          "{{this}}"{{#unless @last}},{{/unless}}
-         {{/each}}
-        ]
+       "regex": "{{_source.regex}}"{{#if ../examples}},
+        "examples": [
+            {{#each _source.examples}}
+            "{{this}}"{{#unless @last}},{{/unless}}
+            {{/each}}
+            ]
+       {{/if}}
       }{{#unless @last}},{{/unless}}
     {{/each}}
   ]
