@@ -109,3 +109,16 @@ curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/forms
 ```
 curl -H 'Content-Type: application/json' -X GET "http://localhost:9200/forms/_search?pretty=true" -ku admin:admin -d' {"query":{"match":{"form":"custom_fallback_form"}}}'
 ```
+## Entities
+##### Create entities index
+```
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/entities" -ku admin:admin --data-binary "@fieldMappings/entities.json"
+```
+##### Add mock data from entities.json file
+```
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/entities/_bulk" -ku admin:admin --data-binary "@mock/entities.json"
+```
+##### Test query to index to validate that mock data is there
+```
+curl -H 'Content-Type: application/json' -X GET "http://localhost:9200/entities/_search?pretty=true" -ku admin:admin -d' {"query":{"match":{"entities":"asukoht"}}}'
+```
