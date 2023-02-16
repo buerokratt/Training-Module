@@ -1,0 +1,22 @@
+{
+  "script": {
+    "lang": "mustache",
+    "source": {
+      "query": {
+        "bool": {
+          "must": [
+            {
+              "query_string": {
+                "query": "*{{rule}}*",
+                "default_field": "rule"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "params": {
+      "rule": ""
+    }
+  }
+}
