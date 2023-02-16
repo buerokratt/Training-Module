@@ -1,0 +1,9 @@
+{
+  "entities": [
+    {{#each hits}}
+      {
+          "entity": "{{_source.entity}}"
+      }{{#unless @last}},{{/unless}}
+    {{/each}}
+  ]
+}
