@@ -26,7 +26,7 @@ getTestStoriesWithName:
   args:
     url: http://host.docker.internal:9200/test-stories/_search/template
     body:
-      id: "test-story-name"
+      id: "test-story-with-name"
       params: ${params}
   result: getTestStoriesResult
 
