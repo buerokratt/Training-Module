@@ -18,14 +18,14 @@ validateAdministrator:
   switch:
     # TODO: use correct structure when request is made against TIM
     - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
-      next: mapIntentsData
+      next: getIntents
   next: returnUnauthorized
 
-#getIntents:
-#  call: http.get
-#  args:
-#    url: http://host.docker.internal:9200/intents/_search
-#  result: getIntentsResult
+getIntents:
+  call: http.get
+  args:
+    url: http://host.docker.internal:9200/intents/_search
+  result: getIntentsResult
 
 mapIntentsData:
   call: http.post
