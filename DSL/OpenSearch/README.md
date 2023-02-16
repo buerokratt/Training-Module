@@ -90,11 +90,11 @@ curl -H 'Content-Type: application/json' -X GET "http://localhost:9200/test-stor
 ```
 ##### Templates for searching test stories
 ```
-curl -L -X POST 'http://localhost:9200/_scripts/test-story-name' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/test-story-name.json"
+curl -L -X POST 'http://localhost:9200/_scripts/test-story-with-name' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/test-story-with-name.json"
 ```
 ##### Test template
 ```
-curl -L -X GET 'http://localhost:9200/test-stories/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "test-story-name", "params": {"test-story-name": "common_tervitus"}}'
+curl -L -X GET 'http://localhost:9200/test-stories/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "test-story-with-name", "params": {"story": "common_tervitus"}}'
 ```
 ## Forms
 ##### Create forms index
@@ -120,5 +120,13 @@ curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/entit
 ```
 ##### Test query to index to validate that mock data is there
 ```
-curl -H 'Content-Type: application/json' -X GET "http://localhost:9200/entities/_search?pretty=true" -ku admin:admin -d' {"query":{"match":{"entities":"asukoht"}}}'
+curl -H 'Content-Type: application/json' -X GET "http://localhost:9200/entities/_search?pretty=true" -ku admin:admin -d' {"query":{"match":{"entity":"asukoht"}}}'
+```
+##### Templates for searching entities
+```
+curl -L -X POST 'http://localhost:9200/_scripts/entity-with-name' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/entity-with-name.json"
+```
+##### Test template
+```
+curl -L -X GET 'http://localhost:9200/entities/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "entity-with-name", "params": {"entity": "common_tervitus"}}'
 ```
