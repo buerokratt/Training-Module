@@ -62,6 +62,14 @@ curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/rules
 ```
 curl -H 'Content-Type: application/json' -X GET "http://localhost:9200/rules/_search?pretty=true" -ku admin:admin -d' {"query":{"match":{"rule":"common_tervitus"}}}'
 ```
+##### Templates for searching rules
+```
+curl -L -X POST 'http://localhost:9200/_scripts/rule-with-name' -H 'Content-Type: application/json' --data-binary "@templates/rule-with-name.json"
+```
+##### Test template
+```
+curl -L -X GET 'http://localhost:9200/rules/_search/template' -H 'Content-Type: application/json' --data-raw '{"id": "rule-with-name", "params": {"rule": "rahvaarv_olemas"}}'
+```
 ## Stories
 ##### Create stories index
 ```
