@@ -7,8 +7,8 @@
           "must": [
             {
               "query_string": {
-                "query": "*{{intent}}*",
-                "default_field": "intent"
+                "query": "*{{rule}}*",
+                "default_field": "rule"
               }
             }
           ]
@@ -16,7 +16,7 @@
       }
     },
     "params": {
-      "intent": ""
+      "rule": ""
     }
   }
 }
