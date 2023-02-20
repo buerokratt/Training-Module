@@ -1,7 +1,4 @@
-{{#each hits}}
-    {{#if _source.entity}}
-        true
-    {{/if}}
-    {{#unless @last}},{{/unless}}
-{{/each}}
+{{#if hits.0._source.entity}}
+    true
+{{/if}}
 false
