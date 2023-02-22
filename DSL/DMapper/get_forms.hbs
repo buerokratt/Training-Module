@@ -1,9 +1,8 @@
 {
   "forms": [
     {{#each hits}}
-      {
-          "form": "{{_source.form}}"
-      }{{#unless @last}},{{/unless}}
+          "{{_source.form}}"
+      {{#unless @last}},{{/unless}}
     {{/each}}
   ]
 }
