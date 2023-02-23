@@ -1,0 +1,9 @@
+assign_step:
+  assign:
+    locations:
+      rules_location: '/home/raul/buerokratt/Training-Module/mock1/data/rules.yml'
+      domain_location: '/home/raul/buerokratt/Training-Module/mock1/domain.yml'
+
+return_value:
+  return: ${locations}
+
