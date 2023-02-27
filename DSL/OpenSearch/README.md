@@ -159,3 +159,16 @@ curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/regex
 ```
 curl -H 'Content-Type: application/json' -X GET "http://localhost:9200/regexes/_search?pretty=true" -ku admin:admin -d' {"query":{"match":{"regex":"asukoht"}}}'
 ```
+## Examples entities
+##### Create examples entities index
+```
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/examples-entities" -ku admin:admin --data-binary "@fieldMappings/examples-entities.json"
+```
+##### Add mock data from examples-entities.json file
+```
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/examples-entities/_bulk" -ku admin:admin --data-binary "@mock/examples-entities.json"
+```
+##### Test query to index to validate that mock data is there
+```
+curl -H 'Content-Type: application/json' -X GET "http://localhost:9200/examples-entities/_search?pretty=true" -ku admin:admin -d' {"query":{"match":{"file":"rahvaarv_nlu.yml"}}}'
+```
