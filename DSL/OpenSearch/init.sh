@@ -35,3 +35,7 @@ curl -L -X POST 'http://localhost:9200/_scripts/entity-with-name' -H 'Content-Ty
 #Regexes
 curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/regexes" -ku admin:admin --data-binary "@fieldMappings/regexes.json"
 curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/regexes/_bulk" -ku admin:admin --data-binary "@mock/regexes.json"
+
+#Examples entities
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/examples-entities" -ku admin:admin --data-binary "@fieldMappings/examples-entities.json"
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/examples-entities/_bulk" -ku admin:admin --data-binary "@mock/examples-entities.json"
