@@ -17,7 +17,7 @@
 {"index":{"_id":"9"}}
 {"rule":"common_teenus_ilm","steps":[{"intent":"common_teenus_ilm"}, {"action": "utter_common_teenus_ilm"}] ,"wait_for_user_input": false}
 {"index":{"_id":"10"}}
-{"rule":"common_teenus_ilm_puudu","condition": {"slot_was_set": {"common_teenus_ilm_asukoht":  null}},"steps":[{"action": "utter_common_teenus_ilm"}, {"intent":"nlu_fallback", {"action": "utter_common_teenus_ilm_fallback"}, {"action": "action_restart"}]}
+{"rule":"common_teenus_ilm_puudu","condition": {"slot_was_set": {"common_teenus_ilm_asukoht":  null}},"steps":[{"action": "utter_common_teenus_ilm"}, {"intent":"nlu_fallback"}, {"action": "utter_common_teenus_ilm_fallback"}, {"action": "action_restart"}]}
 {"index":{"_id":"11"}}
 {"rule":"common_teenus_ilm_olemas","condition": {"slot_was_set": {"common_teenus_ilm_asukoht": "tallinn"}},"steps":[{"action": "utter_common_teenus_ilm"}, {"action": "action_restart"}]}
 {"index":{"_id":"12"}}
