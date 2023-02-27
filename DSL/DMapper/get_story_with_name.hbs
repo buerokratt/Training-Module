@@ -1,4 +1,5 @@
 {
+{{#if hits}}
     "story": "{{hits.0._source.story}}",
     "steps": [
         {{#each hits.0._source.steps as |step|}}
@@ -10,4 +11,5 @@
         {{#unless @last}},{{/unless}}
         {{/each}}
     ]
+{{/if}}
 }
