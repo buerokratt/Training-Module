@@ -10,10 +10,7 @@
             "type": "text"
           },
           "active_loop": {
-            "type": "text",
-            "properties": {
-              "type": "text"
-            }
+            "type": "text"
           }
         }
       },
