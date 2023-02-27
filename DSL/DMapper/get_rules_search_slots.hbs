@@ -1,0 +1,16 @@
+{
+  "rules": [
+    {{#each hits}}
+      {{#each _source.steps}}
+        {{#if this.slot_was_set.requested_slot}}
+          "{{../_source.rule}}"
+          {{#unless @last}},{{/unless}}
+        {{/if}}
+      {{/each}}
+      {{#if _source.condition.slot_was_set}}
+        "{{_source.rule}}"
+        {{#unless @last}},{{/unless}}
+      {{/if}}
+    {{/each}}
+  ]
+}

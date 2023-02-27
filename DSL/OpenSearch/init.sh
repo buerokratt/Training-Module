@@ -39,3 +39,9 @@ curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/regex
 #Examples entities
 curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/examples-entities" -ku admin:admin --data-binary "@fieldMappings/examples-entities.json"
 curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/examples-entities/_bulk" -ku admin:admin --data-binary "@mock/examples-entities.json"
+
+#Rules search
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/rules-search" -ku admin:admin --data-binary "@fieldMappings/rules-search.json"
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/rules-search/_bulk" -ku admin:admin --data-binary "@mock/rules-search.json"
+curl -L -X POST 'http://localhost:9200/_scripts/rules-with-suffix-form' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/rules-with-suffix-form.json"
+curl -L -X POST 'http://localhost:9200/_scripts/rules-with-prefix-utter' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/rules-with-prefix-utter.json"
