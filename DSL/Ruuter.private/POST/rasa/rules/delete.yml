@@ -28,7 +28,7 @@ getFileLocations:
 getRulesFile:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/read-file
+    url: http://host.docker.internal:3000/file/read
     body:
       file_path: ${fileLocations.response.body.response.rules_location}
   result: ruleFile
@@ -62,7 +62,7 @@ convertJsonToYaml:
 saveRulesFile:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/file
+    url: http://host.docker.internal:3000/file/write
     body:
       file_path: ${fileLocations.response.body.response.rules_location}
       content: ${rulesYaml.response.body.json}

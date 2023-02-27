@@ -3,21 +3,21 @@ assign_values:
     body: ${incoming.body}
     cookie: ${incoming.headers.cookie}
 
-getRuleWithName:
+getStoriesWithName:
   call: http.post
   args:
-    url: http://localhost:8080/rasa/rules
+    url: http://localhost:8080/rasa/stories
     headers:
       cookie: ${cookie}
     body:
-      rule: ${body.rule}
-  result: ruleResult
+      story: ${body.story}
+  result: storiesResult
 
-validateRules:
+validateStories:
   switch:
-    - condition: ${ruleResult.response.body.response.rule != null}
+    - condition: ${storiesResult.response.body.response.story == null}
       next: getFileLocations
-  next: returnRulesIsMissing
+  next: returnStoryExists
 
 getFileLocations:
   call: http.get
@@ -25,31 +25,31 @@ getFileLocations:
     url: http://localhost:8080/return-file-locations
   result: fileLocations
 
-getRulesFile:
+getStoriesFile:
   call: http.post
   args:
     url: http://host.docker.internal:3000/file/read
     body:
-      file_path: ${fileLocations.response.body.response.rules_location}
-  result: ruleFile
+      file_path: ${fileLocations.response.body.response.stories_location}
+  result: storiesFile
 
 convertYamlToJson:
   call: http.post
   args:
     url: http://host.docker.internal:3000/convert/yaml-to-json
     body:
-      file: ${ruleFile.response.body.file}
-  result: rulesData
+      file: ${storiesFile.response.body.file}
+  result: storiesData
 
-mergeRules:
+mergeStories:
   call: http.post
   args:
     url: http://host.docker.internal:3000/merge
     body:
-      array1: ${rulesData.response.body.rules}
+      array1: ${storiesData.response.body.stories}
       array2: ${[body]}
-      iteratee: "rule"
-  result: mergedRules
+      iteratee: "story"
+  result: mergedStories
 
 convertJsonToYaml:
   call: http.post
@@ -57,23 +57,24 @@ convertJsonToYaml:
     url: http://host.docker.internal:3000/convert/json-to-yaml
     body:
       version: "3.0"
-      rules: ${mergedRules.response.body}
-  result: rulesYaml
+      stories: ${mergedStories.response.body}
+  result: storiesYaml
 
-saveRulesFile:
+saveStoriesFile:
   call: http.post
   args:
     url: http://host.docker.internal:3000/file/write
     body:
-      file_path: ${fileLocations.response.body.response.rules_location}
-      content: ${rulesYaml.response.body.json}
+      file_path: ${fileLocations.response.body.response.stories_location}
+      content: ${storiesYaml.response.body.json}
   result: fileResult
   next: returnSuccess
 
 returnSuccess:
-  return: "Rule updated"
+  return: "Story added"
   next: end
 
-returnRulesIsMissing:
-  return: "Can't find rule to update"
+returnStoryExists:
+  return: "Story exists"
+  status: 409
   next: end
