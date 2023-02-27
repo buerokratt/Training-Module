@@ -1,0 +1,15 @@
+{
+  "mappings" : {
+    "properties" : {
+      "file" : {
+        "type" : "text"
+      },
+      "intent" : {
+        "type": "text"
+      },
+      "examples" : {
+        "type": "text"
+      }
+    }
+  }
+}
