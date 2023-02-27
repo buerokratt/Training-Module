@@ -1,0 +1,78 @@
+assign_values:
+  assign:
+    story: ${incoming.body.story}
+    cookie: ${incoming.headers.cookie}
+
+getStoriesWithName:
+  call: http.post
+  args:
+    url: http://localhost:8080/rasa/stories
+    headers:
+      cookie: ${cookie}
+    body:
+      story: ${story}
+  result: storiesResult
+
+validateStories:
+  switch:
+    - condition: ${storiesResult.response.body.response.story != null}
+      next: getFileLocations
+  next: returnStoryIsMissing
+
+getFileLocations:
+  call: http.get
+  args:
+    url: http://localhost:8080/return-file-locations
+  result: fileLocations
+
+getStoriesFile:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/read
+    body:
+      file_path: ${fileLocations.response.body.response.stories_location}
+  result: storiesFile
+
+convertYamlToJson:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/yaml-to-json
+    body:
+      file: ${storiesFile.response.body.file}
+  result: storiesData
+
+deleteStory:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/dmapper/delete-story
+    body:
+      stories: ${storiesData.response.body.stories}
+      story_name: ${story}
+  result: deleteStoriesData
+
+convertJsonToYaml:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/json-to-yaml
+    body:
+      version: "3.0"
+      stories: ${deleteStoriesData.response.body}
+  result: storiesYaml
+
+saveStoriesFile:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/write
+    body:
+      file_path: ${fileLocations.response.body.response.stories_location}
+      content: ${storiesYaml.response.body.json}
+  result: fileResult
+  next: returnSuccess
+
+returnSuccess:
+  return: "Story deleted"
+  next: end
+
+returnStoryIsMissing:
+  return: "Can't find rule to delete"
+  next: end
