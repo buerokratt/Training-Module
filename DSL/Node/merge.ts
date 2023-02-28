@@ -21,4 +21,20 @@ router.post('/', (req, res) => {
     res.json(merged);
 });
 
+interface MergeObjects {
+    object1: Array<Record<string, any>>;
+    object2: Array<Record<string, any>>;
+}
+router.post('/objects', (req, res) => {
+    const { object1, object2, }: MergeObjects = req.body;
+    console.log(req.body);
+
+    if (!object1 || !object2) {
+        res.status(400).send('Both objects are required');
+        return;
+    }
+
+    res.json({ ...object1, ...object2 });
+});
+
 export default router;
