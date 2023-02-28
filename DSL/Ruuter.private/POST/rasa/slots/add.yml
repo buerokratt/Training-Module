@@ -1,0 +1,56 @@
+assign_values:
+  assign:
+    body: ${incoming.body}
+    cookie: ${incoming.headers.cookie}
+
+getDomainFile:
+  call: http.get
+  args:
+    url: http://localhost:8080/domain-file
+    headers:
+      cookie: ${cookie}
+  result: domainData
+
+mergeSlots:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/merge/objects
+    body:
+      object1: ${domainData.response.body.response.slots}
+      object2: ${body}
+  result: mergedSlots
+
+convertJsonToYaml:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/json-to-yaml
+    body:
+      version: ${domainData.response.body.response.version}
+      intents: ${domainData.response.body.response.intents}
+      entities: ${domainData.response.body.response.entities}
+      slots: ${mergedSlots.response.body}
+      forms: ${domainData.response.body.response.forms}
+      actions: ${domainData.response.body.response.actions}
+      responses: ${domainData.response.body.response.responses}
+      session_config: ${domainData.response.body.response.session_config}
+  result: domainYaml
+
+getFileLocations:
+  call: http.get
+  args:
+    url: http://localhost:8080/return-file-locations
+  result: fileLocations
+
+saveDomainFile:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/write
+    body:
+      file_path: ${fileLocations.response.body.response.domain_location}
+      content: ${domainYaml.response.body.json}
+  result: fileResult
+  next: returnSuccess
+
+returnSuccess:
+  return: "Slot added"
+  next: end
