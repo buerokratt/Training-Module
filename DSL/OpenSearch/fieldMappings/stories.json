@@ -3,7 +3,7 @@
     "properties" : {
       "story" : {
         "type" : "text"
-        },
+      },
       "steps" : {
         "properties" : {
           "intent" : {
@@ -11,6 +11,17 @@
           },
           "action" : {
             "type" : "text"
+          },
+          "checkpoint": {
+            "type" : "text"
+          },
+          "slot_was_set": {
+            "type": "object",
+            "properties": {
+              "asukoht": {
+                "type": "text"
+              }
+            }
           }
         }
       }

@@ -1,0 +1,22 @@
+{
+  "script": {
+    "lang": "mustache",
+    "source": {
+      "query": {
+        "bool": {
+          "must": [
+            {
+              "query_string": {
+                "query": "*{{slot}}*",
+                "default_field": "required_slots"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "params": {
+      "slot": ""
+    }
+  }
+}

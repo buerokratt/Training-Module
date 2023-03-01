@@ -3,7 +3,17 @@
     "properties" : {
       "rule" : {
         "type" : "text"
-        },
+      },
+      "condition": {
+        "properties" : {
+          "slot_was_set": {
+            "type": "object"
+          },
+          "active_loop": {
+            "type": "text"
+          }
+        }
+      },
       "steps" : {
         "properties" : {
           "intent" : {
@@ -11,6 +21,15 @@
           },
           "action" : {
             "type" : "text"
+          },
+          "entities": {
+            "type": "text"
+          },
+          "active_loop": {
+            "type" : "text"
+          },
+          "slot_was_set": {
+            "type": "object"
           }
         }
       }
