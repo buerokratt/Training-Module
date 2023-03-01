@@ -33,18 +33,18 @@ getDomainFile:
 
 validateSlots:
   switch:
-    - condition: ${domainData.response.body.response.slots[parameters.slot_name] == null}
-      next: mergeSlots
-  next: returnSlotExists
+    - condition: ${domainData.response.body.response.slots[parameters.slot_name] != null}
+      next: deleteKey
+  next: returnSlotIsMissing
 
-mergeSlots:
+deleteKey:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/merge/objects
+    url: http://host.docker.internal:3000/merge/remove-key
     body:
-      object1: ${domainData.response.body.response.slots}
-      object2: ${parameters.slot}
-  result: mergedSlots
+      object: ${domainData.response.body.response.slots}
+      key: ${parameters.slot_name}
+  result: keyDeletedData
 
 convertJsonToYaml:
   call: http.post
@@ -54,7 +54,7 @@ convertJsonToYaml:
       version: ${domainData.response.body.response.version}
       intents: ${domainData.response.body.response.intents}
       entities: ${domainData.response.body.response.entities}
-      slots: ${mergedSlots.response.body}
+      slots: ${keyDeletedData.response.body}
       forms: ${domainData.response.body.response.forms}
       actions: ${domainData.response.body.response.actions}
       responses: ${domainData.response.body.response.responses}
@@ -78,12 +78,11 @@ saveDomainFile:
   next: returnSuccess
 
 returnSuccess:
-  return: "Slot added"
+  return: "Slot deleted"
   next: end
 
-returnSlotExists:
-  return: "Slot exists"
-  status: 409
+returnSlotIsMissing:
+  return: "Can't find slot to delete"
   next: end
 
 returnUnauthorized:
