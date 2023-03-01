@@ -22,11 +22,11 @@ router.post('/', (req, res) => {
 });
 
 interface MergeObjects {
-    object1: Array<Record<string, any>>;
-    object2: Array<Record<string, any>>;
+    object1: Record<string, any>;
+    object2: Record<string, any>;
 }
 router.post('/objects', (req, res) => {
-    const { object1, object2, }: MergeObjects = req.body;
+    const { object1, object2 }: MergeObjects = req.body;
     console.log(req.body);
 
     if (!object1 || !object2) {
@@ -35,6 +35,22 @@ router.post('/objects', (req, res) => {
     }
 
     res.json({ ...object1, ...object2 });
+});
+
+interface RemoveKey {
+    object: Record<string, any>;
+    key: string;
+}
+router.post('/remove-key', (req, res) => {
+    const { object, key }: RemoveKey = req.body;
+    console.log(req.body);
+
+    if (!object || !key) {
+        res.status(400).send('Both object and key are required');
+        return;
+    }
+    delete object[key];
+    res.json(object);
 });
 
 export default router;
