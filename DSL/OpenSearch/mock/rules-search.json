@@ -25,8 +25,8 @@
 {"index":{"_id":"13"}}
 {"rule":"Activate custom fallback form","steps":[{"action":"utter_not_confident"}, {"action": "custom_fallback_form"}, {"active_loop": "custom_fallback_form"}]}
 {"index":{"_id":"14"}}
-{"rule":"Deactivate custom fallback form","condition": {"active_loop": "custom_fallback_form"},"steps":[{"action":"custom_fallback_form"}, {"active_loop": null}, {"slot_was_set": {"requested_slot": "common_teenus_fallback_form"}}, {"action": "action_react_to_affirm_deny_in_custom_fallback_form"}]}
+{"rule":"Deactivate custom fallback form","condition": {"active_loop": "custom_fallback_form"},"steps":[{"action":"custom_fallback_form"}, {"slot_was_set": {"requested_slot": "common_teenus_fallback_form"}}, {"action": "action_react_to_affirm_deny_in_custom_fallback_form"}]}
 {"index":{"_id":"15"}}
 {"rule":"Activate directing to customer support form","steps":[{"action":"utter_ei_pakkunud_õigesti"}, {"action": "direct_to_customer_support_form"}, {"active_loop": "direct_to_customer_support_form"}]}
 {"index":{"_id":"16"}}
-{"rule":"Deactivate  directing to customer support form","condition": {"active_loop": "direct_to_customer_support_form"},"steps":[{"action": "direct_to_customer_support_form"}, {"active_loop": null}, {"slot_was_set": {"requested_slot": null}}, {"action": "action_react_to_affirm_deny_in_direct_to_customer_support_form"}]}
+{"rule":"Deactivate directing to customer support form","condition": {"active_loop": "direct_to_customer_support_form"},"steps":[{"action": "direct_to_customer_support_form"}, {"active_loop": null}, {"slot_was_set": {"requested_slot": null}}, {"action": "action_react_to_affirm_deny_in_direct_to_customer_support_form"}]}
