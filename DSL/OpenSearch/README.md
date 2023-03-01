@@ -172,3 +172,61 @@ curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/examp
 ```
 curl -H 'Content-Type: application/json' -X GET "http://localhost:9200/examples-entities/_search?pretty=true" -ku admin:admin -d' {"query":{"match":{"file":"rahvaarv_nlu.yml"}}}'
 ```
+## Rules search
+##### Create rules search index
+```
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/rules-search" -ku admin:admin --data-binary "@fieldMappings/rules-search.json"
+```
+##### Add mock data from rules-search.json file
+```
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/rules-search/_bulk" -ku admin:admin --data-binary "@mock/rules-search.json"
+```
+##### Test query to index to validate that mock data is there
+```
+curl -H 'Content-Type: application/json' -X GET "http://localhost:9200/rules-search/_search?pretty=true" -ku admin:admin -d' {"query":{"match":{"rule":"common_tervitus"}}}'
+```
+##### Templates for searching rules search with form suffix
+```
+curl -L -X POST 'http://localhost:9200/_scripts/rules-with-suffix-form' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/rules-with-suffix-form.json"
+```
+##### Templates for searching rules search with utter prefix
+```
+curl -L -X POST 'http://localhost:9200/_scripts/rules-with-prefix-utter' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/rules-with-prefix-utter.json"
+```
+##### Test template rules search with form suffix
+```
+curl -L -X GET 'http://localhost:9200/rules-search/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "rules-with-suffix-form"}'
+```
+##### Test template rules search with utter prefix
+```
+curl -L -X GET 'http://localhost:9200/rules-search/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "rules-with-prefix-utter"}'
+```
+## Stories search
+##### Create stories search index
+```
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/stories-search" -ku admin:admin --data-binary "@fieldMappings/stories-search.json"
+```
+##### Add mock data from stories-search.json file
+```
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/stories-search/_bulk" -ku admin:admin --data-binary "@mock/stories-search.json"
+```
+##### Test query to index to validate that mock data is there
+```
+curl -H 'Content-Type: application/json' -X GET "http://localhost:9200/stories-search/_search?pretty=true" -ku admin:admin -d' {"query":{"match":{"story":"tervitamine"}}}'
+```
+##### Templates for searching stories search with form suffix
+```
+curl -L -X POST 'http://localhost:9200/_scripts/stories-with-suffix-form' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/stories-with-suffix-form.json"
+```
+##### Templates for searching stories search with utter prefix
+```
+curl -L -X POST 'http://localhost:9200/_scripts/stories-with-prefix-utter' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/stories-with-prefix-utter.json"
+```
+##### Test template stories search with form suffix
+```
+curl -L -X GET 'http://localhost:9200/stories-search/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "stories-with-suffix-form"}'
+```
+##### Test template stories search with utter prefix
+```
+curl -L -X GET 'http://localhost:9200/stories-search/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "stories-with-prefix-utter"}'
+```
