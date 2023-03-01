@@ -31,9 +31,17 @@ getDomainFile:
       cookie: ${cookie}
   result: domainData
 
+addForm:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/dmapper/add-form
+    body:
+      form: ${parameters.form}
+  result: formData
+
 validateForms:
   switch:
-    - condition: ${domainData.response.body.response.forms[parameters.form_name] == null}
+    - condition: ${domainData.response.body.response.forms[formData.response.body] == null}
       next: mergeForms
   next: returnFormExists
 
@@ -43,7 +51,7 @@ mergeForms:
     url: http://host.docker.internal:3000/merge/objects
     body:
       object1: ${domainData.response.body.response.forms}
-      object2: ${parameters.form}
+      object2: ${formData.response.body}
   result: mergedForms
 
 convertJsonToYaml:
