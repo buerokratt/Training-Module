@@ -33,9 +33,9 @@ getDomainFile:
 
 validateSlots:
   switch:
-    - condition: ${domainData.response.body.response.slots[parameters.slot_name] == null}
+    - condition: ${domainData.response.body.response.slots[parameters.slot_name] != null}
       next: mergeSlots
-  next: returnSlotExists
+  next: returnSlotIsMissing
 
 mergeSlots:
   call: http.post
@@ -78,12 +78,11 @@ saveDomainFile:
   next: returnSuccess
 
 returnSuccess:
-  return: "Slot added"
+  return: "Slot updated"
   next: end
 
-returnSlotExists:
-  return: "Slot exists"
-  status: 409
+returnSlotIsMissing:
+  return: "Can't find slot to update"
   next: end
 
 returnUnauthorized:
