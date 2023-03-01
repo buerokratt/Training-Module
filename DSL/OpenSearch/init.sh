@@ -51,3 +51,7 @@ curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/stori
 curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/stories-search/_bulk" -ku admin:admin --data-binary "@mock/stories-search.json"
 curl -L -X POST 'http://localhost:9200/_scripts/stories-with-suffix-form' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/stories-with-suffix-form.json"
 curl -L -X POST 'http://localhost:9200/_scripts/stories-with-prefix-utter' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/stories-with-prefix-utter.json"
+
+#Forms search
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/forms-search" -ku admin:admin --data-binary "@fieldMappings/forms-search.json"
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/forms-search/_bulk" -ku admin:admin --data-binary "@mock/forms-search.json"

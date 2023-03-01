@@ -230,3 +230,16 @@ curl -L -X GET 'http://localhost:9200/stories-search/_search/template' -H 'Conte
 ```
 curl -L -X GET 'http://localhost:9200/stories-search/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "stories-with-prefix-utter"}'
 ```
+## Forms search
+##### Create forms search index
+```
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/forms-search" -ku admin:admin --data-binary "@fieldMappings/forms-search.json"
+```
+##### Add mock data from forms-search.json file
+```
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/forms-search/_bulk" -ku admin:admin --data-binary "@mock/forms-search.json"
+```
+##### Test query to index to validate that mock data is there
+```
+curl -H 'Content-Type: application/json' -X GET "http://localhost:9200/forms-search/_search?pretty=true" -ku admin:admin -d' {"query":{"match":{"form":"custom_fallback_form"}}}'
+```
