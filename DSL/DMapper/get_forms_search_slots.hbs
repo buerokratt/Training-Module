@@ -1,0 +1,10 @@
+{
+  "forms": [
+    {{#each hits}}
+      {{#if _source.required_slots}}
+        "{{_source.form}}"
+        {{#unless @last}},{{/unless}}
+      {{/if}}
+    {{/each}}
+  ]
+}
