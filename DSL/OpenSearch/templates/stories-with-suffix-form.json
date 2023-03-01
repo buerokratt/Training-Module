@@ -10,12 +10,6 @@
                 "query": "*_form*",
                 "default_field": "steps.action"
               }
-            },
-            {
-              "query_string": {
-                "query": "*_form*",
-                "default_field": "steps.active_loop"
-              }
             }
           ]
         }
