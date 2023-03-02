@@ -1,0 +1,11 @@
+{
+  {{#each form}}
+    "{{@key}}_form": {
+      "required_slots": [
+        {{#each this.required_slots}}
+          "{{this}}"{{#unless @last}},{{/unless}}
+        {{/each}}
+      ]
+    }
+  {{/each}}
+}
