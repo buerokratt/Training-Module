@@ -1,14 +1,16 @@
 {
   "stories": [
     {{#each hits}}
-      {{#each _source.steps}}
-        {{#if this.slot_was_set}}
-          "{{../_source.story}}"
-        {{/if}}
-      {{/each}}
       {{#if _source.condition.slot_was_set}}
         "{{_source.story}}"
         {{#unless @last}},{{/unless}}
+      {{else}}
+        {{#each _source.steps as |step|}}
+          {{#if step.slot_was_set}}
+            "{{_source.story}}"
+            {{#unless @last}},{{/unless}}
+          {{/if}}
+        {{/each}}
       {{/if}}
     {{/each}}
   ]

@@ -7,13 +7,15 @@
           "must": [
             {
               "query_string": {
-                "query": "*_form*",
-                "default_field": "steps.action"
+                "query": "*{{response}}*"
               }
             }
           ]
         }
       }
+    },
+    "params": {
+      "response": ""
     }
   }
 }

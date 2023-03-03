@@ -70,25 +70,25 @@ curl -L -X POST 'http://localhost:9200/_scripts/rule-with-name' -H 'Content-Type
 ```
 curl -L -X GET 'http://localhost:9200/rules/_search/template' -H 'Content-Type: application/json' --data-raw '{"id": "rule-with-name", "params": {"rule": "rahvaarv_olemas"}}'
 ```
-##### Templates for searching rules search with form suffix
+##### Templates for searching forms in rules
 ```
-curl -L -X POST 'http://localhost:9200/_scripts/rules-with-suffix-form' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/rules-with-suffix-form.json"
+curl -L -X POST 'http://localhost:9200/_scripts/rule-with-form' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/rule-with-form.json"
 ```
-##### Templates for searching rules search with utter prefix
+##### Templates for searching responses in rules
 ```
-curl -L -X POST 'http://localhost:9200/_scripts/rules-with-prefix-utter' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/rules-with-prefix-utter.json"
-```
-##### Test template rules search with form suffix
-```
-curl -L -X GET 'http://localhost:9200/rules/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "rules-with-suffix-form"}'
-```
-##### Test template rules search with utter prefix
-```
-curl -L -X GET 'http://localhost:9200/rules/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "rules-with-prefix-utter"}'
+curl -L -X POST 'http://localhost:9200/_scripts/rule-with-response' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/rule-with-response.json"
 ```
 ##### Templates for searching slots in rules
 ```
 curl -L -X POST 'http://localhost:9200/_scripts/rule-with-slot' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/rule-with-slot.json"
+```
+##### Test template
+```
+curl -L -X GET 'http://localhost:9200/rules/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "rule-with-form", "params": {"form": "custom_fallback_form"}}'
+```
+##### Test template
+```
+curl -L -X GET 'http://localhost:9200/rules/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "rule-with-response", "params": {"response": "utter_common_tervitus"}}'
 ```
 ##### Test template
 ```
@@ -115,21 +115,29 @@ curl -L -X POST 'http://localhost:9200/_scripts/story-with-name' -H 'Content-Typ
 ```
 curl -L -X GET 'http://localhost:9200/stories/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "story-with-name", "params": {"story": "tervitamine"}}'
 ```
-##### Templates for searching stories search with form suffix
+##### Templates for searching forms in stories
 ```
-curl -L -X POST 'http://localhost:9200/_scripts/stories-with-suffix-form' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/stories-with-suffix-form.json"
+curl -L -X POST 'http://localhost:9200/_scripts/story-with-form' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/story-with-form.json"
 ```
-##### Templates for searching stories search with utter prefix
+##### Templates for searching responses in stories
 ```
-curl -L -X POST 'http://localhost:9200/_scripts/stories-with-prefix-utter' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/stories-with-prefix-utter.json"
+curl -L -X POST 'http://localhost:9200/_scripts/story-with-response' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/story-with-response.json"
 ```
-##### Test template stories search with form suffix
+##### Templates for searching slots in stories
 ```
-curl -L -X GET 'http://localhost:9200/stories/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "stories-with-suffix-form"}'
+curl -L -X POST 'http://localhost:9200/_scripts/story-with-slot' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/story-with-slot.json"
 ```
-##### Test template stories search with utter prefix
+##### Test template
 ```
-curl -L -X GET 'http://localhost:9200/stories/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "stories-with-prefix-utter"}'
+curl -L -X GET 'http://localhost:9200/stories/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "story-with-form", "params": {"form": "custom_fallback_form"}}'
+```
+##### Test template
+```
+curl -L -X GET 'http://localhost:9200/stories/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "story-with-response", "params": {"response": "utter_andmekaitse_küsimused"}}'
+```
+##### Test template
+```
+curl -L -X GET 'http://localhost:9200/stories/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "rule-with-slot", "params": {"slot": "asukoht"}}'
 ```
 ## Test stories
 ##### Create test stories index

@@ -1,8 +1,12 @@
 {
   "rules": [
     {{#each hits}}
-        "{{_source.rule}}"
-      {{#unless @last}},{{/unless}}
+      {{#each _source.steps as |step|}}
+        {{#if step.action}}
+          "{{_source.rule}}"
+          {{#unless @last}},{{/unless}}
+        {{/if}}
+      {{/each}}
     {{/each}}
   ]
 }
