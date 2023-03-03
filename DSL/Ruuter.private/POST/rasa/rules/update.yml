@@ -3,6 +3,22 @@ assign_values:
     body: ${incoming.body}
     cookie: ${incoming.headers.cookie}
 
+extractTokenData:
+  call: http.post
+  args:
+    url: http://localhost:8080/mock-tim-custom-jwt-userinfo
+    headers:
+      cookie: ${cookie}
+    body:
+      cookieName: "customJwtCookie"
+  result: jwtResult
+
+validateAdministrator:
+  switch:
+    - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
+      next: getTestStoriesWithName
+  next: returnUnauthorized
+
 getRuleWithName:
   call: http.post
   args:
