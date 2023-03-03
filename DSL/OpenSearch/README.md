@@ -1,4 +1,12 @@
 # Bürokratt's Training Module DSL Opensearch commands
+##### To reset indexes
+```
+curl -XDELETE 'http://localhost:9200/*' -u admin:admin --insecure
+```
+##### To load all indexes with mock data
+```
+sh init.sh
+```
 ## Responses
 ##### Create response index
 ```
@@ -70,6 +78,30 @@ curl -L -X POST 'http://localhost:9200/_scripts/rule-with-name' -H 'Content-Type
 ```
 curl -L -X GET 'http://localhost:9200/rules/_search/template' -H 'Content-Type: application/json' --data-raw '{"id": "rule-with-name", "params": {"rule": "rahvaarv_olemas"}}'
 ```
+##### Templates for searching forms in rules
+```
+curl -L -X POST 'http://localhost:9200/_scripts/rule-with-forms' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/rule-with-forms.json"
+```
+##### Templates for searching responses in rules
+```
+curl -L -X POST 'http://localhost:9200/_scripts/rule-with-responses' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/rule-with-responses.json"
+```
+##### Templates for searching slots in rules
+```
+curl -L -X POST 'http://localhost:9200/_scripts/rule-with-slots' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/rule-with-slots.json"
+```
+##### Test form template
+```
+curl -L -X GET 'http://localhost:9200/rules/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "rule-with-forms", "params": {"form": "custom_fallback_form"}}'
+```
+##### Test response template
+```
+curl -L -X GET 'http://localhost:9200/rules/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "rule-with-responses", "params": {"response": "utter_common_tervitus"}}'
+```
+##### Test slot template
+```
+curl -L -X GET 'http://localhost:9200/rules/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "rule-with-slots", "params": {"slot": "common_teenus_ilm_asukoht"}}'
+```
 ## Stories
 ##### Create stories index
 ```
@@ -90,6 +122,30 @@ curl -L -X POST 'http://localhost:9200/_scripts/story-with-name' -H 'Content-Typ
 ##### Test template
 ```
 curl -L -X GET 'http://localhost:9200/stories/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "story-with-name", "params": {"story": "tervitamine"}}'
+```
+##### Templates for searching forms in stories
+```
+curl -L -X POST 'http://localhost:9200/_scripts/story-with-forms' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/story-with-forms.json"
+```
+##### Templates for searching responses in stories
+```
+curl -L -X POST 'http://localhost:9200/_scripts/story-with-responses' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/story-with-responses.json"
+```
+##### Templates for searching slots in stories
+```
+curl -L -X POST 'http://localhost:9200/_scripts/story-with-slots' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/story-with-slots.json"
+```
+##### Test forms template
+```
+curl -L -X GET 'http://localhost:9200/stories/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "story-with-forms", "params": {"form": "custom_fallback_form"}}'
+```
+##### Test responses template
+```
+curl -L -X GET 'http://localhost:9200/stories/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "story-with-responses", "params": {"response": "utter_andmekaitse_küsimused"}}'
+```
+##### Test slots template
+```
+curl -L -X GET 'http://localhost:9200/stories/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "rule-with-slots", "params": {"slot": "asukoht"}}'
 ```
 ## Test stories
 ##### Create test stories index
@@ -124,6 +180,14 @@ curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/forms
 ##### Test query to index to validate that mock data is there
 ```
 curl -H 'Content-Type: application/json' -X GET "http://localhost:9200/forms/_search?pretty=true" -ku admin:admin -d' {"query":{"match":{"form":"custom_fallback_form"}}}'
+```
+##### Templates for searching slots in forms
+```
+curl -L -X POST 'http://localhost:9200/_scripts/form-with-slot' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/form-with-slot.json"
+```
+##### Test template
+```
+curl -L -X GET 'http://localhost:9200/forms/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "form-with-slot", "params": {"slot": "affirm_deny"}}'
 ```
 ## Entities
 ##### Create entities index
@@ -171,75 +235,4 @@ curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/examp
 ##### Test query to index to validate that mock data is there
 ```
 curl -H 'Content-Type: application/json' -X GET "http://localhost:9200/examples-entities/_search?pretty=true" -ku admin:admin -d' {"query":{"match":{"file":"rahvaarv_nlu.yml"}}}'
-```
-## Rules search
-##### Create rules search index
-```
-curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/rules-search" -ku admin:admin --data-binary "@fieldMappings/rules-search.json"
-```
-##### Add mock data from rules-search.json file
-```
-curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/rules-search/_bulk" -ku admin:admin --data-binary "@mock/rules-search.json"
-```
-##### Test query to index to validate that mock data is there
-```
-curl -H 'Content-Type: application/json' -X GET "http://localhost:9200/rules-search/_search?pretty=true" -ku admin:admin -d' {"query":{"match":{"rule":"common_tervitus"}}}'
-```
-##### Templates for searching rules search with form suffix
-```
-curl -L -X POST 'http://localhost:9200/_scripts/rules-with-suffix-form' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/rules-with-suffix-form.json"
-```
-##### Templates for searching rules search with utter prefix
-```
-curl -L -X POST 'http://localhost:9200/_scripts/rules-with-prefix-utter' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/rules-with-prefix-utter.json"
-```
-##### Test template rules search with form suffix
-```
-curl -L -X GET 'http://localhost:9200/rules-search/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "rules-with-suffix-form"}'
-```
-##### Test template rules search with utter prefix
-```
-curl -L -X GET 'http://localhost:9200/rules-search/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "rules-with-prefix-utter"}'
-```
-## Stories search
-##### Create stories search index
-```
-curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/stories-search" -ku admin:admin --data-binary "@fieldMappings/stories-search.json"
-```
-##### Add mock data from stories-search.json file
-```
-curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/stories-search/_bulk" -ku admin:admin --data-binary "@mock/stories-search.json"
-```
-##### Test query to index to validate that mock data is there
-```
-curl -H 'Content-Type: application/json' -X GET "http://localhost:9200/stories-search/_search?pretty=true" -ku admin:admin -d' {"query":{"match":{"story":"tervitamine"}}}'
-```
-##### Templates for searching stories search with form suffix
-```
-curl -L -X POST 'http://localhost:9200/_scripts/stories-with-suffix-form' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/stories-with-suffix-form.json"
-```
-##### Templates for searching stories search with utter prefix
-```
-curl -L -X POST 'http://localhost:9200/_scripts/stories-with-prefix-utter' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/stories-with-prefix-utter.json"
-```
-##### Test template stories search with form suffix
-```
-curl -L -X GET 'http://localhost:9200/stories-search/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "stories-with-suffix-form"}'
-```
-##### Test template stories search with utter prefix
-```
-curl -L -X GET 'http://localhost:9200/stories-search/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "stories-with-prefix-utter"}'
-```
-## Forms search
-##### Create forms search index
-```
-curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/forms-search" -ku admin:admin --data-binary "@fieldMappings/forms-search.json"
-```
-##### Add mock data from forms-search.json file
-```
-curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/forms-search/_bulk" -ku admin:admin --data-binary "@mock/forms-search.json"
-```
-##### Test query to index to validate that mock data is there
-```
-curl -H 'Content-Type: application/json' -X GET "http://localhost:9200/forms-search/_search?pretty=true" -ku admin:admin -d' {"query":{"match":{"form":"custom_fallback_form"}}}'
 ```

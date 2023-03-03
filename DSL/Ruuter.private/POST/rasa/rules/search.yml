@@ -1,93 +1,44 @@
 assign_values:
   assign:
-    body: ${incoming.body}
-
-extractRequestData:
-  assign:
+    params: ${incoming.body}
     cookie: ${incoming.headers.cookie}
 
 extractTokenData:
   call: http.post
   args:
-    # TODO: replace with env variable and correct path to TIM endpoint
     url: http://localhost:8080/mock-tim-custom-jwt-userinfo
     headers:
       cookie: ${cookie}
     body:
-      # TODO: pass cookie name correctly to TIM
       cookieName: "customJwtCookie"
   result: jwtResult
 
 validateAdministrator:
   switch:
-    # TODO: use correct structure when request is made against TIM
     - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
-      next: switchRulesSearchType
+      next: getRulesSearch
   next: returnUnauthorized
 
-switchRulesSearchType:
-  switch:
-    - condition: ${body.type.includes("slots")}
-      next: getRulesSearchSlots
-    - condition: ${body.type.includes("forms")}
-      next: getRulesSearchForms
-    - condition: ${body.type.includes("responses")}
-      next: getRulesSearchResponses
-
-getRulesSearchSlots:
-  call: http.get
-  args:
-    url: http://host.docker.internal:9200/rules-search/_search
-  result: getRulesSearchResultSlots
-  next: mapRulesSearchSlotsData
-
-getRulesSearchForms:
+getRulesSearch:
   call: http.post
   args:
-    url: http://host.docker.internal:9200/rules-search/_search/template
+    url: http://host.docker.internal:9200/rules/_search/template
     body:
-      id: "rules-with-suffix-form"
-  result: getRulesSearchResultForms
-  next: mapRulesSearchFormsData
+      id: ${"rule-with-"+params.type}
+      params: ${params}
+  result: getRulesResult
 
-getRulesSearchResponses:
+mapRulesData:
   call: http.post
   args:
-    url: http://host.docker.internal:9200/rules-search/_search/template
+    url: http://host.docker.internal:3000/dmapper/get-rules
     body:
-      id: "rules-with-prefix-utter"
-  result: getRulesSearchResultResponses
-  next: mapRulesSearchResponsesData
-
-mapRulesSearchSlotsData:
-  call: http.post
-  args:
-    url: http://host.docker.internal:3000/dmapper/get-rules-search-slots
-    body:
-      hits: ${getRulesSearchResultSlots.response.body.hits.hits}
-  result: rulesSearchData
-  next: returnSuccess
-
-mapRulesSearchFormsData:
-  call: http.post
-  args:
-    url: http://host.docker.internal:3000/dmapper/get-rules-search-forms
-    body:
-      hits: ${getRulesSearchResultForms.response.body.hits.hits}
-  result: rulesSearchData
-  next: returnSuccess
-
-mapRulesSearchResponsesData:
-  call: http.post
-  args:
-    url: http://host.docker.internal:3000/dmapper/get-rules-search-responses
-    body:
-      hits: ${getRulesSearchResultResponses.response.body.hits.hits}
-  result: rulesSearchData
+      hits: ${getRulesResult.response.body.hits.hits}
+  result: rulesData
   next: returnSuccess
 
 returnSuccess:
-  return: ${rulesSearchData.response.body}
+  return: ${rulesData.response.body}
   next: end
 
 returnUnauthorized:
