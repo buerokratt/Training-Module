@@ -1,8 +1,12 @@
 {
   "stories": [
     {{#each hits}}
+      {{#each _source.steps as |step|}}
+        {{#if step.action}}
           "{{_source.story}}"
-      {{#unless @last}},{{/unless}}
+          {{#unless @last}},{{/unless}}
+        {{/if}}
+      {{/each}}
     {{/each}}
   ]
 }

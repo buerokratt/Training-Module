@@ -1,8 +1,17 @@
 {
   "stories": [
     {{#each hits}}
+      {{#each _source.steps as |step|}}
+        {{#if step.action}}
           "{{_source.story}}"
-      {{#unless @last}},{{/unless}}
+          {{#unless @last}},{{/unless}}
+        {{else}}
+          {{#if step.active_loop}}
+            "{{_source.story}}"
+            {{#unless @last}},{{/unless}}
+          {{/if}}
+        {{/if}}
+      {{/each}}
     {{/each}}
   ]
 }

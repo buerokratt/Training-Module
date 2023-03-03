@@ -13,14 +13,17 @@ curl -L -X POST 'http://localhost:9200/_scripts/intents-with-examples-count' -H 
 curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/rules" -ku admin:admin --data-binary "@fieldMappings/rules.json"
 curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/rules/_bulk" -ku admin:admin --data-binary "@mock/rules.json"
 curl -L -X POST 'http://localhost:9200/_scripts/rule-with-name' -H 'Content-Type: application/json' --data-binary "@templates/rule-with-name.json"
-curl -L -X POST 'http://localhost:9200/_scripts/rules-with-suffix-form' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/rules-with-suffix-form.json"
-curl -L -X POST 'http://localhost:9200/_scripts/rules-with-prefix-utter' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/rules-with-prefix-utter.json"
+curl -L -X POST 'http://localhost:9200/_scripts/rule-with-form' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/rule-with-form.json"
+curl -L -X POST 'http://localhost:9200/_scripts/rule-with-response' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/rule-with-response.json"
+curl -L -X POST 'http://localhost:9200/_scripts/rule-with-slot' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/rule-with-slot.json"
 
 #stories
 curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/stories" -ku admin:admin --data-binary "@fieldMappings/stories.json"
 curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/stories/_bulk" -ku admin:admin --data-binary "@mock/stories.json"
-curl -L -X POST 'http://localhost:9200/_scripts/stories-with-suffix-form' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/stories-with-suffix-form.json"
-curl -L -X POST 'http://localhost:9200/_scripts/stories-with-prefix-utter' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/stories-with-prefix-utter.json"
+curl -L -X POST 'http://localhost:9200/_scripts/story-with-name' -H 'Content-Type: application/json' --data-binary "@templates/story-with-name.json"
+curl -L -X POST 'http://localhost:9200/_scripts/story-with-form' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/story-with-form.json"
+curl -L -X POST 'http://localhost:9200/_scripts/story-with-response' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/story-with-response.json"
+curl -L -X POST 'http://localhost:9200/_scripts/story-with-slot' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/story-with-slot.json"
 
 #Test stories
 curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/test-stories" -ku admin:admin --data-binary "@fieldMappings/test-stories.json"

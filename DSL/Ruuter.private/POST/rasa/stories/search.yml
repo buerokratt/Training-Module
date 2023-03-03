@@ -1,93 +1,92 @@
 assign_values:
   assign:
-    body: ${incoming.body}
-
-extractRequestData:
-  assign:
+    params: ${incoming.body}
     cookie: ${incoming.headers.cookie}
 
 extractTokenData:
   call: http.post
   args:
-    # TODO: replace with env variable and correct path to TIM endpoint
     url: http://localhost:8080/mock-tim-custom-jwt-userinfo
     headers:
       cookie: ${cookie}
     body:
-      # TODO: pass cookie name correctly to TIM
       cookieName: "customJwtCookie"
   result: jwtResult
 
 validateAdministrator:
   switch:
-    # TODO: use correct structure when request is made against TIM
     - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
-      next: switchStoriesSearchType
+      next: switchStoriesType
   next: returnUnauthorized
 
-switchStoriesSearchType:
+switchStoriesType:
   switch:
-    - condition: ${body.type.includes("slots")}
-      next: getStoriesSearchSlots
-    - condition: ${body.type.includes("forms")}
-      next: getStoriesSearchForms
-    - condition: ${body.type.includes("responses")}
-      next: getStoriesSearchResponses
+    - condition: ${params.type.includes("slots")}
+      next: getStoriesSlots
+    - condition: ${params.type.includes("forms")}
+      next: getStoriesForms
+    - condition: ${params.type.includes("responses")}
+      next: getStoriesResponses
 
-getStoriesSearchSlots:
-  call: http.get
-  args:
-    url: http://host.docker.internal:9200/stories-search/_search
-  result: getStoriesSearchResultSlots
-  next: mapStoriesSearchSlotsData
-
-getStoriesSearchForms:
+getStoriesSlots:
   call: http.post
   args:
-    url: http://host.docker.internal:9200/stories-search/_search/template
+    url: http://host.docker.internal:9200/stories/_search/template
     body:
-      id: "stories-with-suffix-form"
-  result: getStoriesSearchResultForms
-  next: mapStoriesSearchFormsData
+      id: "story-with-slot"
+      params: ${params}
+  result: getStoriesResultSlots
+  next: mapStoriesSlotsData
 
-getStoriesSearchResponses:
-  call: http.post
-  args:
-    url: http://host.docker.internal:9200/stories-search/_search/template
-    body:
-      id: "stories-with-prefix-utter"
-  result: getStoriesSearchResultResponses
-  next: mapStoriesSearchResponsesData
-
-mapStoriesSearchSlotsData:
+mapStoriesSlotsData:
   call: http.post
   args:
     url: http://host.docker.internal:3000/dmapper/get-stories-search-slots
     body:
-      hits: ${getStoriesSearchResultSlots.response.body.hits.hits}
-  result: storiesSearchData
+      hits: ${getStoriesResultSlots.response.body.hits.hits}
+  result: storiesData
   next: returnSuccess
 
-mapStoriesSearchFormsData:
+getStoriesForms:
+  call: http.post
+  args:
+    url: http://host.docker.internal:9200/stories/_search/template
+    body:
+      id: "story-with-form"
+      params: ${params}
+  result: getStoriesResultForms
+  next: mapStoriesFormsData
+
+mapStoriesFormsData:
   call: http.post
   args:
     url: http://host.docker.internal:3000/dmapper/get-stories-search-forms
     body:
-      hits: ${getStoriesSearchResultForms.response.body.hits.hits}
-  result: storiesSearchData
+      hits: ${getStoriesResultForms.response.body.hits.hits}
+  result: storiesData
   next: returnSuccess
 
-mapStoriesSearchResponsesData:
+getStoriesResponses:
+  call: http.post
+  args:
+    url: http://host.docker.internal:9200/stories/_search/template
+    body:
+      id: "story-with-response"
+      params: ${params}
+  result: getStoriesResultResponses
+  next: mapStoriesResponsesData
+
+mapStoriesResponsesData:
   call: http.post
   args:
     url: http://host.docker.internal:3000/dmapper/get-stories-search-responses
     body:
-      hits: ${getStoriesSearchResultResponses.response.body.hits.hits}
-  result: storiesSearchData
+      hits: ${getStoriesResultResponses.response.body.hits.hits}
+  result: storiesData
   next: returnSuccess
 
 returnSuccess:
-  return: ${storiesSearchData.response.body}
+  return: ${storiesData.response.body}
   next: end
 
 returnUnauthorized:
