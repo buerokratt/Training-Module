@@ -1,5 +1,6 @@
 extractRequestData:
   assign:
+    params: ${incoming.body}
     cookie: ${incoming.headers.cookie}
 
 extractTokenData:
