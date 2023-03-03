@@ -3,6 +3,22 @@ assign_values:
     story: ${incoming.body.story}
     cookie: ${incoming.headers.cookie}
 
+extractTokenData:
+  call: http.post
+  args:
+    url: http://localhost:8080/mock-tim-custom-jwt-userinfo
+    headers:
+      cookie: ${cookie}
+    body:
+      cookieName: "customJwtCookie"
+  result: jwtResult
+
+validateAdministrator:
+  switch:
+    - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
+      next: getTestStoriesWithName
+  next: returnUnauthorized
+
 getStoriesWithName:
   call: http.post
   args:
@@ -74,5 +90,5 @@ returnSuccess:
   next: end
 
 returnStoryIsMissing:
-  return: "Can't find rule to delete"
+  return: "Can't find story to delete"
   next: end
