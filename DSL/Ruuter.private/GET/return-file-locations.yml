@@ -4,6 +4,7 @@ assign_step:
       rules_location: '/home/raul/buerokratt/Training-Module/mock1/data/rules.yml'
       stories_location: '/home/raul/buerokratt/Training-Module/mock1/data/stories.yml'
       domain_location: '/home/raul/buerokratt/Training-Module/mock1/domain.yml'
+      test_stories_location: '/home/raul/buerokratt/Training-Module/mock1/tests/test_stories.yml'
 
 return_value:
   return: ${locations}
