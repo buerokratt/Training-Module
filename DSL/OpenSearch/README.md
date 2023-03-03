@@ -1,4 +1,12 @@
 # Bürokratt's Training Module DSL Opensearch commands
+##### To reset indexes
+```
+curl -XDELETE 'http://localhost:9200/*' -u admin:admin --insecure
+```
+##### To load all indexes with mock data
+```
+sh init.sh
+```
 ## Responses
 ##### Create response index
 ```
@@ -72,27 +80,27 @@ curl -L -X GET 'http://localhost:9200/rules/_search/template' -H 'Content-Type: 
 ```
 ##### Templates for searching forms in rules
 ```
-curl -L -X POST 'http://localhost:9200/_scripts/rule-with-form' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/rule-with-form.json"
+curl -L -X POST 'http://localhost:9200/_scripts/rule-with-forms' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/rule-with-forms.json"
 ```
 ##### Templates for searching responses in rules
 ```
-curl -L -X POST 'http://localhost:9200/_scripts/rule-with-response' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/rule-with-response.json"
+curl -L -X POST 'http://localhost:9200/_scripts/rule-with-responses' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/rule-with-responses.json"
 ```
 ##### Templates for searching slots in rules
 ```
-curl -L -X POST 'http://localhost:9200/_scripts/rule-with-slot' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/rule-with-slot.json"
+curl -L -X POST 'http://localhost:9200/_scripts/rule-with-slots' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/rule-with-slots.json"
 ```
-##### Test template
+##### Test form template
 ```
-curl -L -X GET 'http://localhost:9200/rules/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "rule-with-form", "params": {"form": "custom_fallback_form"}}'
+curl -L -X GET 'http://localhost:9200/rules/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "rule-with-forms", "params": {"form": "custom_fallback_form"}}'
 ```
-##### Test template
+##### Test response template
 ```
-curl -L -X GET 'http://localhost:9200/rules/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "rule-with-response", "params": {"response": "utter_common_tervitus"}}'
+curl -L -X GET 'http://localhost:9200/rules/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "rule-with-responses", "params": {"response": "utter_common_tervitus"}}'
 ```
-##### Test template
+##### Test slot template
 ```
-curl -L -X GET 'http://localhost:9200/rules/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "rule-with-slot", "params": {"slot": "common_teenus_ilm_asukoht"}}'
+curl -L -X GET 'http://localhost:9200/rules/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "rule-with-slots", "params": {"slot": "common_teenus_ilm_asukoht"}}'
 ```
 ## Stories
 ##### Create stories index
@@ -117,27 +125,27 @@ curl -L -X GET 'http://localhost:9200/stories/_search/template' -H 'Content-Type
 ```
 ##### Templates for searching forms in stories
 ```
-curl -L -X POST 'http://localhost:9200/_scripts/story-with-form' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/story-with-form.json"
+curl -L -X POST 'http://localhost:9200/_scripts/story-with-forms' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/story-with-forms.json"
 ```
 ##### Templates for searching responses in stories
 ```
-curl -L -X POST 'http://localhost:9200/_scripts/story-with-response' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/story-with-response.json"
+curl -L -X POST 'http://localhost:9200/_scripts/story-with-responses' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/story-with-responses.json"
 ```
 ##### Templates for searching slots in stories
 ```
-curl -L -X POST 'http://localhost:9200/_scripts/story-with-slot' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/story-with-slot.json"
+curl -L -X POST 'http://localhost:9200/_scripts/story-with-slots' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/story-with-slots.json"
 ```
-##### Test template
+##### Test forms template
 ```
-curl -L -X GET 'http://localhost:9200/stories/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "story-with-form", "params": {"form": "custom_fallback_form"}}'
+curl -L -X GET 'http://localhost:9200/stories/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "story-with-forms", "params": {"form": "custom_fallback_form"}}'
 ```
-##### Test template
+##### Test responses template
 ```
-curl -L -X GET 'http://localhost:9200/stories/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "story-with-response", "params": {"response": "utter_andmekaitse_küsimused"}}'
+curl -L -X GET 'http://localhost:9200/stories/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "story-with-responses", "params": {"response": "utter_andmekaitse_küsimused"}}'
 ```
-##### Test template
+##### Test slots template
 ```
-curl -L -X GET 'http://localhost:9200/stories/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "rule-with-slot", "params": {"slot": "asukoht"}}'
+curl -L -X GET 'http://localhost:9200/stories/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "rule-with-slots", "params": {"slot": "asukoht"}}'
 ```
 ## Test stories
 ##### Create test stories index

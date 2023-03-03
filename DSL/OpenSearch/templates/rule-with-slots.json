@@ -7,7 +7,8 @@
           "must": [
             {
               "query_string": {
-                "query": "*{{response}}*"
+                "query": "*{{slot}}*",
+                "fields": ["steps.slot_was_set.slot","condition.slot_was_set.slot"]
               }
             }
           ]
@@ -15,7 +16,7 @@
       }
     },
     "params": {
-      "response": ""
+      "slot": ""
     }
   }
 }

@@ -16,72 +16,24 @@ extractTokenData:
 validateAdministrator:
   switch:
     - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
-      next: switchRulesType
+      next: getRulesSearch
   next: returnUnauthorized
 
-switchRulesType:
-  switch:
-    - condition: ${params.type.includes("slots")}
-      next: getRulesSlots
-    - condition: ${params.type.includes("forms")}
-      next: getRulesForms
-    - condition: ${params.type.includes("responses")}
-      next: getRulesResponses
-
-getRulesSlots:
+getRulesSearch:
   call: http.post
   args:
     url: http://host.docker.internal:9200/rules/_search/template
     body:
-      id: "rule-with-slot"
+      id: ${"rule-with-"+params.type}
       params: ${params}
-  result: getRulesResultSlots
-  next: mapRulesSlotsData
+  result: getRulesResult
 
-mapRulesSlotsData:
+mapRulesData:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/dmapper/get-rules-search-slots
+    url: http://host.docker.internal:3000/dmapper/get-rules
     body:
-      hits: ${getRulesResultSlots.response.body.hits.hits}
-  result: rulesData
-  next: returnSuccess
-
-getRulesForms:
-  call: http.post
-  args:
-    url: http://host.docker.internal:9200/rules/_search/template
-    body:
-      id: "rule-with-form"
-      params: ${params}
-  result: getRulesResultForms
-  next: mapRulesFormsData
-
-mapRulesFormsData:
-  call: http.post
-  args:
-    url: http://host.docker.internal:3000/dmapper/get-rules-search-forms
-    body:
-      hits: ${getRulesResultForms.response.body.hits.hits}
-  result: rulesData
-  next: returnSuccess
-
-getRulesResponses:
-  call: http.post
-  args:
-    url: http://host.docker.internal:9200/rules/_search/template
-    body:
-      id: "rule-with-response"
-      params: ${params}
-  result: getRulesResultResponses
-  next: mapRulesResponsesData
-
-mapRulesResponsesData:
-  call: http.post
-  args:
-    url: http://host.docker.internal:3000/dmapper/get-rules-search-responses
-    body:
-      hits: ${getRulesResultResponses.response.body.hits.hits}
+      hits: ${getRulesResult.response.body.hits.hits}
   result: rulesData
   next: returnSuccess
 

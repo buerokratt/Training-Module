@@ -3,10 +3,6 @@ assign_values:
     parameters: ${incoming.body}
     cookie: ${incoming.headers.cookie}
 
-extractRequestData:
-  assign:
-    cookie: ${incoming.headers.cookie}
-
 extractTokenData:
   call: http.post
   args:

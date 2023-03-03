@@ -16,72 +16,24 @@ extractTokenData:
 validateAdministrator:
   switch:
     - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
-      next: switchStoriesType
+      next: getStoriesSearch
   next: returnUnauthorized
 
-switchStoriesType:
-  switch:
-    - condition: ${params.type.includes("slots")}
-      next: getStoriesSlots
-    - condition: ${params.type.includes("forms")}
-      next: getStoriesForms
-    - condition: ${params.type.includes("responses")}
-      next: getStoriesResponses
-
-getStoriesSlots:
+getStoriesSearch:
   call: http.post
   args:
     url: http://host.docker.internal:9200/stories/_search/template
     body:
-      id: "story-with-slot"
+      id: ${"story-with-"+params.type}
       params: ${params}
-  result: getStoriesResultSlots
-  next: mapStoriesSlotsData
+  result: getStoriesResult
 
-mapStoriesSlotsData:
+mapStoriesData:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/dmapper/get-stories-search-slots
+    url: http://host.docker.internal:3000/dmapper/get-stories
     body:
-      hits: ${getStoriesResultSlots.response.body.hits.hits}
-  result: storiesData
-  next: returnSuccess
-
-getStoriesForms:
-  call: http.post
-  args:
-    url: http://host.docker.internal:9200/stories/_search/template
-    body:
-      id: "story-with-form"
-      params: ${params}
-  result: getStoriesResultForms
-  next: mapStoriesFormsData
-
-mapStoriesFormsData:
-  call: http.post
-  args:
-    url: http://host.docker.internal:3000/dmapper/get-stories-search-forms
-    body:
-      hits: ${getStoriesResultForms.response.body.hits.hits}
-  result: storiesData
-  next: returnSuccess
-
-getStoriesResponses:
-  call: http.post
-  args:
-    url: http://host.docker.internal:9200/stories/_search/template
-    body:
-      id: "story-with-response"
-      params: ${params}
-  result: getStoriesResultResponses
-  next: mapStoriesResponsesData
-
-mapStoriesResponsesData:
-  call: http.post
-  args:
-    url: http://host.docker.internal:3000/dmapper/get-stories-search-responses
-    body:
-      hits: ${getStoriesResultResponses.response.body.hits.hits}
+      hits: ${getStoriesResult.response.body.hits.hits}
   result: storiesData
   next: returnSuccess
 

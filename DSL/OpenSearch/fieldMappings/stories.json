@@ -4,6 +4,17 @@
       "story" : {
         "type" : "text"
       },
+      "condition": {
+        "properties" : {
+          "slot_was_set": {
+            "properties" : {
+              "slot": {
+                "type": "text"
+              }
+            }
+          }
+        }
+      },
       "steps" : {
         "properties" : {
           "intent" : {
@@ -13,12 +24,14 @@
             "type" : "text"
           },
           "checkpoint": {
+            "type": "text"
+          },
+          "active_loop": {
             "type" : "text"
           },
           "slot_was_set": {
-            "type": "object",
-            "properties": {
-              "asukoht": {
+            "properties" : {
+              "slot": {
                 "type": "text"
               }
             }
