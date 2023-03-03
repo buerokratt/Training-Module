@@ -1,0 +1,28 @@
+{
+  "script": {
+    "lang": "mustache",
+    "source": {
+      "query": {
+        "bool": {
+          "must": [
+            {
+              "query_string": {
+                "query": "*{{form}}*",
+                "fields": ["steps.action", "steps.active_loop"]
+              }
+            },
+            {
+              "query_string": {
+                "query": "*_form",
+                "fields": ["steps.action", "steps.active_loop"]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "params": {
+      "form": ""
+    }
+  }
+}

@@ -7,13 +7,16 @@
           "must": [
             {
               "query_string": {
-                "query": "*_form*",
-                "default_field": "steps.action"
+                "query": "*{{slot}}*",
+                "fields": ["steps.slot_was_set.slot","condition.slot_was_set.slot"]
               }
             }
           ]
         }
       }
+    },
+    "params": {
+      "slot": ""
     }
   }
 }

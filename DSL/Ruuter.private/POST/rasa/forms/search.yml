@@ -1,48 +1,43 @@
 assign_values:
   assign:
-    body: ${incoming.body}
-
-extractRequestData:
-  assign:
+    params: ${incoming.body}
     cookie: ${incoming.headers.cookie}
 
 extractTokenData:
   call: http.post
   args:
-    # TODO: replace with env variable and correct path to TIM endpoint
     url: http://localhost:8080/mock-tim-custom-jwt-userinfo
     headers:
       cookie: ${cookie}
     body:
-      # TODO: pass cookie name correctly to TIM
       cookieName: "customJwtCookie"
   result: jwtResult
 
 validateAdministrator:
   switch:
-    # TODO: use correct structure when request is made against TIM
     - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
-      next: getFormsSearchSlots
+      next: getFormsSlots
   next: returnUnauthorized
 
-getFormsSearchSlots:
-  call: http.get
+getFormsSlots:
+  call: http.post
   args:
-    url: http://host.docker.internal:9200/forms-search/_search
-  result: getFormsSearchResultSlots
-  next: mapFormsSearchSlotsData
+    url: http://host.docker.internal:9200/forms/_search/template
+    body:
+      id: "form-with-slot"
+      params: ${params}
+  result: getFormsResultSlots
 
-mapFormsSearchSlotsData:
+mapFormsSlotsData:
   call: http.post
   args:
     url: http://host.docker.internal:3000/dmapper/get-forms-search-slots
     body:
-      hits: ${getFormsSearchResultSlots.response.body.hits.hits}
-  result: formsSearchData
-  next: returnSuccess
+      hits: ${getFormsResultSlots.response.body.hits.hits}
+  result: formsData
 
 returnSuccess:
-  return: ${formsSearchData.response.body}
+  return: ${formsData.response.body}
   next: end
 
 returnUnauthorized:
