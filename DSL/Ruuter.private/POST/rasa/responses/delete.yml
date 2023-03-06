@@ -27,20 +27,20 @@ getDomainFile:
       cookie: ${cookie}
   result: domainData
 
-validateSlots:
+validateResponse:
   switch:
-    - condition: ${domainData.response.body.response.slots[parameters.slot_name] == null}
-      next: mergeSlots
-  next: returnSlotExists
+    - condition: ${domainData.response.body.response.responses[parameters.response_name] != null}
+      next: deleteKey
+  next: returnResponseIsMissing
 
-mergeSlots:
+deleteKey:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/merge/objects
+    url: http://host.docker.internal:3000/merge/remove-key
     body:
-      object1: ${domainData.response.body.response.slots}
-      object2: ${parameters.slot}
-  result: mergedSlots
+      object: ${domainData.response.body.response.responses}
+      key: ${parameters.response_name}
+  result: keyDeletedData
 
 convertJsonToYaml:
   call: http.post
@@ -50,10 +50,10 @@ convertJsonToYaml:
       version: ${domainData.response.body.response.version}
       intents: ${domainData.response.body.response.intents}
       entities: ${domainData.response.body.response.entities}
-      slots: ${mergedSlots.response.body}
+      slots: ${domainData.response.body.response.slots}
       forms: ${domainData.response.body.response.forms}
       actions: ${domainData.response.body.response.actions}
-      responses: ${domainData.response.body.response.responses}
+      responses: ${keyDeletedData.response.body}
       session_config: ${domainData.response.body.response.session_config}
   result: domainYaml
 
@@ -74,12 +74,11 @@ saveDomainFile:
   next: returnSuccess
 
 returnSuccess:
-  return: "Slot added"
+  return: "Response deleted"
   next: end
 
-returnSlotExists:
-  return: "Slot exists"
-  status: 409
+returnResponseIsMissing:
+  return: "Can't find response to delete"
   next: end
 
 returnUnauthorized:
