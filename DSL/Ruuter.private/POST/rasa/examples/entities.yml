@@ -1,9 +1,6 @@
 assign_values:
   assign:
     body: ${incoming.body}
-
-extractRequestData:
-  assign:
     cookie: ${incoming.headers.cookie}
 
 extractTokenData:
