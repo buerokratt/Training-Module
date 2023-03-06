@@ -3,6 +3,10 @@ assign_values:
     parameters: ${incoming.body}
     cookie: ${incoming.headers.cookie}
 
+extractRequestData:
+  assign:
+    cookie: ${incoming.headers.cookie}
+
 extractTokenData:
   call: http.post
   args:
@@ -29,9 +33,11 @@ getDomainFile:
 
 validateResponse:
   switch:
-    - condition: ${domainData.response.body.response.responses[parameters.response_name] != null}
-      next: mergeResponses
-  next: returnResponseIsMissing
+    - condition: ${domainData.response.body.response.responses[parameters.response_name] == null}
+      next: returnResponseIsMissing
+    - condition: ${parameters.response_name.length >= 500}
+      next: returnResponseTooLong
+  next: mergeResponses
 
 mergeResponses:
   call: http.post
@@ -79,6 +85,10 @@ returnSuccess:
 
 returnResponseIsMissing:
   return: "Can't find response to update"
+  next: end
+
+returnResponseTooLong:
+  return: "Response text is too long"
   next: end
 
 returnUnauthorized:

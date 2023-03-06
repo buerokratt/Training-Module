@@ -1,0 +1,6 @@
+{
+  "{{response.0._source.name}}": {
+    "rules": [{{#each rules}}"{{this}}"{{#unless @last}},{{/unless}}{{/each}}],
+    "stories": [{{#each stories}}"{{this}}"{{#unless @last}},{{/unless}}{{/each}}]
+  }
+}

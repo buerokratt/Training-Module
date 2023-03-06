@@ -30,8 +30,42 @@ getDomainFile:
 validateResponse:
   switch:
     - condition: ${domainData.response.body.response.responses[parameters.response_name] != null}
-      next: deleteKey
+      next: ruleResponses
   next: returnResponseIsMissing
+
+ruleResponses:
+  call: http.post
+  args:
+    url: http://localhost:8080/rasa/rules/search
+    headers:
+      cookie: ${cookie}
+    body:
+      response: ${parameters.response_name}
+      type: "responses"
+  result: ruleResponses
+
+validateRuleResponses:
+  switch:
+    - condition: ${ruleResponses.response.body.response.rules.length == 0}
+      next: storiesResponses
+  next: returnResponseHasDependencyToRules
+
+storiesResponses:
+  call: http.post
+  args:
+    url: http://localhost:8080/rasa/stories/search
+    headers:
+      cookie: ${cookie}
+    body:
+      response: ${parameters.response_name}
+      type: "responses"
+  result: storiesResponses
+
+validateStoriesResponses:
+  switch:
+    - condition: ${storiesResponses.response.body.response.stories.length == 0}
+      next: deleteKey
+  next: returnResponseHasDependencyToStories
 
 deleteKey:
   call: http.post
@@ -79,6 +113,14 @@ returnSuccess:
 
 returnResponseIsMissing:
   return: "Can't find response to delete"
+  next: end
+
+returnResponseHasDependencyToRules:
+  return: "Deleting a response is forbidden because it has relation to rules"
+  next: end
+
+returnResponseHasDependencyToStories:
+  return: "Deleting a response is forbidden because it has relation to stories"
   next: end
 
 returnUnauthorized:
