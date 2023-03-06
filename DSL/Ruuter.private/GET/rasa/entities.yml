@@ -24,7 +24,7 @@ validateAdministrator:
 getEntities:
   call: http.get
   args:
-    url: http://host.docker.internal:9200/entities/_search
+    url: http://host.docker.internal:9200/entities/_search?size=10000
   result: getEntitiesResult
 
 mapEntitiesData:

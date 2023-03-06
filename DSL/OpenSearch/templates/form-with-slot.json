@@ -2,6 +2,7 @@
   "script": {
     "lang": "mustache",
     "source": {
+      "size": 10000,
       "query": {
         "bool": {
           "must": [
