@@ -24,7 +24,7 @@ validateAdministrator:
 getForms:
   call: http.get
   args:
-    url: http://host.docker.internal:9200/forms/_search
+    url: http://host.docker.internal:9200/forms/_search?size=10000
   result: getFormsResult
 
 mapFormsData:

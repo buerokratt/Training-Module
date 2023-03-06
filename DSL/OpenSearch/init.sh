@@ -1,6 +1,8 @@
+#clear
+curl -XDELETE 'http://localhost:9200/*' -u admin:admin --insecure
 #responses
-curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/response" -ku admin:admin --data-binary "@fieldMappings/responses.json"
-curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/response/_bulk" -ku admin:admin --data-binary "@mock/responses.json"
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/responses" -ku admin:admin --data-binary "@fieldMappings/responses.json"
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/responses/_bulk" -ku admin:admin --data-binary "@mock/responses.json"
 curl -L -X POST 'http://localhost:9200/_scripts/response-with-name-and-text' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/response-with-name-and-text.json"
 
 #intents
