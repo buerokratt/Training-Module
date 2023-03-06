@@ -1,10 +1,7 @@
 {
   "responses": [
     {{#each hits}}
-      {
-          "name": "{{_source.name}}",
-          "text": "{{_source.text}}"
-      }{{#unless @last}},{{/unless}}
+      {{{toJSON this._source}}}{{#unless @last}},{{/unless}}
     {{/each}}
   ]
 }

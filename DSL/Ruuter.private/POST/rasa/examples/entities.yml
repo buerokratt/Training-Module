@@ -28,7 +28,7 @@ validateAdministrator:
 getExamplesEntities:
   call: http.get
   args:
-    url: http://host.docker.internal:9200/examples-entities/_search
+    url: http://host.docker.internal:9200/examples-entities/_search?size=10000
   result: getExamplesEntitiesResult
 
 mapExamplesEntitiesData:

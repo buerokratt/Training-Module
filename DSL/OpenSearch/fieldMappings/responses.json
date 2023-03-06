@@ -1,12 +1,29 @@
 {
-  "mappings" : {
-    "properties" : {
-      "name" : {
-        "type" : "text"
-        },
-      "text" : {
-        "type" : "text"
+  "mappings": {
+    "properties": {
+      "name": {
+        "type": "text"
+      },
+      "response": {
+        "properties": {
+          "text": {
+            "type": "text"
+          },
+          "condition": {
+            "properties": {
+              "type": {
+                "type": "text"
+              },
+              "name": {
+                "type": "text"
+              },
+              "value": {
+                "type": "text"
+              }
+            }
+          }
+        }
+        }
       }
     }
   }
-}

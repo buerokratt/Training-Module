@@ -24,7 +24,7 @@ validateAdministrator:
 getRegexes:
   call: http.get
   args:
-    url: http://host.docker.internal:9200/regexes/_search
+    url: http://host.docker.internal:9200/regexes/_search?size=10000
   result: getRegexesResult
 
 mapRegexesData:
