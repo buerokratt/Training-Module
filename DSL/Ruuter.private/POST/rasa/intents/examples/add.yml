@@ -88,6 +88,12 @@ mergeExamples:
       array2: ${splitExamples.response.body}
   result: mergedExamples
 
+validateMinimumExampleCount:
+  switch:
+    - condition: ${mergedExamples.response.body.length >= 10}
+      next: mapIntentsData
+  next: returnTooFewExamples
+
 mapIntentsData:
   call: http.post
   args:
@@ -122,6 +128,10 @@ returnSuccess:
 
 returnExampleTooLong:
   return: "Example is too long"
+  next: end
+
+returnTooFewExamples:
+  return: "Too few Examples, add more"
   next: end
 
 returnUnauthorized:
