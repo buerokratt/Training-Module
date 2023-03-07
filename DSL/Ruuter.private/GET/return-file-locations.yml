@@ -5,6 +5,7 @@ assign_step:
       stories_location: '/home/raul/buerokratt/Training-Module/mock1/data/stories.yml'
       domain_location: '/home/raul/buerokratt/Training-Module/mock1/domain.yml'
       test_stories_location: '/home/raul/buerokratt/Training-Module/mock1/tests/test_stories.yml'
+      intents_location: '/home/raul/buerokratt/Training-Module/mock1/data/nlu/'
 
 return_value:
   return: ${locations}
