@@ -20,8 +20,23 @@ extractTokenData:
 validateAdministrator:
   switch:
     - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
-      next: getFileLocations
+      next: validateArrayExampleLength
   next: returnUnauthorized
+
+validateArrayExampleLength:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/validate/array-elements-length
+    body:
+      array: ${parameters.examples}
+      length: 500
+  result: isValid
+
+validateLength:
+  switch:
+    - condition: ${isValid.response.body}
+      next: getFileLocations
+  next: returnExampleTooLong
 
 getFileLocations:
   call: http.get
@@ -103,6 +118,10 @@ saveIntentFile:
 
 returnSuccess:
   return: "Examples added"
+  next: end
+
+returnExampleTooLong:
+  return: "Example is too long"
   next: end
 
 returnUnauthorized:
