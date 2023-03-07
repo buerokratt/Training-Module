@@ -26,4 +26,24 @@ router.post('/csv-to-json', multer().array('file'), async (req: Request, res: Re
     let result = Papa.parse(file);
     res.send(result.data);
 });
+interface SplitStringBody {
+    data: string;
+    separator: string;
+}
+router.post('/string/split', multer().array('file'), async (req: Request, res: Response) => {
+    let { data, separator }: SplitStringBody = req.body
+    console.log(req.body);
+    res.send(data.split(separator).filter(function(n){return n; })); // filter removes empty array elements.
+});
+
+interface ReplaceStringBody {
+    data: string;
+    search: RegExp;
+    replace:string;
+}
+router.post('/string/replace', multer().array('file'), async (req: Request, res: Response) => {
+    let { data, search, replace }: ReplaceStringBody = req.body
+    console.log(search);
+    res.json(data.replaceAll(search, replace));
+});
 export default router;
