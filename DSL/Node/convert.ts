@@ -38,7 +38,7 @@ router.post('/string/split', multer().array('file'), async (req: Request, res: R
 
 interface ReplaceStringBody {
     data: string;
-    search: RegExp;
+    search: string;
     replace:string;
 }
 router.post('/string/replace', multer().array('file'), async (req: Request, res: Response) => {

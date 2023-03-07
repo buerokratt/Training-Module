@@ -1,0 +1,110 @@
+assign_values:
+  assign:
+    parameters: ${incoming.body}
+    cookie: ${incoming.headers.cookie}
+
+extractRequestData:
+  assign:
+    cookie: ${incoming.headers.cookie}
+
+extractTokenData:
+  call: http.post
+  args:
+    url: http://localhost:8080/mock-tim-custom-jwt-userinfo
+    headers:
+      cookie: ${cookie}
+    body:
+      cookieName: "customJwtCookie"
+  result: jwtResult
+
+validateAdministrator:
+  switch:
+    - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
+      next: getFileLocations
+  next: returnUnauthorized
+
+getFileLocations:
+  call: http.get
+  args:
+    url: http://localhost:8080/return-file-locations
+  result: fileLocations
+
+getIntentFile:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/read
+    body:
+      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + "_nlu.yml"}
+  result: intentFile
+
+convertYamlToJson:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/yaml-to-json
+    body:
+      file: ${intentFile.response.body.file}
+  result: intentData
+
+replaceString:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/string/replace
+    body:
+      data: ${intentData.response.body.nlu[0].examples}
+      search: "- "
+      replace: ""
+  result: replacedString
+
+splitExamples:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/string/split
+    body:
+      data: ${replacedString.response.body}
+      separator: "\n"
+  result: splitExamples
+
+mergeExamples:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/merge
+    body:
+      array1: ${parameters.examples}
+      array2: ${splitExamples.response.body}
+  result: mergedExamples
+
+mapIntentsData:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/dmapper/get-intent-file
+    body:
+      intent: ${parameters.intent}
+      examples: ${mergedExamples.response.body}
+  result: intentFileJson
+
+convertJsonToYaml:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/json-to-yaml
+    body:
+      version: "3.0"
+      nlu: ${intentFileJson.response.body}
+  result: intentYaml
+
+saveIntentFile:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/write
+    body:
+      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + "_nlu.yml"}
+      content: ${intentYaml.response.body.json}
+  result: fileResult
+  next: returnSuccess
+
+returnSuccess:
+  return: "Examples added"
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
+  next: end
