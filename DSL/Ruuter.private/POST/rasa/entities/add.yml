@@ -36,7 +36,7 @@ validateEntities:
 mergeEntities:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/merge/
+    url: http://host.docker.internal:3000/merge
     body:
       array1: ${domainData.response.body.response.entities}
       array2: ${[parameters.entity]}
