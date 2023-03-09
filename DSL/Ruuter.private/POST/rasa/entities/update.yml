@@ -1,0 +1,197 @@
+assign_values:
+  assign:
+    parameters: ${incoming.body}
+    cookie: ${incoming.headers.cookie}
+
+extractTokenData:
+  call: http.post
+  args:
+    url: http://localhost:8080/mock-tim-custom-jwt-userinfo
+    headers:
+      cookie: ${cookie}
+    body:
+      cookieName: "customJwtCookie"
+  result: jwtResult
+
+validateAdministrator:
+  switch:
+    - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
+      next: getDomainFile
+  next: returnUnauthorized
+
+getDomainFile:
+  call: http.get
+  args:
+    url: http://localhost:8080/domain-file
+    headers:
+      cookie: ${cookie}
+  result: domainData
+
+validateEntities:
+  switch:
+    - condition: ${domainData.response.body.response.entities.includes(parameters.entity_name)}
+      next: mergeEntities
+  next: returnEntityIsMissing
+
+mergeEntities:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/merge
+    body:
+      array1: ${domainData.response.body.response.entities}
+      array2: ${[parameters.entity]}
+      iteratee: ${parameters.entity_name}
+  result: mergedEntities
+
+convertJsonToYaml:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/json-to-yaml
+    body:
+      version: ${domainData.response.body.response.version}
+      intents: ${domainData.response.body.response.intents}
+      entities: ${mergedEntities.response.body}
+      slots: ${domainData.response.body.response.slots}
+      forms: ${domainData.response.body.response.forms}
+      actions: ${domainData.response.body.response.actions}
+      responses: ${domainData.response.body.response.responses}
+      session_config: ${domainData.response.body.response.session_config}
+  result: domainYaml
+
+getFileLocations:
+  call: http.get
+  args:
+    url: http://localhost:8080/return-file-locations
+  result: fileLocations
+
+saveDomainFile:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/write
+    body:
+      file_path: ${fileLocations.response.body.response.domain_location}
+      content: ${domainYaml.response.body.json}
+  result: fileResult
+
+switchFileType:
+  switch:
+    - condition: ${parameters.intent.includes("regex")}
+      next: getRegexFile
+  next: getIntentFile
+
+getRegexFile:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/read
+    body:
+      file_path: ${fileLocations.response.body.response.regex_location}
+  result: intentFile
+  next: convertYamlToJson
+
+getIntentFile:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/read
+    body:
+      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + "_nlu.yml"}
+  result: intentFile
+
+convertYamlToJson:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/yaml-to-json
+    body:
+      file: ${intentFile.response.body.file}
+  result: intentData
+
+replaceString:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/string/replace
+    body:
+      data: ${intentData.response.body.nlu[0].examples}
+      search: "- "
+      replace: ""
+  result: replacedString
+
+splitExamples:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/string/split
+    body:
+      data: ${replacedString.response.body}
+      separator: "\n"
+  result: splitExamples
+
+switchMapFileType:
+  switch:
+    - condition: ${parameters.intent.includes("regex")}
+      next: mapRegexesData
+  next: mapIntentsData
+
+mapRegexesData:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/dmapper/get-regex-file
+    body:
+      regex: ${parameters.entity}
+      examples: ${splitExamples.response.body}
+  result: intentFileJson
+  next: convertIntentJsonToYaml
+
+mapIntentsData:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/dmapper/get-intent-file
+    body:
+      intent: ${parameters.entity}
+      examples: ${splitExamples.response.body}
+  result: intentFileJson
+
+convertIntentJsonToYaml:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/json-to-yaml
+    body:
+      version: "3.0"
+      nlu: ${intentFileJson.response.body}
+  result: intentYaml
+
+switchSaveFileType:
+  switch:
+    - condition: ${parameters.intent.includes("regex")}
+      next: saveRegexFile
+  next: saveIntentFile
+
+saveRegexFile:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/write
+    body:
+      file_path: ${fileLocations.response.body.response.regex_location}
+      content: ${intentYaml.response.body.json}
+  result: fileResult
+  next: returnSuccess
+
+saveIntentFile:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/write
+    body:
+      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + "_nlu.yml"}
+      content: ${intentYaml.response.body.json}
+  result: fileResult
+  next: returnSuccess
+
+returnSuccess:
+  return: "Entity updated"
+  next: end
+
+returnEntityIsMissing:
+  return: "Can't find entity to update"
+  status: 409
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
+  next: end
