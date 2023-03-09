@@ -53,4 +53,26 @@ router.post('/remove-key', (req, res) => {
     res.json(object);
 });
 
+interface ReplaceArrayElement {
+    array: Array<string>;
+    element: string;
+    newValue: string;
+}
+router.post('/replace-array-element', (req, res) => {
+    const { array, element, newValue }: ReplaceArrayElement = req.body;
+    console.log(req.body);
+
+    if (!array || !element || !newValue) {
+        res.status(400).send('Array, element and newValue are required');
+        return;
+    }
+    const index = array.indexOf(element);
+    if (index == -1) {
+        res.status(400).send("Array element {element} is missing");
+        return;
+    }
+    array[index] = newValue;
+    res.json(array);
+});
+
 export default router;
