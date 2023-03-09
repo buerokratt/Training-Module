@@ -105,11 +105,12 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = (
         header: t('training.intents.examples') || '',
         cell: (props) =>
           editableRow && editableRow.id === props.row.original.id ? (
-            <FormInput
-              name={`example-${props.row.original.id}`}
-              label=''
-              defaultValue={editableRow.value}
-              hideLabel
+            <FormTextarea
+            name={`example-${props.row.original.id}`}
+            label=''
+            defaultValue={editableRow.value}
+            hideLabel
+            maxRows={1}
             />
           ) : (
             <IntentExamplesEntry value={props.getValue()} entities={entities} />
