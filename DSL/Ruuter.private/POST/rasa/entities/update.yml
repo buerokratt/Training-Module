@@ -30,18 +30,18 @@ getDomainFile:
 validateEntities:
   switch:
     - condition: ${domainData.response.body.response.entities.includes(parameters.entity_name)}
-      next: mergeEntities
+      next: replaceExistingEntity
   next: returnEntityIsMissing
 
-mergeEntities:
+replaceExistingEntity:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/merge
+    url: http://host.docker.internal:3000/merge/replace-array-element
     body:
-      array1: ${domainData.response.body.response.entities}
-      array2: ${[parameters.entity]}
-      iteratee: ${parameters.entity_name}
-  result: mergedEntities
+      element: ${parameters.entity_name}
+      newValue: ${parameters.entity}
+      array: ${domainData.response.body.response.entities}
+  result: replacedEntities
 
 convertJsonToYaml:
   call: http.post
@@ -50,7 +50,7 @@ convertJsonToYaml:
     body:
       version: ${domainData.response.body.response.version}
       intents: ${domainData.response.body.response.intents}
-      entities: ${mergedEntities.response.body}
+      entities: ${replacedEntities.response.body}
       slots: ${domainData.response.body.response.slots}
       forms: ${domainData.response.body.response.forms}
       actions: ${domainData.response.body.response.actions}
