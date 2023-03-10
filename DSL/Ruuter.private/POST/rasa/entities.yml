@@ -19,25 +19,24 @@ validateAdministrator:
   switch:
     # TODO: use correct structure when request is made against TIM
     - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
-      next: getEntitiesWithExamples
+      next: getEntitiesWithName
   next: returnUnauthorized
 
-getEntitiesWithExamples:
+getEntitiesWithName:
   call: http.post
   args:
-    url: http://host.docker.internal:9200/examples-entities/_search/template
+    url: http://host.docker.internal:9200/entities/_search/template
     body:
-      id: "entities-with-examples"
+      id: "entity-with-name"
       params: ${params}
   result: getEntitiesResult
 
 mapEntitiesData:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/dmapper/get-entities-with-examples
+    url: http://host.docker.internal:3000/dmapper/get-entity-with-name
     body:
       hits: ${getEntitiesResult.response.body.hits.hits}
-      examples: ${params.examples}
   result: entitiesData
   next: returnSuccess
 
