@@ -4,7 +4,7 @@ import { createColumnHelper } from '@tanstack/react-table';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { useForm } from 'react-hook-form';
-import { MdDeleteOutline } from 'react-icons/md';
+import { MdDeleteOutline, MdOutlineSave } from 'react-icons/md';
 
 import { Button, Card, DataTable, Dialog, FormInput, FormSelect, Icon, Track } from 'components';
 import { Appeal } from 'types/appeal';
@@ -115,6 +115,21 @@ const Appeals: FC = () => {
     //     <Button appearance='text'>{t('global.save')}</Button>
     //   ) : null,
     // }),
+    columnHelper.display({
+      id: 'save',
+      meta: {
+        size: '1%',
+      },
+      cell: (props) => (
+        <Button appearance='text' onClick={() => handleNewAppealSubmit()}>
+          <Icon
+            label={t('global.save')}
+            icon={<MdOutlineSave color={'rgba(0,0,0,0.54)'} />}
+          />
+          {t('global.save')}
+        </Button>
+      ) 
+    }),
     columnHelper.display({
       header: '',
       cell: (props) => (
