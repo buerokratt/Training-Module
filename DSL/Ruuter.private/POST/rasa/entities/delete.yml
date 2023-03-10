@@ -45,7 +45,7 @@ domainEntities:
 
 validateDomainEntities:
   switch:
-    - condition: ${domainEntities.response.body.response == false}
+    - condition: ${!domainEntities.response.body.response}
       next: regexEntities
   next: returnEntityHasDependencyToDomain
 
@@ -62,7 +62,7 @@ regexEntities:
 
 validateRegexEntities:
   switch:
-    - condition: ${regexEntities.response.body.response == false}
+    - condition: ${!regexEntities.response.body.response}
       next: intentEntities
   next: returnEntityHasDependencyToRegex
 
@@ -79,7 +79,7 @@ intentEntities:
 
 validateIntentEntities:
   switch:
-    - condition: ${intentEntities.response.body.response == false}
+    - condition: ${!intentEntities.response.body.response}
       next: deleteEntity
   next: returnEntityHasDependencyToIntent
 
