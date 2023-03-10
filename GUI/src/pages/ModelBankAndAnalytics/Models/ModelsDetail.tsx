@@ -1,13 +1,14 @@
-import { FC, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import * as Tabs from '@radix-ui/react-tabs';
 import { useQuery } from '@tanstack/react-query';
-import { MdOutlineArrowBack } from 'react-icons/md';
+import { MdOutlineArrowBack, MdOutlineSettingsInputAntenna } from 'react-icons/md';
 
-import { Button, Card, FormSelect, Track } from 'components';
+import { Button, Card, FormSelect, Icon, Track } from 'components';
 import { ResultBundle, ResultFile } from 'types/result';
 import { format } from 'date-fns';
+import { Model } from 'types/model';
 
 const ModelsDetail: FC = () => {
   const { t } = useTranslation();
@@ -19,6 +20,12 @@ const ModelsDetail: FC = () => {
     queryKey: [`results/${params.id}`],
     enabled: !!params.id,
   });
+  const { data: models } = useQuery<Model[]>({
+    queryKey: ['models'],
+  });
+  const activeModel = useMemo(() => {
+    return models?.find((model) => model.active === true)
+  }, [models])
 
   if (!resultsData) return <>Loading...</>;
 
@@ -73,13 +80,20 @@ const ModelsDetail: FC = () => {
               />
             </div>
             <div className='vertical-tabs__content' style={{ padding: 0 }}>
-              <Track align='stretch'>
+              <Track align='stretch' direction="vertical">
                 <div style={{ flex: 1, borderRight: '1px solid #D2D3D8' }}>
                   {selectedFile && (
                     <Card
                       borderless
                       header={
-                        <strong>{t('training.mba.lastModified', { date: format(new Date(selectedFile.lastModified), 'dd.MM.yyyy') })}</strong>}
+                        <div style={{display: 'flex', flexDirection: 'row', gap: 10}}>
+                        <strong>{t('training.mba.lastModified', { date: format(new Date(selectedFile.lastModified), 'dd.MM.yyyy') })}</strong>
+                        <Track gap={8} style={{ whiteSpace: 'nowrap', color: '#308653' }}>
+                          <Icon icon={<MdOutlineSettingsInputAntenna fontSize={24} />} size='medium' />
+                          <p>{activeModel?.name}</p>
+                        </Track>
+                        </div>
+                      }
                     >
                       {selectedFile.fileUri.endsWith('.png') ? (
                         <img src={selectedFile.fileUri} width='100%' alt='' />
@@ -94,7 +108,14 @@ const ModelsDetail: FC = () => {
                     <Card
                       borderless
                       header={
-                        <strong>{t('training.mba.lastModified', { date: format(new Date(selectedFile.lastModified), 'dd.MM.yyyy') })}</strong>}
+                        <div style={{display: 'flex', flexDirection: 'row', gap: 10}}>
+                        <strong>{t('training.mba.lastModified', { date: format(new Date(selectedFile.lastModified), 'dd.MM.yyyy') })}</strong>
+                        <Track gap={8} style={{ whiteSpace: 'nowrap', color: '#308653' }}>
+                          <Icon icon={<MdOutlineSettingsInputAntenna fontSize={24} />} size='medium' />
+                          <p>{activeModel?.name}</p>
+                        </Track>
+                        </div>
+                      }
                     >
                       {selectedFile.fileUri.endsWith('.png') ? (
                         <img src={selectedFile.fileUri} width='100%' alt='' />
