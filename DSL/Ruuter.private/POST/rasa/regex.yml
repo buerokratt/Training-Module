@@ -1,6 +1,6 @@
 assign_values:
   assign:
-    body: ${incoming.body}
+    params: ${incoming.body}
     cookie: ${incoming.headers.cookie}
 
 extractTokenData:
@@ -19,22 +19,26 @@ validateAdministrator:
   switch:
     # TODO: use correct structure when request is made against TIM
     - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
-      next: getRegexes
+      next: getRegexesWithName
   next: returnUnauthorized
 
-getRegexes:
-  call: http.get
+getRegexesWithName:
+  call: http.post
   args:
-    url: http://host.docker.internal:9200/regexes/_search?size=10000
+    url: http://host.docker.internal:9200/regexes/_search/template
+    body:
+      id: "regex-with-name"
+      params: ${params}
   result: getRegexesResult
+  next: mapRegexesData
 
 mapRegexesData:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/dmapper/get-regexes
+    url: http://host.docker.internal:3000/dmapper/get-regex-with-name
     body:
       hits: ${getRegexesResult.response.body.hits.hits}
-      examples: ${body.examples}
+      examples: ${params.examples}
   result: regexesData
   next: returnSuccess
 

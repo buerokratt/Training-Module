@@ -1,0 +1,148 @@
+assign_values:
+  assign:
+    parameters: ${incoming.body}
+    cookie: ${incoming.headers.cookie}
+
+extractTokenData:
+  call: http.post
+  args:
+    url: http://localhost:8080/mock-tim-custom-jwt-userinfo
+    headers:
+      cookie: ${cookie}
+    body:
+      cookieName: "customJwtCookie"
+  result: jwtResult
+
+validateAdministrator:
+  switch:
+    - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
+      next: getDomainFile
+  next: returnUnauthorized
+
+getDomainFile:
+  call: http.get
+  args:
+    url: http://localhost:8080/domain-file
+    headers:
+      cookie: ${cookie}
+  result: domainData
+
+validateEntities:
+  switch:
+    - condition: ${domainData.response.body.response.entities.includes(parameters.entity_name)}
+      next: domainEntities
+  next: returnEntityIsMissing
+
+domainEntities:
+  call: http.post
+  args:
+    url: http://localhost:8080/rasa/entities
+    headers:
+      cookie: ${cookie}
+    body:
+      entity: ${parameters.entity_name}
+  result: domainEntities
+
+validateDomainEntities:
+  switch:
+    - condition: ${domainEntities.response.body.response == false}
+      next: regexEntities
+  next: returnEntityHasDependencyToDomain
+
+regexEntities:
+  call: http.post
+  args:
+    url: http://localhost:8080/rasa/regex
+    headers:
+      cookie: ${cookie}
+    body:
+      regex: ${parameters.entity_name}
+      examples: false
+  result: regexEntities
+
+validateRegexEntities:
+  switch:
+    - condition: ${regexEntities.response.body.response == false}
+      next: intentEntities
+  next: returnEntityHasDependencyToRegex
+
+intentEntities:
+  call: http.post
+  args:
+    url: http://localhost:8080/rasa/examples/entities
+    headers:
+      cookie: ${cookie}
+    body:
+      entity: ${parameters.entity_name}
+      examples: false
+  result: intentEntities
+
+validateIntentEntities:
+  switch:
+    - condition: ${intentEntities.response.body.response == false}
+      next: deleteEntity
+  next: returnEntityHasDependencyToIntent
+
+deleteEntity:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/dmapper/delete-entity
+    body:
+      entities: ${domainData.response.body.response.entities}
+      entity_name: ${parameters.entity_name}
+  result: deleteEntitiesData
+
+convertJsonToYaml:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/json-to-yaml
+    body:
+      version: ${domainData.response.body.response.version}
+      intents: ${domainData.response.body.response.intents}
+      entities: ${deleteEntitiesData.response.body}
+      slots: ${domainData.response.body.response.slots}
+      forms: ${domainData.response.body.response.forms}
+      actions: ${domainData.response.body.response.actions}
+      responses: ${domainData.response.body.response.responses}
+      session_config: ${domainData.response.body.response.session_config}
+  result: domainYaml
+
+getFileLocations:
+  call: http.get
+  args:
+    url: http://localhost:8080/return-file-locations
+  result: fileLocations
+
+saveDomainFile:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/write
+    body:
+      file_path: ${fileLocations.response.body.response.domain_location}
+      content: ${domainYaml.response.body.json}
+  result: fileResult
+  next: returnSuccess
+
+returnSuccess:
+  return: "Entity deleted"
+  next: end
+
+returnEntityIsMissing:
+  return: "Can't find entity to delete"
+  next: end
+
+returnEntityHasDependencyToDomain:
+  return: "Deleting an entity is forbidden because it has relation to domain file"
+  next: end
+
+returnEntityHasDependencyToRegex:
+  return: "Deleting an entity is forbidden because it has relation to regex file"
+  next: end
+
+returnEntityHasDependencyToIntent:
+  return: "Deleting an entity is forbidden because it has relation to intent"
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
+  next: end
