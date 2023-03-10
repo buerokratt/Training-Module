@@ -1,0 +1,7 @@
+[
+  {{#each examples}}
+    {{#unless (eq this ../example)}}
+      "{{this}}"{{#unless @last}},{{/unless}}
+    {{/unless}}
+  {{/each}}
+]
