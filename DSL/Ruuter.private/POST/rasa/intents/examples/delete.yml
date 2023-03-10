@@ -1,0 +1,94 @@
+assign_values:
+  assign:
+    rule: ${incoming.body.rule}
+    cookie: ${incoming.headers.cookie}
+
+extractTokenData:
+  call: http.post
+  args:
+    url: http://localhost:8080/mock-tim-custom-jwt-userinfo
+    headers:
+      cookie: ${cookie}
+    body:
+      cookieName: "customJwtCookie"
+  result: jwtResult
+
+validateAdministrator:
+  switch:
+    - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
+      next: getTestStoriesWithName
+  next: returnUnauthorized
+
+getRuleWithName:
+  call: http.post
+  args:
+    url: http://localhost:8080/rasa/rules
+    headers:
+      cookie: ${cookie}
+    body:
+      rule: ${rule}
+  result: ruleResult
+
+validateRules:
+  switch:
+    - condition: ${ruleResult.response.body.response.rule != null}
+      next: getFileLocations
+  next: returnRulesIsMissing
+
+getFileLocations:
+  call: http.get
+  args:
+    url: http://localhost:8080/return-file-locations
+  result: fileLocations
+
+getRulesFile:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/read
+    body:
+      file_path: ${fileLocations.response.body.response.rules_location}
+  result: ruleFile
+
+convertYamlToJson:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/yaml-to-json
+    body:
+      file: ${ruleFile.response.body.file}
+  result: rulesData
+
+deleteRule:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/dmapper/delete-rule
+    body:
+      rules: ${rulesData.response.body.rules}
+      rule_name: ${rule}
+  result: deleteRulesData
+
+convertJsonToYaml:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/json-to-yaml
+    body:
+      version: "3.0"
+      rules: ${deleteRulesData.response.body}
+  result: rulesYaml
+
+saveRulesFile:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/write
+    body:
+      file_path: ${fileLocations.response.body.response.rules_location}
+      content: ${rulesYaml.response.body.json}
+  result: fileResult
+  next: returnSuccess
+
+returnSuccess:
+  return: "Rule deleted"
+  next: end
+
+returnRulesIsMissing:
+  return: "Can't find rule to delete"
+  next: end
