@@ -1,0 +1,23 @@
+{
+  "script": {
+    "lang": "mustache",
+    "source": {
+      "size": 10000,
+      "query": {
+        "bool": {
+          "must": [
+            {
+              "query_string": {
+                "query": "*{{entity}}*",
+                "default_field": "examples"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "params": {
+      "entity": ""
+    }
+  }
+}

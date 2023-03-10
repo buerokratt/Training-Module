@@ -1,0 +1,7 @@
+[
+  {{#each entities}}
+    {{#unless (eq entity ../entity_name)}}
+      {{{toJSON this}}}{{#unless @last}},{{/unless}}
+    {{/unless}}
+  {{/each}}
+]

@@ -210,6 +210,14 @@ curl -L -X POST 'http://localhost:9200/_scripts/entity-with-name' -H 'Content-Ty
 ```
 curl -L -X GET 'http://localhost:9200/entities/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "entity-with-name", "params": {"entity": "common_tervitus"}}'
 ```
+##### Templates for searching entities with examples
+```
+curl -L -X POST 'http://localhost:9200/_scripts/entities-with-examples' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/entities-with-examples.json"
+```
+##### Test template
+```
+curl -L -X GET 'http://localhost:9200/entities/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "entities-with-examples", "params": {"entity": "asukoht"}}'
+```
 ## Regexes
 ##### Create regexes index
 ```
@@ -222,6 +230,14 @@ curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/regex
 ##### Test query to index to validate that mock data is there
 ```
 curl -H 'Content-Type: application/json' -X GET "http://localhost:9200/regexes/_search?pretty=true" -ku admin:admin -d' {"query":{"match":{"regex":"asukoht"}}}'
+```
+##### Templates for searching regexes
+```
+curl -L -X POST 'http://localhost:9200/_scripts/regex-with-name' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/regex-with-name.json"
+```
+##### Test template
+```
+curl -L -X GET 'http://localhost:9200/regexes/_search/template' -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-raw '{"id": "regex-with-name", "params": {"regex": "asukoht"}}'
 ```
 ## Examples entities
 ##### Create examples entities index
