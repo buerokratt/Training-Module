@@ -30,7 +30,7 @@ interface SplitStringBody {
     data: string;
     separator: string;
 }
-router.post('/string/split', multer().array('file'), async (req: Request, res: Response) => {
+router.post('/string/split', (req: Request, res: Response) => {
     let { data, separator }: SplitStringBody = req.body
     console.log(req.body);
     res.send(data.split(separator).filter(function(n){return n; })); // filter removes empty array elements.
@@ -41,7 +41,7 @@ interface ReplaceStringBody {
     search: string;
     replace:string;
 }
-router.post('/string/replace', multer().array('file'), async (req: Request, res: Response) => {
+router.post('/string/replace', (req: Request, res: Response) => {
     let { data, search, replace }: ReplaceStringBody = req.body
     console.log(search);
     res.json(data.replaceAll(search, replace));

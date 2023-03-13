@@ -1,0 +1,123 @@
+assign_values:
+  assign:
+    parameters: ${incoming.body}
+    cookie: ${incoming.headers.cookie}
+
+extractTokenData:
+  call: http.post
+  args:
+    url: http://localhost:8080/mock-tim-custom-jwt-userinfo
+    headers:
+      cookie: ${cookie}
+    body:
+      cookieName: "customJwtCookie"
+  result: jwtResult
+
+validateAdministrator:
+  switch:
+    - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
+      next: validateInputLength
+  next: returnUnauthorized
+
+validateInputLength:
+  switch:
+    - condition: ${parameters.intent.length > 5}
+      next: getDomainFile
+  next: returnTooShortError
+
+getDomainFile:
+  call: http.get
+  args:
+    url: http://localhost:8080/domain-file
+    headers:
+      cookie: ${cookie}
+  result: domainData
+
+validateIntentExists:
+  switch:
+    - condition: ${domainData.response.body.response.intents.includes(parameters.intent)}
+      next: returnIntentExists
+  next: getFileLocations
+
+getFileLocations:
+  call: http.get
+  args:
+    url: http://localhost:8080/return-file-locations
+  result: fileLocations
+
+mapIntentsData:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/dmapper/get-intent-file
+    body:
+      intent: ${parameters.intent}
+  result: intentFileJson
+
+convertJsonToYaml:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/json-to-yaml
+    body:
+      version: "3.0"
+      nlu: ${intentFileJson.response.body}
+  result: intentYaml
+
+saveIntentFile:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/write
+    body:
+      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + "_nlu.yml.tmp"}
+      content: ${intentYaml.response.body.json}
+  result: fileResult
+
+mergeIntents:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/merge
+    body:
+      array1: ${[parameters.intent]}
+      array2: ${domainData.response.body.response.intents}
+  result: mergedIntents
+
+convertDomainJsonToYaml:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/json-to-yaml
+    body:
+      version: ${domainData.response.body.response.version}
+      intents: ${mergedIntents.response.body}
+      entities: ${domainData.response.body.response.entities}
+      slots: ${domainData.response.body.response.slots}
+      forms: ${domainData.response.body.response.forms}
+      actions: ${domainData.response.body.response.actions}
+      responses: ${domainData.response.body.response.responses}
+      session_config: ${domainData.response.body.response.session_config}
+  result: domainYaml
+
+saveDomainFile:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/write
+    body:
+      file_path: ${fileLocations.response.body.response.domain_location}
+      content: ${domainYaml.response.body.json}
+  result: fileResult
+  next: returnSuccess
+
+
+returnSuccess:
+  return: "Intent created"
+  next: end
+
+returnTooShortError:
+  return: "Intent name is too short"
+  next: end
+
+returnIntentExists:
+  return: "Intent with that name already exists"
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
+  next: end
