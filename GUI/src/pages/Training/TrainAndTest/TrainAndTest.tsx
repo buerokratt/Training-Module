@@ -87,41 +87,45 @@ const TrainAndTest = (props: Props) => {
           </div>
         </div>
       </Card>
-      <Card
-        header={t('training.trainNew.planTitle')}
-        style={{
-          width: '100%',
-        }}
-      >
-        <div className={styles.card}>
-          <div className={`${styles.planDate} ${styles.input}`}>
-            <FormInput
-              name={t('training.trainNew.date')}
-              label={t('training.trainNew.date')}
-              type="date"
-              onChange={(e) => setData({ ...data, date: e.target.value })}
-              value={data.date as string}
-            />
-          </div>
+      {data.newTopic && (
+        <>
+          <Card
+            header={t('training.trainNew.planTitle')}
+            style={{
+              width: '100%',
+            }}
+          >
+            <div className={styles.card}>
+              <div className={`${styles.planDate} ${styles.input}`}>
+                <FormInput
+                  name={t('training.trainNew.date')}
+                  label={t('training.trainNew.date')}
+                  type="date"
+                  onChange={(e) => setData({ ...data, date: e.target.value })}
+                  value={data.date as string}
+                />
+              </div>
 
-          <div className={`${styles.planDays} ${styles.input}`}>
-            <span>{t('training.trainNew.days')}</span>
-            <FormDaySelect
-              onCheckedChange={(days) => setData({ ...data, days })}
-            />
-          </div>
-          <div className={`${styles.planTime} ${styles.input}`}>
-            <FormInput
-              name={t('training.trainNew.time')}
-              label={t('training.trainNew.time')}
-              type="time"
-              onChange={(e) => setData({ ...data, time: e.target.value })}
-              step="1"
-              value={data.time as string}
-            />
-          </div>
-        </div>
-      </Card>
+              <div className={`${styles.planDays} ${styles.input}`}>
+                <span>{t('training.trainNew.days')}</span>
+                <FormDaySelect
+                  onCheckedChange={(days) => setData({ ...data, days })}
+                />
+              </div>
+              <div className={`${styles.planTime} ${styles.input}`}>
+                <FormInput
+                  name={t('training.trainNew.time')}
+                  label={t('training.trainNew.time')}
+                  type="time"
+                  onChange={(e) => setData({ ...data, time: e.target.value })}
+                  step="1"
+                  value={data.time as string}
+                />
+              </div>
+            </div>
+          </Card>
+        </>
+      )}
       <div className={styles.bottom}>
         <Button appearance="primary">{t('global.save')}</Button>
       </div>

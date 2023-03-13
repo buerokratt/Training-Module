@@ -1,3 +1,6 @@
+@import 'src/styles/tools/color';
+@import 'src/styles/settings/variables/typography';
+
 .container{
     display: flex;
     flex-direction: row;
@@ -9,20 +12,22 @@
 .inputs {
     height: 40px;
     width: 40px;
-    border-radius: 4px;
     position: relative;
+    border: 1px solid get-color(black-coral-6);
+    border-radius: 4px;
 
     input {
         position: absolute;
         height: 100%;
         width: 100%;
+        opacity: 0;
 
         &:checked {
-            background: #005AA3;
+            background: get-color(sapphire-blue-10);
         }
 
         &:checked + label {
-            background: #005AA3;
+            background: get-color(sapphire-blue-10);
         }
     }
 
@@ -33,10 +38,9 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        font-size: 14px;
         font-weight: 500;
         cursor: pointer;
-        font-size: 16px;
+        font-size: $veera-font-size-100;
         user-select: none;
     }
 
