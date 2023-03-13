@@ -1,0 +1,46 @@
+.container{
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    width: 100%;
+    gap: 4px;
+}
+
+.inputs {
+    height: 40px;
+    width: 40px;
+    border-radius: 4px;
+    position: relative;
+
+    input {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+
+        &:checked {
+            background: #005AA3;
+        }
+
+        &:checked + label {
+            background: #005AA3;
+        }
+    }
+
+    label {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        font-size: 16px;
+        user-select: none;
+    }
+
+    input:checked + label {
+        color: white;
+      }
+}
