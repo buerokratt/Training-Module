@@ -31,7 +31,7 @@ const FormCheckboxes: FC<FormCheckboxesType> = ({ label, name, hideLabel, onValu
     }));
     if (onValuesChange) onValuesChange(selectedValues);
   };
-console.log('type',type)
+
   return (
     <div className={clsx('checkboxes', type === CheckboxType.DAYS && 'checkboxes__days')} role='group' {...rest}>
       {label && !hideLabel && <label className='checkboxes__label'>{label}</label>}
