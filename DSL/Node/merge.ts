@@ -53,6 +53,24 @@ router.post('/remove-key', (req, res) => {
     res.json(object);
 });
 
+interface RemoveArrayItem {
+    array: Array<string>;
+    value: string;
+}
+router.post('/remove-array-value', (req, res) => {
+    const { array, value }: RemoveArrayItem = req.body;
+    console.log(req.body);
+
+    if (!array || !value) {
+        res.status(400).send('Both array and value are required');
+        return;
+    }
+    const filteredArray = array.filter(function (e) {
+        return e !== value
+    });
+    res.json(filteredArray);
+});
+
 interface ReplaceArrayElement {
     array: Array<string>;
     element: string;
