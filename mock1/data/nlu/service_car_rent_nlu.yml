@@ -1,6 +1,6 @@
 version: "3.0"
 nlu:
-- intent: car_rent
+- intent: service_car_rent
   examples: |
     - can I rent a car
     - is it possbile to borrow car
