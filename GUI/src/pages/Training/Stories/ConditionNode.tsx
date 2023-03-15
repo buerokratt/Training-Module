@@ -3,8 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 
-import { Button, FormSelect, Track } from 'components';
+import { Button, FormSelect, Icon, Track } from 'components';
 import { Form } from 'types/form';
+import { MdOutlineDelete } from 'react-icons/md';
 
 
 type NodeDataProps = {
@@ -63,6 +64,9 @@ const ConditionNode: FC<NodeDataProps> = ({ data }) => {
                   )}
                 />
               </div>
+              <Button appearance='icon' onClick={() => remove(index)}>
+                 <Icon icon={<MdOutlineDelete fontSize={24} />} size='medium' />
+              </Button>
             </Track>
           ) : (
             <Track direction='vertical' gap={4} align='left'
@@ -83,9 +87,12 @@ const ConditionNode: FC<NodeDataProps> = ({ data }) => {
                     )}
                   />
                 </div>
+                <Button appearance='icon' onClick={() => remove(index)}>
+                 <Icon icon={<MdOutlineDelete fontSize={24} />} size='medium' />
+              </Button>
               </Track>
-              <Track key={item.id} style={{ width: '100%' }}>
-                <div style={{ flex: 1 }}>
+              <Track key={item.id} style={{ width: '90%'}}>
+                <div style={{ flex: 1}}>
                   <Controller
                     name={`conditions.${index}.value` as const}
                     control={control}
