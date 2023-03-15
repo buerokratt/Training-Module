@@ -80,13 +80,13 @@ const ModelsDetail: FC = () => {
               />
             </div>
             <div className='vertical-tabs__content' style={{ padding: 0 }}>
-              <Track align='stretch' direction="vertical">
+              <Track align='stretch'>
                 <div style={{ flex: 1, borderRight: '1px solid #D2D3D8' }}>
                   {selectedFile && (
                     <Card
                       borderless
                       header={
-                        <div style={{display: 'flex', flexDirection: 'row', gap: 10}}>
+                        <div style={{display: 'flex', flexDirection: 'column', gap: 10}}>
                         <strong>{t('training.mba.lastModified', { date: format(new Date(selectedFile.lastModified), 'dd.MM.yyyy') })}</strong>
                         <Track gap={8} style={{ whiteSpace: 'nowrap', color: '#308653' }}>
                           <Icon icon={<MdOutlineSettingsInputAntenna fontSize={24} />} size='medium' />
@@ -108,7 +108,7 @@ const ModelsDetail: FC = () => {
                     <Card
                       borderless
                       header={
-                        <div style={{display: 'flex', flexDirection: 'row', gap: 10}}>
+                        <div style={{display: 'flex', flexDirection: 'column', gap: 10}}>
                         <strong>{t('training.mba.lastModified', { date: format(new Date(selectedFile.lastModified), 'dd.MM.yyyy') })}</strong>
                         <Track gap={8} style={{ whiteSpace: 'nowrap', color: '#308653' }}>
                           <Icon icon={<MdOutlineSettingsInputAntenna fontSize={24} />} size='medium' />
