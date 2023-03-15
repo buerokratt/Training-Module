@@ -110,8 +110,10 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = (
             label=''
             defaultValue={editableRow.value}
             hideLabel
-            maxRows={1}
-            />
+            minRows={1}
+            maxLength={INTENT_EXAMPLE_LENGTH}
+            showMaxLength
+            />    
           ) : (
             <IntentExamplesEntry value={props.getValue()} entities={entities} />
           ),
