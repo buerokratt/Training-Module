@@ -76,8 +76,8 @@ const TrainAndTest = (props: Props) => {
           </div>
           <div className={`${styles.trainingSwitch} ${styles.input}`}>
             <Switch
-              name={t('training.newIntent')}
-              label={t('training.newIntent')}
+              name={t('training.trainNew.repeatTraining')}
+              label={t('training.trainNew.repeatTraining')}
               onLabel={t('global.yes') || ''}
               offLabel={t('global.no') || ''}
               onCheckedChange={() =>
