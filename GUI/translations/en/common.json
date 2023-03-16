@@ -188,7 +188,7 @@
       "warning": "NB! Last training failed. ({{date}}, {{time}})",
       "trainingTitle": "Training and testing data",
       "folds": "Number of folds",
-      "newTopic": "New topic",
+      "repeatTraining": "Repeat training",
       "planTitle": "Planned training",
       "date": "Starting from",
       "days": "Days",

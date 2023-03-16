@@ -189,7 +189,7 @@
       "warning": "NB! Viimane treening kukkus läbi. ({{date}}, {{time}})",
       "trainingTitle": "Treenimise ja testimise andmed",
       "folds": "Folds arv",
-      "newTopic": "Uus teema",
+      "repeatTraining": "Korduv treening",
       "planTitle": "Planeeritud treening",
       "date": "Alates",
       "days": "Nädalapäevad",
