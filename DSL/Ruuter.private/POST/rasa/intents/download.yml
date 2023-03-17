@@ -1,6 +1,6 @@
 assign_values:
   assign:
-    parameters: ${incoming.body}
+    intent: "common_tervitus"
     cookie: ${incoming.headers.cookie}
 
 extractTokenData:
@@ -34,7 +34,7 @@ checkIntentFileYaml:
   args:
     url: http://host.docker.internal:3000/file/check
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
+      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
   result: fileExists
 
 validateFileExists:
@@ -52,7 +52,7 @@ checkIntentFileTmp:
   args:
     url: http://host.docker.internal:3000/file/check
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
+      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
   result: tmpFileExists
 
 validateTmpFileExists:
@@ -66,7 +66,7 @@ getIntentFile:
   args:
     url: http://host.docker.internal:3000/file/read
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
+      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
   result: intentFile
 
 convertYamlToJson:
@@ -99,17 +99,25 @@ splitExamples:
 mapIntentsData:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/dmapper/get-intent-examples
+    url: http://host.docker.internal:3000/dmapper/get-intent-csv
+    headers:
+      type: 'csv'
     body:
-      intent: ${parameters.intent}
       examples: ${splitExamples.response.body}
-  result: mappedIntents
+  result: csvData
   next: returnSuccess
 
 returnSuccess:
-  return: ${mappedIntents.response.body}
+  wrapper: false
+  headers:
+    Content-disposition: ${"attachment;filename=" + intent + ".csv"}
+  return: ${csvData.response.body.response}
   next: end
 
 returnUnauthorized:
   return: "error: unauthorized"
+  next: end
+
+returnIntentFileMissing:
+  return: "Intent file to update is missing"
   next: end
