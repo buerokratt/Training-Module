@@ -23,7 +23,7 @@ function base64ToText(base64String: string): string {
 
 router.post('/csv-to-json', multer().array('file'), async (req: Request, res: Response) => {
     const file = base64ToText(req.body.file);
-    let result = Papa.parse(file);
+    let result = Papa.parse(file, {skipEmptyLines: true});
     res.send(result.data);
 });
 interface SplitStringBody {
