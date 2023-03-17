@@ -1,0 +1,56 @@
+assign_values:
+  assign:
+    parameters: ${incoming.body}
+    cookie: ${incoming.headers.cookie}
+
+extractTokenData:
+  call: http.post
+  args:
+    url: http://localhost:8080/mock-tim-custom-jwt-userinfo
+    headers:
+      cookie: ${cookie}
+    body:
+      cookieName: "customJwtCookie"
+  result: jwtResult
+
+validateAdministrator:
+  switch:
+    - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
+      next: convertCsvToJson
+  next: returnUnauthorized
+
+convertCsvToJson:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/csv-to-json
+    body:
+      file: ${parameters.file}
+  result: jsonData
+
+mapCsvToArray:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/dmapper/csv-examples-to-array
+    body:
+      examples: ${jsonData.response.body}
+  result: examples
+
+addExamples:
+  call: http.post
+  args:
+    url: http://localhost:8080/rasa/intents/examples/add
+    headers:
+      cookie: ${cookie}
+    body:
+      intent: ${parameters.intent}
+      examples: ${examples.response.body}
+  result: addResult
+
+returnSuccess:
+  return: ${addResult.response.body.response}
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
+  next: end
+
