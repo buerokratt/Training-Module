@@ -189,7 +189,7 @@ const Appeals: FC = () => {
         </Card>
       )}
 
-      <Card>
+      <Card style={{height: '100%'}}>
         <DataTable
           data={appeals}
           columns={appealsColumns}
