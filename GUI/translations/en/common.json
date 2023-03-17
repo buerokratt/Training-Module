@@ -130,7 +130,7 @@
     "forms": {
       "title": "Forms",
       "titleOne": "Form",
-      "formName": "Form name",
+      "formName": "utter_ask_",
       "requiredSlots": "Required slots",
       "ignoredIntents": "Ignored intents",
       "deleteForm": "Delete form"

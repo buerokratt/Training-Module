@@ -97,7 +97,8 @@
       "deleteStory": "Kustuta kasutuslugu",
       "responseName": "Vastuse nimetus",
       "responseText": "Vastuse tekst",
-      "addNewResponse": "Lisa uus vastus"
+      "addNewResponse": "Lisa uus vastus",
+      "formName": "123"
     },
     "configuration": {
       "title": "Konfiguratsioon",
@@ -130,7 +131,7 @@
     "forms": {
       "title": "Vormid",
       "titleOne": "Vorm",
-      "formName": "Vormi nimi",
+      "formName": "utter_ask_",
       "requiredSlots": "Kohustuslikud pilud",
       "ignoredIntents": "Eiratud teemad",
       "deleteForm": "Kustuta vorm"
