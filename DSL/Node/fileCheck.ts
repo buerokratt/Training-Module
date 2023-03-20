@@ -1,5 +1,4 @@
 import express, { Router } from 'express';
-import path from "path";
 import fs from "fs";
 const router: Router = express.Router();
 
@@ -11,7 +10,7 @@ router.post('/', (req, res) => {
         return;
     }
 
-    if (path.normalize(filePath).startsWith('..')) {
+    if (filePath.includes('..')) {
         res.status(400).send('Relative paths are not allowed');
         return;
     }

@@ -13,10 +13,10 @@ router.post('/:filename', (req: Request, res: Response) => {
     const type = req.header('type')
     const file = fs.readFileSync(pathToHbs + filename.replace(/-/g,'_') +'.hbs', 'utf8')
     let template = Handlebars.compile(file);
-    console.log(req.body);
     if (type == 'csv') {
         res.json({response: template(req.body)});
     } else {
+        res.setHeader('Content-Type', 'application/json')
         res.send(template(req.body));
     }
 })
