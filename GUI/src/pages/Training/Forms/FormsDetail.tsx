@@ -132,10 +132,15 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
 
       <Card>
         <Track direction='vertical' gap={8} align='left'>
+        <Track gap={8} style={{ width: '100%' }}>
+            <FormInput {...register('form')} label={t('training.forms.form')}/>
+            <p style={{minWidth: '170px'}}>_form</p>
+          </Track>
           <FormInput {...register('form')} label={t('training.forms.formName')} />
           <Track gap={8} style={{ width: '100%' }}>
             <p style={{minWidth: '170px'}}>{t('training.responses.response')}</p>
             <FormTextarea
+            {...register('form')}
             name='ask'
             label={t('training.responses.formName')}
             hideLabel
