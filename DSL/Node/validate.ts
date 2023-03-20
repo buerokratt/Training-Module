@@ -6,7 +6,7 @@ interface ArrayElementsLengthBody {
     length: number;
 }
 
-router.post('/array-elements-length', (req, res) => {
+router.post('/', (req, res) => {
     const { array, length }: ArrayElementsLengthBody = req.body;
 
     if (!array || !length) {
