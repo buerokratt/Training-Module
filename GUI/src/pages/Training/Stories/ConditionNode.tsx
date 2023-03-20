@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 
-import { Button, FormSelect, Icon, Track } from 'components';
+import { Button, FormInput, FormSelect, Icon, Track } from 'components';
 import { Form } from 'types/form';
 import { MdOutlineDelete } from 'react-icons/md';
 
@@ -81,8 +81,7 @@ const ConditionNode: FC<NodeDataProps> = ({ data }) => {
                         {...field}
                         onSelectionChange={(selection) => field.onChange(selection)}
                         label='slot'
-                        options={[]}
-                        // options={entities?.map((e) => ({ label: e.name, value: String(e.id) })) || []}
+                        options={forms?.map((f) => ({ label: f.form, value: String(f.id) })) || []}
                       />
                     )}
                   />
@@ -97,11 +96,11 @@ const ConditionNode: FC<NodeDataProps> = ({ data }) => {
                     name={`conditions.${index}.value` as const}
                     control={control}
                     render={({ field }) => (
-                      <FormSelect
+                      <FormInput
                         {...field}
-                        onSelectionChange={(selection) => field.onChange(selection)}
+                        // onSelectionChange={(value) => field.onChange(selection)}
                         label={t('training.value')}
-                        options={[]}
+                        value=""
                       />
                     )}
                   />
