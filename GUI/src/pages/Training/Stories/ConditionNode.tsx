@@ -7,14 +7,13 @@ import { Button, FormInput, FormSelect, Icon, Track } from 'components';
 import { Form } from 'types/form';
 import { MdOutlineDelete } from 'react-icons/md';
 
-
 type NodeDataProps = {
   data: {
     label: string;
     onDelete: (id: string) => void;
     type: string;
-  }
-}
+  };
+};
 
 type Conditions = {
   conditions: {
@@ -22,7 +21,7 @@ type Conditions = {
     slot?: string;
     value?: string;
   }[];
-}
+};
 
 const ConditionNode: FC<NodeDataProps> = ({ data }) => {
   const { t } = useTranslation();
@@ -31,10 +30,7 @@ const ConditionNode: FC<NodeDataProps> = ({ data }) => {
   });
   const { control } = useForm<Conditions>({
     defaultValues: {
-      conditions: [
-        { active_loop: '' },
-        { slot: '', value: 'null' },
-      ],
+      conditions: [{ active_loop: '' }, { slot: '', value: 'null' }],
     },
   });
   const { fields, append, remove } = useFieldArray({
@@ -44,7 +40,11 @@ const ConditionNode: FC<NodeDataProps> = ({ data }) => {
 
   return (
     <>
-      <p><strong>{t('training.conditions')}: {data.label}</strong></p>
+      <p>
+        <strong>
+          {t('training.conditions')}: {data.label}
+        </strong>
+      </p>
       {fields.map((item, index) => (
         <>
           {item.active_loop !== undefined ? (
@@ -56,21 +56,37 @@ const ConditionNode: FC<NodeDataProps> = ({ data }) => {
                   render={({ field }) => (
                     <FormSelect
                       {...field}
-                      onSelectionChange={(selection) => field.onChange(selection)}
-                      label='active_loop'
+                      onSelectionChange={(selection) =>
+                        field.onChange(selection)
+                      }
+                      label="active_loop"
                       placeholder={t('training.forms.title') || ''}
-                      options={forms?.map((f) => ({ label: f.form, value: String(f.id) })) || []}
+                      options={
+                        forms?.map((f) => ({
+                          label: f.form,
+                          value: String(f.id),
+                        })) || []
+                      }
                     />
                   )}
                 />
               </div>
-              <Button appearance='icon' onClick={() => remove(index)}>
-                 <Icon icon={<MdOutlineDelete fontSize={24} />} size='medium' />
+              <Button appearance="icon" onClick={() => remove(index)}>
+                <Icon icon={<MdOutlineDelete fontSize={24} />} size="medium" />
               </Button>
             </Track>
           ) : (
-            <Track direction='vertical' gap={4} align='left'
-                   style={{ padding: 4, backgroundColor: '#B3D3C0', borderRadius: 4, width: '100%' }}>
+            <Track
+              direction="vertical"
+              gap={4}
+              align="left"
+              style={{
+                padding: 4,
+                backgroundColor: '#B3D3C0',
+                borderRadius: 4,
+                width: '100%',
+              }}
+            >
               <Track key={item.id} style={{ width: '100%' }}>
                 <div style={{ flex: 1 }}>
                   <Controller
@@ -79,28 +95,38 @@ const ConditionNode: FC<NodeDataProps> = ({ data }) => {
                     render={({ field }) => (
                       <FormSelect
                         {...field}
-                        onSelectionChange={(selection) => field.onChange(selection)}
-                        label='slot'
-                        options={forms?.map((f) => ({ label: f.form, value: String(f.id) })) || []}
+                        onSelectionChange={(selection) =>
+                          field.onChange(selection)
+                        }
+                        label="slot"
+                        options={
+                          forms?.map((f) => ({
+                            label: f.form,
+                            value: String(f.id),
+                          })) || []
+                        }
                       />
                     )}
                   />
                 </div>
-                <Button appearance='icon' onClick={() => remove(index)}>
-                 <Icon icon={<MdOutlineDelete fontSize={24} />} size='medium' />
-              </Button>
+                <Button appearance="icon" onClick={() => remove(index)}>
+                  <Icon
+                    icon={<MdOutlineDelete fontSize={24} />}
+                    size="medium"
+                  />
+                </Button>
               </Track>
-              <Track key={item.id} style={{ width: '90%'}}>
-                <div style={{ flex: 1}}>
+              <Track key={item.id} style={{ width: '90%' }}>
+                <div style={{ flex: 1 }}>
                   <Controller
                     name={`conditions.${index}.value` as const}
                     control={control}
                     render={({ field }) => (
                       <FormInput
                         {...field}
-                        onChange={(value) => field.onChange(value)}
+                        // onChange={(value) => field.onChange(value)}
                         label={t('training.value')}
-                        value={field.value}
+                        // value={field.value}
                       />
                     )}
                   />
@@ -112,15 +138,15 @@ const ConditionNode: FC<NodeDataProps> = ({ data }) => {
       ))}
       <Track gap={8}>
         <Button
-          appearance='success'
-          size='s'
+          appearance="success"
+          size="s"
           onClick={() => append({ active_loop: '' })}
         >
           {t('global.add')} active_loop
         </Button>
         <Button
-          appearance='success'
-          size='s'
+          appearance="success"
+          size="s"
           onClick={() => append({ slot: '', value: 'null' })}
         >
           {t('global.add')} slot
