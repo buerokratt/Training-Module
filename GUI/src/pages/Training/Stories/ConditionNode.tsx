@@ -98,9 +98,9 @@ const ConditionNode: FC<NodeDataProps> = ({ data }) => {
                     render={({ field }) => (
                       <FormInput
                         {...field}
-                        // onSelectionChange={(value) => field.onChange(selection)}
+                        onChange={(value) => field.onChange(value)}
                         label={t('training.value')}
-                        value=""
+                        value={field.value}
                       />
                     )}
                   />
