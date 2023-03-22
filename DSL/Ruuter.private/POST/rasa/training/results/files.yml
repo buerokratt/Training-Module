@@ -1,0 +1,60 @@
+extractRequestData:
+  assign:
+    parameters: ${incoming.body}
+    cookie: ${incoming.headers.cookie}
+
+extractTokenData:
+  call: http.post
+  args:
+    url: http://localhost:8080/mock-tim-custom-jwt-userinfo
+    headers:
+      cookie: ${cookie}
+    body:
+      cookieName: "customJwtCookie"
+  result: jwtResult
+
+validateAdministrator:
+  switch:
+    - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
+      next: getFileLocations
+  next: returnUnauthorized
+
+getFileLocations:
+  call: http.get
+  args:
+    url: http://localhost:8080/return-file-locations
+  result: fileLocations
+
+checkModelFileExists:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/check
+    body:
+      file_path: ${fileLocations.response.body.response.training_result_location + '/' + parameters.trained_model + '/' + parameters.file_name}
+  result: fileExists
+
+validateFileExists:
+  switch:
+    - condition: ${fileExists.response.body}
+      next: getTrainedModelFile
+  next: returnTrainedModelMissing
+
+getTrainedModelFile:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/read
+    body:
+      file_path: ${fileLocations.response.body.response.training_result_location + '/' + parameters.trained_model + '/' + parameters.file_name}
+  result: modelFile
+
+returnSuccess:
+  return: ${modelFile.response.body}
+  next: end
+
+returnTrainedModelMissing:
+  return: "Trained model file is missing"
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
+  next: end

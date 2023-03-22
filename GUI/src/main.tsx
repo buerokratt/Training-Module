@@ -27,16 +27,29 @@ const queryClient = new QueryClient({
 const worker = setupWorker(...handlers);
 
 const prepare = async () => {
-  if (import.meta.env.MODE === 'development') {
-    return worker.start();
+  return worker.start({
+    serviceWorker: {
+      url: 'mockServiceWorker.js'
+    }
+  });
+
+/*   if (import.meta.env.MODE === 'development') {
+    // return worker.start();
+    return worker.start({
+      serviceWorker: {
+        url: 'burokratt/mockServiceWorker.js'
+      }
+    });
   }
-  return Promise.resolve();
+  return Promise.resolve(); */
 };
+
 
 prepare().then(() => {
   ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
+        {/* <BrowserRouter basename="/burokratt"> */}
         <BrowserRouter basename={import.meta.env.BASE_URL}>
           <ToastProvider>
             <App />
