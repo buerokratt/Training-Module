@@ -1,0 +1,45 @@
+assign_values:
+  assign:
+    params: ${incoming.body}
+    cookie: ${incoming.headers.cookie}
+
+extractTokenData:
+  call: http.post
+  args:
+    url: http://localhost:8080/mock-tim-custom-jwt-userinfo
+    headers:
+      cookie: ${cookie}
+    body:
+      cookieName: "customJwtCookie"
+  result: jwtResult
+
+validateAdministrator:
+  switch:
+    - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
+      next: getFormsSlots
+  next: returnUnauthorized
+
+getFormsSlots:
+  call: http.post
+  args:
+    url: http://host.docker.internal:9200/forms/_search/template
+    body:
+      id: "form-with-slot"
+      params: ${params}
+  result: getFormsResultSlots
+
+mapFormsSlotsData:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/dmapper/get-forms-search-slots
+    body:
+      hits: ${getFormsResultSlots.response.body.hits.hits}
+  result: formsData
+
+returnSuccess:
+  return: ${formsData.response.body}
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
+  next: end

@@ -1,0 +1,46 @@
+assign_values:
+  assign:
+    params: ${incoming.body}
+    cookie: ${incoming.headers.cookie}
+
+extractTokenData:
+  call: http.post
+  args:
+    url: http://localhost:8080/mock-tim-custom-jwt-userinfo
+    headers:
+      cookie: ${cookie}
+    body:
+      # TODO: pass cookie name correctly to TIM
+      cookieName: "customJwtCookie"
+  result: jwtResult
+
+validateAdministrator:
+  switch:
+    - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
+      next: getIntentLastChanged
+  next: returnUnauthorized
+
+getIntentLastChanged:
+  call: http.post
+  args:
+    url: https://host.docker.internal:8443/get-intent-last-changed
+    body:
+      intent: ${params.intent}
+  result: getIntentLastChangedResult
+
+mapIntentsData:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/dmapper/get-intent-last-changed
+    body:
+      intent: ${getIntentLastChangedResult.response.body}
+  result: intentsData
+  next: returnSuccess
+
+returnSuccess:
+  return: ${intentsData.response.body}
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
+  next: end

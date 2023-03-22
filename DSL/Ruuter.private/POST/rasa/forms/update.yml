@@ -1,0 +1,86 @@
+assign_values:
+  assign:
+    parameters: ${incoming.body}
+    cookie: ${incoming.headers.cookie}
+
+extractTokenData:
+  call: http.post
+  args:
+    url: http://localhost:8080/mock-tim-custom-jwt-userinfo
+    headers:
+      cookie: ${cookie}
+    body:
+      cookieName: "customJwtCookie"
+  result: jwtResult
+
+validateAdministrator:
+  switch:
+    - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
+      next: getDomainFile
+  next: returnUnauthorized
+
+getDomainFile:
+  call: http.get
+  args:
+    url: http://localhost:8080/domain-file
+    headers:
+      cookie: ${cookie}
+  result: domainData
+
+validateForms:
+  switch:
+    - condition: ${domainData.response.body.response.forms[parameters.form_name] != null}
+      next: mergeForms
+  next: returnFormIsMissing
+
+mergeForms:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/merge/objects
+    body:
+      object1: ${domainData.response.body.response.forms}
+      object2: ${parameters.form}
+  result: mergedForms
+
+convertJsonToYaml:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/json-to-yaml
+    body:
+      version: ${domainData.response.body.response.version}
+      intents: ${domainData.response.body.response.intents}
+      entities: ${domainData.response.body.response.entities}
+      slots: ${domainData.response.body.response.slots}
+      forms: ${mergedForms.response.body}
+      actions: ${domainData.response.body.response.actions}
+      responses: ${domainData.response.body.response.responses}
+      session_config: ${domainData.response.body.response.session_config}
+  result: domainYaml
+
+getFileLocations:
+  call: http.get
+  args:
+    url: http://localhost:8080/return-file-locations
+  result: fileLocations
+
+saveDomainFile:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/write
+    body:
+      file_path: ${fileLocations.response.body.response.domain_location}
+      content: ${domainYaml.response.body.json}
+  result: fileResult
+  next: returnSuccess
+
+returnSuccess:
+  return: "Form updated"
+  next: end
+
+returnFormIsMissing:
+  return: "Can't find form to update"
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
+  next: end

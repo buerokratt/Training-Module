@@ -1,0 +1,99 @@
+assign_values:
+  assign:
+    parameters: ${incoming.body}
+    cookie: ${incoming.headers.cookie}
+
+extractTokenData:
+  call: http.post
+  args:
+    url: http://localhost:8080/mock-tim-custom-jwt-userinfo
+    headers:
+      cookie: ${cookie}
+    body:
+      cookieName: "customJwtCookie"
+  result: jwtResult
+
+validateAdministrator:
+  switch:
+    - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
+      next: getTestStoriesWithName
+  next: returnUnauthorized
+
+getTestStoriesWithName:
+  call: http.post
+  args:
+    url: http://localhost:8080/rasa/test-stories
+    headers:
+      cookie: ${cookie}
+    body:
+      story: ${parameters.story}
+  result: testStoriesResult
+
+validateTestStories:
+  switch:
+    - condition: ${testStoriesResult.response.body.response.stories.length != 0}
+      next: getFileLocations
+  next: returnTestStoryIsMissing
+
+getFileLocations:
+  call: http.get
+  args:
+    url: http://localhost:8080/return-file-locations
+  result: fileLocations
+
+getStoriesFile:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/read
+    body:
+      file_path: ${fileLocations.response.body.response.test_stories_location}
+  result: testStoriesFile
+
+convertYamlToJson:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/yaml-to-json
+    body:
+      file: ${testStoriesFile.response.body.file}
+  result: testStoriesData
+
+mergeStories:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/merge
+    body:
+      array1: ${testStoriesData.response.body.stories}
+      array2: ${[parameters]}
+      iteratee: "story"
+  result: mergedTestStories
+
+convertJsonToYaml:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/json-to-yaml
+    body:
+      stories: ${mergedTestStories.response.body}
+  result: testStoriesYaml
+
+saveFile:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/write
+    body:
+      file_path: ${fileLocations.response.body.response.test_stories_location}
+      content: ${testStoriesYaml.response.body.json}
+  result: fileResult
+  next: returnSuccess
+
+returnSuccess:
+  return: "Test-story updated"
+  next: end
+
+returnTestStoryIsMissing:
+  return: "Can't find test-story to update"
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
+  next: end
+

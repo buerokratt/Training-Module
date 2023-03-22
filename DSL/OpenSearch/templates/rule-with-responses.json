@@ -1,0 +1,29 @@
+{
+  "script": {
+    "lang": "mustache",
+    "source": {
+      "size": 10000,
+      "query": {
+        "bool": {
+          "must": [
+            {
+              "query_string": {
+                "query": "*{{response}}*",
+                "fields": ["steps.action"]
+              }
+            },
+            {
+              "query_string": {
+                "query": "utter_*",
+                "fields": ["steps.action"]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "params": {
+      "response": ""
+    }
+  }
+}

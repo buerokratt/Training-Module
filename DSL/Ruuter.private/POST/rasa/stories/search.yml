@@ -1,0 +1,46 @@
+assign_values:
+  assign:
+    params: ${incoming.body}
+    cookie: ${incoming.headers.cookie}
+
+extractTokenData:
+  call: http.post
+  args:
+    url: http://localhost:8080/mock-tim-custom-jwt-userinfo
+    headers:
+      cookie: ${cookie}
+    body:
+      cookieName: "customJwtCookie"
+  result: jwtResult
+
+validateAdministrator:
+  switch:
+    - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
+      next: getStoriesSearch
+  next: returnUnauthorized
+
+getStoriesSearch:
+  call: http.post
+  args:
+    url: http://host.docker.internal:9200/stories/_search/template
+    body:
+      id: ${"story-with-"+params.type}
+      params: ${params}
+  result: getStoriesResult
+
+mapStoriesData:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/dmapper/get-stories
+    body:
+      hits: ${getStoriesResult.response.body.hits.hits}
+  result: storiesData
+  next: returnSuccess
+
+returnSuccess:
+  return: ${storiesData.response.body}
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
+  next: end

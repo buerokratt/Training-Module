@@ -302,6 +302,7 @@ const Configuration: FC = () => {
                         {...field}
                         label='enable_fallback_prediction'
                         checked={field.value}
+                        onCheckedChange={field.onChange}
                       />
                     } />
                 )}
@@ -313,6 +314,7 @@ const Configuration: FC = () => {
                       {...field}
                       label={t('global.enabled')}
                       checked={field.value}
+                      onCheckedChange={field.onChange}
                     />
                   } />
               </Track>

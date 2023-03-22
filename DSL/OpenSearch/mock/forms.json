@@ -1,0 +1,4 @@
+{"index":{"_id":"1"}}
+{"form":"custom_fallback_form","required_slots":["common_teenus_ilm_asukoht"]}
+{"index":{"_id":"2"}}
+{"form":"direct_to_customer_support_form","required_slots":["common_teenus_ilm_asukoht"]}

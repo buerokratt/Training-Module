@@ -1,9 +1,6 @@
 assign_values:
   assign:
     params: ${incoming.body}
-
-extractRequestData:
-  assign:
     cookie: ${incoming.headers.cookie}
 
 extractTokenData:
@@ -13,7 +10,6 @@ extractTokenData:
     headers:
       cookie: ${cookie}
     body:
-      # TODO: pass cookie name correctly to TIM
       cookieName: "customJwtCookie"
   result: jwtResult
 
@@ -26,7 +22,7 @@ validateAdministrator:
 getResponsesWithNameAndText:
   call: http.post
   args:
-    url: http://host.docker.internal:9200/response/_search/template
+    url: http://host.docker.internal:9200/responses/_search/template
     body:
       id: "response-with-name-and-text"
       params: ${params}

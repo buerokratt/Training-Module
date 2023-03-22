@@ -1,0 +1,128 @@
+assign_values:
+  assign:
+    parameters: ${incoming.body}
+    cookie: ${incoming.headers.cookie}
+
+extractTokenData:
+  call: http.post
+  args:
+    url: http://localhost:8080/mock-tim-custom-jwt-userinfo
+    headers:
+      cookie: ${cookie}
+    body:
+      cookieName: "customJwtCookie"
+  result: jwtResult
+
+validateAdministrator:
+  switch:
+    - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
+      next: getDomainFile
+  next: returnUnauthorized
+
+getDomainFile:
+  call: http.get
+  args:
+    url: http://localhost:8080/domain-file
+    headers:
+      cookie: ${cookie}
+  result: domainData
+
+validateResponse:
+  switch:
+    - condition: ${domainData.response.body.response.responses[parameters.response_name] != null}
+      next: ruleResponses
+  next: returnResponseIsMissing
+
+ruleResponses:
+  call: http.post
+  args:
+    url: http://localhost:8080/rasa/rules/search
+    headers:
+      cookie: ${cookie}
+    body:
+      response: ${parameters.response_name}
+      type: "responses"
+  result: ruleResponses
+
+validateRuleResponses:
+  switch:
+    - condition: ${ruleResponses.response.body.response.rules.length == 0}
+      next: storiesResponses
+  next: returnResponseHasDependencyToRules
+
+storiesResponses:
+  call: http.post
+  args:
+    url: http://localhost:8080/rasa/stories/search
+    headers:
+      cookie: ${cookie}
+    body:
+      response: ${parameters.response_name}
+      type: "responses"
+  result: storiesResponses
+
+validateStoriesResponses:
+  switch:
+    - condition: ${storiesResponses.response.body.response.stories.length == 0}
+      next: deleteKey
+  next: returnResponseHasDependencyToStories
+
+deleteKey:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/merge/remove-key
+    body:
+      object: ${domainData.response.body.response.responses}
+      key: ${parameters.response_name}
+  result: keyDeletedData
+
+convertJsonToYaml:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/json-to-yaml
+    body:
+      version: ${domainData.response.body.response.version}
+      intents: ${domainData.response.body.response.intents}
+      entities: ${domainData.response.body.response.entities}
+      slots: ${domainData.response.body.response.slots}
+      forms: ${domainData.response.body.response.forms}
+      actions: ${domainData.response.body.response.actions}
+      responses: ${keyDeletedData.response.body}
+      session_config: ${domainData.response.body.response.session_config}
+  result: domainYaml
+
+getFileLocations:
+  call: http.get
+  args:
+    url: http://localhost:8080/return-file-locations
+  result: fileLocations
+
+saveDomainFile:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/write
+    body:
+      file_path: ${fileLocations.response.body.response.domain_location}
+      content: ${domainYaml.response.body.json}
+  result: fileResult
+  next: returnSuccess
+
+returnSuccess:
+  return: "Response deleted"
+  next: end
+
+returnResponseIsMissing:
+  return: "Can't find response to delete"
+  next: end
+
+returnResponseHasDependencyToRules:
+  return: "Deleting a response is forbidden because it has relation to rules"
+  next: end
+
+returnResponseHasDependencyToStories:
+  return: "Deleting a response is forbidden because it has relation to stories"
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
+  next: end

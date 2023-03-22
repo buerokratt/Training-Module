@@ -1,0 +1,23 @@
+{
+  "script": {
+    "lang": "mustache",
+    "source": {
+      "size": 10000,
+      "query": {
+        "bool": {
+          "must": [
+            {
+              "query_string": {
+                "query": "*{{slot}}*",
+                "fields": ["steps.slot_was_set.slot","condition.slot_was_set.slot"]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "params": {
+      "slot": ""
+    }
+  }
+}

@@ -23,3 +23,19 @@ stories:
   steps:
   - checkpoint: check_stuff
   - action: utter_common_hüvasti_jätmine
+
+- story: car_rent1
+  steps:
+  - intent: common_tervitus
+  - action: utter_common_tervitus
+  - intent: service_car_rent
+  - action: utter_service_car_rent
+  
+- story: car_rent2
+  steps:
+  - intent: common_abi_küsimine
+  - action: utter_common_abi_küsimine
+  - intent: service_car_rent
+  - action: utter_service_car_rent
+  - intent: common_hüvasti_jätmine
+  - action: utter_common_hüvasti_jätmine

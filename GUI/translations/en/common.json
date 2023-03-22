@@ -37,7 +37,16 @@
     "idCode": "ID code",
     "status": "Status",
     "anonymous": "Anonymous",
-    "title": "Title"
+    "title": "Title",
+    "days": {
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday",
+      "sunday": "Sunday"
+    }
   },
   "mainMenu": {
     "menuLabel": "Main navigation",
@@ -121,7 +130,8 @@
     "forms": {
       "title": "Forms",
       "titleOne": "Form",
-      "formName": "Form name",
+      "form": "Form name",
+      "formName": "utter_ask_",
       "requiredSlots": "Required slots",
       "ignoredIntents": "Ignored intents",
       "deleteForm": "Delete form"
@@ -171,6 +181,19 @@
       "modelResults": "Model results",
       "testStoryExists": "Test story exists",
       "lastModified": "Last modified at {{date}}"
+    },
+    "trainNew": {
+      "title": "Traing and test",
+      "lastTrained": "Last trained {{date}}, {{time}}",
+      "trainNow": "Train now",
+      "warning": "NB! Last training failed. ({{date}}, {{time}})",
+      "trainingTitle": "Training and testing data",
+      "folds": "Number of folds",
+      "repeatTraining": "Repeat training",
+      "planTitle": "Planned training",
+      "date": "Starting from",
+      "days": "Days",
+      "time": "Training time"
     }
   },
   "roles": {

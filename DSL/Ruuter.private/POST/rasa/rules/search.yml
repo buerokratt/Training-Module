@@ -1,0 +1,46 @@
+assign_values:
+  assign:
+    params: ${incoming.body}
+    cookie: ${incoming.headers.cookie}
+
+extractTokenData:
+  call: http.post
+  args:
+    url: http://localhost:8080/mock-tim-custom-jwt-userinfo
+    headers:
+      cookie: ${cookie}
+    body:
+      cookieName: "customJwtCookie"
+  result: jwtResult
+
+validateAdministrator:
+  switch:
+    - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
+      next: getRulesSearch
+  next: returnUnauthorized
+
+getRulesSearch:
+  call: http.post
+  args:
+    url: http://host.docker.internal:9200/rules/_search/template
+    body:
+      id: ${"rule-with-"+params.type}
+      params: ${params}
+  result: getRulesResult
+
+mapRulesData:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/dmapper/get-rules
+    body:
+      hits: ${getRulesResult.response.body.hits.hits}
+  result: rulesData
+  next: returnSuccess
+
+returnSuccess:
+  return: ${rulesData.response.body}
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
+  next: end

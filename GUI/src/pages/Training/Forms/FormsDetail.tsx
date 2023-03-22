@@ -7,12 +7,13 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { MdOutlineArrowBack } from 'react-icons/md';
 
-import { Button, Card, DataTable, FormCheckbox, FormInput, Track } from 'components';
+import { Button, Card, DataTable, FormCheckbox, FormInput, FormTextarea, Track } from 'components';
 import { Intent } from 'types/intent';
 import { Slot } from 'types/slot';
 import { FormCreateDTO } from 'types/form';
 import { createForm, editForm } from 'services/forms';
 import { useToast } from 'hooks/useToast';
+import { RESPONSE_TEXT_LENGTH } from 'constants/config';
 
 type FormsDetailProps = {
   mode: 'new' | 'edit';
@@ -131,13 +132,21 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
 
       <Card>
         <Track direction='vertical' gap={8} align='left'>
+        <Track gap={8} style={{ width: '100%' }}>
+            <FormInput {...register('form')} label={t('training.forms.form')}/>
+            <p style={{minWidth: '170px'}}>_form</p>
+          </Track>
           <FormInput {...register('form')} label={t('training.forms.formName')} />
           <Track gap={8} style={{ width: '100%' }}>
-            <p>utter_ask_</p>
-            <FormInput
-              name='ask'
-              label={t('training.responses.formName')}
-              hideLabel
+            <p style={{minWidth: '170px'}}>{t('training.responses.response')}</p>
+            <FormTextarea
+            {...register('form')}
+            name='ask'
+            label={t('training.responses.formName')}
+            hideLabel
+            minRows={1}
+            maxLength={RESPONSE_TEXT_LENGTH}
+            showMaxLength
             />
           </Track>
         </Track>

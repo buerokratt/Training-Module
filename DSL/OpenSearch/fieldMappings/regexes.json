@@ -1,0 +1,12 @@
+{
+  "mappings" : {
+    "properties" : {
+      "regex" : {
+        "type" : "text"
+      },
+      "examples" : {
+        "type" : "text"
+      }
+    }
+  }
+}

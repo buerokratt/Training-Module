@@ -1,0 +1,128 @@
+assign_values:
+  assign:
+    parameters: ${incoming.body}
+    cookie: ${incoming.headers.cookie}
+
+extractTokenData:
+  call: http.post
+  args:
+    url: http://localhost:8080/mock-tim-custom-jwt-userinfo
+    headers:
+      cookie: ${cookie}
+    body:
+      cookieName: "customJwtCookie"
+  result: jwtResult
+
+validateAdministrator:
+  switch:
+    - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
+      next: getDomainFile
+  next: returnUnauthorized
+
+getDomainFile:
+  call: http.get
+  args:
+    url: http://localhost:8080/domain-file
+    headers:
+      cookie: ${cookie}
+  result: domainData
+
+validateForms:
+  switch:
+    - condition: ${domainData.response.body.response.forms[parameters.form_name] != null}
+      next: ruleForms
+  next: returnFormIsMissing
+
+ruleForms:
+  call: http.post
+  args:
+    url: http://localhost:8080/rasa/rules/search
+    headers:
+      cookie: ${cookie}
+    body:
+      form: ${parameters.form_name}
+      type: "forms"
+  result: ruleForms
+
+validateRuleForms:
+  switch:
+    - condition: ${ruleForms.response.body.response.rules.length == 0}
+      next: storiesForms
+  next: returnFormHasDependencyToRules
+
+storiesForms:
+  call: http.post
+  args:
+    url: http://localhost:8080/rasa/stories/search
+    headers:
+      cookie: ${cookie}
+    body:
+      form: ${parameters.form_name}
+      type: "forms"
+  result: storiesForms
+
+validateStoriesSlots:
+  switch:
+    - condition: ${storiesForms.response.body.response.stories.length == 0}
+      next: deleteKey
+  next: returnFormHasDependencyToStories
+
+deleteKey:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/merge/remove-key
+    body:
+      object: ${domainData.response.body.response.forms}
+      key: ${parameters.form_name}
+  result: keyDeletedData
+
+convertJsonToYaml:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/json-to-yaml
+    body:
+      version: ${domainData.response.body.response.version}
+      intents: ${domainData.response.body.response.intents}
+      entities: ${domainData.response.body.response.entities}
+      slots: ${domainData.response.body.response.slots}
+      forms: ${keyDeletedData.response.body}
+      actions: ${domainData.response.body.response.actions}
+      responses: ${domainData.response.body.response.responses}
+      session_config: ${domainData.response.body.response.session_config}
+  result: domainYaml
+
+getFileLocations:
+  call: http.get
+  args:
+    url: http://localhost:8080/return-file-locations
+  result: fileLocations
+
+saveDomainFile:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/write
+    body:
+      file_path: ${fileLocations.response.body.response.domain_location}
+      content: ${domainYaml.response.body.json}
+  result: fileResult
+  next: returnSuccess
+
+returnSuccess:
+  return: "Form deleted"
+  next: end
+
+returnFormIsMissing:
+  return: "Can't find form to delete"
+  next: end
+
+returnFormHasDependencyToRules:
+  return: "Deleting a form is forbidden because it has relation to rules"
+  next: end
+
+returnFormHasDependencyToStories:
+  return: "Deleting a form is forbidden because it has relation to stories"
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
+  next: end
