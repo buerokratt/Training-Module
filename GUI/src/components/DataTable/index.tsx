@@ -130,7 +130,10 @@ const DataTable: FC<DataTableProps> = (
   });
 
   return (
+
+    <>
     <div className='data-table__wrapper'>
+      <div className='data-table__scrollWrapper'>
       <table className='data-table'>
         {!disableHead && (
           <thead>
@@ -175,6 +178,7 @@ const DataTable: FC<DataTableProps> = (
         ))}
         </tbody>
       </table>
+      </div>
       {pagination && (
         <div className='data-table__pagination-wrapper'>
           {(table.getPageCount() * table.getState().pagination.pageSize) > table.getState().pagination.pageSize && (
@@ -235,6 +239,7 @@ const DataTable: FC<DataTableProps> = (
         </div>
       )}
     </div>
+          </>
   );
 };
 

@@ -7,11 +7,12 @@ type CardProps = {
   header?: ReactNode;
   footer?: ReactNode;
   borderless?: boolean;
+  [rest: string]: any;
 }
 
-const Card: FC<PropsWithChildren<CardProps>> = ({ header, footer, borderless, children }) => {
+const Card: FC<PropsWithChildren<CardProps>> = ({ header, footer, borderless, children, ...rest }) => {
   return (
-    <div className={clsx('card', { 'card--borderless': borderless })}>
+    <div className={clsx('card', { 'card--borderless': borderless })} {...rest}>
       {header && <div className='card__header'>{header}</div>}
       <div className='card__body'>
         {children}

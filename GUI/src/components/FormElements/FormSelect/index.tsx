@@ -68,7 +68,9 @@ const FormSelect: FC<FormSelectProps> = (
       {label && !hideLabel && <label htmlFor={id} className='select__label' {...getLabelProps()}>{label}</label>}
       <div className='select__wrapper'>
         <div className='select__trigger' {...getToggleButtonProps()}>
+          <p style={{overflow: 'hidden'}}>
           {selectedItem?.label ?? placeholderValue}
+          </p>
           <Icon label='Dropdown icon' size='medium' icon={<MdArrowDropDown color='#5D6071' />} />
         </div>
         <ul className='select__menu' {...getMenuProps()}>
