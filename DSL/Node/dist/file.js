@@ -45,4 +45,43 @@ router.post('/write', (req, res) => {
         res.status(201).send('File saved successfully');
     });
 });
+router.post('/delete', (req, res) => {
+    const filePath = req.body.file_path;
+    if (!filePath) {
+        res.status(400).send('Filename is required');
+        return;
+    }
+    if (path_1.default.normalize(filePath).startsWith('..')) {
+        res.status(400).send('Relative paths are not allowed');
+        return;
+    }
+    fs_1.default.unlink(filePath, (err) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send('Error deleting file');
+            return;
+        }
+        res.status(200).send('File deleted successfully');
+    });
+});
+router.post('/check', (req, res) => {
+    const filePath = req.body.file_path;
+    if (!filePath) {
+        res.status(400).send('Filename is required');
+        return;
+    }
+    if (path_1.default.normalize(filePath).startsWith('..')) {
+        res.status(400).send('Relative paths are not allowed');
+        return;
+    }
+    fs_1.default.access(filePath, (err) => {
+        if (err) {
+            console.error(err);
+            res.json(false);
+        }
+        else {
+            res.json(true);
+        }
+    });
+});
 exports.default = router;
