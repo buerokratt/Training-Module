@@ -1,37 +1,30 @@
 version: '3.9'
 services:
-
   ruuter:
     container_name: byk-private-ruuter
-    build:
-      context: ./DSL/Ruuter.private
-      network: host
+    image: ghcr.io/varmoh/ruuter:b1f2b6e9646f7a3a7985a5a4b871f6bd99a7c6b9
     volumes:
       - ./DSL/Ruuter.private:/DSL
     ports:
       - 8080:8080
     networks:
-      - bykstack
-
+      - test
   resql:
     container_name: byk-resql
-    build:
-      context: .
-      network: host
+    image: ghcr.io/varmoh/resql:4fe8beff1babd5c5cfba4b09edbd7ce1f3c3a5b4
     ports:
       - 8082:8082
     volumes:
       - ./DSL/Resql:/workspace/app/templates/
     networks:
-      - bykstack
+      - test
   opensearch-node:
     image: opensearchproject/opensearch:latest
     container_name: opensearch-node
     environment:
       - cluster.name=opensearch-cluster # Name the cluster
       - node.name=opensearch-node # Name the node that will run in this container
-      - discovery.seed_hosts=opensearch-node # Nodes to look for when discovering the cluster
-      - cluster.initial_cluster_manager_nodes=opensearch-node # Nodes eligibile to serve as cluster manager
+      - discovery.type=single-node
       - bootstrap.memory_lock=true # Disable JVM heap memory swapping
       - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m" # Set min and max JVM heap sizes to at least 50% of system RAM
       - "DISABLE_INSTALL_DEMO_CONFIG=true" # Prevents execution of bundled demo script which installs demo certificates and security configurations to OpenSearch
@@ -49,7 +42,7 @@ services:
       - 9200:9200 # REST API
       - 9600:9600 # Performance Analyzer
     networks:
-      - bykstack # All of the containers will join the same Docker bridge network
+      - test # All of the containers will join the same Docker bridge network
   node:
     container_name: node
     build:
@@ -57,14 +50,10 @@ services:
     ports:
       - 3000:3000
     networks:
-      - bykstack
-
+      - test
 volumes:
   opensearch-data:
-
 networks:
-  bykstack:
-    name: bykstack
+  test:
+    name: test
     driver: bridge
-    driver_opts:
-      com.docker.network.driver.mtu: 1400
