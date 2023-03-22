@@ -4,15 +4,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const lodash_1 = __importDefault(require("lodash"));
 const router = express_1.default.Router();
 router.post('/', (req, res) => {
-    const { array1, array2, iteratee } = req.body;
-    if (!array1 || !array2) {
-        res.status(400).send('Both arrays are required');
+    const { object1, object2 } = req.body;
+    console.log(req.body);
+    if (!object1 || !object2) {
+        res.status(400).send('Both objects are required');
         return;
     }
-    const merged = lodash_1.default.unionBy(array2, array1, iteratee);
-    res.json(merged);
+    res.json(Object.assign(Object.assign({}, object1), object2));
 });
 exports.default = router;
