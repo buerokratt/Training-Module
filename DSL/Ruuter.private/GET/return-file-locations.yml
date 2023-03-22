@@ -8,6 +8,7 @@ assign_step:
       intents_location: '/home/raul/buerokratt/Training-Module/mock1/data/nlu/'
       regex_location: '/home/raul/buerokratt/Training-Module/mock1/data/regex_nlu.yml'
       training_result_location: '/home/raul/buerokratt/Training-Module/mock1/results'
+      config_location: '/home/raul/buerokratt/Training-Module/mock1/config.yml'
 
 return_value:
   return: ${locations}
