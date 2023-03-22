@@ -1,1 +1,4 @@
 .idea
+.ddev
+node_modules
+burokratt

@@ -1,0 +1,50 @@
+@import 'src/styles/tools/color';
+@import 'src/styles/settings/variables/typography';
+
+.container{
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    width: 100%;
+    gap: 4px;
+}
+
+.inputs {
+    height: 40px;
+    width: 40px;
+    position: relative;
+    border: 1px solid get-color(black-coral-6);
+    border-radius: 4px;
+
+    input {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        opacity: 0;
+
+        &:checked {
+            background: get-color(sapphire-blue-10);
+        }
+
+        &:checked + label {
+            background: get-color(sapphire-blue-10);
+        }
+    }
+
+    label {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: 500;
+        cursor: pointer;
+        font-size: $veera-font-size-100;
+        user-select: none;
+    }
+
+    input:checked + label {
+        color: white;
+      }
+}

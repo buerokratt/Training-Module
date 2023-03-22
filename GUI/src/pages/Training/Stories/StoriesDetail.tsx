@@ -241,6 +241,20 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     <Track gap={16} align='left' style={{ margin: '-16px' }}>
       <div style={{ flex: 1, maxWidth: 'calc(100% / 3)', padding: '16px 0 16px 16px' }}>
         <Track direction='vertical' gap={16} align='stretch'>
+        <Collapsible title={t('training.conditions')}>
+            <Track direction='vertical' align='stretch' gap={4}>
+              <button
+                onClick={() => handleNodeAdd({
+                  label: '',
+                  type: 'conditionNode',
+                  className: 'condition',
+                })}
+              >
+                <Box color='green'>condition</Box>
+              </button>
+            </Track>
+          </Collapsible>
+
           {intents && (
             <Collapsible title={t('training.intents.title')} defaultOpen>
               <Track direction='vertical' align='stretch' gap={4}>
@@ -325,20 +339,6 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
             </Collapsible>
           )}
 
-          <Collapsible title={t('training.conditions')}>
-            <Track direction='vertical' align='stretch' gap={4}>
-              <button
-                onClick={() => handleNodeAdd({
-                  label: '',
-                  type: 'conditionNode',
-                  className: 'condition',
-                })}
-              >
-                <Box color='green'>condition</Box>
-              </button>
-            </Track>
-          </Collapsible>
-
           <Collapsible title={t('training.actions.title')}>
             <Track direction='vertical' align='stretch' gap={4}>
               <button
@@ -362,7 +362,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
               </button>
               <button
                 onClick={() => handleNodeAdd({
-                  label: 'action_listen: true',
+                  label: 'action_listen',
                   type: 'actionNode',
                   className: 'action',
                 })}
@@ -371,7 +371,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
               </button>
               <button
                 onClick={() => handleNodeAdd({
-                  label: 'action_restart: true',
+                  label: 'action_restart',
                   type: 'actionNode',
                   className: 'action',
                 })}
@@ -380,7 +380,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
               </button>
               <button
                 onClick={() => handleNodeAdd({
-                  label: 'wait_for_user_input: true',
+                  label: 'wait_for_user_input: false',
                   type: 'actionNode',
                   className: 'action',
                 })}

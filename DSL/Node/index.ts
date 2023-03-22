@@ -15,6 +15,7 @@ import mergeRemoveKey from "./mergeRemoveKey";
 import mergeRemoveArrayValue from "./mergeRemoveArrayValue";
 import mergeReplaceArrayElement from "./mergeReplaceArrayElement";
 import dmapper from './dmapper';
+import fileReadDir from "./fileReadDir";
 
 const app: Express = express();
 const port = 3000
@@ -22,6 +23,7 @@ const port = 3000
 app.use(express.json());       // to support JSON-encoded bodies
 app.use(express.urlencoded());
 app.use('/file/read', fileRead);
+app.use('/file/read-directory', fileReadDir);
 app.use('/file/write', fileWrite);
 app.use('/file/delete', fileDelete);
 app.use('/file/check', fileCheck);

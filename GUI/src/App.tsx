@@ -23,6 +23,7 @@ import FormsDetail from 'pages/Training/Forms/FormsDetail';
 import ModelsDetail from 'pages/ModelBankAndAnalytics/Models/ModelsDetail';
 import IntentsFollowupTraining from 'pages/Training/IntentsFollowupTraining';
 import RegexDetail from 'pages/Training/IntentsFollowupTraining/RegexDetail';
+import TrainAndTest from 'pages/Training/TrainAndTest';
 
 const App: FC = () => {
   const store = useUserInfoStore();
@@ -56,6 +57,7 @@ const App: FC = () => {
         <Route path='/treening/mudelipank-ja-analuutika/testlood' element={<Testcases />} />
         <Route path='/treening/mudelipank-ja-analuutika/mudelite-vordlus' element={<Models />} />
         <Route path='/treening/mudelipank-ja-analuutika/mudelite-vordlus/:id' element={<ModelsDetail />} />
+        <Route path='/treening/treeni-uus-mudel' element={<TrainAndTest />} />
       </Route>
     </Routes>
   );

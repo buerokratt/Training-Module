@@ -8,8 +8,9 @@ import path from 'path';
 export default defineConfig({
   envPrefix: 'REACT_APP_',
   plugins: [react(), tsconfigPaths(), svgr()],
+  base: '/burokratt/',
   build: {
-    outDir: './build',
+    outDir: './burokratt',
     target: 'es2015',
     emptyOutDir: true,
   },

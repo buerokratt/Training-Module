@@ -17,6 +17,7 @@ const Testcases: FC = () => {
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
   const [selectedTest, setSelectedTest] = useState<TestStory | null>(null);
   const [deletableTest, setDeletableTest] = useState<string | number | null>(null);
+  const [showAddTest, setAddShowTest] = useState(false);
   const { data: testStories } = useQuery<TestStory[]>({
     queryKey: ['test-stories'],
   });
@@ -51,6 +52,7 @@ const Testcases: FC = () => {
       if (selectedStory) {
         setSelectedTest(selectedStory);
         setSelectedTab(selectedStory.story);
+        setAddShowTest(false);
       }
     },
     [testStories],
@@ -99,6 +101,7 @@ const Testcases: FC = () => {
                     </span>
                   </Tooltip>
                 )}
+                {story.activeStory && (<span style={{color: 'rgba(0, 0, 0, 0.54'}}>STORY</span>)}
               </Track>
             </Tabs.Trigger>
           ))}
@@ -115,13 +118,17 @@ const Testcases: FC = () => {
                 <h3>{selectedTest.story}</h3>
 
                 <Track gap={8}>
-                  <Button appearance='secondary'>{t('global.add')}</Button>
+                  {!selectedTest.activeStory &&
+                  <Button appearance='secondary' onClick={() => setAddShowTest(true)}>{t('global.add')}</Button>
+                  }
                   <Button appearance='error'
                           onClick={() => setDeletableTest(selectedTest.id)}>{t('global.delete')}</Button>
                 </Track>
               </Track>
             </div>
-            <div className='vertical-tabs__content'>
+            {showAddTest && (
+              <>
+              <div className='vertical-tabs__content'>
               <Track direction='vertical' align='left' gap={8}>
                 <Track gap={16} style={{ width: '100%' }}>
                   <p style={{ flex: 1 }}>intent</p>
@@ -145,6 +152,37 @@ const Testcases: FC = () => {
             <div className='vertical-tabs__content-footer'>
               <Button onClick={handleTestSave}>{t('global.save')}</Button>
             </div>
+            </>
+            )}
+
+            { selectedTest.activeStory && (
+              <>
+              <div className='vertical-tabs__content'>
+              <Track direction='vertical' align='left' gap={8}>
+                <Track gap={16} style={{ width: '100%' }}>
+                  <p style={{ flex: 1 }}>intent</p>
+                  <p style={{ flex: 1 }}>{selectedTest.steps.intent}</p>
+                  <div style={{ flex: 2 }}>
+                    <FormSelect
+                      name='userResponse'
+                      label={t('training.mba.userResponse')}
+                      hideLabel
+                      options={examples?.map((e) => ({ label: e, value: e })) || []}
+                    />
+                  </div>
+                </Track>
+                <Track gap={16} style={{ width: '100%' }}>
+                  <p style={{ flex: 1 }}>action</p>
+                  <p style={{ flex: 1 }}>{selectedTest.steps.action}</p>
+                  <p style={{ flex: 2 }}></p>
+                </Track>
+              </Track>
+            </div>
+            <div className='vertical-tabs__content-footer'>
+              <Button onClick={handleTestSave}>{t('global.save')}</Button>
+            </div>
+              </>
+            )}
           </Tabs.Content>
         )}
       </Tabs.Root>
