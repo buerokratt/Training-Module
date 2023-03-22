@@ -26,6 +26,7 @@ router.post('/', (req, res) => {
         const file = Buffer.from(data).toString('base64');
 
         res.setHeader('Content-Type', 'application/json');
+
         const result = {
             name: name,
             file: file,

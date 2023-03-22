@@ -15,6 +15,7 @@ router.post('/', (req, res) => {
         return;
     }
 
+
     if (file_path.includes('..')) {
         res.status(400).send('Relative paths are not allowed');
         return;
