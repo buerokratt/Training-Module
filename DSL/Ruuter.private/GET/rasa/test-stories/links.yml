@@ -5,18 +5,15 @@ extractRequestData:
 extractTokenData:
   call: http.post
   args:
-    # TODO: replace with env variable and correct path to TIM endpoint
     url: http://localhost:8080/mock-tim-custom-jwt-userinfo
     headers:
       cookie: ${cookie}
     body:
-      # TODO: pass cookie name correctly to TIM
       cookieName: "customJwtCookie"
   result: jwtResult
 
 validateAdministrator:
   switch:
-    # TODO: use correct structure when request is made against TIM
     - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
       next: getRules
   next: returnUnauthorized
@@ -24,34 +21,33 @@ validateAdministrator:
 getRules:
   call: http.get
   args:
-    url: http://host.docker.internal:9200/rules/_search
+    url: http://host.docker.internal:9200/rules/_search?size=10000
   result: getRulesResult
 
 getStories:
   call: http.get
   args:
-    url: http://host.docker.internal:9200/stories/_search
+    url: http://host.docker.internal:9200/stories/_search?size=10000
   result: getStoriesResult
 
 getTestStories:
   call: http.get
   args:
-    url: http://host.docker.internal:9200/test-stories/_search
+    url: http://host.docker.internal:9200/test-stories/_search?size=10000
   result: getTestStoriesResult
 
-mapTestStoriesLinksData:
+mapLinksData:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/dmapper/get-test-stories-with-links
+    url: http://host.docker.internal:3000/dmapper/get-links
     body:
       rules: ${getRulesResult.response.body.hits.hits}
       stories: ${getStoriesResult.response.body.hits.hits}
-      testStories: ${getTestStoriesResult.response.body.hits.hits}
-  result: testStoriesLinksData
-  next: returnSuccess
+      test-stories: ${getTestStoriesResult.response.body.hits.hits}
+  result: linksData
 
 returnSuccess:
-  return: ${testStoriesLinksData.response.body}
+  return: ${linksData.response.body}
   next: end
 
 returnUnauthorized:

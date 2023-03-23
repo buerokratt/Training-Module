@@ -21,7 +21,7 @@ const app: Express = express();
 const port = 3000
 
 app.use(express.json());       // to support JSON-encoded bodies
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: true }));
 app.use('/file/read', fileRead);
 app.use('/file/read-directory', fileReadDir);
 app.use('/file/write', fileWrite);

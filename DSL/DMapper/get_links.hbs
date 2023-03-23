@@ -1,0 +1,36 @@
+{
+  {{#each stories}}
+    {{assign 'test-story' false}}
+    "{{_source.story}}": {
+      "type": "story",
+      "test-story":
+      {{#each ../test-stories}}
+        {{#if (eq _source.story ../_source.story)}}
+          {{assign 'test-story' true}}
+        {{/if}}
+      {{/each}}
+    {{#if @root.test-story}}
+      true
+    {{else}}
+      false
+    {{/if}}
+    },
+  {{/each}}
+  {{#each rules}}
+    {{assign 'test-story' false}}
+    "{{_source.rule}}": {
+      "type": "rule",
+      "test-story":
+      {{#each ../test-stories}}
+        {{#if (eq _source.story ../_source.rule)}}
+          {{assign 'test-story' true}}
+        {{/if}}
+      {{/each}}
+    {{#if @root.test-story}}
+      true
+    {{else}}
+      false
+    {{/if}}
+    }{{#unless @last}},{{/unless}}
+  {{/each}}
+}
