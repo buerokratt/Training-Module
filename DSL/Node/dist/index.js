@@ -24,7 +24,7 @@ const fileReadDir_1 = __importDefault(require("./fileReadDir"));
 const app = (0, express_1.default)();
 const port = 3000;
 app.use(express_1.default.json()); // to support JSON-encoded bodies
-app.use(express_1.default.urlencoded());
+app.use(express_1.default.urlencoded({ extended: true }));
 app.use('/file/read', fileRead_1.default);
 app.use('/file/read-directory', fileReadDir_1.default);
 app.use('/file/write', fileWrite_1.default);

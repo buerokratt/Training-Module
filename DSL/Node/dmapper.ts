@@ -8,6 +8,14 @@ Handlebars.registerHelper('toJSON', function(obj) {
     return JSON.stringify(obj);
 });
 Handlebars.registerHelper('eq', (a, b) => a == b)
+
+Handlebars.registerHelper('assign', function (varName, varValue, options) {
+    if (!options.data.root) {
+        options.data.root = {};
+    }
+    options.data.root[varName] = varValue;
+});
+
 router.post('/:filename', (req: Request, res: Response) => {
     const { filename } = req.params;
     const type = req.header('type')
