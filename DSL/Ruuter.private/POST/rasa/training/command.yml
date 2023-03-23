@@ -1,0 +1,47 @@
+extractRequestData:
+  assign:
+    parameters: ${incoming.body}
+    cookie: ${incoming.headers.cookie}
+
+extractTokenData:
+  call: http.post
+  args:
+    url: http://localhost:8080/mock-tim-custom-jwt-userinfo
+    headers:
+      cookie: ${cookie}
+    body:
+      cookieName: "customJwtCookie"
+  result: jwtResult
+
+validateAdministrator:
+  switch:
+    - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
+      next: runCommand
+  next: returnUnauthorized
+
+runCommand:
+  call: http.post
+  args:
+    #TODO: Implement the command execution logic
+    url: http://host.docker.internal:3000/dmapper/execute-command
+    body:
+      command: ${parameters.command}
+  result: commandResponse
+
+validateCommand:
+  switch:
+    - condition: ${commandResponse.response.body}
+      next: returnSuccess
+  next: returnFailed
+
+returnSuccess:
+  return: "Successfully executed command"
+  next: end
+
+returnFailed:
+  return: "Failed executing command"
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
+  next: end
