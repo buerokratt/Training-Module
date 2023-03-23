@@ -1,0 +1,81 @@
+extractRequestData:
+  assign:
+    cookie: ${incoming.headers.cookie}
+
+extractTokenData:
+  call: http.post
+  args:
+    url: http://localhost:8080/mock-tim-custom-jwt-userinfo
+    headers:
+      cookie: ${cookie}
+    body:
+      cookieName: "customJwtCookie"
+  result: jwtResult
+
+validateAdministrator:
+  switch:
+    - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
+      next: getFileLocations
+  next: returnUnauthorized
+
+getFileLocations:
+  call: http.get
+  args:
+    url: http://localhost:8080/return-file-locations
+  result: fileLocations
+
+getRulesFile:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/read
+    body:
+      file_path: ${fileLocations.response.body.response.rules_location}
+  result: ruleFile
+
+getRulesData:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/yaml-to-json
+    body:
+      file: ${ruleFile.response.body.file}
+  result: rulesData
+
+getStoriesFile:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/read
+    body:
+      file_path: ${fileLocations.response.body.response.stories_location}
+  result: storiesFile
+
+getStoriesData:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/yaml-to-json
+    body:
+      file: ${storiesFile.response.body.file}
+  result: storiesData
+
+getResponses:
+  call: http.get
+  args:
+    url: http://host.docker.internal:9200/responses/_search?size=10000
+  result: getResponsesResult
+
+mapDependenciesData:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/dmapper/get-responses-dependencies
+    body:
+      rules: ${rulesData.response.body.rules}
+      stories: ${storiesData.response.body.stories}
+      responses: ${getResponsesResult.response.body.hits.hits}
+  result: dependenciesData
+
+returnSuccess:
+  return: ${dependenciesData.response.body}
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
+  next: end

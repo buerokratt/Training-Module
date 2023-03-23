@@ -15,9 +15,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const multer_1 = __importDefault(require("multer"));
 const papaparse_1 = __importDefault(require("papaparse"));
+const base64ToText_1 = __importDefault(require("./base64ToText"));
 const router = express_1.default.Router();
 router.post('/', (0, multer_1.default)().array('file'), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const file = base64ToText(req.body.file);
+    const file = (0, base64ToText_1.default)(req.body.file);
     let result = papaparse_1.default.parse(file, { skipEmptyLines: true });
     res.send(result.data);
 }));
