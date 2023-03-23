@@ -22,9 +22,10 @@ validateAdministrator:
 runCommand:
   call: http.post
   args:
+    #TODO: Implement the command execution logic
+    url: http://host.docker.internal:3000/dmapper/execute-command
     body:
       command: ${parameters.command}
-  #TODO: Implement the command execution logic
   result: commandResponse
 
 validateCommand:
