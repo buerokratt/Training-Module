@@ -12,6 +12,12 @@ handlebars_1.default.registerHelper('toJSON', function (obj) {
     return JSON.stringify(obj);
 });
 handlebars_1.default.registerHelper('eq', (a, b) => a == b);
+handlebars_1.default.registerHelper('assign', function (varName, varValue, options) {
+    if (!options.data.root) {
+        options.data.root = {};
+    }
+    options.data.root[varName] = varValue;
+});
 router.post('/:filename', (req, res) => {
     const { filename } = req.params;
     const type = req.header('type');

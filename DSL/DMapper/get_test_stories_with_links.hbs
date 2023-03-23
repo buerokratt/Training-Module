@@ -1,0 +1,16 @@
+{
+    {{#each stories}}
+        "{{_source.story}}": {
+            "type": "story",
+            "test-story": false
+        }
+        {{#unless @last}},{{/unless}}
+    {{/each}},
+    {{#each rules}}
+        "{{_source.rule}}": {
+            "type": "rule",
+            "test-story": false
+        }
+        {{#unless @last}},{{/unless}}
+    {{/each}}
+}
