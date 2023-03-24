@@ -47,17 +47,22 @@ services:
     container_name: node
     build:
       context: ./DSL/Node
+    volumes:
+      - ../Service-Module/DSL/mock1:/mock1
+      - ./DSL/DMapper:/DSL/DMapper
     ports:
       - 3000:3000
     networks:
       - test
   training_module:
     container_name: training_module
+    environment:
+      - PORT=3001
     build:
       context: ./GUI
       target: web
     ports:
-      - '3000:80'
+      - '3001:3001'
     networks:
       - test
 
