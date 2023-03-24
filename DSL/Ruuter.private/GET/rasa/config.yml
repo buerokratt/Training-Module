@@ -1,10 +1,8 @@
 extractTokenData:
-  template: mock-tim-custom-jwt-userinfo
+  template: extract-token
   requestType: post
   headers:
     cookie: ${incoming.headers.cookie}
-  body:
-    cookieName: "customJwtCookie"
   result: jwtResult
 
 validateAdministrator:
