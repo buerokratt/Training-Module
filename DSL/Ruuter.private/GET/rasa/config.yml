@@ -3,11 +3,13 @@ extractTokenData:
   requestType: post
   headers:
     cookie: ${incoming.headers.cookie}
-  result: jwtResult
+  body:
+    role: "ROLE_ADMINISTRATOR"
+  result: permission
 
-validateAdministrator:
+authenticatePermission:
   switch:
-    - condition: ${jwtResult.authorities.includes("ROLE_ADMINISTRATOR")}
+    - condition: ${permission.includes("true")}
       next: getFileLocations
   next: returnUnauthorized
 
