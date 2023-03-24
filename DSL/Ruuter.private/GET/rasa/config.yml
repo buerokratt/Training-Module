@@ -1,4 +1,4 @@
-extractTokenData:
+authenticate:
   template: extract-token
   requestType: post
   headers:
@@ -7,9 +7,9 @@ extractTokenData:
     role: "ROLE_ADMINISTRATOR"
   result: permission
 
-authenticatePermission:
+validatePermission:
   switch:
-    - condition: ${permission.includes("true")}
+    - condition: ${permission}
       next: getFileLocations
   next: returnUnauthorized
 
