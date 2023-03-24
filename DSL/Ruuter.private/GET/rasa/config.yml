@@ -1,20 +1,15 @@
-assign_values:
-  assign:
-    cookie: ${incoming.headers.cookie}
-
 extractTokenData:
-  call: http.post
-  args:
-    url: http://localhost:8080/mock-tim-custom-jwt-userinfo
-    headers:
-      cookie: ${cookie}
-    body:
-      cookieName: "customJwtCookie"
+  template: mock-tim-custom-jwt-userinfo
+  requestType: post
+  headers:
+    cookie: ${incoming.headers.cookie}
+  body:
+    cookieName: "customJwtCookie"
   result: jwtResult
 
 validateAdministrator:
   switch:
-    - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
+    - condition: ${jwtResult.authorities.includes("ROLE_ADMINISTRATOR")}
       next: getFileLocations
   next: returnUnauthorized
 
