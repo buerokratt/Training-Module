@@ -1,11 +1,12 @@
 extractTokenData:
-  template: mock-tim-custom-jwt-userinfo
-  requestType: post
-  headers:
-    cookie: ${incoming.headers.cookie}
-  body:
-    cookieName: "customJwtCookie"
-  result: jwtResult
+  call: http.post
+  args:
+    url: http://localhost:8080/mock-tim-custom-jwt-userinfo
+    headers:
+      cookie: ${incoming.headers.cookie}
+    body:
+      cookieName: "customJwtCookie"
+  result: tokenResult
 
-returnResult:
-  return: ${jwtResult}
+validatePermission:
+  return: ${tokenResult.response.body.response.authorities.includes(incoming.body.role)}
