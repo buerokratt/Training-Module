@@ -1,23 +1,15 @@
-extractRequestData:
-  assign:
+authenticate:
+  template: extract-token
+  requestType: post
+  headers:
     cookie: ${incoming.headers.cookie}
+  body:
+    role: "ROLE_ADMINISTRATOR"
+  result: permission
 
-extractTokenData:
-  call: http.post
-  args:
-    # TODO: replace with env variable and correct path to TIM endpoint
-    url: http://localhost:8080/mock-tim-custom-jwt-userinfo
-    headers:
-      cookie: ${cookie}
-    body:
-      # TODO: pass cookie name correctly to TIM
-      cookieName: "customJwtCookie"
-  result: jwtResult
-
-validateAdministrator:
+validatePermission:
   switch:
-    # TODO: use correct structure when request is made against TIM
-    - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
+    - condition: ${permission}
       next: getTestStories
   next: returnUnauthorized
 
