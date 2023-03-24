@@ -16,7 +16,8 @@ extractTokenData:
 validateAdministrator:
   switch:
     - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
-      next: getTestStoriesWithName
+      next: getFileLocations
+      # next: getRuleWithName comment back in after opensearch starts using mocked data
   next: returnUnauthorized
 
 getRuleWithName:
