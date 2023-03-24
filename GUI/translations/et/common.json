@@ -86,7 +86,12 @@
       "entities": "Olemid",
       "regex": "REGEX",
       "regexExampleTitle": "Regex näite pealkiri",
-      "deleteEntity": "Kustuta olem"
+      "deleteEntity": "Kustuta olem",
+      "turnExampleIntoIntent": "Muuda teemaks",
+      "turnIntoService": "Muuda teenuseks",
+      "error": {
+        "turnExampleIntoIntent": "Näidet ei saa teenuseks muuta"
+      }
     },
     "responses": {
       "title": "Vastused",
