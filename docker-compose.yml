@@ -51,6 +51,17 @@ services:
       - 3000:3000
     networks:
       - test
+  training_module:
+    container_name: training_module
+    build:
+      context: ./GUI
+      target: web
+    ports:
+      - '3000:80'
+    networks:
+      - test
+
+      
 volumes:
   opensearch-data:
 networks:
