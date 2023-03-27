@@ -17,7 +17,7 @@ validateAdministrator:
   switch:
     - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
       next: getFileLocations
-      # next: getRuleWithName comment back in after opensearch starts using mocked data
+      # next: getRuleWithName comment back in after opensearch starts persisting data changes, as currently it breaks the flow
   next: returnUnauthorized
 
 getRuleWithName:
