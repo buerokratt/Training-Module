@@ -1,0 +1,12 @@
+extractTokenData:
+  call: http.post
+  args:
+    url: http://localhost:8080/mock-tim-custom-jwt-userinfo
+    headers:
+      cookie: ${incoming.headers.cookie}
+    body:
+      cookieName: "customJwtCookie"
+  result: tokenResult
+
+validatePermission:
+  return: ${tokenResult.response.body.response.authorities.includes(incoming.body.role)}
