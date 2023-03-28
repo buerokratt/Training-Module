@@ -302,6 +302,7 @@ const CommonIntents: FC = () => {
                     examples={examples}
                     onAddNewExample={handleNewExample}
                     entities={entities ?? []}
+                    selectedIntent={ selectedIntent }
                   />
                 )}
               </div>
