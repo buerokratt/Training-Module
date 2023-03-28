@@ -36,15 +36,13 @@ export async function turnExampleIntoIntent(data: {
   exampleName: string;
   intentName: string;
 }): Promise<void> {
-  const see = await localDevApi.post('/rasa/intents/add', {
+  await localDevApi.post('/rasa/intents/add', {
     intent: data.exampleName,
   });
-  console.log(see);
-  const r = await localDevApi.post(
+  await localDevApi.post(
     '/rasa/intents/examples/delete',
-    { intent: data.intentName.replace(/\s+/g, '_'), example: data.exampleName }
+    { intent: data.intentName, example: data.exampleName }
   );
-  console.log(r);
 }
 
 export async function turnIntentIntoService(
