@@ -3,7 +3,7 @@ import express, {Request, Response, Router} from 'express';
 import Handlebars from "handlebars";
 import fs from "fs";
 const router: Router = express.Router();
-const pathToHbs = '/home/raul/buerokratt/Training-Module/DSL/DMapper/';
+const pathToHbs = '/DSL/DMapper/';
 Handlebars.registerHelper('toJSON', function(obj) {
     return JSON.stringify(obj);
 });
