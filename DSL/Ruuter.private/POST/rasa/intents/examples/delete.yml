@@ -1,6 +1,7 @@
 assign_values:
   assign:
-    parameters: ${incoming.body}
+    intent: ${incoming.body.intent.replaceAll(/\s+/g, "_")}
+    example: ${incoming.body.example}
     cookie: ${incoming.headers.cookie}
 
 extractTokenData:
@@ -34,7 +35,7 @@ checkIntentFileYaml:
   args:
     url: http://host.docker.internal:3000/file/check
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
+      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
   result: fileExists
 
 validateFileExists:
@@ -52,7 +53,7 @@ checkIntentFileTmp:
   args:
     url: http://host.docker.internal:3000/file/check
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
+      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
   result: tmpFileExists
 
 validateTmpFileExists:
@@ -66,7 +67,7 @@ getIntentFile:
   args:
     url: http://host.docker.internal:3000/file/read
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
+      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
   result: intentFile
 
 convertYamlToJson:
@@ -98,7 +99,7 @@ splitExamples:
 
 validateExample:
   switch:
-    - condition: ${!splitExamples.response.body.includes(parameters.example)}
+    - condition: ${!splitExamples.response.body.includes(example)}
       next: returnExampleIsMissing
   next: deleteExistingExample
 
@@ -108,7 +109,7 @@ deleteExistingExample:
     url: http://host.docker.internal:3000/merge/remove-array-value
     body:
       array: ${splitExamples.response.body}
-      value: ${parameters.example}
+      value: ${example}
   result: updatedExamples
 
 mapIntentsData:
@@ -116,7 +117,7 @@ mapIntentsData:
   args:
     url: http://host.docker.internal:3000/dmapper/get-intent-file
     body:
-      intent: ${parameters.intent}
+      intent: ${intent}
       examples: ${updatedExamples.response.body}
   result: intentFileJson
 
@@ -134,7 +135,7 @@ saveIntentFile:
   args:
     url: http://host.docker.internal:3000/file/write
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
+      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
       content: ${intentYaml.response.body.json}
   result: fileResult
   next: returnSuccess
@@ -149,9 +150,11 @@ returnExampleIsMissing:
   next: end
 
 returnIntentFileMissing:
+  status: 409
   return: "Intent file to update is missing"
   next: end
 
 returnUnauthorized:
+  status: 401
   return: "error: unauthorized"
   next: end
