@@ -1,14 +1,14 @@
 assign_step:
   assign:
     locations:
-      rules_location: '/home/raul/buerokratt/Training-Module/mock1/data/rules.yml'
-      stories_location: '/home/raul/buerokratt/Training-Module/mock1/data/stories.yml'
-      domain_location: '/home/raul/buerokratt/Training-Module/mock1/domain.yml'
-      test_stories_location: '/home/raul/buerokratt/Training-Module/mock1/tests/test_stories.yml'
-      intents_location: '/home/raul/buerokratt/Training-Module/mock1/data/nlu/'
-      regex_location: '/home/raul/buerokratt/Training-Module/mock1/data/regex_nlu.yml'
-      training_result_location: '/home/raul/buerokratt/Training-Module/mock1/results'
-      config_location: '/home/raul/buerokratt/Training-Module/mock1/config.yml'
+      rules_location: '/mock1/data/rules.yml'
+      stories_location: '/mock1/data/stories.yml'
+      domain_location: '/mock1/domain.yml'
+      test_stories_location: '/mock1/tests/test_stories.yml'
+      intents_location: '/mock1/data/nlu/'
+      regex_location: '/mock1/data/regex_nlu.yml'
+      training_result_location: '/mock1/results'
+      config_location: '/mock1/config.yml'
 
 return_value:
   return: ${locations}

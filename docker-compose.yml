@@ -47,6 +47,9 @@ services:
     container_name: node
     build:
       context: ./DSL/Node
+    volumes:
+      - ./mock1:/mock1
+      - ./DSL/DMapper:/DSL/DMapper
     ports:
       - 3000:3000
     networks:
