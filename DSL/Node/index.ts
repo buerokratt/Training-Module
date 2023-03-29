@@ -17,6 +17,7 @@ import mergeReplaceArrayElement from "./mergeReplaceArrayElement";
 import dmapper from './dmapper';
 import fileReadDir from "./fileReadDir";
 import removeRulesByIntentName from "./removeRulesByIntentName";
+import domainUpdateExistingResponse from "./domainUpdateExistingResponse";
 
 const app: Express = express();
 const port = 3000
@@ -41,6 +42,7 @@ app.use('/convert/string/split', stringSplit)
 app.use('/convert/string/replace', stringReplace)
 app.use('/dmapper', dmapper);
 app.use('/rules/remove-by-intent-name', removeRulesByIntentName);
+app.use('/domain/update-existing-response', domainUpdateExistingResponse)
 
 app.listen(port, () => {
     console.log(`[server]: Server is running at http://localhost:${port}`);
