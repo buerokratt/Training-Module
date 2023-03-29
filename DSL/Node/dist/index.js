@@ -21,6 +21,7 @@ const mergeRemoveArrayValue_1 = __importDefault(require("./mergeRemoveArrayValue
 const mergeReplaceArrayElement_1 = __importDefault(require("./mergeReplaceArrayElement"));
 const dmapper_1 = __importDefault(require("./dmapper"));
 const fileReadDir_1 = __importDefault(require("./fileReadDir"));
+const removeRulesByIntentName_1 = __importDefault(require("./removeRulesByIntentName"));
 const app = (0, express_1.default)();
 const port = 3000;
 app.use(express_1.default.json()); // to support JSON-encoded bodies
@@ -42,6 +43,7 @@ app.use('/convert/csv-to-json', csvToJson_1.default);
 app.use('/convert/string/split', stringSplit_1.default);
 app.use('/convert/string/replace', stringReplace_1.default);
 app.use('/dmapper', dmapper_1.default);
+app.use('/rules/remove-by-intent-name', removeRulesByIntentName_1.default);
 app.listen(port, () => {
     console.log(`[server]: Server is running at http://localhost:${port}`);
 });

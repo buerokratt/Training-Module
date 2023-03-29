@@ -16,6 +16,7 @@ import mergeRemoveArrayValue from "./mergeRemoveArrayValue";
 import mergeReplaceArrayElement from "./mergeReplaceArrayElement";
 import dmapper from './dmapper';
 import fileReadDir from "./fileReadDir";
+import removeRulesByIntentName from "./removeRulesByIntentName";
 
 const app: Express = express();
 const port = 3000
@@ -39,6 +40,7 @@ app.use('/convert/csv-to-json', csvToJson)
 app.use('/convert/string/split', stringSplit)
 app.use('/convert/string/replace', stringReplace)
 app.use('/dmapper', dmapper);
+app.use('/rules/remove-by-intent-name', removeRulesByIntentName);
 
 app.listen(port, () => {
     console.log(`[server]: Server is running at http://localhost:${port}`);
