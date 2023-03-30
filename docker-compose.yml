@@ -2,7 +2,10 @@ version: '3.9'
 services:
   ruuter:
     container_name: byk-private-ruuter
+    # image: ruuter
     image: ghcr.io/varmoh/ruuter:b1f2b6e9646f7a3a7985a5a4b871f6bd99a7c6b9
+    environment:
+      - application.cors.allowedOrigins=http://localhost:3001
     volumes:
       - ./DSL/Ruuter.private:/DSL
     ports:
@@ -60,11 +63,10 @@ services:
       context: ./GUI
       target: web
     ports:
-      - '3000:80'
+      - '3001:80'
     networks:
       - test
 
-      
 volumes:
   opensearch-data:
 networks:
