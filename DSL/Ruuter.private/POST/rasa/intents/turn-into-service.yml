@@ -174,32 +174,11 @@ convert_rules_yaml_to_json:
 find_rule_by_intent_name:
   call: http.post
   args:
-    # url: "http://host.docker.internal:3000/rule/find-by-intent-name"
     url: "http://host.docker.internal:3000/rules/remove-by-intent-name"
     body:
       rulesJson: ${rulesData.response.body.rules}
       searchIntentName: ${intentName}
-  # result: ruleNameResult
   result: rulesResult
-
-# return_see:
-#   return: ${ruleNameResult}
-#   next: end
-
-# check_if_rule_is_present:
-#   switch:
-#     - condition: ${ruleNameResult.response.body.rule.length === 0}
-#       next: return_value
-#   next: delete_rule
-
-# delete_rule:
-#   call: http.post
-#   args:
-#     url: http://host.docker.internal:3000/dmapper/delete-rule
-#     body:
-#       rules: ${rulesData.response.body.rules}
-#       rule_name: ${ruleNameResult.response.body.rule}
-#   result: deleteRuleResult
 
 rules_json_to_yaml:
   call: http.post
@@ -208,7 +187,6 @@ rules_json_to_yaml:
     body: 
       version: "3.0"
       rules: ${rulesResult.response.body}
-      # rules: ${deleteRuleResult.response.body}
   result: rulesYaml
 
 resave_rules_file:
@@ -219,12 +197,11 @@ resave_rules_file:
       file_path: ${fileLocations.response.body.response.rules_location}
       content: ${rulesYaml.response.body.json}
   result: fileResult
-# end remove rule from rules
 
 return_value:
-  # wrapper: false
+  wrapper: false
   status: 201
-  return: ${fileResult}
+  return: ""
   next: end
 
 return_intent_not_found:
