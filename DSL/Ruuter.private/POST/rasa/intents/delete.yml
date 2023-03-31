@@ -22,7 +22,7 @@ getDomainFile:
   args:
     url: http://localhost:8080/domain-file
     headers:
-      cookie: ${cookie}
+      cookie: ${incoming.headers.cookie}
   result: domainData
 
 validateIntentExists:
