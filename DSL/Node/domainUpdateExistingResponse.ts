@@ -2,12 +2,6 @@ import express, { Router } from 'express';
 
 const router: Router = express.Router();
 
-export interface A {
-  [service: string]: {
-    text: string;
-  }[]
-}
-
 interface RequestBody {
   readonly json: {
     [key: string]: {
