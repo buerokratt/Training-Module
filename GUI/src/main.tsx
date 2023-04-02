@@ -23,26 +23,14 @@ const queryClient = new QueryClient({
     },
   },
 });
-
-const worker = setupWorker(...handlers);
-
-const prepare = async () => {
-  if (import.meta.env.MODE === 'development') {
-    return worker.start();
-  }
-  return Promise.resolve();
-};
-
-prepare().then(() => {
-  ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-    <React.StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter basename={import.meta.env.BASE_URL}>
-          <ToastProvider>
-            <App />
-          </ToastProvider>
-        </BrowserRouter>
-      </QueryClientProvider>
-    </React.StrictMode>,
-  );
-});
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+  <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter basename={import.meta.env.REACT_APP_BASE_URL}>
+        <ToastProvider>
+          <App />
+        </ToastProvider>
+      </BrowserRouter>
+    </QueryClientProvider>
+  </React.StrictMode>,
+);
