@@ -1,25 +1,19 @@
 assign_values:
   assign:
     parameters: ${incoming.body}
+
+authenticate:
+  template: extract-token
+  requestType: post
+  headers:
     cookie: ${incoming.headers.cookie}
+  body:
+    role: "ROLE_ADMINISTRATOR"
+  result: permission
 
-extractRequestData:
-  assign:
-    cookie: ${incoming.headers.cookie}
-
-extractTokenData:
-  call: http.post
-  args:
-    url: http://localhost:8080/mock-tim-custom-jwt-userinfo
-    headers:
-      cookie: ${cookie}
-    body:
-      cookieName: "customJwtCookie"
-  result: jwtResult
-
-validateAdministrator:
+validatePermission:
   switch:
-    - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
+    - condition: ${permission}
       next: getFileLocations
   next: returnUnauthorized
 
@@ -29,12 +23,48 @@ getFileLocations:
     url: http://localhost:8080/return-file-locations
   result: fileLocations
 
+assignFilePath:
+  assign:
+    file_end: "_nlu.yml"
+
+checkIntentFileYaml:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/check
+    body:
+      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
+  result: fileExists
+
+validateFileExists:
+  switch:
+    - condition: ${fileExists.response.body}
+      next: getIntentFile
+  next: assignTmpFilePath
+
+assignTmpFilePath:
+  assign:
+    file_end: "_nlu.yml.tmp"
+
+checkIntentFileTmp:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/check
+    body:
+      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
+  result: tmpFileExists
+
+validateTmpFileExists:
+  switch:
+    - condition: ${tmpFileExists.response.body}
+      next: getIntentFile
+  next: returnIntentFileMissing
+
 getIntentFile:
   call: http.post
   args:
     url: http://host.docker.internal:3000/file/read
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + "_nlu.yml"}
+      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
   result: intentFile
 
 convertYamlToJson:
@@ -105,7 +135,7 @@ saveIntentFile:
   args:
     url: http://host.docker.internal:3000/file/write
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + "_nlu.yml"}
+      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
       content: ${intentYaml.response.body.json}
   result: fileResult
   next: returnSuccess
@@ -121,6 +151,10 @@ returnExampleTooLong:
 returnExampleIsMissing:
   return: "Can't find example"
   status: 409
+  next: end
+
+returnIntentFileMissing:
+  return: "Intent file to update is missing"
   next: end
 
 returnUnauthorized:

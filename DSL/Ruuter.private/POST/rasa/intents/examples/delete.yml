@@ -1,39 +1,21 @@
 assign_values:
   assign:
-    rule: ${incoming.body.rule}
+    parameters: ${incoming.body}
+
+authenticate:
+  template: extract-token
+  requestType: post
+  headers:
     cookie: ${incoming.headers.cookie}
+  body:
+    role: "ROLE_ADMINISTRATOR"
+  result: permission
 
-extractTokenData:
-  call: http.post
-  args:
-    url: http://localhost:8080/mock-tim-custom-jwt-userinfo
-    headers:
-      cookie: ${cookie}
-    body:
-      cookieName: "customJwtCookie"
-  result: jwtResult
-
-validateAdministrator:
+validatePermission:
   switch:
-    - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
-      next: getTestStoriesWithName
-  next: returnUnauthorized
-
-getRuleWithName:
-  call: http.post
-  args:
-    url: http://localhost:8080/rasa/rules
-    headers:
-      cookie: ${cookie}
-    body:
-      rule: ${rule}
-  result: ruleResult
-
-validateRules:
-  switch:
-    - condition: ${ruleResult.response.body.response.rule != null}
+    - condition: ${permission}
       next: getFileLocations
-  next: returnRulesIsMissing
+  next: returnUnauthorized
 
 getFileLocations:
   call: http.get
@@ -41,30 +23,100 @@ getFileLocations:
     url: http://localhost:8080/return-file-locations
   result: fileLocations
 
-getRulesFile:
+assignFilePath:
+  assign:
+    file_end: "_nlu.yml"
+
+checkIntentFileYaml:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/check
+    body:
+      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
+  result: fileExists
+
+validateFileExists:
+  switch:
+    - condition: ${fileExists.response.body}
+      next: getIntentFile
+  next: assignTmpFilePath
+
+assignTmpFilePath:
+  assign:
+    file_end: "_nlu.yml.tmp"
+
+checkIntentFileTmp:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/check
+    body:
+      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
+  result: tmpFileExists
+
+validateTmpFileExists:
+  switch:
+    - condition: ${tmpFileExists.response.body}
+      next: getIntentFile
+  next: returnIntentFileMissing
+
+getIntentFile:
   call: http.post
   args:
     url: http://host.docker.internal:3000/file/read
     body:
-      file_path: ${fileLocations.response.body.response.rules_location}
-  result: ruleFile
+      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
+  result: intentFile
 
 convertYamlToJson:
   call: http.post
   args:
     url: http://host.docker.internal:3000/convert/yaml-to-json
     body:
-      file: ${ruleFile.response.body.file}
-  result: rulesData
+      file: ${intentFile.response.body.file}
+  result: intentData
 
-deleteRule:
+replaceString:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/dmapper/delete-rule
+    url: http://host.docker.internal:3000/convert/string/replace
     body:
-      rules: ${rulesData.response.body.rules}
-      rule_name: ${rule}
-  result: deleteRulesData
+      data: ${intentData.response.body.nlu[0].examples}
+      search: "- "
+      replace: ""
+  result: replacedString
+
+splitExamples:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/string/split
+    body:
+      data: ${replacedString.response.body}
+      separator: "\n"
+  result: splitExamples
+
+validateExample:
+  switch:
+    - condition: ${!splitExamples.response.body.includes(parameters.example)}
+      next: returnExampleIsMissing
+  next: deleteExistingExample
+
+deleteExistingExample:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/merge/remove-array-value
+    body:
+      array: ${splitExamples.response.body}
+      value: ${parameters.example}
+  result: updatedExamples
+
+mapIntentsData:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/dmapper/get-intent-file
+    body:
+      intent: ${parameters.intent}
+      examples: ${updatedExamples.response.body}
+  result: intentFileJson
 
 convertJsonToYaml:
   call: http.post
@@ -72,23 +124,32 @@ convertJsonToYaml:
     url: http://host.docker.internal:3000/convert/json-to-yaml
     body:
       version: "3.0"
-      rules: ${deleteRulesData.response.body}
-  result: rulesYaml
+      nlu: ${intentFileJson.response.body}
+  result: intentYaml
 
-saveRulesFile:
+saveIntentFile:
   call: http.post
   args:
     url: http://host.docker.internal:3000/file/write
     body:
-      file_path: ${fileLocations.response.body.response.rules_location}
-      content: ${rulesYaml.response.body.json}
+      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
+      content: ${intentYaml.response.body.json}
   result: fileResult
   next: returnSuccess
 
 returnSuccess:
-  return: "Rule deleted"
+  return: "Example deleted"
   next: end
 
-returnRulesIsMissing:
-  return: "Can't find rule to delete"
+returnExampleIsMissing:
+  return: "Can't find example"
+  status: 409
+  next: end
+
+returnIntentFileMissing:
+  return: "Intent file to update is missing"
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
   next: end

@@ -1,0 +1,45 @@
+extractRequestData:
+  assign:
+    parameters: ${incoming.body}
+
+authenticate:
+  template: extract-token
+  requestType: post
+  headers:
+    cookie: ${incoming.headers.cookie}
+  body:
+    role: "ROLE_ADMINISTRATOR"
+  result: permission
+
+validatePermission:
+  switch:
+    - condition: ${permission}
+      next: runCommand
+  next: returnUnauthorized
+
+runCommand:
+  call: http.post
+  args:
+    #TODO: Implement the command execution logic
+    url: http://host.docker.internal:3000/dmapper/execute-command
+    body:
+      command: ${parameters.command}
+  result: commandResponse
+
+validateCommand:
+  switch:
+    - condition: ${commandResponse.response.body}
+      next: returnSuccess
+  next: returnFailed
+
+returnSuccess:
+  return: "Successfully executed command"
+  next: end
+
+returnFailed:
+  return: "Failed executing command"
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
+  next: end

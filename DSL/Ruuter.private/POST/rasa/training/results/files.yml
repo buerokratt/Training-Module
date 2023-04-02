@@ -1,0 +1,58 @@
+extractRequestData:
+  assign:
+    parameters: ${incoming.body}
+
+authenticate:
+  template: extract-token
+  requestType: post
+  headers:
+    cookie: ${incoming.headers.cookie}
+  body:
+    role: "ROLE_ADMINISTRATOR"
+  result: permission
+
+validatePermission:
+  switch:
+    - condition: ${permission}
+      next: getFileLocations
+  next: returnUnauthorized
+
+getFileLocations:
+  call: http.get
+  args:
+    url: http://localhost:8080/return-file-locations
+  result: fileLocations
+
+checkModelFileExists:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/check
+    body:
+      file_path: ${fileLocations.response.body.response.training_result_location + '/' + parameters.trained_model + '/' + parameters.file_name}
+  result: fileExists
+
+validateFileExists:
+  switch:
+    - condition: ${fileExists.response.body}
+      next: getTrainedModelFile
+  next: returnTrainedModelMissing
+
+getTrainedModelFile:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/read
+    body:
+      file_path: ${fileLocations.response.body.response.training_result_location + '/' + parameters.trained_model + '/' + parameters.file_name}
+  result: modelFile
+
+returnSuccess:
+  return: ${modelFile.response.body}
+  next: end
+
+returnTrainedModelMissing:
+  return: "Trained model file is missing"
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
+  next: end

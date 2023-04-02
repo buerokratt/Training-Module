@@ -8,6 +8,7 @@ export const testStoriesData = [
       action: 'utter_common_klienditeenindajale_suunamine',
     },
     hasTest: false,
+    activeStory: true
   },
   {
     id: 2,
@@ -18,6 +19,7 @@ export const testStoriesData = [
       action: 'utter_common_hüvasti_jätmine',
     },
     hasTest: false,
+    activeStory: false
   },
   {
     id: 3,
@@ -28,6 +30,7 @@ export const testStoriesData = [
       action: 'action_listen',
     },
     hasTest: false,
+    activeStory: true
   },
   {
     id: 4,
@@ -38,6 +41,7 @@ export const testStoriesData = [
       action: 'action_listen',
     },
     hasTest: true,
+    activeStory: true
   },
   {
     id: 5,
@@ -48,6 +52,7 @@ export const testStoriesData = [
       action: 'utter_common_tänamine',
     },
     hasTest: false,
+    activeStory: false
   },
   {
     id: 6,
@@ -58,6 +63,7 @@ export const testStoriesData = [
       action: 'utter_common_kompliment_botile',
     },
     hasTest: true,
+    activeStory: false
   },
   {
     id: 7,
@@ -68,6 +74,7 @@ export const testStoriesData = [
       action: 'utter_common_kuidas_läheb',
     },
     hasTest: true,
+    activeStory: false
   },
   {
     id: 8,
@@ -78,6 +85,7 @@ export const testStoriesData = [
       action: 'utter_common_abi_küsimine',
     },
     hasTest: false,
+    activeStory: false
   },
   {
     id: 9,
@@ -88,6 +96,7 @@ export const testStoriesData = [
       action: 'utter_common_kas_oled_robot',
     },
     hasTest: false,
+    activeStory: false
   },
   {
     id: 10,
@@ -98,6 +107,7 @@ export const testStoriesData = [
       action: 'utter_common_mida_teha_oskad',
     },
     hasTest: true,
+    activeStory: false
   },
   {
     id: 11,
@@ -108,6 +118,7 @@ export const testStoriesData = [
       action: 'utter_common_kelle_loodud',
     },
     hasTest: false,
+    activeStory: false
   },
   {
     id: 12,
@@ -118,6 +129,7 @@ export const testStoriesData = [
       action: 'utter_common_tervitus',
     },
     hasTest: false,
+    activeStory: false
   },
   {
     id: 13,
@@ -128,6 +140,7 @@ export const testStoriesData = [
       action: 'utter_common_kui_vana_oled',
     },
     hasTest: false,
+    activeStory: false
   },
   {
     id: 14,
@@ -138,6 +151,7 @@ export const testStoriesData = [
       action: 'utter_common_roppused',
     },
     hasTest: false,
+    activeStory: false
   },
   {
     id: 15,
@@ -148,6 +162,7 @@ export const testStoriesData = [
       action: 'utter_common_hädaabi_number',
     },
     hasTest: true,
+    activeStory: false
   },
   {
     id: 16,
@@ -158,6 +173,7 @@ export const testStoriesData = [
       action: 'utter_common_vaimne_tervis',
     },
     hasTest: false,
+    activeStory: false
   },
   {
     id: 17,
@@ -168,6 +184,7 @@ export const testStoriesData = [
       action: 'utter_common_mis_keeles',
     },
     hasTest: false,
+    activeStory: false
   },
   {
     id: 18,
@@ -178,5 +195,6 @@ export const testStoriesData = [
       action: 'utter_common_covid_küsimused',
     },
     hasTest: true,
+    activeStory: false
   },
 ];

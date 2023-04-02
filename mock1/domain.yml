@@ -10,6 +10,7 @@ intents:
   - common_eitamine
   - common_teenus_ilm
   - andmekaitse_küsimused
+  - service_car_rent
 
 entities:
   - asukoht
@@ -53,6 +54,9 @@ actions:
 - action_check_confidence
 
 responses:
+  utter_service_car_rent:
+  - text: "#service_car_rent"
+
   utter_andmekaitse_küsimused:
   - text: "kõik on kaitstud"
 

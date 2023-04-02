@@ -1,0 +1,121 @@
+assign_values:
+  assign:
+    intent: "common_tervitus"
+
+authenticate:
+  template: extract-token
+  requestType: post
+  headers:
+    cookie: ${incoming.headers.cookie}
+  body:
+    role: "ROLE_ADMINISTRATOR"
+  result: permission
+
+validatePermission:
+  switch:
+    - condition: ${permission}
+      next: getFileLocations
+  next: returnUnauthorized
+
+getFileLocations:
+  call: http.get
+  args:
+    url: http://localhost:8080/return-file-locations
+  result: fileLocations
+
+assignFilePath:
+  assign:
+    file_end: "_nlu.yml"
+
+checkIntentFileYaml:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/check
+    body:
+      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
+  result: fileExists
+
+validateFileExists:
+  switch:
+    - condition: ${fileExists.response.body}
+      next: getIntentFile
+  next: assignTmpFilePath
+
+assignTmpFilePath:
+  assign:
+    file_end: "_nlu.yml.tmp"
+
+checkIntentFileTmp:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/check
+    body:
+      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
+  result: tmpFileExists
+
+validateTmpFileExists:
+  switch:
+    - condition: ${tmpFileExists.response.body}
+      next: getIntentFile
+  next: returnIntentFileMissing
+
+getIntentFile:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/read
+    body:
+      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
+  result: intentFile
+
+convertYamlToJson:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/yaml-to-json
+    body:
+      file: ${intentFile.response.body.file}
+  result: intentData
+
+replaceString:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/string/replace
+    body:
+      data: ${intentData.response.body.nlu[0].examples}
+      search: "- "
+      replace: ""
+  result: replacedString
+
+splitExamples:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/string/split
+    body:
+      data: ${replacedString.response.body}
+      separator: "\n"
+  result: splitExamples
+
+mapIntentsData:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/dmapper/get-intent-csv
+    headers:
+      type: 'csv'
+    body:
+      examples: ${splitExamples.response.body}
+  result: csvData
+  next: returnSuccess
+
+returnSuccess:
+  wrapper: false
+  headers:
+    Content-disposition: ${"attachment;filename=" + intent + ".csv"}
+  return: ${csvData.response.body.response}
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
+  next: end
+
+returnIntentFileMissing:
+  return: "Intent file to update is missing"
+  next: end

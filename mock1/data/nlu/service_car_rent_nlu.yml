@@ -1,0 +1,8 @@
+version: "3.0"
+nlu:
+- intent: service_car_rent
+  examples: |
+    - can I rent a car
+    - is it possbile to borrow car
+    - i want car
+    - car plzzz

@@ -1,0 +1,53 @@
+assign_values:
+  assign:
+    input: ${incoming.body}
+
+authenticate:
+  template: extract-token
+  requestType: post
+  headers:
+    cookie: ${incoming.headers.cookie}
+  body:
+    role: "ROLE_ADMINISTRATOR"
+  result: permission
+
+validatePermission:
+  switch:
+    - condition: ${permission}
+      next: getFileLocations
+  next: returnUnauthorized
+
+getFileLocations:
+  call: http.get
+  args:
+    url: http://localhost:8080/return-file-locations
+  result: fileLocations
+
+convertJsonToYaml:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/json-to-yaml
+    body:
+      recipe: ${input.recipe}
+      language: ${input.language}
+      pipeline: ${input.pipeline}
+      policies: ${input.policies}
+  result: configYaml
+
+saveConfigFile:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/write
+    body:
+      file_path: ${fileLocations.response.body.response.config_location}
+      content: ${configYaml.response.body.json}
+  result: fileResult
+  next: returnSuccess
+
+returnSuccess:
+  return: "Config updated"
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
+  next: end

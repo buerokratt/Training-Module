@@ -37,7 +37,16 @@
     "idCode": "Isikukood",
     "status": "Staatus",
     "anonymous": "Anonüümne",
-    "title": "Pealkiri"
+    "title": "Pealkiri",
+    "days": {
+      "monday": "Esmaspäev",
+      "tuesday": "Teisipäev",
+      "wednesday": "Kolmapäev",
+      "thursday": "Neljapäev",
+      "friday": "Reede",
+      "saturday": "Laupäev",
+      "sunday": "Pühapäev"
+    }
   },
   "mainMenu": {
     "menuLabel": "Põhinavigatsioon",
@@ -121,7 +130,8 @@
     "forms": {
       "title": "Vormid",
       "titleOne": "Vorm",
-      "formName": "Vormi nimi",
+      "form": "Vormi nimi",
+      "formName": "utter_ask_",
       "requiredSlots": "Kohustuslikud pilud",
       "ignoredIntents": "Eiratud teemad",
       "deleteForm": "Kustuta vorm"
@@ -172,6 +182,19 @@
       "testStoryExists": "Testlugu on olemas",
       "exampleCountLow": "Näidete arv madal",
       "lastModified": "Viimati muudetud {{date}}"
+    },
+    "trainNew": {
+      "title": "Treeni ja testi",
+      "lastTrained": "Viimati treenitud {{date}}, {{time}}",
+      "trainNow": "Treeni kohe",
+      "warning": "NB! Viimane treening kukkus läbi. ({{date}}, {{time}})",
+      "trainingTitle": "Treenimise ja testimise andmed",
+      "folds": "Folds arv",
+      "repeatTraining": "Korduv treening",
+      "planTitle": "Planeeritud treening",
+      "date": "Alates",
+      "days": "Nädalapäevad",
+      "time": "Treenimise kellaaeg"
     }
   },
   "roles": {

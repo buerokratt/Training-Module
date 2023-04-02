@@ -1,6 +1,11 @@
 import { ChangeEvent, FC, useId, useState } from 'react';
 
 import './FormCheckboxes.scss';
+import clsx from 'clsx';
+
+export enum CheckboxType {
+  DAYS,
+}
 
 type FormCheckboxesType = {
   label: string;
@@ -11,9 +16,11 @@ type FormCheckboxesType = {
     label: string;
     value: string;
   }[];
+  [rest: string]: any;
+  type?: CheckboxType;
 }
 
-const FormCheckboxes: FC<FormCheckboxesType> = ({ label, name, hideLabel, onValuesChange, items }) => {
+const FormCheckboxes: FC<FormCheckboxesType> = ({ label, name, hideLabel, onValuesChange, items, type, ...rest }) => {
   const id = useId();
   const [selectedValues, setSelectedValues] = useState<Record<string, any>>({});
 
@@ -26,7 +33,7 @@ const FormCheckboxes: FC<FormCheckboxesType> = ({ label, name, hideLabel, onValu
   };
 
   return (
-    <div className='checkboxes' role='group'>
+    <div className={clsx('checkboxes', type === CheckboxType.DAYS && 'checkboxes__days')} role='group' {...rest}>
       {label && !hideLabel && <label className='checkboxes__label'>{label}</label>}
       <div className='checkboxes__wrapper'>
         {items.map((item, index) => (

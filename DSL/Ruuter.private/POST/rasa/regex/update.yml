@@ -1,0 +1,106 @@
+assign_values:
+  assign:
+    parameters: ${incoming.body}
+
+authenticate:
+  template: extract-token
+  requestType: post
+  headers:
+    cookie: ${incoming.headers.cookie}
+  body:
+    role: "ROLE_ADMINISTRATOR"
+  result: permission
+
+validatePermission:
+  switch:
+    - condition: ${permission}
+      next: getFileLocations
+  next: returnUnauthorized
+
+getFileLocations:
+  call: http.get
+  args:
+    url: http://localhost:8080/return-file-locations
+  result: fileLocations
+
+getRegexFile:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/read
+    body:
+      file_path: ${fileLocations.response.body.response.regex_location}
+  result: regexFile
+
+convertYamlToJson:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/yaml-to-json
+    body:
+      file: ${regexFile.response.body.file}
+  result: regexData
+
+mapRegexesData:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/dmapper/get-regex-with-regex
+    body:
+      regexes: ${regexData.response.body.nlu}
+      regex_name: ${parameters.regex_name}
+  result: regexesData
+
+validateRegexExists:
+  switch:
+    - condition: ${regexesData.response.body.regex.includes(parameters.regex_name)}
+      next: mapRegexInput
+  next: returnRegexIsMissing
+
+mapRegexInput:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/dmapper/get-regex-file
+    body:
+      regex: ${parameters.input.regex}
+      examples: ${parameters.input.examples}
+  result: mappedRegexInput
+
+mergeRegexes:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/merge
+    body:
+      array1: ${regexData.response.body.nlu}
+      array2: ${mappedRegexInput.response.body}
+      iteratee: "regex"
+  result: mergedRegexes
+
+convertJsonToYaml:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/json-to-yaml
+    body:
+      version: "3.0"
+      nlu: ${mergedRegexes.response.body}
+  result: regexYaml
+
+saveRegexFile:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/write
+    body:
+      file_path: ${fileLocations.response.body.response.regex_location}
+      content: ${regexYaml.response.body.json}
+  result: fileResult
+  next: returnSuccess
+
+returnSuccess:
+  return: "Regex updated"
+  next: end
+
+returnRegexIsMissing:
+  return: "Can't find regex to update"
+  status: 409
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
+  next: end
