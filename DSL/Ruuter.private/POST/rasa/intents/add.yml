@@ -28,7 +28,7 @@ getDomainFile:
   args:
     url: http://localhost:8080/domain-file
     headers:
-      cookie: ${cookie}
+      cookie: ${incoming.headers.cookie}
   result: domainData
 
 validateIntentExists:
@@ -102,7 +102,6 @@ saveDomainFile:
       content: ${domainYaml.response.body.json}
   result: fileResult
   next: returnSuccess
-
 
 returnSuccess:
   return: "Intent created"
