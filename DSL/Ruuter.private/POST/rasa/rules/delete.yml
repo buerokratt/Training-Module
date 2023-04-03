@@ -14,7 +14,8 @@ authenticate:
 validatePermission:
   switch:
     - condition: ${permission}
-      next: getTestStoriesWithName
+      next: getFileLocations
+      # next: getRuleWithName comment back in after opensearch starts persisting data changes, as currently it breaks the flow
   next: returnUnauthorized
 
 getRuleWithName:

@@ -7,7 +7,7 @@ const express_1 = __importDefault(require("express"));
 const handlebars_1 = __importDefault(require("handlebars"));
 const fs_1 = __importDefault(require("fs"));
 const router = express_1.default.Router();
-const pathToHbs = '/home/raul/buerokratt/Training-Module/DSL/DMapper/';
+const pathToHbs = '/DSL/DMapper/';
 handlebars_1.default.registerHelper('toJSON', function (obj) {
     return JSON.stringify(obj);
 });
