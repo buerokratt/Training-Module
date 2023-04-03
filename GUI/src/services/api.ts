@@ -1,7 +1,7 @@
 import axios, { AxiosError } from 'axios';
 
 const instance = axios.create({
-  baseURL: import.meta.env.REACT_APP_RUUTER_URL + 'api/',
+  baseURL: import.meta.env.REACT_APP_RUUTER_URL + 'rasa/',
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
