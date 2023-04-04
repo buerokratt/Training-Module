@@ -16,7 +16,13 @@ import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import { useToast } from 'hooks/useToast';
 import { Intent } from 'types/intent';
 import { Entity } from 'types/entity';
-import { addExample, addIntent, deleteIntent, editIntent } from 'services/intents';
+import {
+  addExample,
+  addIntent,
+  deleteIntent,
+  editIntent,
+  turnIntentIntoService,
+} from 'services/intents';
 import IntentExamplesTable from './IntentExamplesTable';
 
 const Intents: FC = () => {
@@ -25,10 +31,17 @@ const Intents: FC = () => {
   const toast = useToast();
   const [searchParams] = useSearchParams();
   const [filter, setFilter] = useState('');
-  const [editingIntentTitle, setEditingIntentTitle] = useState<string | null>(null);
+  const [editingIntentTitle, setEditingIntentTitle] = useState<string | null>(
+    null
+  );
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
   const [selectedIntent, setSelectedIntent] = useState<Intent | null>(null);
-  const [deletableIntent, setDeletableIntent] = useState<string | number | null>(null);
+  const [deletableIntent, setDeletableIntent] = useState<
+    string | number | null
+  >(null);
+  const [turnIntentToServiceIntent, setTurnIntentToServiceIntent] = useState<
+    Intent | null
+  >(null);
   const { data: intents } = useQuery<Intent[]>({
     queryKey: ['intents'],
   });
@@ -77,7 +90,13 @@ const Intents: FC = () => {
   });
 
   const removeFromModelMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string | number, data: { inModel: boolean } }) => editIntent(id, data),
+    mutationFn: ({
+      id,
+      data,
+    }: {
+      id: string | number;
+      data: { inModel: boolean };
+    }) => editIntent(id, data),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['intents']);
       toast.open({
@@ -114,12 +133,31 @@ const Intents: FC = () => {
     },
   });
 
+  const turnIntentIntoServiceMutation = useMutation({
+    mutationFn: ({ intent }: { intent: Intent }) => turnIntentIntoService(intent),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['intents']);
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: 'Intent to Service - success',
+      });
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
+  });
+
   useDocumentEscapeListener(() => setEditingIntentTitle(null));
 
   const filteredIntents = useMemo(
     () =>
       intents ? intents.filter((intent) => intent.intent.includes(filter)) : [],
-    [intents, filter],
+    [intents, filter]
   );
 
   const handleTabsValueChange = useCallback(
@@ -132,7 +170,7 @@ const Intents: FC = () => {
         setSelectedTab(selectedIntent.intent);
       }
     },
-    [intents],
+    [intents]
   );
 
   const newIntentMutation = useMutation({
@@ -156,7 +194,8 @@ const Intents: FC = () => {
   });
 
   const intentEditMutation = useMutation({
-    mutationFn: ({ id, intent }: { id: string | number, intent: string }) => editIntent(id, { intent }),
+    mutationFn: ({ id, intent }: { id: string | number; intent: string }) =>
+      editIntent(id, { intent }),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['intents']);
       toast.open({
@@ -200,19 +239,19 @@ const Intents: FC = () => {
       {intents && (
         <Tabs.Root
           id="tabs"
-          className='vertical-tabs'
-          orientation='vertical'
+          className="vertical-tabs"
+          orientation="vertical"
           value={selectedTab ?? undefined}
           onValueChange={handleTabsValueChange}
         >
           <Tabs.List
-            className='vertical-tabs__list'
+            className="vertical-tabs__list"
             aria-label={t('training.intents.title') || ''}
           >
-            <div className='vertical-tabs__list-search'>
+            <div className="vertical-tabs__list-search">
               <Track gap={8}>
                 <FormInput
-                  name='intentSearch'
+                  name="intentSearch"
                   label={t('training.intents.searchIntentPlaceholder')}
                   placeholder={
                     t('training.intents.searchIntentPlaceholder') + '...' || ''
@@ -221,7 +260,10 @@ const Intents: FC = () => {
                   onChange={(e) => setFilter(e.target.value)}
                   hideLabel
                 />
-                <Button onClick={() => newIntentMutation.mutate({ name: filter })} disabled={!filter}>
+                <Button
+                  onClick={() => newIntentMutation.mutate({ name: filter })}
+                  disabled={!filter}
+                >
                   {t('global.add')}
                 </Button>
               </Track>
@@ -230,7 +272,7 @@ const Intents: FC = () => {
             {filteredIntents.map((intent, index) => (
               <Tabs.Trigger
                 key={`${intent}-${index}`}
-                className='vertical-tabs__trigger'
+                className="vertical-tabs__trigger"
                 value={intent.intent}
               >
                 <Track gap={16}>
@@ -266,17 +308,17 @@ const Intents: FC = () => {
           {selectedIntent && (
             <Tabs.Content
               key={selectedIntent.intent}
-              className='vertical-tabs__body'
+              className="vertical-tabs__body"
               value={selectedIntent.intent}
             >
-              <div className='vertical-tabs__content-header'>
-                <Track direction='vertical' align='stretch' gap={8}>
-                  <Track justify='between'>
+              <div className="vertical-tabs__content-header">
+                <Track direction="vertical" align="stretch" gap={8}>
+                  <Track justify="between">
                     <Track gap={16}>
                       {editingIntentTitle ? (
                         <FormInput
-                          label='Intent title'
-                          name='intentTitle'
+                          label="Intent title"
+                          name="intentTitle"
                           value={editingIntentTitle}
                           onChange={(e) =>
                             setEditingIntentTitle(e.target.value)
@@ -288,9 +330,12 @@ const Intents: FC = () => {
                       )}
                       {editingIntentTitle ? (
                         <Button
-                          appearance='text'
+                          appearance="text"
                           onClick={() =>
-                            intentEditMutation.mutate({ id: selectedIntent.id, intent: editingIntentTitle })
+                            intentEditMutation.mutate({
+                              id: selectedIntent.id,
+                              intent: editingIntentTitle,
+                            })
                           }
                         >
                           <Icon icon={<MdOutlineSave />} />
@@ -298,7 +343,7 @@ const Intents: FC = () => {
                         </Button>
                       ) : (
                         <Button
-                          appearance='text'
+                          appearance="text"
                           onClick={() =>
                             setEditingIntentTitle(selectedIntent.intent)
                           }
@@ -311,13 +356,21 @@ const Intents: FC = () => {
                     <p style={{ color: '#4D4F5D' }}>
                       {`${t('global.modifiedAt')} ${format(
                         new Date(selectedIntent.modifiedAt),
-                        'dd.MM.yyyy',
+                        'dd.MM.yyyy'
                       )}`}
                     </p>
                   </Track>
-                  <Track justify='end' gap={8}>
+                  <Track justify="end" gap={8} isMultiline={true}>
                     <Button
-                      appearance='secondary'
+                      appearance="secondary"
+                      onClick={() =>
+                        setTurnIntentToServiceIntent(selectedIntent)
+                      }
+                    >
+                      {t('training.intents.turnIntoService')}
+                    </Button>
+                    <Button
+                      appearance="secondary"
                       onClick={() =>
                         handleIntentExamplesUpload(selectedIntent.id)
                       }
@@ -325,7 +378,7 @@ const Intents: FC = () => {
                       {t('training.intents.upload')}
                     </Button>
                     <Button
-                      appearance='secondary'
+                      appearance="secondary"
                       onClick={() =>
                         handleIntentExamplesDownload(selectedIntent.id)
                       }
@@ -334,20 +387,21 @@ const Intents: FC = () => {
                     </Button>
                     {selectedIntent.inModel ? (
                       <Button
-                        appearance='secondary'
+                        appearance="secondary"
                         onClick={() =>
-                          removeFromModelMutation.mutate({ id: selectedIntent.id, data: { inModel: false } })
+                          removeFromModelMutation.mutate({
+                            id: selectedIntent.id,
+                            data: { inModel: false },
+                          })
                         }
                       >
                         {t('training.intents.removeFromModel')}
                       </Button>
                     ) : (
-                      <Button>
-                        {t('training.intents.addToModel')}
-                      </Button>
+                      <Button>{t('training.intents.addToModel')}</Button>
                     )}
                     <Button
-                      appearance='error'
+                      appearance="error"
                       onClick={() => setDeletableIntent(selectedIntent.id)}
                     >
                       {t('global.delete')}
@@ -355,12 +409,13 @@ const Intents: FC = () => {
                   </Track>
                 </Track>
               </div>
-              <div className='vertical-tabs__content'>
+              <div className="vertical-tabs__content">
                 {examples && (
                   <IntentExamplesTable
                     examples={examples}
                     onAddNewExample={handleNewExample}
                     entities={entities ?? []}
+                    selectedIntent={selectedIntent}
                   />
                 )}
               </div>
@@ -375,10 +430,45 @@ const Intents: FC = () => {
           onClose={() => setDeletableIntent(null)}
           footer={
             <>
-              <Button appearance='secondary' onClick={() => setDeletableIntent(null)}>{t('global.no')}</Button>
               <Button
-                appearance='error'
-                onClick={() => deleteIntentMutation.mutate({ id: deletableIntent })}
+                appearance="secondary"
+                onClick={() => setDeletableIntent(null)}
+              >
+                {t('global.no')}
+              </Button>
+              <Button
+                appearance="error"
+                onClick={() =>
+                  deleteIntentMutation.mutate({ id: deletableIntent })
+                }
+              >
+                {t('global.yes')}
+              </Button>
+            </>
+          }
+        >
+          <p>{t('global.removeValidation')}</p>
+        </Dialog>
+      )}
+      {turnIntentToServiceIntent !== null && (
+        <Dialog
+          title={t('training.intents.turnIntoService')}
+          onClose={() => setTurnIntentToServiceIntent(null)}
+          footer={
+            <>
+              <Button
+                appearance="secondary"
+                onClick={() => setTurnIntentToServiceIntent(null)}
+              >
+                {t('global.no')}
+              </Button>
+              <Button
+                appearance="error"
+                onClick={() =>
+                  turnIntentIntoServiceMutation.mutate({
+                    intent: turnIntentToServiceIntent,
+                  })
+                }
               >
                 {t('global.yes')}
               </Button>

@@ -86,7 +86,12 @@
       "entities": "Entities",
       "regex": "REGEX",
       "regexExampleTitle": "Regex example title",
-      "deleteEntity": "Delete entity"
+      "deleteEntity": "Delete entity",
+      "turnExampleIntoIntent": "Turn into an intent",
+      "turnIntoService": "Turn into a Service",
+      "error": {
+        "turnExampleIntoIntent": "Unable to turn this example into intent"
+      }
     },
     "responses": {
       "title": "Responses",

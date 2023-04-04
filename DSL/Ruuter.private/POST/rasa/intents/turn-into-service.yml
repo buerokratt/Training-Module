@@ -1,0 +1,215 @@
+assign_values:
+  assign:
+    intentName: ${incoming.body.intentName.replaceAll(/\s+/g, "_")}
+    cookie: ${incoming.headers.cookie}
+
+extract_token_data:
+  call: http.post
+  args:
+    url: http://localhost:8080/mock-tim-custom-jwt-userinfo
+    headers:
+      cookie: ${cookie}
+    body:
+      cookieName: "customJwtCookie"
+  result: jwtResult
+
+validate_administrator:
+  switch:
+    - condition: ${jwtResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
+      next: get_domain_file
+  next: return_unauthorized
+
+get_domain_file:
+  call: http.get
+  args:
+    url: http://localhost:8080/domain-file
+    headers:
+      cookie: ${cookie}
+  result: domainData
+
+validate_intent_exists:
+  switch:
+    - condition: ${domainData.response.body.response.intents.includes(intentName) === false}
+      next: return_intent_not_found
+  next: get_file_locations
+
+get_file_locations:
+  call: http.get
+  args:
+    url: http://localhost:8080/return-file-locations
+  result: fileLocations
+
+get_existing_intent_file:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/read
+    body:
+      file_path: ${fileLocations.response.body.response.intents_location + intentName + "_nlu.yml"}
+  result: intentFile
+
+convert_yaml_to_json:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/yaml-to-json
+    body:
+      file: ${intentFile.response.body.file}
+  result: intentData
+
+manipulate_existing_examples:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/string/replace
+    body:
+      data: ${intentData.response.body.nlu[0].examples}
+      search: "- "
+      replace: ""
+  result: manipulateExistingExamplesResult
+
+split_existing_examles:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/string/split
+    body:
+      data: ${manipulateExistingExamplesResult.response.body}
+      separator: "\n"
+  result: splitedExamples
+
+get_new_service_intent_file:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/dmapper/get-intent-file
+    body:
+      intent: ${"service_" + intentName}
+      examples: ${splitedExamples.response.body}
+  result: intentFileJson
+
+convert_intent_json_to_yaml:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/json-to-yaml
+    body:
+      version: "3.0"
+      nlu: ${intentFileJson.response.body}
+  result: intentYaml
+
+save_intent_file:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/write
+    body:
+      file_path: ${fileLocations.response.body.response.intents_location + "service_" + intentName + "_nlu.tmp"}
+      content: ${intentYaml.response.body.json}
+  result: fileResult
+
+delete_old_intent_file:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/delete
+    body:
+      file_path: ${fileLocations.response.body.response.intents_location + intentName + "_nlu.yml"}
+  result: deleteResult
+
+merge_new_intent_into_existing_intents:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/merge/replace-array-element
+    body:
+      array: ${domainData.response.body.response.intents}
+      element: ${intentName}
+      newValue: ${"service_" + intentName}
+  result: mergedIntents
+
+update_existing_domain_response:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/domain/update-existing-response
+    body:
+      json: ${domainData.response.body.response.responses}
+      searchKey: ${intentName}
+      newKey: ${"utter_service_" + intentName}
+      newKeyValue: ${"#service_" + intentName}
+  result: updatedResponses
+
+convert_domain_json_to_yaml:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/json-to-yaml
+    body:
+      version: ${domainData.response.body.response.version}
+      intents: ${mergedIntents.response.body}
+      entities: ${domainData.response.body.response.entities}
+      slots: ${domainData.response.body.response.slots}
+      forms: ${domainData.response.body.response.forms}
+      actions: ${domainData.response.body.response.actions}
+      responses: ${updatedResponses.response.body}
+      session_config: ${domainData.response.body.response.session_config}
+  result: domainYaml
+
+resave_domain_file:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/write
+    body:
+      file_path: ${fileLocations.response.body.response.domain_location}
+      content: ${domainYaml.response.body.json}
+  result: fileResult
+
+# remove rule from rules
+get_rules_file:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/read
+    body:
+      file_path: ${fileLocations.response.body.response.rules_location}
+  result: ruleFile
+
+convert_rules_yaml_to_json:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/yaml-to-json
+    body:
+      file: ${ruleFile.response.body.file}
+  result: rulesData
+
+find_rule_by_intent_name:
+  call: http.post
+  args:
+    url: "http://host.docker.internal:3000/rules/remove-by-intent-name"
+    body:
+      rulesJson: ${rulesData.response.body.rules}
+      searchIntentName: ${intentName}
+  result: rulesResult
+
+rules_json_to_yaml:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/convert/json-to-yaml
+    body: 
+      version: "3.0"
+      rules: ${rulesResult.response.body}
+  result: rulesYaml
+
+resave_rules_file:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/file/write
+    body:
+      file_path: ${fileLocations.response.body.response.rules_location}
+      content: ${rulesYaml.response.body.json}
+  result: fileResult
+
+return_value:
+  wrapper: false
+  status: 201
+  return: ""
+  next: end
+
+return_intent_not_found:
+  status: 404
+  return: "Intent with that name not found"
+  next: end
+
+return_unauthorized:
+  status: 401
+  return: "Unauthorized"
+  next: end
