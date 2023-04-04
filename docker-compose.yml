@@ -52,6 +52,7 @@ services:
       context: ./DSL/Node
     volumes:
       - ./mock1:/mock1
+      - ../Service-Module/DSL/mock1:/mock1
       - ./DSL/DMapper:/DSL/DMapper
     ports:
       - 3000:3000
@@ -59,11 +60,13 @@ services:
       - test
   training_module:
     container_name: training_module
+    environment:
+      - PORT=3001
     build:
       context: ./GUI
       target: web
     ports:
-      - '3001:80'
+      - '3001:3001'
     networks:
       - test
 

@@ -9,7 +9,5 @@ assign_step:
       regex_location: '/mock1/data/regex_nlu.yml'
       training_result_location: '/mock1/results'
       config_location: '/mock1/config.yml'
-
 return_value:
   return: ${locations}
-

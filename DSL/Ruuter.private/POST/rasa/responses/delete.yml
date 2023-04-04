@@ -22,7 +22,7 @@ getDomainFile:
   args:
     url: http://localhost:8080/domain-file
     headers:
-      cookie: ${cookie}
+      cookie: ${incoming.headers.cookie}
   result: domainData
 
 validateResponse:
@@ -36,7 +36,7 @@ ruleResponses:
   args:
     url: http://localhost:8080/rasa/rules/search
     headers:
-      cookie: ${cookie}
+      cookie: ${incoming.headers.cookie}
     body:
       response: ${parameters.response_name}
       type: "responses"
@@ -53,7 +53,7 @@ storiesResponses:
   args:
     url: http://localhost:8080/rasa/stories/search
     headers:
-      cookie: ${cookie}
+      cookie: ${incoming.headers.cookie}
     body:
       response: ${parameters.response_name}
       type: "responses"

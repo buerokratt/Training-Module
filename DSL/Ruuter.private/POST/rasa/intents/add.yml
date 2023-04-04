@@ -103,7 +103,6 @@ saveDomainFile:
   result: fileResult
   next: returnSuccess
 
-
 returnSuccess:
   return: "Intent created"
   next: end
