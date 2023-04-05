@@ -62,7 +62,7 @@ services:
       context: ./GUI
       target: web
     ports:
-      - '3001:3001'
+      - '3001:80'
     networks:
       - test
 
