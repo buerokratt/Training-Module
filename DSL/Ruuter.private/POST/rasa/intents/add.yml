@@ -1,6 +1,6 @@
 assign_values:
   assign:
-    parameters: ${incoming.body}
+    intent: ${incoming.body.intent.replaceAll(/\s+/g, "_")}
 
 authenticate:
   template: extract-token
@@ -19,7 +19,7 @@ validatePermission:
 
 validateInputLength:
   switch:
-    - condition: ${parameters.intent.length > 5}
+    - condition: ${intent.length > 5}
       next: getDomainFile
   next: returnTooShortError
 
@@ -33,7 +33,7 @@ getDomainFile:
 
 validateIntentExists:
   switch:
-    - condition: ${domainData.response.body.response.intents.includes(parameters.intent)}
+    - condition: ${domainData.response.body.response.intents.includes(intent)}
       next: returnIntentExists
   next: getFileLocations
 
@@ -48,7 +48,7 @@ mapIntentsData:
   args:
     url: http://host.docker.internal:3000/dmapper/get-intent-file
     body:
-      intent: ${parameters.intent}
+      intent: ${intent}
   result: intentFileJson
 
 convertJsonToYaml:
@@ -65,7 +65,7 @@ saveIntentFile:
   args:
     url: http://host.docker.internal:3000/file/write
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + "_nlu.yml.tmp"}
+      file_path: ${fileLocations.response.body.response.intents_location + intent + "_nlu.yml.tmp"}
       content: ${intentYaml.response.body.json}
   result: fileResult
 
@@ -74,7 +74,7 @@ mergeIntents:
   args:
     url: http://host.docker.internal:3000/merge
     body:
-      array1: ${[parameters.intent]}
+      array1: ${[intent]}
       array2: ${domainData.response.body.response.intents}
   result: mergedIntents
 
@@ -108,10 +108,12 @@ returnSuccess:
   next: end
 
 returnTooShortError:
+  status: 409
   return: "Intent name is too short"
   next: end
 
 returnIntentExists:
+  status: 409
   return: "Intent with that name already exists"
   next: end
 

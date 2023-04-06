@@ -10,3 +10,13 @@ This repo will primarily contain
 1. Architectural and other documentation;
 2. Docker Compose file to set up and run Bürokratt's Training Module as a fully functional service;
 3. Tests specific to Bürokratt's Training Module.
+---
+## Notes for the Developers
+### Docker related (local development)
+- Run GUI in your local machine: `npm run dev`
+- Docker-compose.yml
+  - ruuter -> use commented out image to test the following:
+    - Intent into Service
+    - Intent example into Intent
+  
+Ready to go: **docker-compose up -d**
