@@ -48,9 +48,7 @@ export async function turnExampleIntoIntent(data: {
 export async function turnIntentIntoService(
   intent: Intent
 ): Promise<void> {
-  const response = await localDevApi.post('/rasa/intents/turn-into-service', {
-    intentName: "common_eitamine"
-    // intentName: intent.intent
+  await localDevApi.post('/rasa/intents/turn-into-service', {
+    intentName: intent.intent
   });
-  console.log("RESPONSE: ", response);
 }
