@@ -2,8 +2,7 @@ version: '3.9'
 services:
   ruuter:
     container_name: byk-private-ruuter
-    # image: ruuter
-    image: ghcr.io/varmoh/ruuter:b1f2b6e9646f7a3a7985a5a4b871f6bd99a7c6b9
+    image: ruuter
     environment:
       - application.cors.allowedOrigins=http://localhost:3001
     volumes:
@@ -11,16 +10,16 @@ services:
     ports:
       - 8080:8080
     networks:
-      - test
+      - bykstack
   resql:
     container_name: byk-resql
-    image: ghcr.io/varmoh/resql:4fe8beff1babd5c5cfba4b09edbd7ce1f3c3a5b4
+    image: resql
     ports:
       - 8082:8082
     volumes:
       - ./DSL/Resql:/workspace/app/templates/
     networks:
-      - test
+      - bykstack
   opensearch-node:
     image: opensearchproject/opensearch:latest
     container_name: opensearch-node
@@ -45,7 +44,7 @@ services:
       - 9200:9200 # REST API
       - 9600:9600 # Performance Analyzer
     networks:
-      - test # All of the containers will join the same Docker bridge network
+      - bykstack # All of the containers will join the same Docker bridge network
   node:
     container_name: node
     build:
@@ -57,24 +56,26 @@ services:
     ports:
       - 3000:3000
     networks:
-      - test
-  training_module:
-    container_name: training_module
-    environment:
-      - PORT=3001
+      - bykstack
+  training_gui:
+    container_name: training_gui
     build:
       context: ./GUI
       target: web
+      dockerfile: Dockerfile
     ports:
-      - '3001:3001'
+      - 3001:80
+    volumes:
+      - /app/node_modules
+      - ./GUI:/app
     networks:
-      - test
+      - bykstack
 
 volumes:
   opensearch-data:
 networks:
-  test:
-    name: test
+  bykstack:
+    name: bykstack
     driver: bridge
     driver_opts:                         
        com.docker.network.driver.mtu: 1400
