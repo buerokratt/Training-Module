@@ -1,7 +1,9 @@
 assign_values:
   assign:
     intentName: ${incoming.body.intentName.replaceAll(/\s+/g, "_")}
-    cookie: ${incoming.headers.cookie}
+    # TODO: Revert back
+    # cookie: ${incoming.headers.cookie}
+    cookie: "Cookie"
 
 extract_token_data:
   call: http.post
