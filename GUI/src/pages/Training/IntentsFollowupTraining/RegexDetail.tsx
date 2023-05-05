@@ -1,10 +1,11 @@
-import { FC, useMemo, useRef, useState } from 'react';
+import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { createColumnHelper } from '@tanstack/react-table';
 import { AxiosError } from 'axios';
+import Papa from "papaparse";
 import {
   MdAddCircle,
   MdDeleteOutline,
@@ -16,7 +17,7 @@ import {
 import { Button, Card, DataTable, Dialog, FormInput, FormSelect, FormTextarea, Icon, Track } from 'components';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import { useToast } from 'hooks/useToast';
-import { addRegexExample, deleteRegex, deleteRegexExample, editRegex, editRegexExample } from 'services/regex';
+import { addRegexExample, deleteRegex, deleteRegexExample, downloadExamples, editRegex, editRegexExample } from 'services/regex';
 import { Entity } from 'types/entity';
 
 type Regex = {
@@ -48,16 +49,26 @@ const RegexDetail: FC = () => {
     queryKey: ['entities'],
   });
 
+  const [regexList, setRegexList] = useState<{
+    id: number;
+    value: string;
+  }[]>([]);
+
   useDocumentEscapeListener(() => {
     setEditableRow(null);
     setEditingRegexTitle(null);
     setEditableRow(null);
   });
 
-  const regexData = useMemo(
+  let regexData = useMemo(
     () => regex && regex.examples.map((e, index) => ({ id: index, value: e })),
     [regex],
   );
+
+  useEffect(() => {
+    const result = regex && regex.examples.map((e, index) => ({ id: index, value: e }));
+    setRegexList(result ?? []);
+  }, [regex?.examples])
 
   const regexEditMutation = useMutation({
     mutationFn: ({ id, data }: { id: string | number, data: { name: string } }) => editRegex(id, data),
@@ -154,6 +165,25 @@ const RegexDetail: FC = () => {
     onSettled: () => setEditableRow(null),
   });
 
+  const downloadExamplesMutation = useMutation({
+    mutationFn: (data: { example: any }) => downloadExamples(data),
+    onSuccess: () => {
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: 'Downloaded Examples',
+      });
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
+    onSettled: () => {},
+  });
+
   const columnHelper = createColumnHelper<{ id: number; value: string }>();
 
   const handleEditableRow = (example: { id: number; value: string }) => {
@@ -233,15 +263,50 @@ const RegexDetail: FC = () => {
     }),
   ], [columnHelper, editableRow, t]);
 
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
   const handleRegexExamplesUpload = (regexId: string | number) => {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = '.csv';
+    input.onchange = ((e) => {
+      const files = (e.target as HTMLInputElement).files ?? [];
+
+      if (!files) {
+        return;
+      }
+      const file: File = files[0];
+      console.log(file);
+      if (file) {
+        const fileReader = new FileReader();
+        fileReader.onload = function (event) {
+            const csvOutput: string = event?.target?.result as string ?? '';
+            console.log(csvOutput)
+            let result = Papa.parse(csvOutput);
+            const data: string[] = result.data as string[] ?? []
+            console.log(data)
+            data.forEach((e: string) => {
+              regex?.examples.push(e[0]);
+            })
+            const res = regex && regex.examples.map((e, index) => ({ id: index, value: e }));
+            console.log(res);
+            setRegexList(res ?? []);
+        };
+
+        fileReader.readAsText(file);
+      }
+  
+    });
     input.click();
   };
 
   const handleRegexExamplesDownload = (regexId: string | number) => {
-    // TODO
+    downloadExamplesMutation.mutate({ example: {
+      "data": regexData,
+      "layout": false,
+      "qul":"",
+      "del":""
+     } });
   };
 
   return (
@@ -250,7 +315,7 @@ const RegexDetail: FC = () => {
         <Button appearance='icon' onClick={() => navigate('/treening/treening/teemade-jareltreenimine?tab=regex')}>
           <MdOutlineArrowBack />
         </Button>
-        <h1>{t('training.intents.regex')}</h1>
+        <h1>{t('training.intents.entity')}</h1>
       </Track>
 
       {regex && (
@@ -328,7 +393,7 @@ const RegexDetail: FC = () => {
           }
         >
           <DataTable
-            data={regexData}
+            data={regexList}
             columns={regexColumns}
             tableBodyPrefix={
               <tr>

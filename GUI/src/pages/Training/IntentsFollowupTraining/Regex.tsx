@@ -65,7 +65,7 @@ const Regex: FC = () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'REGEX deleted',
+        message: 'Entity deleted',
       });
     },
     onError: (error: AxiosError) => {
@@ -82,7 +82,7 @@ const Regex: FC = () => {
 
   const regexColumns = useMemo(() => [
     columnHelper.accessor('name', {
-      header: t('training.intents.regex') || '',
+      header: t('training.intents.entities') || '',
     }),
     columnHelper.display({
       header: '',

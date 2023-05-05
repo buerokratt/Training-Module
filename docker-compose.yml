@@ -2,8 +2,8 @@ version: '3.9'
 services:
   ruuter:
     container_name: byk-private-ruuter
-    # image: ruuter
-    image: ghcr.io/varmoh/ruuter:b1f2b6e9646f7a3a7985a5a4b871f6bd99a7c6b9
+    image: ruuter
+    # image: ghcr.io/varmoh/ruuter:b1f2b6e9646f7a3a7985a5a4b871f6bd99a7c6b9
     environment:
       - application.cors.allowedOrigins=http://localhost:3001
     volumes:
@@ -58,6 +58,20 @@ services:
       - 3000:3000
     networks:
       - test
+  data_mapper:
+    container_name: data_mapper
+    image: datamapper-node
+    environment:
+      - PORT=3005
+      - CONTENT_FOLDER=/data
+    volumes:
+      - ./DSL/DMapper/hbs:/workspace/app/views/training
+      - ./DSL/DMapper/js:/workspace/app/js/training
+      - ./DSL/DMapper/lib:/workspace/app/lib
+    ports:
+      - 3005:3005
+    networks:
+      - test    
   training_module:
     container_name: training_module
     environment:
