@@ -52,6 +52,7 @@ const Intents: FC = () => {
   const { data: entities } = useQuery<Entity[]>({
     queryKey: ['entities'],
   });
+  const serviceModuleGuiBaseUrl = import.meta.env.REACT_APP_SERVICE_MODULE_GUI_BASE_URL;
 
   useEffect(() => {
     const queryIntentName = searchParams.get('intent');
@@ -135,13 +136,14 @@ const Intents: FC = () => {
 
   const turnIntentIntoServiceMutation = useMutation({
     mutationFn: ({ intent }: { intent: Intent }) => turnIntentIntoService(intent),
-    onSuccess: async () => {
+    onSuccess: async (_, { intent }) => {
       await queryClient.invalidateQueries(['intents']);
       toast.open({
         type: 'success',
         title: t('global.notification'),
         message: 'Intent to Service - success',
       });
+      window.location.href = `${serviceModuleGuiBaseUrl}/services/newService/${intent.intent}`;
     },
     onError: (error: AxiosError) => {
       toast.open({
