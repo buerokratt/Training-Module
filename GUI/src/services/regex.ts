@@ -1,4 +1,6 @@
 import api from './api';
+import ruuter_api from './ruuter-api';
+import { saveAs } from 'file-saver';
 
 export async function addRegex(regexData: { name: string }) {
   const { data } = await api.post<{ readonly id: number; name: string }>('regex');
@@ -27,5 +29,11 @@ export async function editRegexExample(id: string | number, regexExampleData: { 
 
 export async function deleteRegexExample(id: string | number) {
   const { data } = await api.delete<void>(`regex/examples/${id}`);
+  return data;
+}
+
+export async function downloadExamples(exampleData: { example: any }) {
+  const { data } = await ruuter_api.post<{ example: any }>(`csv`, exampleData.example,  { responseType: 'blob' });
+  saveAs(data as any, 'examples.csv')
   return data;
 }
