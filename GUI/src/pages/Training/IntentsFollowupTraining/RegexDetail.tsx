@@ -181,7 +181,7 @@ const RegexDetail: FC = () => {
         message: error.message,
       });
     },
-    onSettled: () => {},
+    onSettled: () => { },
   });
 
   const columnHelper = createColumnHelper<{ id: number; value: string }>();
@@ -276,37 +276,36 @@ const RegexDetail: FC = () => {
         return;
       }
       const file: File = files[0];
-      console.log(file);
       if (file) {
         const fileReader = new FileReader();
         fileReader.onload = function (event) {
-            const csvOutput: string = event?.target?.result as string ?? '';
-            console.log(csvOutput)
-            let result = Papa.parse(csvOutput);
-            const data: string[] = result.data as string[] ?? []
-            console.log(data)
-            data.forEach((e: string) => {
-              regex?.examples.push(e[0]);
-            })
-            const res = regex && regex.examples.map((e, index) => ({ id: index, value: e }));
-            console.log(res);
-            setRegexList(res ?? []);
+          const csvOutput: string = event?.target?.result as string ?? '';
+          console.log(csvOutput)
+          let result = Papa.parse(csvOutput);
+          const data: string[] = result.data as string[] ?? []
+          data.forEach((e: string) => {
+            regex?.examples.push(e[0]);
+          })
+          const res = regex && regex.examples.map((e, index) => ({ id: index, value: e }));
+          setRegexList(res ?? []);
         };
 
         fileReader.readAsText(file);
       }
-  
+
     });
     input.click();
   };
 
   const handleRegexExamplesDownload = (regexId: string | number) => {
-    downloadExamplesMutation.mutate({ example: {
-      "data": regexData,
-      "layout": false,
-      "qul":"",
-      "del":""
-     } });
+    downloadExamplesMutation.mutate({
+      example: {
+        "data": regexData,
+        "layout": false,
+        "qul": "",
+        "del": ""
+      }
+    });
   };
 
   return (
