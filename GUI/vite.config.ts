@@ -8,7 +8,7 @@ import path from 'path';
 export default defineConfig({
   envPrefix: 'REACT_APP_',
   plugins: [react(), tsconfigPaths(), svgr()],
-  // base: '/burokratt/',
+   base: '/burokratt/', //Change this according to your reverse proxy subpath
   build: {
     outDir: './burokratt',
     target: 'es2015',
