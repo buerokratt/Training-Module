@@ -10,7 +10,7 @@ export default defineConfig({
   plugins: [react(), tsconfigPaths(), svgr()],
    base: '/burokratt/', //Change this according to your reverse proxy subpath
   build: {
-    outDir: './burokratt',
+    outDir: './training',
     target: 'es2015',
     emptyOutDir: true,
   },
