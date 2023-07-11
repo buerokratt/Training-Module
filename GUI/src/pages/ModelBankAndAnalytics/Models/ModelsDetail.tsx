@@ -32,7 +32,7 @@ const ModelsDetail: FC = () => {
   return (
     <>
       <Track gap={16}>
-        <Button appearance='icon' onClick={() => navigate('/treening/mudelipank-ja-analuutika/mudelite-vordlus')}>
+        <Button appearance='icon' onClick={() => navigate('/analytics/models')}>
           <MdOutlineArrowBack />
         </Button>
         <h1>{t('training.mba.modelResults')}</h1>

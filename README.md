@@ -27,4 +27,4 @@ Ready to go: **docker-compose up -d**
 
 > Bürokratt Play acts the same as `dev` environment. Play gets updated after new code commits reach `main` branch, so the result can be faulty and/or down at any given time.
 
-http://play.buerokratt.ee:3104/treening/treening/teemad
+http://play.buerokratt.ee:3104/training/intents
