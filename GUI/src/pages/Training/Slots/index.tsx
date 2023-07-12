@@ -53,7 +53,7 @@ const Slots: FC = () => {
       cell: (props) => (
         <Button
           appearance='text'
-          onClick={() => navigate(`/treening/treening/malukohad/${props.row.original.id}`)}
+          onClick={() => navigate(`/training/slots/${props.row.original.id}`)}
         >
           <Icon
             label={t('global.edit')}
@@ -100,7 +100,7 @@ const Slots: FC = () => {
             hideLabel
             onChange={(e) => setFilter(e.target.value)}
           />
-          <Button onClick={() => navigate('/treening/treening/malukohad/uus')}>{t('global.add')}</Button>
+          <Button onClick={() => navigate('/training/slots/new')}>{t('global.add')}</Button>
         </Track>
       }>
         <DataTable data={slots} columns={slotsColumns} globalFilter={filter} setGlobalFilter={setFilter} sortable />

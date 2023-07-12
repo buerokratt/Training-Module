@@ -53,7 +53,7 @@ const Forms: FC = () => {
       cell: (props) => (
         <Button
           appearance='text'
-          onClick={() => navigate(`/treening/treening/vormid/${props.row.original.id}`)}
+          onClick={() => navigate(`/training/forms/${props.row.original.id}`)}
         >
           <Icon
             label={t('global.edit')}
@@ -100,7 +100,7 @@ const Forms: FC = () => {
             hideLabel
             onChange={(e) => setFilter(e.target.value)}
           />
-          <Button onClick={() => navigate('/treening/treening/vormid/uus')}>{t('global.add')}</Button>
+          <Button onClick={() => navigate('/training/forms/new')}>{t('global.add')}</Button>
         </Track>
       }>
         <DataTable data={forms} columns={formsColumns} globalFilter={filter} setGlobalFilter={setFilter} sortable />

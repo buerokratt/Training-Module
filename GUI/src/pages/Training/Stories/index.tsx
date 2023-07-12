@@ -140,7 +140,7 @@ const Stories: FC = () => {
                 hideLabel
                 onChange={(e) => setFilter(e.target.value)}
               />
-              <Button onClick={() => navigate('/treening/treening/kasutuslood/uus')}>{t('global.add')}</Button>
+              <Button onClick={() => navigate('/training/stories/new')}>{t('global.add')}</Button>
             </Track>
           </div>
           <div className='vertical-tabs__content'>

@@ -39,8 +39,8 @@ const IntentsOverview: FC = () => {
       cell: (props) => (
         <Link
           to={props.row.original.intent.startsWith('common')
-            ? `/treening/treening/avalikud-teemad?intent=${props.row.original.intent}#tabs`
-            : `/treening/treening/teemad?intent=${props.row.original.intent}#tabs`
+            ? `/training/common-intents?intent=${props.row.original.intent}#tabs`
+            : `/training/intents?intent=${props.row.original.intent}#tabs`
           }
           style={{ color: '#005AA3' }}>
           {t('training.mba.gotoExample')}

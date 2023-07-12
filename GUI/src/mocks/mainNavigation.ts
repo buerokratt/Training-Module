@@ -16,35 +16,35 @@ export const mainNavigationET = [
         children: [
           {
             label: 'Teemad',
-            path: '/treening/treening/teemad',
+            path: '/training/intents',
           },
           {
             label: 'Avalikud teemad',
-            path: '/treening/treening/avalikud-teemad',
+            path: '/training/common-intents',
           },
           {
             label: 'Teemade järeltreenimine',
-            path: '/treening/treening/teemade-jareltreenimine',
+            path: '/training/intents-followup-training',
           },
           {
             label: 'Vastused',
-            path: '/treening/treening/vastused',
+            path: '/training/responses',
           },
           {
             label: 'Kasutuslood',
-            path: '/treening/treening/kasutuslood',
+            path: '/training/stories',
           },
           {
             label: 'Konfiguratsioon',
-            path: '/treening/treening/konfiguratsioon',
+            path: '/training/configuration',
           },
           {
             label: 'Vormid',
-            path: '/treening/treening/vormid',
+            path: '/training/forms',
           },
           {
             label: 'Mälukohad',
-            path: '/treening/treening/malukohad',
+            path: '/training/slots',
           },
         ],
       },
@@ -54,11 +54,11 @@ export const mainNavigationET = [
         children: [
           {
             label: 'Ajalugu',
-            path: '/treening/ajaloolised-vestlused/ajalugu',
+            path: '/history/history',
           },
           {
             label: 'Pöördumised',
-            path: '/treening/ajaloolised-vestlused/poordumised',
+            path: '/history/appeal',
           },
         ],
       },
@@ -68,21 +68,21 @@ export const mainNavigationET = [
         children: [
           {
             label: 'Teemade ülevaade',
-            path: '/treening/mudelipank-ja-analuutika/teemade-ulevaade',
+            path: '/analytics/overview',
           },
           {
             label: 'Mudelite võrdlus',
-            path: '/treening/mudelipank-ja-analuutika/mudelite-vordlus',
+            path: '/analytics/models',
           },
           {
             label: 'Testlood',
-            path: '/treening/mudelipank-ja-analuutika/testlood',
+            path: '/analytics/testcases',
           },
         ],
       },
       {
         label: 'Treeni uus mudel',
-        path: '/treening/treeni-uus-mudel',
+        path: '/train-new-model',
       },
     ],
   },

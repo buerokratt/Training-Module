@@ -61,7 +61,7 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
     mutationFn: (data: SlotCreateDTO) => createSlot(data),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['slots']);
-      navigate('/treening/treening/malukohad');
+      navigate('/training/slots');
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -81,7 +81,7 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
     mutationFn: ({ id, data }: { id: string | number, data: SlotEditDTO }) => editSlot(id, data),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['slots']);
-      navigate('/treening/treening/malukohad');
+      navigate('/training/slots');
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -108,7 +108,7 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
   return (
     <>
       <Track gap={16}>
-        <Button appearance='icon' onClick={() => navigate('/treening/treening/malukohad')}>
+        <Button appearance='icon' onClick={() => navigate('/training/slots')}>
           <MdOutlineArrowBack />
         </Button>
         <h1>{t('training.slots.titleOne')}</h1>

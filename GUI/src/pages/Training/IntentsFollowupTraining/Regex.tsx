@@ -88,7 +88,7 @@ const Regex: FC = () => {
       header: '',
       cell: (props) => (
         <Button appearance='text'
-                onClick={() => navigate(`/treening/treening/teemade-jareltreenimine/regex/${props.row.original.id}`)}>
+                onClick={() => navigate(`/training/regex/${props.row.original.id}`)}>
           <Icon
             label={t('global.edit')}
             icon={<MdOutlineEdit color={'rgba(0,0,0,0.54)'} />}

@@ -311,7 +311,7 @@ const RegexDetail: FC = () => {
   return (
     <>
       <Track gap={16}>
-        <Button appearance='icon' onClick={() => navigate('/treening/treening/teemade-jareltreenimine?tab=regex')}>
+        <Button appearance='icon' onClick={() => navigate('/training/intents-followup-training?tab=regex')}>
           <MdOutlineArrowBack />
         </Button>
         <h1>{t('training.intents.entity')}</h1>

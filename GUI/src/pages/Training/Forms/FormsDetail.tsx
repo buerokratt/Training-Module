@@ -50,7 +50,7 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
     mutationFn: (data: { form: string }) => createForm(data),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['forms']);
-      navigate('/treening/treening/vormid');
+      navigate('/training/forms');
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -70,7 +70,7 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
     mutationFn: ({ id, data }: { id: string | number, data: { form: string } }) => editForm(id, data),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['forms']);
-      navigate('/treening/treening/vormid');
+      navigate('/training/forms');
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -123,7 +123,7 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
   return (
     <>
       <Track gap={16}>
-        <Button appearance='icon' onClick={() => navigate('/treening/treening/vormid')}>
+        <Button appearance='icon' onClick={() => navigate('/training/forms')}>
           <MdOutlineArrowBack />
         </Button>
         <h1>{t('training.forms.titleOne')}</h1>

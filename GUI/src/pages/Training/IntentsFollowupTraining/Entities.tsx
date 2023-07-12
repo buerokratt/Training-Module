@@ -116,7 +116,7 @@ const Entities: FC = () => {
                 key={intent}
                 style={{ color: '#005AA3' }}
                 to={intent.startsWith('common')
-                  ? `/treening/treening/avalikud-teemad?intent=${intent}#tabs`
+                  ? `/training/common-intents?intent=${intent}#tabs`
                   : `/treening/treening/teemad?intent=${intent}#tabs`
                 }
               >

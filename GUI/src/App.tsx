@@ -35,29 +35,29 @@ const App: FC = () => {
   return (
     <Routes>
       <Route element={<Layout />}>
-        <Route index element={<Navigate to='/treening/treening/teemad' />} />
-        <Route path='/treening/treening/teemad' element={<Intents />} />
-        <Route path='/treening/treening/avalikud-teemad' element={<CommonIntents />} />
-        <Route path='/treening/treening/teemade-jareltreenimine' element={<IntentsFollowupTraining />} />
-        <Route path='/treening/treening/teemade-jareltreenimine/regex/:id' element={<RegexDetail />} />
-        <Route path='/treening/treening/vastused' element={<Responses />} />
-        <Route path='/treening/treening/konfiguratsioon' element={<Configuration />} />
-        <Route path='/treening/treening/kasutuslood' element={<Stories />} />
-        <Route path='/treening/treening/kasutuslood/uus' element={<StoriesDetail mode='new' />} />
-        <Route path='/treening/treening/kasutuslood/:id' element={<StoriesDetail mode='edit' />} />
-        <Route path='/treening/treening/malukohad' element={<Slots />} />
-        <Route path='/treening/treening/malukohad/uus' element={<SlotsDetail mode='new' />} />
-        <Route path='/treening/treening/malukohad/:id' element={<SlotsDetail mode='edit' />} />
-        <Route path='/treening/treening/vormid' element={<Forms />} />
-        <Route path='/treening/treening/vormid/uus' element={<FormsDetail mode='new' />} />
-        <Route path='/treening/treening/vormid/:id' element={<FormsDetail mode='edit' />} />
-        <Route path='/treening/ajaloolised-vestlused/ajalugu' element={<History />} />
-        <Route path='/treening/ajaloolised-vestlused/poordumised' element={<Appeals />} />
-        <Route path='/treening/mudelipank-ja-analuutika/teemade-ulevaade' element={<IntentsOverview />} />
-        <Route path='/treening/mudelipank-ja-analuutika/testlood' element={<Testcases />} />
-        <Route path='/treening/mudelipank-ja-analuutika/mudelite-vordlus' element={<Models />} />
-        <Route path='/treening/mudelipank-ja-analuutika/mudelite-vordlus/:id' element={<ModelsDetail />} />
-        <Route path='/treening/treeni-uus-mudel' element={<TrainAndTest />} />
+        <Route index element={<Navigate to='/training/intents' />} />
+        <Route path= '/training/intents' element={<Intents />} />
+        <Route path='/training/common-intents' element={<CommonIntents />} />
+        <Route path='/training/intents-followup-training' element={<IntentsFollowupTraining />} />
+        <Route path='/training/regex/:id' element={<RegexDetail />} />
+        <Route path='/training/responses' element={<Responses />} />
+        <Route path='/training/configuration' element={<Configuration />} />
+        <Route path='/training/stories' element={<Stories />} />
+        <Route path='/training/stories/new' element={<StoriesDetail mode='new' />} />
+        <Route path='/training/stories/:id' element={<StoriesDetail mode='edit' />} />
+        <Route path='/training/slots' element={<Slots />} />
+        <Route path='/training/slots/new' element={<SlotsDetail mode='new' />} />
+        <Route path='/training/slots/:id' element={<SlotsDetail mode='edit' />} />
+        <Route path='/training/forms' element={<Forms />} />
+        <Route path='/training/forms/new' element={<FormsDetail mode='new' />} />
+        <Route path='/training/forms/:id' element={<FormsDetail mode='edit' />} />
+        <Route path='/history/history' element={<History />} />
+        <Route path='/history/appeal' element={<Appeals />} />
+        <Route path='/analytics/overview' element={<IntentsOverview />} />
+        <Route path='/analytics/testcases' element={<Testcases />} />
+        <Route path='/analytics/models' element={<Models />} />
+        <Route path='/analytics/models/:id' element={<ModelsDetail />} />
+        <Route path='/train-new-model' element={<TrainAndTest />} />
       </Route>
     </Routes>
   );
