@@ -9,8 +9,8 @@ info:
   description: API for interacting with the Bürokratt's training module
   
 servers:
-  - url: 'https://admin.play.buerokratt.ee/training/'
-  - url: 'https://admin.play.buerokratt.ee/treening/'
+  - url: 'https://admin.play.buerokratt.ee/training'
+  - url: 'https://admin.play.buerokratt.ee/treening'
 
 tags:
   - name: Intents
