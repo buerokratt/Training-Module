@@ -2,9 +2,11 @@ version: '3.9'
 services:
   ruuter:
     container_name: byk-private-ruuter
-    image: ruuter
+    build:
+      context: C:\Burokratt\ruuter
+      dockerfile: Dockerfile
     environment:
-      - application.cors.allowedOrigins=http://localhost:3001
+      - application.cors.allowedOrigins=http://localhost:3001, http://localhost:3002
     volumes:
       - ./DSL/Ruuter.private:/DSL
     ports:
@@ -13,7 +15,9 @@ services:
       - bykstack
   resql:
     container_name: byk-resql
-    image: resql
+    build:
+      context: C:\Burokratt\Resql
+      dockerfile: Dockerfile
     ports:
       - 8082:8082
     volumes:
@@ -48,11 +52,10 @@ services:
   node:
     container_name: node
     build:
-      context: ./DSL/Node
+      context: ./DSL/DataMapper
     volumes:
       - ./mock1:/mock1
       - ../Service-Module/DSL/mock1:/mock1
-      - ./DSL/DMapper:/DSL/DMapper
     ports:
       - 3000:3000
     networks:

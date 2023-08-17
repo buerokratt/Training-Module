@@ -31,9 +31,7 @@ const Intents: FC = () => {
   const toast = useToast();
   const [searchParams] = useSearchParams();
   const [filter, setFilter] = useState('');
-  const [editingIntentTitle, setEditingIntentTitle] = useState<string | null>(
-    null
-  );
+  const [editingIntentTitle, setEditingIntentTitle] = useState<string | null>(null);
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
   const [selectedIntent, setSelectedIntent] = useState<Intent | null>(null);
   const [deletableIntent, setDeletableIntent] = useState<
@@ -42,16 +40,62 @@ const Intents: FC = () => {
   const [turnIntentToServiceIntent, setTurnIntentToServiceIntent] = useState<
     Intent | null
   >(null);
-  const { data: intents } = useQuery<Intent[]>({
+
+  // const { data: intents } = useQuery<Intent[]>({
+  //   queryKey: ['intents'],
+  // });
+
+  const { data: apiResponseIntents } = useQuery({
     queryKey: ['intents'],
   });
+
+  const { data: apiResponseInModel } = useQuery({
+    queryKey: ['intents/in-model'],
+  });
+
+    // if (isLoading) {
+    //
+    // } else if (error) {
+    //
+    // }
+
+  console.log('apiResponseModel ::: ', apiResponseInModel);
+
+  // const intents: Intent[] = apiResponseIntents?.response?.intents ?? [];
+  const intentTitles = apiResponseIntents?.response?.intents ?? [];
+  const inModelTitles = apiResponseInModel?.response ?? [];
+
+  // const { data: apiResponseInModel } = useQuery({
+  //   queryKey: ['intents/in-model'],
+  // });
+
   const { data: examples } = useQuery<string[]>({
     queryKey: [`intents/${selectedIntent?.id}/examples`, selectedIntent?.id],
     enabled: !!selectedIntent,
   });
-  const { data: entities } = useQuery<Entity[]>({
+
+  const intents : Intent[] = Array.isArray(intentTitles)
+    ? intentTitles.map(( title: string, index: number ) => ({
+          id: index +1,
+          intent: title,
+          description: null,
+          inModel: inModelTitles.includes(title),
+          modifiedAt: '',
+          examplesCount: null,
+          }))
+      : [];
+
+  console.log('Index page intents: ', intents);
+  console.log('examples', examples);
+
+  const { data: apiResponseEntities } = useQuery({
     queryKey: ['entities'],
   });
+
+  const entities = apiResponseEntities?.response?.entities ?? [];
+  console.log('entities', entities);
+
+
   const serviceModuleGuiBaseUrl = import.meta.env.REACT_APP_SERVICE_MODULE_GUI_BASE_URL;
 
   useEffect(() => {
@@ -156,11 +200,12 @@ const Intents: FC = () => {
 
   useDocumentEscapeListener(() => setEditingIntentTitle(null));
 
-  const filteredIntents = useMemo(
-    () =>
-      intents ? intents.filter((intent) => intent.intent.includes(filter)) : [],
-    [intents, filter]
-  );
+  const filteredIntents = useMemo(() => {
+    if (!intents) return [];
+    return intents.filter((intent) => intent.intent?.includes(filter));
+  }, [intents, filter]);
+
+  // console.log("FILTERED: " + filteredIntents);
 
   const handleTabsValueChange = useCallback(
     (value: string) => {

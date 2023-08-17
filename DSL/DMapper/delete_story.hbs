@@ -1,7 +1,0 @@
-[
-  {{#each stories}}
-    {{#unless (eq story ../story_name)}}
-      {{{toJSON this}}}{{#unless @last}},{{/unless}}
-    {{/unless}}
-  {{/each}}
-]
