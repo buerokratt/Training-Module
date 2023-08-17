@@ -1,0 +1,15 @@
+{
+{{#if hits}}
+    "story": "{{hits.0._source.story}}",
+    "steps": [
+        {{#each hits.0._source.steps as |step|}}
+            {{#each step}}
+                {
+                "{{@key}}": "{{this}}"
+                }{{#unless @last}},{{/unless}}
+            {{/each}}
+        {{#unless @last}},{{/unless}}
+        {{/each}}
+    ]
+{{/if}}
+}

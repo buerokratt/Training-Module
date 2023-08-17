@@ -1,0 +1,14 @@
+{
+  "regexes": [
+    {{#each hits}}
+       {{#if ../examples}}{"{{_source.regex}}":
+        [
+          {{#each _source.examples}}
+            "{{this}}"{{#unless @last}},{{/unless}}
+          {{/each}}
+        ]
+        }
+      {{else}}"{{_source.regex}}"{{/if}}{{#unless @last}},{{/unless}}
+    {{/each}}
+  ]
+}
