@@ -16,14 +16,18 @@ import '../i18n';
 const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
   let apiInstance;
 
+
+  // Temporary solution to let some API requests use Ruuter instead of MSW
+  // Add keywords to the array to make the request go into Ruuter's endpoint
+  const keywords = ['intent', 'entities', 'in-model'];
+
   // @ts-ignore
-  if (queryKey[0].startsWith('intent') ||
-      queryKey[0].startsWith('entities') ||
-      queryKey[0].startsWith('in-model')) {
+  if (keywords.some(keyword => queryKey[0].startsWith(keyword))) {
     apiInstance = apiRuuter;
   } else {
     apiInstance = api;
   }
+
 
   const { data } = await apiInstance.get(queryKey[0] as string);
   return data;
