@@ -11,6 +11,26 @@
 const INTEGRITY_CHECKSUM = '3d6b9f06410d179a7f7404d4bf4c3c70'
 const activeClientIds = new Set()
 
+const bypassURLs = [
+    'entities',
+    'intents'
+];
+
+self.addEventListener('fetch', function (event) {
+    const { request } = event;
+    const URL = request.url;
+    console.log("Request made to: " + URL);
+
+    const isBypassURL = bypassURLs.some((bypassURL) => {
+        return URL.includes(bypassURL);
+    });
+
+    if (isBypassURL) {
+      event.respondWith(fetch(request));
+      return;
+    }
+});
+
 self.addEventListener('install', function () {
   self.skipWaiting()
 })

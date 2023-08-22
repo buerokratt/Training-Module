@@ -1,9 +1,10 @@
-import api from './api';
+import api from './temp-api';
+import ruuterApi from "./ruuter-api";
 import localDevApi from './local-dev-api';
 import { Intent } from 'types/intent';
 
 export async function addIntent(newIntentData: { name: string }) {
-  const { data } = await api.post('intents', newIntentData);
+  const { data } = await ruuterApi.post('/rasa/intents/add', newIntentData);
   return data;
 }
 

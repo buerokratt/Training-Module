@@ -1,7 +1,14 @@
 import axios, { AxiosError } from 'axios';
 
+let URL: string;
+if (import.meta.env.REACT_APP_MODE === 'development-mock') {
+  URL = import.meta.env.BASE_URL + 'api/';
+} else {
+  URL = import.meta.env.REACT_APP_RUUTER_URL + 'rasa/';
+}
+
 const instance = axios.create({
-  baseURL: import.meta.env.BASE_URL + 'api/',
+  baseURL: URL,
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
