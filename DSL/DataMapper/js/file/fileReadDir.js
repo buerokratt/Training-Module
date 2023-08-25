@@ -1,6 +1,7 @@
-import express, { Router } from 'express';
-import fs from "fs";
-const router: Router = express.Router();
+import express from 'express';
+import fs from 'fs';
+
+const router = express.Router();
 
 router.post('/', (req, res) => {
     const file_path = req.body.file_path;
@@ -17,4 +18,5 @@ router.post('/', (req, res) => {
     const fileNames = fs.readdirSync(file_path, 'utf-8');
     res.json(fileNames);
 });
+
 export default router;

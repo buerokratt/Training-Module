@@ -1,6 +1,7 @@
-import express, { Router } from 'express';
-import fs from "fs";
-const router: Router = express.Router();
+import express from 'express';
+import fs from 'fs';
+
+const router = express.Router();
 
 router.post('/', (req, res) => {
     const filePath = req.body.file_path;
@@ -14,13 +15,14 @@ router.post('/', (req, res) => {
         res.status(400).send('Relative paths are not allowed');
         return;
     }
-    fs.unlink(filePath, (err) => {
+    fs.access(filePath, (err) => {
         if (err) {
             console.error(err);
-            res.status(500).send('Error deleting file');
-            return;
+            res.json(false);
+        } else {
+            res.json(true);
         }
-        res.status(200).send('File deleted successfully');
     });
 });
+
 export default router;

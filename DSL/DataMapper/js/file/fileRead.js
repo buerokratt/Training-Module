@@ -1,7 +1,7 @@
-import express, { Router } from 'express';
-import fs from "fs";
-import mime from "mime-types";
-const router: Router = express.Router();
+import express from 'express';
+import fs from 'fs';
+import mime from 'mime-types';
+const router = express.Router();
 
 router.post('/', (req, res) => {
     const file_path = req.body.file_path;
@@ -35,4 +35,5 @@ router.post('/', (req, res) => {
         res.json(result);
     });
 });
+
 export default router;

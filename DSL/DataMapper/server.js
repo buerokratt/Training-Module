@@ -5,17 +5,36 @@ const { JSDOM } = jsdom;
 import secrets from "./controllers/secrets.js";
 import fs from "fs";
 import files from "./controllers/files.js";
+import mapper from "./controllers/mapper.js";
 import crypto from "crypto";
 
 import encryption from "./controllers/encryption.js";
 import decryption from "./controllers/decryption.js";
 import * as path from "path";
 import { fileURLToPath } from "url";
-import sendMockEmail from "./js/email/sendMockEmail.js";
 import { generatePdf } from "./js/generate/pdf.js";
 import { generatePdfToBase64 } from "./js/generate/pdfToBase64.js";
 import { generateHTMLTable } from "./js/convert/pdf.js";
-import * as helpers from "./lib/helpers.js";
+import helpers from "./lib/helpers.js";
+import fileRead from "./js/file/fileRead.js";
+import fileReadDir from "./js/file/fileReadDir.js";
+import fileWrite from "./js/file/fileWrite.js";
+import fileDelete from "./js/file/delete.js";
+import fileCheck from "./js/file/fileCheck.js";
+import merge from "./js/util/merge.js";
+import mergeObjects from "./js/util/mergeObjects.js";
+import mergeRemoveKey from "./js/util/mergeRemoveKey.js";
+import mergeRemoveArrayValue from "./js/util/mergeRemoveArrayValue.js";
+import mergeReplaceArrayElement from "./js/util/mergeReplaceArrayElement.js";
+import validate from "./js/util/validate.js";
+import yamlToJson from "./js/convert/yamlToJson.js";
+import jsonToYaml from "./js/convert/jsonToYaml.js";
+import csvToJson from "./js/convert/csvToJson.js";
+import stringSplit from "./js/util/stringSplit.js";
+import stringReplace from "./js/util/stringReplace.js";
+import removeRulesByIntentName from "./js/util/removeRulesByIntentName.js";
+import domainUpdateExistingResponse from "./js/util/domainUpdateExistingResponse.js";
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
   modulusLength: 2048,
@@ -24,9 +43,29 @@ const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
 const PORT = process.env.PORT || 3000;
 const app = express();
 const hbs = create({ helpers });
+
 app.use(express.json());
 app.use("/file-manager", files);
+app.use('/file/read', fileRead);
+app.use('/file/read-directory', fileReadDir);
+app.use('/file/write', fileWrite);
+app.use('/file/delete', fileDelete);
+app.use('/file/check', fileCheck);
+app.use('/merge', merge);
+app.use('/merge/objects', mergeObjects);
+app.use('/merge/remove-key', mergeRemoveKey);
+app.use('/merge/remove-array-value', mergeRemoveArrayValue);
+app.use('/merge/replace-array-element', mergeReplaceArrayElement);
+app.use('/validate/array-elements-length', validate);
+app.use('/convert/yaml-to-json', yamlToJson)
+app.use('/convert/json-to-yaml', jsonToYaml)
+app.use('/convert/csv-to-json', csvToJson)
+app.use('/convert/string/split', stringSplit)
+app.use('/convert/string/replace', stringReplace)
+app.use('/rules/remove-by-intent-name', removeRulesByIntentName);
+app.use('/domain/update-existing-response', domainUpdateExistingResponse)
 app.use(express.urlencoded({ extended: true }));
+
 app.use(
   "/encryption",
   encryption({
@@ -43,6 +82,8 @@ app.use(
 );
 
 app.engine("handlebars", hbs.engine);
+app.use("/dmapper", mapper)
+
 app.set("view engine", "handlebars");
 app.set("views", "./views");
 app.use("/secrets", secrets);
