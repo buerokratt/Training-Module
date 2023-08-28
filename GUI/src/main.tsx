@@ -19,7 +19,7 @@ const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
 
   // Temporary solution to let some API requests use Ruuter instead of MSW
   // Add keywords to the array to make the request go into Ruuter's endpoint
-  const keywords = ['intent', 'entities', 'in-model', 'responses'];
+  const keywords = ['intent', 'entities', 'in-model'];
 
   // @ts-ignore
   if (keywords.some(keyword => queryKey[0].startsWith(keyword))) {

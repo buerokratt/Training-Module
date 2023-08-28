@@ -3,7 +3,7 @@ import Handlebars from "handlebars";
 import fs from "fs";
 
 const router: Router = express.Router();
-const pathToHbs = '/workspace/app/views/training/';
+const pathToHbs = '/DSL/DMapper/';
 
 Handlebars.registerHelper('toJSON', function(obj) {
     return JSON.stringify(obj);
