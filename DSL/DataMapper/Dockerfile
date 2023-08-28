@@ -1,7 +1,7 @@
 FROM node:19
 
 ENV NODE_ENV development
-WORKDIR /workspace/app/
+WORKDIR /usr/src/app
 
 COPY controllers controllers
 COPY lib lib

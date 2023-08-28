@@ -1,20 +1,9 @@
-import express, { Router } from 'express';
+import express from 'express';
 
-const router: Router = express.Router();
-
-interface RequestBody {
-  readonly json: {
-    [key: string]: {
-      text: string;
-    }[]
-  };
-  readonly searchKey: string;
-  readonly newKey: string;
-  readonly newKeyValue: string;
-}
+const router = express.Router();
 
 router.post('/', (req, res) => {
-  const { json, searchKey, newKey, newKeyValue }: RequestBody = req.body;
+  const { json, searchKey, newKey, newKeyValue } = req.body;
   if (!json || !searchKey || !newKey || !newKeyValue) {
     return res.status(400).send('json, searchKey, newKey, newKeyValue are required fields');
   }

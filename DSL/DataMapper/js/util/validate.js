@@ -1,13 +1,9 @@
-import express, { Router } from 'express';
-const router: Router = express.Router();
+import express from 'express';
 
-interface ArrayElementsLengthBody {
-    array: Array<string>;
-    length: number;
-}
+const router = express.Router();
 
 router.post('/', (req, res) => {
-    const { array, length }: ArrayElementsLengthBody = req.body;
+    const { array, length } = req.body;
 
     if (!array || !length) {
         res.status(400).send('Both array and length parameters are required');

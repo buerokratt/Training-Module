@@ -58,7 +58,7 @@ if (import.meta.env.REACT_APP_MODE === 'development-api') {
   const prepare = async () => {
     return worker.start({
       serviceWorker: {
-        url: 'mockServiceWorker.js'
+        url: '/training/mockServiceWorker.js'
       }
     });
   };
