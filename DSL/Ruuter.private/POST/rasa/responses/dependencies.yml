@@ -20,7 +20,7 @@ validatePermission:
 getResponsesWithNameAndText:
   call: http.post
   args:
-    url: http://host.docker.internal:9200/responses/_search/template
+    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/responses/_search/template"
     body:
       id: "response-with-name-and-text"
       params: ${params}
@@ -35,7 +35,7 @@ validateResponse:
 ruleResponses:
   call: http.post
   args:
-    url: http://localhost:8080/rasa/rules/search
+    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/rules/search"
     headers:
       cookie: ${cookie}
     body:
@@ -46,7 +46,7 @@ ruleResponses:
 storiesResponses:
   call: http.post
   args:
-    url: http://localhost:8080/rasa/stories/search
+    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/stories/search"
     headers:
       cookie: ${cookie}
     body:
@@ -57,7 +57,7 @@ storiesResponses:
 mapResponsesData:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/dmapper/get-response-dependencies
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-response-dependencies
     body:
       response: ${getResponsesResult.response.body.hits.hits}
       stories: ${storiesResponses.response.body.response.stories}

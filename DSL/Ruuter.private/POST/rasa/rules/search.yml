@@ -20,7 +20,7 @@ validatePermission:
 getRulesSearch:
   call: http.post
   args:
-    url: http://host.docker.internal:9200/rules/_search/template
+    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/rules/_search/template"
     body:
       id: ${"rule-with-"+params.type}
       params: ${params}
@@ -29,7 +29,7 @@ getRulesSearch:
 mapRulesData:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/dmapper/get-rules
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-rules"
     body:
       hits: ${getRulesResult.response.body.hits.hits}
   result: rulesData

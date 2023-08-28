@@ -16,13 +16,13 @@ validatePermission:
 getSlots:
   call: http.get
   args:
-    url: http://host.docker.internal:9200/slots/_search?size=10000
+    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/slots/_search?size=10000"
   result: getSlotsResult
 
 mapSlotsData:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/dmapper/get-slots
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-slots"
     body:
       hits: ${getSlotsResult.response.body.hits.hits}
   result: slotsData
