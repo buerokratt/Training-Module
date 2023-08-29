@@ -1,0 +1,1560 @@
+openapi: 3.0.3
+
+info:
+  title: Bürokratt Training Module API
+  version: 0.1.0
+  license:
+    name: MIT
+    url: 'https://opensource.org/licenses/MIT'
+  description: API for interacting with the Bürokratt's training module
+  
+servers:
+  - url: 'https://admin.play.buerokratt.ee/training'
+  - url: 'https://admin.play.buerokratt.ee/treening'
+
+tags:
+  - name: Intents
+    description: Endpoints for intents
+  - name: Forms
+    description: Endpoints for forms
+  - name: Slots
+    description: Endpoints for slots
+  - name: Responses
+    description: Endpoints for responses
+  - name: Rules
+    description: Endpoints for rules
+  - name: Stories
+    description: Endpoints for stories
+  - name: Test stories
+    description: Endpoints for test stories
+  - name: Entities
+    description: Endpoints for entities
+  - name: Regex
+    description: Endpoints for regex
+  - name: Examples
+    description: Endpoints for examples
+  - name: Config
+    description: Endpoints for config
+  - name: Rasa training
+    description: Endpoints for rasa training
+  - name: Nodejs
+    description: Endpoints for Nodejs
+  - name: Metrics
+    description: Endpoints for metrics
+
+servers:
+  - url: 'http://play.buerokratt.ee/training/api'
+
+
+paths:
+  /intents:
+    get:
+      tags:
+        - Intents
+      summary: List all Rasa intents
+      operationId: getIntents
+      responses:
+        '200':
+          description: A list of intents
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Intent'
+    post:
+      tags:
+        - Intents
+      summary: List intents starting with a certain pattern
+      operationId: searchIntents
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                intent_name:
+                  type: string
+                  example: common_
+      responses:
+        '200':
+          description: A list of intents starting with the specified pattern
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  /intents/in-model:
+    get:
+      tags:
+        - Intents
+      summary: Get a list of intents in the model
+      operationId: getIntentsInModel
+      parameters:
+        - name: intent_name
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of intents in the model
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  /intents/examples:
+    post:
+      tags:
+        - Intents
+      summary: List all examples for intent named 'common_greeting_ee'
+      operationId: getIntentExamples
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                intent_name:
+                  type: string
+                  example: "common_greeting_ee"
+      responses:
+        '200':
+          description: List of all examples for the intent
+  /intents/examples/add:
+    post:
+      tags:
+        - Intents
+      summary: Add new examples
+      operationId: addIntentExamples
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  intent_name:
+                    type: string
+                  example:
+                    type: string
+      responses:
+        '200':
+          description: Confirmation of examples added
+  /intents/examples/update:
+    post:
+      tags:
+        - Intents
+      summary: Update examples of an existing intent
+      operationId: updateIntentExamples
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                intent_name:
+                  type: string
+                target:
+                  type: string
+                example:
+                  type: string
+      responses:
+        '200':
+          description: Confirmation of examples updated
+  /intents/examples/delete:
+    post:
+      tags:
+        - Intents
+      summary: Delete an existing example of an intent
+      operationId: deleteIntentExamples
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                intent_name:
+                  type: string
+                target:
+                  type: string
+      responses:
+        '200':
+          description: Confirmation of example deleted
+  /intents/history/last-modified/{intentID}:
+    get:
+      tags:
+        - Intents
+      summary: Get the last modified intent by ID
+      operationId: getIntentLastModified
+      parameters:
+        - name: intentID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Last modified intent details
+  /intents/add:
+    post:
+      tags:
+        - Intents
+      summary: Add new intents
+      operationId: addIntent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                intent_name:
+                  type: string
+      responses:
+        '200':
+          description: Confirmation of intent added
+  /intents/update:
+    post:
+      tags:
+        - Intents
+      summary: Update existing intents
+      operationId: updateIntent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                target:
+                  type: string
+                intent_name:
+                  type: string
+      responses:
+        '200':
+          description: Confirmation of intent updated
+  /intents/delete:
+    post:
+      tags:
+        - Intents
+      summary: Delete existing intents
+      operationId: deleteIntent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                intent_name:
+                  type: string
+      responses:
+        '200':
+          description: Confirmation of intent deleted
+  /rasa/forms:
+    get:
+      tags:
+        - Forms
+      summary: List all Rasa forms
+      operationId: getForms
+      responses:
+        '200':
+          description: A list of Rasa forms
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Form'
+    post:
+      tags:
+        - Forms
+      summary: Fetch the full content of a specified form
+      operationId: getFormsByName
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                form_name:
+                  type: string
+      responses:
+        '200':
+          description: The full content of a specified form
+          content:
+            application/json:
+              schema:
+                type: object
+  /rasa/forms/search:
+    post:
+      tags:
+        - Forms
+      summary: Search Rasa forms, slots, or responses
+      operationId: searchForms
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                  example: slots
+                input:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Search results
+  /rasa/forms/add:
+    post:
+      tags:
+        - Forms
+      summary: Add new Rasa forms
+      operationId: addForm
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                form_name:
+                  type: string
+                ignored_intents:
+                  type: array
+                  items:
+                    type: string
+                required_slots:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Confirmation of form added
+  /rasa/forms/update:
+    post:
+      tags:
+        - Forms
+      summary: Update an existing Rasa form
+      operationId: updateForm
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                form_name:
+                  type: string
+                ignored_intents:
+                  type: array
+                  items:
+                    type: string
+                required_slots:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Confirmation of form updated
+  /rasa/forms/delete:
+    post:
+      tags:
+        - Forms
+      summary: Delete an existing Rasa form
+      operationId: deleteForm
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                form_name:
+                  type: string
+      responses:
+        '200':
+          description: Confirmation of form deleted
+  /rasa/slots:
+    get:
+      tags:
+        - Slots
+      summary: List all Rasa slots
+      operationId: getSlots
+      responses:
+        '200':
+          description: A list of Rasa slots
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Slot'
+    post:
+      tags:
+        - Slots
+      summary: Fetch the full content of a specified slot
+      operationId: getSlotsByName
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                slot_name:
+                  type: string
+      responses:
+        '200':
+          description: The full content of a specified slot
+          content:
+            application/json:
+              schema:
+                type: object
+  /rasa/slots/add:
+    post:
+      tags:
+        - Slots
+      summary: Add new Rasa slots
+      operationId: addSlot
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                slot_name:
+                  type: string
+                mapping_type:
+                  type: string
+                  enum: [from_text, from_entity]
+                mapping_entity:
+                  type: string
+                mapping_intent:
+                  type: array
+                  items:
+                    type: string
+                mapping_not_intent:
+                  type: array
+                  items:
+                    type: string
+                influence_conversation:
+                  type: boolean
+      responses:
+        '200':
+          description: Confirmation of slot added
+  /rasa/slots/update:
+    post:
+      tags:
+        - Slots
+      summary: Update an existing Rasa slot
+      operationId: updateSlot
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                slot_name:
+                  type: string
+                mapping_type:
+                  type: string
+                  enum: [from_text, from_entity]
+                mapping_entity:
+                  type: string
+                mapping_intent:
+                  type: array
+                  items:
+                    type: string
+                mapping_not_intent:
+                  type: array
+                  items:
+                    type: string
+                influence_conversation:
+                  type: boolean
+      responses:
+        '200':
+          description: Confirmation of slot updated
+  /rasa/slots/delete:
+    post:
+      tags:
+        - Slots
+      summary: Delete an existing Rasa slot
+      operationId: deleteSlot
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                slot_name:
+                  type: string
+      responses:
+        '200':
+          description: Confirmation of slot deleted
+  /rasa/responses:
+    get:
+      tags:
+        - Responses
+      summary: List all Rasa responses
+      operationId: getResponses
+      responses:
+        '200':
+          description: A list of Rasa responses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Response'
+    post:
+      tags:
+        - Responses
+      summary: Fetch the full content of a specified response
+      operationId: getResponsesByName
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                response_name:
+                  type: string
+      responses:
+        '200':
+          description: The full content of a specified response
+          content:
+            application/json:
+              schema:
+                type: object
+  /rasa/responses/add:
+    post:
+      tags:
+        - Responses
+      summary: Add new Rasa responses
+      operationId: addResponse
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                response_name:
+                  type: string
+                response:
+                  type: string
+      responses:
+        '200':
+          description: Confirmation of response added
+  /rasa/responses/update:
+    post:
+      tags:
+        - Responses
+      summary: Update an existing Rasa response
+      operationId: updateResponse
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                response_name:
+                  type: string
+                response:
+                  type: string
+      responses:
+        '200':
+          description: Confirmation of response updated
+  /rasa/responses/delete:
+    post:
+      tags:
+        - Responses
+      summary: Delete an existing Rasa response
+      operationId: deleteResponse
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                response_name:
+                  type: string
+      responses:
+        '200':
+          description: Confirmation of response deleted
+  /rasa/responses/dependencies:
+    get:
+      tags:
+        - Responses
+      summary: List all Rasa dependencies grouped by responses
+      operationId: addResponseDependencies
+      responses:
+        '200':
+          description: List of all Rasa dependencies grouped by responses
+  /rasa/rules:
+    get:
+      tags:
+        - Rules
+      summary: Fetch a list of Rasa rules
+      operationId: getRules
+      responses:
+        '200':
+          description: A list of Rasa rules
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Rule'
+    post:
+      tags:
+        - Rules
+      summary: Fetch the full content of a specified rule
+      operationId: getRuleByName
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rule_name:
+                  type: string
+      responses:
+        '200':
+          description: The full content of a specified rule
+          content:
+            application/json:
+              schema:
+                type: object
+  /rasa/rules/search:
+    post:
+      tags:
+        - Rules
+      summary: Search for Rasa rules
+      operationId: searchRules
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum: ['slots', 'forms', 'responses']
+                input:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Search results
+  /rasa/rules/add:
+    post:
+      tags:
+        - Rules
+      summary: Add new Rasa rules
+      operationId: addRule
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Confirmation of rule added
+  /rasa/rules/update:
+    post:
+      tags:
+        - Rules
+      summary: Update an existing Rasa rule
+      operationId: updateRule
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Confirmation of rule updated
+  /rasa/rules/delete:
+    post:
+      tags:
+        - Rules
+      summary: Delete an existing rule
+      operationId: deleteRule
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rule_name:
+                  type: string
+      responses:
+        '200':
+          description: Confirmation of rule deleted
+  /rasa/stories:
+    get:
+      tags:
+        - Stories
+      summary: Fetch a list of Rasa stories
+      operationId: getStories
+      responses:
+        '200':
+          description: A list of Rasa stories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Story'
+    post:
+      tags:
+        - Stories
+      summary: Fetch the full content of a specified story
+      operationId: getStoriesByName
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                story_name:
+                  type: string
+      responses:
+        '200':
+          description: The full content of a specified story
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  /rasa/stories/search:
+    post:
+      tags:
+        - Stories
+      summary: Search for Rasa stories
+      operationId: searchStories
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum: ['slots', 'forms', 'responses']
+                input:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Search results
+  /rasa/stories/add:
+    post:
+      tags:
+        - Stories
+      summary: Add new Rasa stories
+      operationId: addStory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Confirmation of story added
+  /rasa/stories/update:
+    post:
+      tags:
+        - Stories
+      summary: Update an existing Rasa story
+      operationId: updateStory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Confirmation of story updated
+  /rasa/stories/delete:
+    post:
+      tags:
+        - Stories
+      summary: Delete an existing story
+      operationId: deleteStory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                story_name:
+                  type: string
+      responses:
+        '200':
+          description: Confirmation of story deleted
+  /rasa/test-stories:
+    get:
+      tags:
+        - Test stories
+      summary: Fetch a list of Rasa test stories
+      operationId: getTestStories
+      responses:
+        '200':
+          description: A list of Rasa test stories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TestStories'
+    post:
+      tags:
+        - Test stories
+      summary: Fetch full content of a specified Rasa test story
+      operationId: getTestStoriesContent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                test_story_name:
+                  type: string
+      responses:
+        '200':
+          description: The full content of a specified test story
+          content:
+            application/json:
+              schema:
+                type: object
+  /rasa/test-stories/links:
+    post:
+      tags:
+        - Test stories
+      summary: Fetch a list of Rasa rules and stories with links to test stories
+      operationId: getTestStoriesLinks
+      responses:
+        '200':
+          description: List of rules and stories with links
+  /rasa/test-stories/add:
+    post:
+      tags:
+        - Test stories
+      summary: Add new Rasa test stories
+      operationId: addTestStory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Confirmation of test story added
+  /rasa/test-stories/update:
+    post:
+      tags:
+        - Test stories
+      summary: Update an existing Rasa test story
+      operationId: updateTestStory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Confirmation of test story updated
+  /rasa/test-stories/delete:
+    post:
+      tags:
+        - Test stories
+      summary: Delete an existing Rasa test story
+      operationId: deleteTestStory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                story_name:
+                  type: string
+      responses:
+        '200':
+          description: Confirmation of test story deleted
+  /rasa/entities:
+    get:
+      tags:
+        - Entities
+      summary: Fetch a list of Rasa entities
+      operationId: getEntities
+      responses:
+        '200':
+          description: A list of Rasa entities
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Entity'
+    post:
+      tags:
+        - Entities
+      summary: Fetch full content of a specified Rasa entity
+      operationId: getEntityContent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                entity_name:
+                  type: string
+      responses:
+        '200':
+          description: The full content of a specified entity
+          content:
+            application/json:
+              schema:
+                type: object
+  /rasa/entities/add:
+    post:
+      tags:
+        - Entities
+      summary: Add a new Rasa entity
+      operationId: addEntity
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Confirmation of entity added
+  /rasa/entities/update:
+    post:
+      tags:
+        - Entities
+      summary: Update an existing Rasa entity
+      operationId: updateEntity
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Confirmation of entity updated
+  /rasa/entities/delete:
+    post:
+      tags:
+        - Entities
+      summary: Delete an existing Rasa entity
+      operationId: deleteEntity
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                entity_name:
+                  type: string
+      responses:
+        '200':
+          description: Confirmation of entity deleted
+  /rasa/regex:
+    get:
+      tags:
+        - Regex
+      summary: Fetch a list of Rasa regexes
+      operationId: getRegex
+      responses:
+        '200':
+          description: A list of Rasa regexes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Regex'
+    post:
+      tags:
+        - Regex
+      summary: Fetch full content of a specified Rasa regex
+      operationId: getRegexContent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                regex_name:
+                  type: string
+      responses:
+        '200':
+          description: The full content of a specified regex
+          content:
+            application/json:
+              schema:
+                type: object
+  /rasa/regex/example:
+    post:
+      tags:
+        - Regex
+      summary: Fetch full content of a specified example within a specified Rasa regex
+      operationId: getRegexExample
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                regex_name:
+                  type: string
+                example_name:
+                  type: string
+      responses:
+        '200':
+          description: Full content of the specified example within the specified regex
+  /rasa/examples:
+    get:
+      tags:
+        - Examples
+      summary: List all Rasa examples
+      operationId: getExamples
+      responses:
+        '200':
+          description: A list of Rasa examples
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Example'
+  /rasa/examples/entities:
+    get:
+      tags:
+        - Examples
+      summary: List all Rasa examples with entities
+      operationId: getExampleEntities
+      responses:
+        '200':
+          description: List of all Rasa examples with entities
+    post:
+      tags:
+        - Examples
+      summary: List all Rasa intents with examples containing a specified entity
+      operationId: getExamplesWithEntity
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                entity_name:
+                  type: string
+      responses:
+        '200':
+          description: List of all Rasa intents with examples containing the specified entity
+  /rasa/config:
+    get:
+      tags:
+        - Config
+      summary: Read the content of Rasa NLU Model Configurations
+      operationId: getConfig
+      responses:
+        '200':
+          description: The content of Rasa NLU Model Configurations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Config'
+  /rasa/config/update:
+    post:
+      tags:
+        - Config
+      summary: Apply changes on Rasa NLU Model Configurations
+      operationId: updateConfig
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                config_content:
+                  type: string
+      responses:
+        '200':
+          description: Confirmation of applied changes
+  /rasa/training/results:
+    get:
+      tags:
+        - Rasa training
+      summary: Fetch a list of training results for trained models
+      operationId: getTrainingResults
+      responses:
+        '200':
+          description: A list of training results for trained models
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+  /rasa/training/results/files:
+    get:
+      tags:
+        - Rasa training
+      summary: Fetch a list of all test results files of a specified trained model
+      operationId: getTrainingResultsFiles
+      parameters:
+        - in: query
+          name: model_name
+          schema:
+            type: string
+          description: Name of the trained model
+      responses:
+        '200':
+          description: List of test results files for a specified trained model
+
+    post:
+      tags:
+        - Rasa training
+      summary: Fetch the full content of a test result file of a specified trained model
+      operationId: getTrainingResultsFilesContent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                model_name:
+                  type: string
+                file_name:
+                  type: string
+      responses:
+        '200':
+          description: Content of a test result file for a specified trained model
+  /convert/yaml-to-json:
+    post:
+      tags:
+        - Nodejs
+      summary: Converts YAML to JSON
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: string
+                output_type:
+                  type: string
+                  enum: ["base64"]
+      responses:
+        '200':
+          description: The converted JSON data
+          content:
+            application/json:
+              schema:
+                type: string
+
+  /convert/json-to-yaml:
+    post:
+      tags:
+        - Nodejs
+      summary: Converts JSON to YAML
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: string
+                output_type:
+                  type: string
+                  enum: ["base64"]
+      responses:
+        '200':
+          description: The converted YAML data
+          content:
+            application/yaml:
+              schema:
+                type: string
+  /convert/csv-to-json:
+    post:
+      tags:
+        - Nodejs
+      summary: Converts CSV to JSON
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: string
+                output_type:
+                  type: string
+                  enum: ["base64"]
+      responses:
+        '200':
+          description: The converted JSON data
+          content:
+            application/json:
+              schema:
+                type: string
+  /file/create:
+    post:
+      tags:
+        - Nodejs
+      summary: Create a new text file
+      description: Create a new text file with specified content
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                filePath:
+                  type: string
+                  description: The path of the file to be created
+                fileContent:
+                  type: string
+                  description: The content of the file to be created
+              required:
+                - filePath
+                - fileContent
+      responses:
+        '200':
+          description: The file was successfully created
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /file/change:
+    post:
+      tags:
+        - Nodejs
+      summary: Change the content of an existing text file
+      description: Change the content of an existing text file
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                filePath:
+                  type: string
+                  description: The path of the file to be changed
+                fileContent:
+                  type: string
+                  description: The new content of the file
+              required:
+                - filePath
+                - fileContent
+      responses:
+        '200':
+          description: The file was successfully changed
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /file/delete:
+    post:
+      tags:
+        - Nodejs
+      summary: Delete an existing text file
+      description: Delete an existing text file
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                filePath:
+                  type: string
+                  description: The path of the file to be deleted
+              required:
+                - filePath
+      responses:
+        '200':
+          description: The file was successfully deleted
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+  /metrics/intents:
+    get:
+      tags:
+        - Metrics
+      summary: Get a count of intents identified, grouped by intents
+      operationId: getIntentMetrics
+      responses:
+        '200':
+          description: A count of intents identified, grouped by intents
+          content:
+            application/json:
+              schema:
+                type: object
+    post:
+      tags:
+        - Metrics
+      summary: Get a count of a specific intent being used
+      operationId: getSpecificIntentMetric
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                intent_name:
+                  type: string
+      responses:
+        '200':
+          description: A count of a specific intent being used
+          content:
+            application/json:
+              schema:
+                type: integer
+components:
+  schemas:
+    Intent:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        intent:
+          type: string
+          example: "common_abi_küsimine"
+        description:
+          type: string
+          example: "Kuidas saan abiks olla?"
+        inModel:
+          type: boolean
+          example: true
+        modifiedAt:
+          type: string
+          format: date-time
+          example: "2022-12-09T12:47:45+05:00"
+        examplesCount:
+          type: integer
+          example: 45
+    Entity:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "asukoht"
+        relatedIntents:
+          type: array
+          items:
+            type: string
+          nullable: true
+          example:
+            - "common_teenus_ilm"
+    Regex:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "asukoht"
+    Story:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        story:
+          type: string
+          example: "happy path"
+    Rule:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        rule:
+          type: string
+          example: "nlu_fallback (1.0)(confidence kontrollimine)"
+    Form:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        form:
+          type: string
+          example: "custom_fallback_form"
+    Slot:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The unique id of the slot.
+          example: 1
+        name:
+          type: string
+          description: The name of the slot
+          example: common_teenus_ilm_asukoht
+    Response:
+      type: object
+      properties:
+        text:
+          type: string
+          description: The response text
+          example: "Jäi arusaamatuks, kas soovisite, et suunan edasi?"
+    Example:
+      type: string
+      example: "jah"
+    Config:
+      type: object
+      properties:
+        recipe:
+          type: string
+          example: "default.v1"
+        language:
+          type: string
+          example: "et"
+        pipeline:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                example: "WhitespaceTokenizer"
+              enabled:
+                type: boolean
+                example: false
+              analyzer:
+                type: string
+                example: "char_wb"
+              min_ngram:
+                type: integer
+                example: 1
+              max_ngram:
+                type: integer
+                example: 4
+              entity_recognition:
+                type: boolean
+                example: false
+              epochs:
+                type: integer
+                example: 20
+              random_seed:
+                type: integer
+                example: 50
+              case_sensitive:
+                type: boolean
+                example: true
+              use_regexes:
+                type: boolean
+                example: true
+              threshold:
+                type: number
+                format: float
+                example: 0.8
+            required:
+              - name
+              - enabled
+        policies:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              name:
+                type: string
+                example: "MemorizationPolicy"
+              enabled:
+                type: boolean
+                example: false
+              priority:
+                type: integer
+                example: 3
+              max_history:
+                type: integer
+                example: 5
+              epochs:
+                type: integer
+                example: 1000
+              enable_fallback_prediction:
+                type: boolean
+                example: false
+              core_fallback_threshold:
+                type: number
+                format: float
+                example: 0.6
+            required:
+              - id
+              - name
+              - enabled
+    TestStories:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        story:
+          type: string
+          example: "common_klienditeenindajale_suunamine"
+        steps:
+          type: object
+          properties:
+            user:
+              type: string
+              example: "tahan suhelda klienditeenindajaga"
+            intent:
+              type: string
+              example: "common_klienditeenindajale_suunamine"
+            action:
+              type: string
+              example: "utter_common_klienditeenindajale_suunamine"
+          required:
+            - user
+            - intent
+            - action
+        hasTest:
+          type: boolean
+          example: false
+        activeStory:
+          type: boolean
+          example: true
+      required:
+        - id
+        - story
+        - steps
+        - hasTest
+        - activeStory
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: customJwtCookie
+
+security:
+  - cookieAuth: []

@@ -20,13 +20,13 @@ validatePermission:
 getFileLocations:
   call: http.get
   args:
-    url: http://localhost:8080/return-file-locations
+    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
   result: fileLocations
 
 checkModelFileExists:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/file/check
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/check
     body:
       file_path: ${fileLocations.response.body.response.training_result_location + '/' + parameters.trained_model + '/' + parameters.file_name}
   result: fileExists
@@ -40,7 +40,7 @@ validateFileExists:
 getTrainedModelFile:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/file/read
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/read
     body:
       file_path: ${fileLocations.response.body.response.training_result_location + '/' + parameters.trained_model + '/' + parameters.file_name}
   result: modelFile

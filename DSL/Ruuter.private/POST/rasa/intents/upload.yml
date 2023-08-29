@@ -20,7 +20,7 @@ validatePermission:
 convertCsvToJson:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/convert/csv-to-json
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/csv-to-json"
     body:
       file: ${parameters.file}
   result: jsonData
@@ -28,7 +28,7 @@ convertCsvToJson:
 mapCsvToArray:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/dmapper/csv-examples-to-array
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/csv-examples-to-array
     body:
       examples: ${jsonData.response.body}
   result: examples
@@ -36,7 +36,7 @@ mapCsvToArray:
 addExamples:
   call: http.post
   args:
-    url: http://localhost:8080/rasa/intents/examples/add
+    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/intents/examples/add"
     headers:
       cookie: ${cookie}
     body:

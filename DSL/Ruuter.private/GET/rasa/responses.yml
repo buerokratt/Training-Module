@@ -1,13 +1,13 @@
 getResponses:
   call: http.get
   args:
-    url: http://host.docker.internal:9200/responses/_search?size=10000
+    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/responses/_search?size=10000"
   result: getResponsesResult
 
 mapResponsesData:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/dmapper/get-responses
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-responses"
     body:
       hits: ${getResponsesResult.response.body.hits.hits}
   result: responsesData

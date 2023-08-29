@@ -20,7 +20,7 @@ validatePermission:
 getEntitiesWithExamples:
   call: http.post
   args:
-    url: http://host.docker.internal:9200/examples-entities/_search/template
+    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/examples-entities/_search/template"
     body:
       id: "entities-with-examples"
       params: ${params}
@@ -29,7 +29,7 @@ getEntitiesWithExamples:
 mapEntitiesData:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/dmapper/get-entities-with-examples
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-entities-with-examples
     body:
       hits: ${getEntitiesResult.response.body.hits.hits}
       examples: ${params.examples}
