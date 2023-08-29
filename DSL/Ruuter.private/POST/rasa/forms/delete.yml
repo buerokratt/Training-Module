@@ -20,7 +20,7 @@ validatePermission:
 getDomainFile:
   call: http.get
   args:
-    url: http://localhost:8080/domain-file
+    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/domain-file"
     headers:
       cookie: ${cookie}
   result: domainData
@@ -34,7 +34,7 @@ validateForms:
 ruleForms:
   call: http.post
   args:
-    url: http://localhost:8080/rasa/rules/search
+    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/rules/search"
     headers:
       cookie: ${cookie}
     body:
@@ -51,7 +51,7 @@ validateRuleForms:
 storiesForms:
   call: http.post
   args:
-    url: http://localhost:8080/rasa/stories/search
+    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/stories/search"
     headers:
       cookie: ${cookie}
     body:
@@ -68,7 +68,7 @@ validateStoriesSlots:
 deleteKey:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/merge/remove-key
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/merge/remove-key"
     body:
       object: ${domainData.response.body.response.forms}
       key: ${parameters.form_name}
@@ -77,7 +77,7 @@ deleteKey:
 convertJsonToYaml:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/convert/json-to-yaml
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml"
     body:
       version: ${domainData.response.body.response.version}
       intents: ${domainData.response.body.response.intents}
@@ -92,13 +92,13 @@ convertJsonToYaml:
 getFileLocations:
   call: http.get
   args:
-    url: http://localhost:8080/return-file-locations
+    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
   result: fileLocations
 
 saveDomainFile:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/file/write
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/write"
     body:
       file_path: ${fileLocations.response.body.response.domain_location}
       content: ${domainYaml.response.body.json}

@@ -20,7 +20,7 @@ validatePermission:
 getDomainFile:
   call: http.get
   args:
-    url: http://localhost:8080/domain-file
+    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/domain-file"
     headers:
       cookie: ${cookie}
   result: domainData
@@ -34,7 +34,7 @@ validateEntities:
 domainEntities:
   call: http.post
   args:
-    url: http://localhost:8080/rasa/entities
+    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/entities"
     headers:
       cookie: ${cookie}
     body:
@@ -50,7 +50,7 @@ validateDomainEntities:
 regexEntities:
   call: http.post
   args:
-    url: http://localhost:8080/rasa/regex
+    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/regex"
     headers:
       cookie: ${cookie}
     body:
@@ -67,7 +67,7 @@ validateRegexEntities:
 intentEntities:
   call: http.post
   args:
-    url: http://localhost:8080/rasa/examples/entities
+    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/examples/entities"
     headers:
       cookie: ${cookie}
     body:
@@ -84,7 +84,7 @@ validateIntentEntities:
 deleteEntity:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/dmapper/delete-entity
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/delete-entity
     body:
       entities: ${domainData.response.body.response.entities}
       entity_name: ${parameters.entity_name}
@@ -93,7 +93,7 @@ deleteEntity:
 convertJsonToYaml:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/convert/json-to-yaml
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml
     body:
       version: ${domainData.response.body.response.version}
       intents: ${domainData.response.body.response.intents}
@@ -108,13 +108,13 @@ convertJsonToYaml:
 getFileLocations:
   call: http.get
   args:
-    url: http://localhost:8080/return-file-locations
+    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
   result: fileLocations
 
 saveDomainFile:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/file/write
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/write
     body:
       file_path: ${fileLocations.response.body.response.domain_location}
       content: ${domainYaml.response.body.json}

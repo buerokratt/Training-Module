@@ -16,13 +16,13 @@ validatePermission:
 getFileLocations:
   call: http.get
   args:
-    url: http://localhost:8080/return-file-locations
+    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
   result: fileLocations
 
 getTrainingResultsDirectory:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/file/read-directory
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/read-directory
     body:
       file_path: ${fileLocations.response.body.response.training_result_location}
   result: trainingResults

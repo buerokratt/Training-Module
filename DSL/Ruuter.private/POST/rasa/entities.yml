@@ -20,7 +20,7 @@ validatePermission:
 getEntitiesWithName:
   call: http.post
   args:
-    url: http://host.docker.internal:9200/entities/_search/template
+    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/entities/_search/template"
     body:
       id: "entity-with-name"
       params: ${params}
@@ -29,7 +29,7 @@ getEntitiesWithName:
 mapEntitiesData:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/dmapper/get-entity-with-name
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-entity-with-name"
     body:
       hits: ${getEntitiesResult.response.body.hits.hits}
   result: entitiesData

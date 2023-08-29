@@ -20,7 +20,7 @@ validatePermission:
 getFormsSlots:
   call: http.post
   args:
-    url: http://host.docker.internal:9200/forms/_search/template
+    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/forms/_search/template"
     body:
       id: "form-with-slot"
       params: ${params}
@@ -29,7 +29,7 @@ getFormsSlots:
 mapFormsSlotsData:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/dmapper/get-forms-search-slots
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-forms-search-slots"
     body:
       hits: ${getFormsResultSlots.response.body.hits.hits}
   result: formsData

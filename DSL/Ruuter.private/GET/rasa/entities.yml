@@ -16,13 +16,13 @@ validatePermission:
 getEntities:
   call: http.get
   args:
-    url: http://host.docker.internal:9200/entities/_search?size=10000
+    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/entities/_search?size=10000"
   result: getEntitiesResult
 
 mapEntitiesData:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/dmapper/get-entities
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-entities"
     body:
       hits: ${getEntitiesResult.response.body.hits.hits}
   result: entitiesData
