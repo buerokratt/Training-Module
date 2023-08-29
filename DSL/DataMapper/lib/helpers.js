@@ -20,4 +20,10 @@ Handlebars.registerHelper('isInModel', function(intentTitle, data) {
     return Array.isArray(inModelIntents) ? inModelIntents.includes(intentTitle) : false;
 });
 
+Handlebars.registerHelper('getCount', function(intentTitle, data) {
+    const intentCounts = data?.response?.count?.aggregations?.hot?.buckets;
+    const intentCount = intentCounts?.find(bucket => bucket.key === intentTitle)?.examples_counts?.value;
+    return intentCount || 0;
+});
+
 export default Handlebars.helpers;
