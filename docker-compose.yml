@@ -3,10 +3,12 @@ services:
   ruuter:
     container_name: byk-private-ruuter
     build:
-      context: C:\Burokratt\ruuter
+      context: H:\Repo\buerokratt\ruuter
       dockerfile: Dockerfile
     environment:
-      - application.cors.allowedOrigins=http://localhost:3001, http://localhost:3002
+      - application.cors.allowedOrigins=http://localhost:3001,http://localhost:3002
+      - ruuter.cors.allowedOrigins=http://localhost:3001,http://localhost:3002,https://localhost,https://localhost/
+      - allowed.requested.method.types=POST,GET,OPTIONS
     volumes:
       - ./DSL/Ruuter.private:/DSL
     ports:
@@ -16,7 +18,7 @@ services:
   resql:
     container_name: byk-resql
     build:
-      context: C:\Burokratt\Resql
+      context: H:\Repo\buerokratt\Resql
       dockerfile: Dockerfile
     ports:
       - 8082:8082
@@ -53,6 +55,11 @@ services:
     container_name: node
     build:
       context: ./DSL/DataMapper
+    environment:
+      - logging.level.root=INFO
+      #      - PORT=3000
+      - headers.contentSecurityPolicy=
+      - cors.allowedOrigins=https://ruuter.localhost/pub1,http://host.docker.internal:8080/
     volumes:
       - ./mock1:/mock1
       - ../Service-Module/DSL/mock1:/mock1
@@ -80,5 +87,5 @@ networks:
   bykstack:
     name: bykstack
     driver: bridge
-    driver_opts:                         
-       com.docker.network.driver.mtu: 1400
+    driver_opts:
+      com.docker.network.driver.mtu: 1400

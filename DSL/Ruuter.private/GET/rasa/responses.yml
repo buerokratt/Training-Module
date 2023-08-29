@@ -4,17 +4,17 @@ getResponses:
     url: http://host.docker.internal:9200/responses/_search?size=10000
   result: getResponsesResult
 
-#mapResponsesData:
-#  call: http.post
-#  args:
-#    url: http://host.docker.internal:3000/dmapper/get-responses
-#    body:
-#      hits: ${getResponsesResult.response.body.hits.hits}
-#  result: responsesData
-#  next: returnSuccess
+mapResponsesData:
+  call: http.post
+  args:
+    url: http://host.docker.internal:3000/dmapper/get-responses
+    body:
+      hits: ${getResponsesResult.response.body.hits.hits}
+  result: responsesData
+  next: returnSuccess
 
 returnSuccess:
-  return: ${getResponsesResult.response.body}
+  return: ${responsesData.response.body}
   next: end
 
 returnUnauthorized:
