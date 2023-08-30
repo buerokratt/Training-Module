@@ -15,14 +15,14 @@ Handlebars.registerHelper('assign', function(varName, varValue, options) {
     options.data.root[varName] = varValue;
 });
 
-Handlebars.registerHelper('isInModel', function(intentTitle, data) {
-    const inModelIntents = data?.response?.inmodel?.response?.intents;
+Handlebars.registerHelper('isInModel', function(intentTitle, intents) {
+    const inModelIntents = intents?.inmodel;
     return Array.isArray(inModelIntents) ? inModelIntents.includes(intentTitle) : false;
 });
 
-Handlebars.registerHelper('getCount', function(intentTitle, data) {
-    const intentCounts = data?.response?.count?.aggregations?.hot?.buckets;
-    const intentCount = intentCounts?.find(bucket => bucket.key === intentTitle)?.examples_counts?.value;
+Handlebars.registerHelper('getCount', function(intentTitle, intents) {
+    const intentCounts = intents.count;
+    const intentCount = intentCounts?.find(intent => intent.key === intentTitle)?.examples_counts?.value;
     return intentCount || 0;
 });
 

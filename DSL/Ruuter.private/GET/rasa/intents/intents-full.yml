@@ -31,13 +31,9 @@ getIntentsExampleCount:
 assignResults:
   assign:
     intents:
-      intents: ${getIntentDataResult.response.body}
-      inmodel: ${getDomainDataResult.response.body}
-      count: ${getIntentCountResult.response.body}
-
-#return:
-#  return: ${intents}
-#  next: end
+      intents: ${getIntentDataResult.response.body.data.intents}
+      inmodel: ${getDomainDataResult.response.body.response.intents}
+      count: ${getIntentCountResult.response.body.aggregations.hot.buckets}
 
 mapIntentsData:
   call: http.post

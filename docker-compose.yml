@@ -3,7 +3,7 @@ services:
   ruuter:
     container_name: byk-private-ruuter
     build:
-      context: C:\Burokratt\ruuter
+      context: ./ruuter
       dockerfile: Dockerfile
     environment:
       - application.cors.allowedOrigins=http://localhost:3001, http://localhost:3002
@@ -16,7 +16,7 @@ services:
   resql:
     container_name: byk-resql
     build:
-      context: C:\Burokratt\Resql
+      context: ./Resql
       dockerfile: Dockerfile
     ports:
       - 8082:8082
