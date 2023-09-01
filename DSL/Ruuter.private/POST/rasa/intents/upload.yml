@@ -28,7 +28,7 @@ convertCsvToJson:
 mapCsvToArray:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/csv-examples-to-array
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/csv-examples-to-array"
     body:
       examples: ${jsonData.response.body}
   result: examples

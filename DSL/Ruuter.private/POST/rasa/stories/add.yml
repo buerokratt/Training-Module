@@ -68,7 +68,7 @@ mergeStories:
 convertJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml"
     body:
       version: "3.0"
       stories: ${mergedStories.response.body}
@@ -77,7 +77,7 @@ convertJsonToYaml:
 saveStoriesFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/write
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/write"
     body:
       file_path: ${fileLocations.response.body.response.stories_location}
       content: ${storiesYaml.response.body.json}
