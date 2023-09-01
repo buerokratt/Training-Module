@@ -1,0 +1,49 @@
+getIntents:
+  call: http.get
+  args:
+    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/intents/_search?size=10000"
+  result: getIntentsResult
+
+getIntentsData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-intents-with-examples"
+    body:
+      hits: ${getIntentsResult.response.body.hits.hits}
+  result: getIntentDataResult
+
+getDomainFile:
+  call: http.get
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/domain-file"
+    headers:
+      testcookie: "test"
+  result: getDomainDataResult
+
+getIntentsExampleCount:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/intents/_search/template"
+    body:
+      id: "intents-with-examples-count"
+  result: getIntentCountResult
+
+assignResults:
+  assign:
+    intents:
+      intents: ${getIntentDataResult.response.body.data.intents}
+      inmodel: ${getDomainDataResult.response.body.response.intents}
+      count: ${getIntentCountResult.response.body.aggregations.hot.buckets}
+
+mapIntentsData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-intents-full"
+    body:
+      intents: ${intents}
+  result: getIntentDataResult
+  next: returnSuccess
+
+returnSuccess:
+  return: ${getIntentDataResult.response.body}
+  next: end

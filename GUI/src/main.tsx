@@ -28,7 +28,6 @@ const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
     apiInstance = api;
   }
 
-
   const { data } = await apiInstance.get(queryKey[0] as string);
   return data;
 };

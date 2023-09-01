@@ -1,18 +1,3 @@
-authenticate:
-  template: extract-token
-  requestType: post
-  headers:
-    cookie: ${incoming.headers.cookie}
-  body:
-    role: "ROLE_ADMINISTRATOR"
-  result: permission
-
-validatePermission:
-  switch:
-    - condition: ${permission}
-      next: getDomainFile
-  next: returnUnauthorized
-
 getDomainFile:
   call: http.get
   args:
@@ -23,8 +8,4 @@ getDomainFile:
 
 returnSuccess:
   return: ${domainData.response.body.response.intents}
-  next: end
-
-returnUnauthorized:
-  return: "error: unauthorized"
   next: end

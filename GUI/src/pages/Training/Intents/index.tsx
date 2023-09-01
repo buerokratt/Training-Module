@@ -41,62 +41,44 @@ const Intents: FC = () => {
     Intent | null
   >(null);
 
-  // const { data: intents } = useQuery<Intent[]>({
-  //   queryKey: ['intents'],
-  // });
-
-  const { data: apiResponseIntents } = useQuery({
-    queryKey: ['intents'],
+  const { data: intentsFullResponse } = useQuery({
+    queryKey: ['intents/intents-full'],
   });
 
-  const { data: apiResponseInModel } = useQuery({
-    queryKey: ['intents/in-model'],
-  });
-
-    // if (isLoading) {
-    //
-    // } else if (error) {
-    //
-    // }
-
-  console.log('apiResponseModel ::: ', apiResponseInModel);
-
-  // const intents: Intent[] = apiResponseIntents?.response?.intents ?? [];
-  const intentTitles = apiResponseIntents?.response?.intents ?? [];
-  const inModelTitles = apiResponseInModel?.response ?? [];
-
-  // const { data: apiResponseInModel } = useQuery({
-  //   queryKey: ['intents/in-model'],
-  // });
-
-  const { data: examples } = useQuery<string[]>({
-    queryKey: [`intents/${selectedIntent?.id}/examples`, selectedIntent?.id],
-    enabled: !!selectedIntent,
-  });
-
-  const intents : Intent[] = Array.isArray(intentTitles)
-    ? intentTitles.map(( title: string, index: number ) => ({
-          id: index +1,
-          intent: title,
-          description: null,
-          inModel: inModelTitles.includes(title),
-          modifiedAt: '',
-          examplesCount: null,
-          }))
-      : [];
-
-  console.log('Index page intents: ', intents);
-  console.log('examples', examples);
-
-  const { data: apiResponseEntities } = useQuery({
+  const { data: entities } = useQuery<Entity[]>({
     queryKey: ['entities'],
   });
 
-  const entities = apiResponseEntities?.response?.entities ?? [];
-  console.log('entities', entities);
+  let intentsFullList = intentsFullResponse?.response?.data?.intents;
+  const intents: Intent[] = [];
 
+  if (intentsFullList) {
+    intentsFullList.forEach((intent: any) => {
+      const newIntent: Intent = {
+        id: intent.id,
+        intent: intent.title,
+        description: null,
+        inModel: intent.inmodel,
+        modifiedAt: '',
+        examplesCount: intent.count,
+        examples: intent.examples
+      };
+      intents.push(newIntent);
+    });
+  }
 
-  const serviceModuleGuiBaseUrl = import.meta.env.REACT_APP_SERVICE_MODULE_GUI_BASE_URL;
+  const getExampleArrayForIntentId = (intent: Intent): string[] => {
+    if (selectedIntent) {
+      return selectedIntent.examples;
+    } else {
+      return [];
+    }
+  };
+
+  function isValidDate(dateString) {
+    const date = new Date(dateString);
+    return !isNaN(date.getTime());
+  }
 
   useEffect(() => {
     const queryIntentName = searchParams.get('intent');
@@ -400,12 +382,17 @@ const Intents: FC = () => {
                         </Button>
                       )}
                     </Track>
-                    <p style={{ color: '#4D4F5D' }}>
-                      {`${t('global.modifiedAt')} ${format(
-                        new Date(selectedIntent.modifiedAt),
-                        'dd.MM.yyyy'
-                      )}`}
+                    <p style={{ color: '#4D4F5D' }}>{t('global.modifiedAt')}:
+                      {isValidDate(selectedIntent.modifiedAt) ? (
+                          ` ${format(
+                              new Date(selectedIntent.modifiedAt),
+                              'dd.MM.yyyy'
+                          )}`
+                      ) : (
+                          ` ${t('global.missing')}`
+                      )}
                     </p>
+
                   </Track>
                   <Track justify="end" gap={8} isMultiline={true}>
                     <Button
@@ -457,9 +444,9 @@ const Intents: FC = () => {
                 </Track>
               </div>
               <div className="vertical-tabs__content">
-                {examples && (
+                {getExampleArrayForIntentId(selectedIntent) && (
                   <IntentExamplesTable
-                    examples={examples}
+                    examples={getExampleArrayForIntentId(selectedIntent) }
                     onAddNewExample={handleNewExample}
                     entities={entities ?? []}
                     selectedIntent={selectedIntent}

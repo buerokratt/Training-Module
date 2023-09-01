@@ -13,21 +13,22 @@ const activeClientIds = new Set()
 
 const bypassURLs = [
     'entities',
-    'intents'
+    'intent'
 ];
 
 self.addEventListener('fetch', function (event) {
     const { request } = event;
     const URL = request.url;
-    console.log("Request made to: " + URL);
-
     const isBypassURL = bypassURLs.some((bypassURL) => {
         return URL.includes(bypassURL);
     });
 
     if (isBypassURL) {
+      console.log("Bypassed URL: " + URL);
       event.respondWith(fetch(request));
       return;
+    } else {
+      console.log("Request made to: " + URL);
     }
 });
 

@@ -2,14 +2,14 @@
 "intents": [
 {{#each intents.intents}}
     {
-    "title": "{{this.title}}",
+    "title": "{{title}}",
     "examples": [
-    {{#each this.examples}}
+    {{#each examples}}
         "{{this}}"{{#unless @last}},{{/unless}}
     {{/each}}
     ],
-    "inModel": {{#if (isInModel this.title data)}}true{{else}}false{{/if}},
-    "count": {{getCount this.title data}}
+    "inmodel": {{isInModel title ../intents}},
+    "count": {{getCount title ../intents}}
     }{{#unless @last}},{{/unless}}
 {{/each}}
 ]
