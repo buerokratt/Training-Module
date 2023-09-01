@@ -38,6 +38,7 @@
     "status": "Staatus",
     "anonymous": "Anonüümne",
     "title": "Pealkiri",
+    "missing": "Puudub",
     "days": {
       "monday": "Esmaspäev",
       "tuesday": "Teisipäev",
