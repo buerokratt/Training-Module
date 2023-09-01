@@ -20,7 +20,7 @@ validatePermission:
 getDomainFile:
   call: http.get
   args:
-    url: http://localhost:8080/domain-file
+    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/domain-file"
     headers:
       cookie: ${cookie}
   result: domainData
@@ -34,7 +34,7 @@ validateForms:
 mergeForms:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/merge/objects
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/merge/objects"
     body:
       object1: ${domainData.response.body.response.forms}
       object2: ${parameters.form}
@@ -43,7 +43,7 @@ mergeForms:
 convertJsonToYaml:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/convert/json-to-yaml
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml"
     body:
       version: ${domainData.response.body.response.version}
       intents: ${domainData.response.body.response.intents}
@@ -58,13 +58,13 @@ convertJsonToYaml:
 getFileLocations:
   call: http.get
   args:
-    url: http://localhost:8080/return-file-locations
+    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
   result: fileLocations
 
 saveDomainFile:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/file/write
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/write"
     body:
       file_path: ${fileLocations.response.body.response.domain_location}
       content: ${domainYaml.response.body.json}

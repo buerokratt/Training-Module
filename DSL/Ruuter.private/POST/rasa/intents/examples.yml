@@ -20,7 +20,7 @@ validatePermission:
 getIntentsWithName:
   call: http.post
   args:
-    url: http://host.docker.internal:9200/intents/_search/template
+    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/intents/_search/template"
     body:
       id: "intent-with-name"
       params: ${params}
@@ -30,7 +30,7 @@ getIntentsWithName:
 mapIntentsData:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/dmapper/get-examples
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-examples"
     body:
       hits: ${getIntentsResult.response.body.hits.hits}
   result: intentsData

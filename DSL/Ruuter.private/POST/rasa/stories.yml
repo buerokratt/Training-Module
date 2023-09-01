@@ -20,7 +20,7 @@ validatePermission:
 getStoriesWithName:
   call: http.post
   args:
-    url: http://host.docker.internal:9200/stories/_search/template
+    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/stories/_search/template"
     body:
       id: "story-with-name"
       params: ${params}
@@ -29,7 +29,7 @@ getStoriesWithName:
 mapStoriesData:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/dmapper/get-story-with-name
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-story-with-name"
     body:
       hits: ${getStoriesResult.response.body.hits.hits}
   result: storiesData

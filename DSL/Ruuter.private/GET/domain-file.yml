@@ -1,13 +1,13 @@
 getFileLocations:
   call: http.get
   args:
-    url: http://localhost:8080/return-file-locations
+    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
   result: fileLocations
 
 getDomainFile:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/file/read
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/read"
     body:
       file_path: ${fileLocations.response.body.response.domain_location}
   result: domainFile
@@ -15,7 +15,7 @@ getDomainFile:
 convertYamlToJson:
   call: http.post
   args:
-    url: http://host.docker.internal:3000/convert/yaml-to-json
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/yaml-to-json"
     body:
       file: ${domainFile.response.body.file}
   result: domainData

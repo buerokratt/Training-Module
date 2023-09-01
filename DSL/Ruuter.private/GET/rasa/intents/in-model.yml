@@ -1,7 +1,7 @@
 getDomainFile:
   call: http.get
   args:
-    url: http://localhost:8080/domain-file
+    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/domain-file"
     headers:
       cookie: ${cookie}
   result: domainData
