@@ -21,7 +21,7 @@ runCommand:
   call: http.post
   args:
     #TODO: Implement the command execution logic
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/execute-command
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/execute-command"
     body:
       command: ${parameters.command}
   result: commandResponse

@@ -26,7 +26,7 @@ getFileLocations:
 checkModelExists:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/check
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/check"
     body:
       file_path: ${fileLocations.response.body.response.training_result_location + '/' + parameters.trained_model}
   result: modelExists
@@ -40,7 +40,7 @@ validateModelExists:
 getTrainedModel:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/read-directory
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/read-directory"
     body:
       file_path: ${fileLocations.response.body.response.training_result_location + '/' + parameters.trained_model}
   result: trainingResults
