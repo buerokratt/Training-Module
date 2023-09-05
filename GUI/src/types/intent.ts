@@ -5,4 +5,5 @@ export interface Intent {
   inModel: boolean;
   modifiedAt: string;
   examplesCount: number | null;
+  examples: string[];
 }

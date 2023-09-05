@@ -3,7 +3,7 @@ services:
   ruuter:
     container_name: byk-private-ruuter
     build:
-      context: H:\Repo\buerokratt\ruuter
+      context: ./ruuter
       dockerfile: Dockerfile
     environment:
       - application.cors.allowedOrigins=http://localhost:3001,http://localhost:3002
@@ -18,7 +18,7 @@ services:
   resql:
     container_name: byk-resql
     build:
-      context: H:\Repo\buerokratt\Resql
+      context: ./Resql
       dockerfile: Dockerfile
     ports:
       - 8082:8082
@@ -87,5 +87,5 @@ networks:
   bykstack:
     name: bykstack
     driver: bridge
-    driver_opts:
-      com.docker.network.driver.mtu: 1400
+    driver_opts:                         
+       com.docker.network.driver.mtu: 1400
