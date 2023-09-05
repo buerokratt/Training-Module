@@ -14,7 +14,7 @@ mapResponsesData:
   next: returnSuccess
 
 returnSuccess:
-  return: ${responsesData.response.body}
+  return: ${responsesData.response.body.data.responses}
   next: end
 
 returnUnauthorized:

@@ -31,10 +31,10 @@ const Responses: FC = () => {
   const [filter, setFilter] = useState('');
   const { register, handleSubmit } = useForm<NewResponse>();
 
-  const formattedResponses = useMemo(() => responses ? Object.keys(responses).map((r, i) => ({
+  const formattedResponses = useMemo(() => responses ? responses.response.map((r, i) => ({
     id: i,
-    response: r,
-    text: responses[r].text,
+    response: r.name,
+    text: r.response[0].text,
   })) : [], [responses]);
 
   useDocumentEscapeListener(() => setEditableRow(null));

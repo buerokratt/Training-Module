@@ -130,11 +130,6 @@ app.post("/example/post", (req, res) => {
   res.status(200).json({ message: `received value ${req.body.name}` });
 });
 
-app.all("*", (req, res, next) => {
-  console.log(req); // do anything you want here
-  next();
-});
-
 app.listen(PORT, () => {
   console.log("Nodejs server running on http://localhost:%s", PORT);
 });

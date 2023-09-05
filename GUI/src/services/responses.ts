@@ -1,4 +1,4 @@
-import api from './api';
+import api from './temp-api';
 
 export async function addResponse(newResponseData: { name: string; text: string }) {
   const { data } = await api.post<{ name: string; text: string; }>('responses', newResponseData);
