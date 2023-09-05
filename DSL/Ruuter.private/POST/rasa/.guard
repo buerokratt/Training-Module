@@ -1,0 +1,23 @@
+authenticate:
+  template: extract-token
+  requestType: post
+  headers:
+    cookie: ${incoming.headers.testcookie}
+  body:
+    role: "ROLE_ADMINISTRATOR"
+  result: permission
+
+validate_permission:
+  switch:
+    - condition: ${permission}
+      next: guard_success
+  next: guard_fail
+
+guard_success:
+  return: "success"
+  status: 200
+  next: end
+
+guard_fail:
+  return: "unauthorized"
+  status: 403
