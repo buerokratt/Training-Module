@@ -20,7 +20,7 @@ validatePermission:
 validateArrayExampleLength:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/validate/array-elements-length
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/validate/array-elements-length"
     body:
       array: ${parameters.examples}
       length: 500
@@ -45,7 +45,7 @@ assignFilePath:
 checkIntentFileYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/check
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/check"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
   result: fileExists
@@ -63,7 +63,7 @@ assignTmpFilePath:
 checkIntentFileTmp:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/check
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/check"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
   result: tmpFileExists
@@ -77,7 +77,7 @@ validateTmpFileExists:
 getIntentFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/read
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/read"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
   result: intentFile
@@ -85,7 +85,7 @@ getIntentFile:
 convertYamlToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/yaml-to-json
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/yaml-to-json"
     body:
       file: ${intentFile.response.body.file}
   result: intentData
@@ -93,7 +93,7 @@ convertYamlToJson:
 replaceString:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/replace
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/replace"
     body:
       data: ${intentData.response.body.nlu[0].examples}
       search: "- "
@@ -103,7 +103,7 @@ replaceString:
 splitExamples:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/split
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/split"
     body:
       data: ${replacedString.response.body}
       separator: "\n"
@@ -112,7 +112,7 @@ splitExamples:
 mergeExamples:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/merge
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/merge"
     body:
       array1: ${parameters.examples}
       array2: ${splitExamples.response.body}
@@ -127,7 +127,7 @@ validateMinimumExampleCount:
 mapIntentsData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-intent-file
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-intent-file"
     body:
       intent: ${parameters.intent}
       examples: ${mergedExamples.response.body}
@@ -136,7 +136,7 @@ mapIntentsData:
 convertJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml"
     body:
       version: "3.0"
       nlu: ${intentFileJson.response.body}
@@ -145,7 +145,7 @@ convertJsonToYaml:
 saveIntentFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/write
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/write"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
       content: ${intentYaml.response.body.json}

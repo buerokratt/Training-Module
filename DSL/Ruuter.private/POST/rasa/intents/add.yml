@@ -2,21 +2,6 @@ assign_values:
   assign:
     intent: ${incoming.body.intent.replaceAll(/\s+/g, "_")}
 
-authenticate:
-  template: extract-token
-  requestType: post
-  headers:
-    cookie: ${incoming.headers.cookie}
-  body:
-    role: "ROLE_ADMINISTRATOR"
-  result: permission
-
-validatePermission:
-  switch:
-    - condition: ${permission}
-      next: validateInputLength
-  next: returnUnauthorized
-
 validateInputLength:
   switch:
     - condition: ${intent.length > 5}
@@ -81,7 +66,7 @@ mergeIntents:
 convertDomainJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml"
     body:
       version: ${domainData.response.body.response.version}
       intents: ${mergedIntents.response.body}
@@ -96,7 +81,7 @@ convertDomainJsonToYaml:
 saveDomainFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/write
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/write"
     body:
       file_path: ${fileLocations.response.body.response.domain_location}
       content: ${domainYaml.response.body.json}
