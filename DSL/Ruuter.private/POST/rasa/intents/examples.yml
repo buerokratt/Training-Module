@@ -2,28 +2,13 @@ assign_values:
   assign:
     params: ${incoming.body}
 
-authenticate:
-  template: extract-token
-  requestType: post
-  headers:
-    cookie: ${incoming.headers.cookie}
-  body:
-    role: "ROLE_ADMINISTRATOR"
-  result: permission
-
-validatePermission:
-  switch:
-    - condition: ${permission}
-      next: getIntentsWithName
-  next: returnUnauthorized
-
 getIntentsWithName:
   call: http.post
   args:
     url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/intents/_search/template"
     body:
       id: "intent-with-name"
-      params: ${params}
+      params: ${incoming.params}
   result: getIntentsResult
   next: mapIntentsData
 
@@ -38,8 +23,4 @@ mapIntentsData:
 
 returnSuccess:
   return: ${intentsData.response.body}
-  next: end
-
-returnUnauthorized:
-  return: "error: unauthorized"
   next: end
