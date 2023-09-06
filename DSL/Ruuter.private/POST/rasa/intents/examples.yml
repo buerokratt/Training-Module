@@ -1,6 +1,6 @@
 assign_values:
   assign:
-    params: ${incoming.body}
+    params: ${incoming.params}
 
 getIntentsWithName:
   call: http.post
@@ -8,7 +8,7 @@ getIntentsWithName:
     url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/intents/_search/template"
     body:
       id: "intent-with-name"
-      params: ${incoming.params}
+      params: ${params}
   result: getIntentsResult
   next: mapIntentsData
 

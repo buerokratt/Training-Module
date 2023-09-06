@@ -1,18 +1,3 @@
-authenticate:
-  template: extract-token
-  requestType: post
-  headers:
-    cookie: ${incoming.headers.cookie}
-  body:
-    role: "ROLE_ADMINISTRATOR"
-  result: permission
-
-validatePermission:
-  switch:
-    - condition: ${permission}
-      next: getIntentsExampleCount
-  next: returnUnauthorized
-
 getIntentsExampleCount:
   call: http.post
   args:
@@ -34,8 +19,4 @@ mapIntentsData:
 
 returnSuccess:
   return: ${intentsData.response.body}
-  next: end
-
-returnUnauthorized:
-  return: "error: unauthorized"
   next: end
