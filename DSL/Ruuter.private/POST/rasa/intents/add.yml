@@ -13,7 +13,7 @@ getDomainFile:
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/domain-file"
     headers:
-      cookie: ${incoming.headers.cookie}
+      testcookie: "test"
   result: domainData
 
 validateIntentExists:
@@ -100,8 +100,4 @@ returnTooShortError:
 returnIntentExists:
   status: 409
   return: "Intent with that name already exists"
-  next: end
-
-returnUnauthorized:
-  return: "error: unauthorized"
   next: end
