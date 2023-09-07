@@ -1,21 +1,6 @@
 assign_values:
   assign:
-    params: ${incoming.body}
-
-authenticate:
-  template: extract-token
-  requestType: post
-  headers:
-    cookie: ${incoming.headers.cookie}
-  body:
-    role: "ROLE_ADMINISTRATOR"
-  result: permission
-
-validatePermission:
-  switch:
-    - condition: ${permission}
-      next: getIntentsExampleCount
-  next: returnUnauthorized
+    params: ${incoming.params}
 
 getIntentsExampleCount:
   call: http.post
@@ -37,8 +22,4 @@ mapIntentsData:
 
 returnSuccess:
   return: ${intentsData.response.body}
-  next: end
-
-returnUnauthorized:
-  return: "error: unauthorized"
   next: end
