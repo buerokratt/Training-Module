@@ -5,7 +5,7 @@ assign_values:
 getIntentLastChanged:
   call: http.post
   args:
-    url: https://host.docker.internal:8082/get-intent-last-changed
+    url: "[#TRAINING_RESQL]:[#TRAINING_RESQL_PORT]/get-intent-last-changed"
     body:
       intent: ${params.intent}
   result: getIntentLastChangedResult
