@@ -167,6 +167,15 @@ export const handlers = [
   rest.get(import.meta.env.BASE_URL + 'api/cs-get-user-profile-settings', (req, res, ctx) => {
     return res(ctx.json(userProfileSettingsData));
   }),
+  rest.get(import.meta.env.BASE_URL + 'api/cs-get-user-role', (req, res, ctx) => {
+    return res(ctx.json({data: {
+        get_user: [
+          {
+            "authorities":
+                ["ROLE_ADMINISTRATOR"]
+          }]
+      }}));
+  }),
   rest.get(import.meta.env.BASE_URL + 'api/cs-get-customer-support-activity', (req, res, ctx) => {
     return res(ctx.json({
       idCode: 'EE49902216518',
