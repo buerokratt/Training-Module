@@ -73,6 +73,15 @@ services:
       - ./GUI:/app
     networks:
       - bykstack
+  postgresql:
+    image: postgres:latest
+    container_name: training-postgresql
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    networks:
+      - bykstack
 
 volumes:
   opensearch-data:
@@ -80,5 +89,5 @@ networks:
   bykstack:
     name: bykstack
     driver: bridge
-    driver_opts:                         
-       com.docker.network.driver.mtu: 1400
+    driver_opts:
+      com.docker.network.driver.mtu: 1400
