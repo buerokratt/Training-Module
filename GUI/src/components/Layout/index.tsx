@@ -35,7 +35,7 @@ const Layout: FC = () => {   const CACHE_NAME = 'mainmenu-cache';
 
     return (
         <div className="layout">
-            <MainNavigation serviceId={import.meta.env.REACT_APP_SERVICE_ID} items={MainMenuItems}/>
+            <MainNavigation serviceId={import.meta.env.REACT_APP_SERVICE_ID.split(',')} items={MainMenuItems}/>
             <div className="layout__wrapper">
                 <Header
                     baseUrlV2={import.meta.env.REACT_APP_RUUTER_V2_PRIVATE_API_URL}
