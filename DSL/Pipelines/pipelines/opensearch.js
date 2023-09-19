@@ -44,8 +44,17 @@ export async function osDeleteIndex(index_name) {
 	return response;
 }
 
+/*
+	For intents, one entity per file
+*/
 router.post('/put/:index_name/:index_type', upload.single('input'), (req, res) =>  {
-	var input = YAML.parse(req.body.input);
+	var input;
+	if (req.file) {
+		var inp = req.file.destination+req.file.filename;
+		input = YAML.parse(fs.readFileSync(inp, 'utf8'));
+	} else {
+		input = YAML.parse(req.body.input);
+	}
 
 	if (input.nlu)
 		input = input.nlu;
@@ -53,8 +62,10 @@ router.post('/put/:index_name/:index_type', upload.single('input'), (req, res) =
 	var index_name = req.params.index_name;
 	var index_type = req.params.index_type;
 
-	var obj = input[0];
-	obj.id = sanitize.sanitize.addDash(obj[index_type]);
+	if (index_type) {
+		var obj = input[0];
+		obj.id = sanitize.sanitize.addDash(obj[index_type]);
+	}
 
 	osPut(index_name, obj)
 		.then((ret) => {
@@ -67,8 +78,44 @@ router.post('/put/:index_name/:index_type', upload.single('input'), (req, res) =
 		});
 });
 
+
+/*
+	For config and domain - many different types of entities in one list 
+*/
+router.post('/bulk/:index_name', upload.single('input'), (req,res) => { 
+	var input;
+	if (req.file) {
+		var inp = req.file.destination+req.file.filename;
+		input = YAML.parse(fs.readFileSync(inp, 'utf8'));
+	} else {
+		input = YAML.parse(req.body.input);
+	}
+
+	var index_name = req.params.index_name;
+
+
+	for (let key in input) {	
+		if (key == "version")
+			continue;
+		var inp = {};
+		inp[key] = input[key];
+		inp.id = key;
+		osPut(index_name, inp);
+	}
+	res.end();
+});
+
+/*
+	For rules, regexes and stories with one type of entities in a list
+*/
 router.post('/bulk/:index_name/:index_type', upload.single('input'), (req,res) => {
-	var input = YAML.parse(req.body.input);
+	var input;
+	if (req.file) {
+		var inp = req.file.destination+req.file.filename;
+		input = YAML.parse(fs.readFileSync(inp, 'utf8'));
+	} else {
+		input = YAML.parse(req.body.input);
+	}
 
 	var index_name = req.params.index_name;
 	var index_type = req.params.index_type;
