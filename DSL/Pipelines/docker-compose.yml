@@ -1,0 +1,15 @@
+version: '3.9'
+services:
+  ruuter:
+    container_name: pipelines
+    build:
+      context: .
+    ports:
+      - 3010:3010
+    networks:
+      - bykstack
+
+networks:
+  bykstack:
+    driver: bridge
+#    external: true
