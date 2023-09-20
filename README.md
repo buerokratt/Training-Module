@@ -28,3 +28,15 @@ Ready to go: **docker-compose up -d**
 > Bürokratt Play acts the same as `dev` environment. Play gets updated after new code commits reach `main` branch, so the result can be faulty and/or down at any given time.
 
 https://admin.play.buerokratt.ee/training
+
+### Use external header component.
+
+The external header component and its version is defined in the package.json file located inside GUI folder.
+That line must be updated when header version or location changes.
+```  
+ "@exirain/header": "file:exirain-header-0.0.21.tgz"
+```
+Current solution uses the module from packed file. This means that when building docker image, a line to the docker script needs to be added for copying the file.
+``` 
+COPY ./exirain-header-0.0.21.tgz .
+```
