@@ -16,7 +16,3 @@ mapIntentsData:
 returnSuccess:
   return: ${intentsData.response.body}
   next: end
-
-returnUnauthorized:
-  return: "error: unauthorized"
-  next: end
