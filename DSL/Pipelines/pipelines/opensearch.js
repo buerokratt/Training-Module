@@ -44,6 +44,14 @@ export async function osDeleteIndex(index_name) {
 	return response;
 }
 
+export async function osDeleteObject(index_name, obj_id) {
+	var client = os_open_client();
+	var response = await client.delete({
+		index: index_name,
+		id: obj_id
+	});
+}
+
 /*
 	For intents, one entity per file
 */
@@ -146,5 +154,19 @@ router.post('/delete/:index_name', (req,res) => {
 	});
 
 })
+
+router.post('/delete/:index_name/:obj_id', (req, res) => {
+	var index_name = req.params.index_name;
+	var obj_id = req.params.obj_id;
+
+	osDeleteObject(index_name, obj_id).then((ret) => {
+		res.status(200);
+		res.end(JSON.stringify(ret));
+	}).catch( (e) => {
+		res.status(500);
+		res.end();
+		console.log(e);
+	});
+});
 
 export default router;

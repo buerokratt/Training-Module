@@ -100,6 +100,14 @@ forms:
 		Example:
 			POST /delete/intents
 
+####	POST /delete/<index_name>/obj_id
+
+		Deletes object with id `obj_id` from index `index_name`. 
+
+		Example:
+			POST /delete/intents/rahvaarv
+
+
 
 ### Script to populate OpenSearch with mock YAMLs
 ***./init_with_mocks.sh***
