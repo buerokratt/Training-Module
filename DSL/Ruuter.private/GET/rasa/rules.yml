@@ -1,18 +1,3 @@
-authenticate:
-  template: extract-token
-  requestType: post
-  headers:
-    cookie: ${incoming.headers.cookie}
-  body:
-    role: "ROLE_ADMINISTRATOR"
-  result: permission
-
-validatePermission:
-  switch:
-    - condition: ${permission}
-      next: getRules
-  next: returnUnauthorized
-
 getRules:
   call: http.get
   args:

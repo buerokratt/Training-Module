@@ -20,6 +20,10 @@ Handlebars.registerHelper('isInModel', function(intentTitle, intents) {
     return Array.isArray(inModelIntents) ? inModelIntents.includes(intentTitle) : false;
 });
 
+Handlebars.registerHelper('sortEntities', function (entities) {
+    return entities.sort();
+});
+
 Handlebars.registerHelper('getCount', function(intentTitle, intents) {
     const intentCounts = intents.count;
     const intentCount = intentCounts?.find(intent => intent.key === intentTitle)?.examples_counts?.value;

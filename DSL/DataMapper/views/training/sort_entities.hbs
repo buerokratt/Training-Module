@@ -1,0 +1,8 @@
+{
+    "entities": [
+    {{#each (sortEntities hits)}}
+        "{{ this }}"
+        {{#unless @last}},{{/unless}}
+    {{/each}}
+    ]
+}
