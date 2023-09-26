@@ -1,25 +1,11 @@
 assign_values:
   assign:
-    parameters: ${incoming.body}
-
-authenticate:
-  template: extract-token
-  requestType: post
-  headers:
-    cookie: ${incoming.headers.cookie}
-  body:
-    role: "ROLE_ADMINISTRATOR"
-  result: permission
-
-validatePermission:
-  switch:
-    - condition: ${permission}
-      next: validateInputLength
-  next: returnUnauthorized
+    intent: ${incoming.body.intent.replaceAll(/\s+/g, "_")}
+    intent_old_name: ${incoming.body.intent.replaceAll(/\s+/g, "_")}
 
 validateInputLength:
   switch:
-    - condition: ${parameters.new_name.length > 5}
+    - condition: ${intent.length > 5}
       next: getDomainFile
   next: returnTooShortError
 
@@ -27,19 +13,17 @@ getDomainFile:
   call: http.get
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/domain-file"
-    headers:
-      cookie: ${cookie}
-  result: domainData
+  resu  lt: domainData
 
 validateNameExists:
   switch:
-    - condition: ${domainData.response.body.response.intents.includes(parameters.new_name)}
+    - condition: ${domainData.response.body.response.intents.includes(intent_old_name)}
       next: returnIntentExists
   next: validateIntentExists
 
 validateIntentExists:
   switch:
-    - condition: ${domainData.response.body.response.intents.includes(parameters.intent)}
+    - condition: ${domainData.response.body.response.intents.includes(intent_old_name)}
       next: getFileLocations
   next: returnIntentMissing
 
@@ -58,7 +42,7 @@ checkIntentFileYaml:
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/check"
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
+      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
   result: fileExists
 
 validateFileExists:
@@ -98,8 +82,8 @@ updateRules:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/replace"
     body:
       data: ${rulesYaml.response.body.json}
-      search: ${"intent:" + " " + parameters.intent}
-      replace: ${"intent:" + " " + parameters.new_name}
+      search: ${"intent:" + " " + intent_old_name}
+      replace: ${"intent:" + " " + intent}
   result: updatedRules
 
 saveRulesFile:
@@ -143,8 +127,8 @@ updateStories:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/replace"
     body:
       data: ${storiesYaml.response.body.json}
-      search: ${"intent:" + " " + parameters.intent}
-      replace: ${"intent:" + " " + parameters.new_name}
+      search: ${"intent:" + " " + intent_old_name}
+      replace: ${"intent:" + " " + intent}
   result: updatedStories
 
 saveStoriesFile:
@@ -166,7 +150,7 @@ checkIntentFileTmp:
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/check"
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
+      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
   result: tmpFileExists
 
 validateTmpFileExists:
@@ -180,7 +164,7 @@ getIntentFile:
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/read"
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
+      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
   result: intentFile
 
 convertYamlToJson:
@@ -215,7 +199,7 @@ mapIntentsData:
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-intent-file"
     body:
-      intent: ${parameters.intent}
+      intent: ${intent}
       examples: ${splitExamples.response.body}
   result: intentFileJson
 
@@ -233,7 +217,7 @@ saveIntentFile:
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/write"
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + parameters.new_name + file_end}
+      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
       content: ${intentYaml.response.body.json}
   result: fileResult
 
@@ -242,7 +226,7 @@ deleteOldIntentFile:
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/delete"
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
+      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
   result: deleted
 
 mergeIntents:
@@ -251,7 +235,7 @@ mergeIntents:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/merge"
     body:
       array1: ${domainData.response.body.response.intents}
-      array2: ${[parameters.intent]}
+      array2: ${[intent]}
   result: mergedIntents
 
 replaceExistingIntent:
@@ -259,8 +243,8 @@ replaceExistingIntent:
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/merge/replace-array-element"
     body:
-      element: ${parameters.intent}
-      newValue: ${parameters.new_name}
+      element: ${intent_old_name}
+      newValue: ${intent}
       array: ${domainData.response.body.response.intents}
   result: updatedIntents
 
@@ -289,6 +273,15 @@ saveDomainFile:
   result: fileResult
   next: returnSuccess
 
+  addInDatabase:
+    call: http.post
+    args:
+      url: "[TRAINING_RESQL]:[TRAINING_RESQL_PORT]/add-intent"
+      body:
+        intent: ${params.intent}
+        status: "ACTIVE"
+    result: getIntentLastChangedResult
+
 returnSuccess:
   return: "Intent updated"
   next: end
@@ -307,8 +300,4 @@ returnIntentMissing:
 
 returnIntentFileMissing:
   return: "Intent file to update is missing"
-  next: end
-
-returnUnauthorized:
-  return: "error: unauthorized"
   next: end
