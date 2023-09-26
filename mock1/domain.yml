@@ -1,4 +1,5 @@
 version: "3.0"
+
 intents:
   - rahvaarv
   - common_tervitus
@@ -10,9 +11,6 @@ intents:
   - common_teenus_ilm
   - andmekaitse_küsimused
   - service_car_rent
-  - intent-name
-  - intent-example
-  - intent-example2
 entities:
   - asukoht
 slots:
