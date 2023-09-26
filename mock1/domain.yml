@@ -11,8 +11,10 @@ intents:
   - common_teenus_ilm
   - andmekaitse_küsimused
   - service_car_rent
+
 entities:
   - asukoht
+
 slots:
   affirm_deny:
     type: text
@@ -36,6 +38,7 @@ slots:
       - type: from_entity
         entity: asukoht
         intent: rahvaarv
+
 forms:
   custom_fallback_form:
     required_slots:
@@ -43,49 +46,65 @@ forms:
   direct_to_customer_support_form:
     required_slots:
       - affirm_deny
+
 actions:
   - action_ask_custom_fallback_form_affirm_deny
   - action_react_to_affirm_deny_in_custom_fallback_form
   - action_react_to_affirm_deny_in_direct_to_customer_support_form
   - action_check_confidence
+
 responses:
   utter_service_car_rent:
     - text: "#service_car_rent"
+
   utter_andmekaitse_küsimused:
-    - text: kõik on kaitstud
+    - text: "kõik on kaitstud"
+
   utter_fallback_kontroll:
-    - text: Jäi arusaamatuks, kas soovisite, et suunan edasi?
+    - text: "Jäi arusaamatuks, kas soovisite, et suunan edasi?"
+
   utter_mille_kohta_küsimus_käis:
     - text: "Kas küsimus käis selle teema kohta: {intent}? (Jah/Ei)"
+
   utter_not_confident:
-    - text: Ma ei saanud päris täpselt aru.
+    - text: "Ma ei saanud päris täpselt aru."
+
   utter_ei_pakkunud_õigesti:
-    - text: Ma pean natuke juurde õppima, et oskaksin sellele vastata.
+    - text: "Ma pean natuke juurde õppima, et oskaksin sellele vastata."
+
   utter_ask_direct_to_customer_support_form_affirm_deny:
-    - text: Kas suunan teid klienditeenindajale? (Jah/Ei)
+    - text: "Kas suunan teid klienditeenindajale? (Jah/Ei)"
+
   utter_common_klienditeenindajale_suunamine:
-    - text: Suunan teid klienditeenindajale. Varuge natukene kannatust.
+    - text: "Suunan teid klienditeenindajale. Varuge natukene kannatust."
+
   utter_common_ei_suuna_klienditeenindajale:
-    - text: Selge. Kuidas saan veel abiks olla?
+    - text: "Selge. Kuidas saan veel abiks olla?"
+
   utter_common_kelle_loodud:
-    - text: Mind täiendab ja koolitab Bürokrati meeskond. Loe lisaks https://kratid.ee
+    - text: "Mind täiendab ja koolitab Bürokrati meeskond. Loe lisaks https://kratid.ee"
+
   utter_common_tervitus:
-    - text: tere
+    - text: "tere"
+
   utter_common_hüvasti_jätmine:
-    - text: headaega
+    - text: "headaega"
+
   utter_rahvaarv_puudu:
-    - text: millist rahvaarvu sa täpsemalt soovid?
+    - text: "millist rahvaarvu sa täpsemalt soovid?"
+
   utter_rahvaarv_olemas:
     - text: "#rahvaarv {common_teenus_ilm_asukoht}"
+
   utter_kompliment:
-    - text: kena olen
+    - text: "kena olen"
+
   utter_common_teenus_ilm:
     - condition:
         - type: slot
           name: common_teenus_ilm_asukoht
           value: null
-      text: Hetkel oskan ma öelda ilma Eesti raames piirkonnapõhiselt. Palun sisestage
-        korrektne piirkonna nimi.
+      text: "Hetkel oskan ma öelda ilma Eesti raames piirkonnapõhiselt. Palun sisestage korrektne piirkonna nimi."
     - text: "#weather; {common_teenus_ilm_asukoht};"
   utter_common_ilm_checkpoint:
     - text: ""
@@ -94,8 +113,7 @@ responses:
         - type: slot
           name: common_teenus_ilm_asukoht
           value: null
-      text: Kahjuks ei saanud ma praegu piirkonnast aru ja ei oska ilma kohta midagi
-        öelda. Kuidas saan abiks olla?
+      text: "Kahjuks ei saanud ma praegu piirkonnast aru ja ei oska ilma kohta midagi öelda. Kuidas saan abiks olla?"
     - text: "#weather; {common_teenus_ilm_asukoht};"
 session_config:
   session_expiration_time: 60
