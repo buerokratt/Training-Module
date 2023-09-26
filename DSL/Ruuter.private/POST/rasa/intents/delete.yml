@@ -2,21 +2,6 @@ assign_values:
   assign:
     parameters: ${incoming.body}
 
-authenticate:
-  template: extract-token
-  requestType: post
-  headers:
-    cookie: ${incoming.headers.cookie}
-  body:
-    role: "ROLE_ADMINISTRATOR"
-  result: permission
-
-validatePermission:
-  switch:
-    - condition: ${permission}
-      next: getDomainFile
-  next: returnUnauthorized
-
 getDomainFile:
   call: http.get
   args:
@@ -238,6 +223,15 @@ saveDomainFile:
       content: ${domainYaml.response.body.json}
   result: fileResult
   next: returnSuccess
+
+deleteInDatabase:
+  call: http.post
+  args:
+    url: https://host.docker.internal:8443/add-intent
+    body:
+      intent: ${params.intent}
+      status: "DELETED"
+  result: getIntentLastChangedResult
 
 returnSuccess:
   return: "Intent updated"

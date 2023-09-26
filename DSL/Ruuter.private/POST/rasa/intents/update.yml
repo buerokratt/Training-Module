@@ -3,8 +3,6 @@ assign_values:
     intent: ${incoming.body.intent.replaceAll(/\s+/g, "_")}
     intent_old_name: ${incoming.body.intent.replaceAll(/\s+/g, "_")}
 
-assign_filename:
-
 validateInputLength:
   switch:
     - condition: ${intent.length > 5}
@@ -276,6 +274,15 @@ saveDomainFile:
       content: ${domainYaml.response.body.json}
   result: fileResult
   next: returnSuccess
+
+  addInDatabase:
+    call: http.post
+    args:
+      url: https://host.docker.internal:8443/add-intent
+      body:
+        intent: ${params.intent}
+        status: "ACTIVE"
+    result: getIntentLastChangedResult
 
 returnSuccess:
   return: "Intent updated"

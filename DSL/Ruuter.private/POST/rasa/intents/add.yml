@@ -1,12 +1,12 @@
+validateInputLength:
+  switch:
+    - condition: ${incoming.body.intent.length > 5}
+      next: assign_values
+  next: returnTooShortError
+
 assign_values:
   assign:
     intent: ${incoming.body.intent.replaceAll(/\s+/g, "_")}
-
-validateInputLength:
-  switch:
-    - condition: ${intent.length > 5}
-      next: getDomainFile
-  next: returnTooShortError
 
 getDomainFile:
   call: http.get
@@ -87,6 +87,15 @@ saveDomainFile:
       content: ${domainYaml.response.body.json}
   result: fileResult
   next: returnSuccess
+
+  addInDatabase:
+    call: http.post
+    args:
+      url: https://host.docker.internal:8443/add-intent
+      body:
+        intent: ${params.intent}
+        status: "ACTIVE"
+    result: getIntentLastChangedResult
 
 returnSuccess:
   return: "Intent created"

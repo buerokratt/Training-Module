@@ -1,2 +1,2 @@
 INSERT INTO intent (intent, created, status)
-VALUES (:intent, CURRENT_TIMESTAMP, 'ACTIVE');
+VALUES (:intent, CURRENT_TIMESTAMP, :status);
