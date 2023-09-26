@@ -91,7 +91,7 @@ saveDomainFile:
   addInDatabase:
     call: http.post
     args:
-      url: https://host.docker.internal:8443/add-intent
+      url: "[TRAINING_RESQL]:[TRAINING_RESQL_PORT]/add-intent"
       body:
         intent: ${params.intent}
         status: "ACTIVE"

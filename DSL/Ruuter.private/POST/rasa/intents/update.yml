@@ -13,9 +13,7 @@ getDomainFile:
   call: http.get
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/domain-file"
-    headers:
-      testcookie: "test"
-  result: domainData
+  resu  lt: domainData
 
 validateNameExists:
   switch:
@@ -278,7 +276,7 @@ saveDomainFile:
   addInDatabase:
     call: http.post
     args:
-      url: https://host.docker.internal:8443/add-intent
+      url: "[TRAINING_RESQL]:[TRAINING_RESQL_PORT]/add-intent"
       body:
         intent: ${params.intent}
         status: "ACTIVE"
