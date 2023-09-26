@@ -56,6 +56,17 @@ if (import.meta.env.REACT_APP_MODE === 'development-api') {
   const worker = setupWorker(...handlers);
   const prepare = async () => {
     return worker.start({
+      //This code snippet will allow to remove MSW warning messages for specific URLS
+      onUnhandledRequest(req, print) {
+        // specify routes to exclude
+        const excludedRoutes = ['rasa'];
+
+        // check if the req.url.pathname contains excludedRoutes
+        const isExcluded = excludedRoutes.some(route => req.url.pathname.includes(route))
+        if(isExcluded) {
+          return;
+        }
+        },
       serviceWorker: {
         url: '/training/mockServiceWorker.js'
       }
