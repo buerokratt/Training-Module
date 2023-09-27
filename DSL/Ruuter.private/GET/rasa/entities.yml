@@ -11,10 +11,19 @@ mapEntitiesData:
     body:
       hits: ${getEntitiesResult.response.body.hits.hits}
   result: entitiesData
+  next: sortEntities
+
+sortEntities:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/sort-entities"
+    body:
+      hits: ${entitiesData.response.body.data.entities}
+  result: sortedEntities
   next: returnSuccess
 
 returnSuccess:
-  return: ${entitiesData.response.body}
+  return: ${sortedEntities.response.body}
   next: end
 
 returnUnauthorized:
