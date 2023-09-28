@@ -5,7 +5,6 @@ import { setupWorker } from 'msw';
 import { QueryClient, QueryClientProvider, QueryFunction } from '@tanstack/react-query';
 
 import api from 'services/api';
-import entitiesApi from "./services/entities-api";
 import apiRuuter from 'services/temp-api';
 
 import App from './App';
@@ -23,10 +22,7 @@ const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
   const keywords = ['intent', 'entities', 'in-model', 'responses'];
 
   // @ts-ignore
-  if (queryKey.includes('entities')) {
-    apiInstance = entitiesApi;
-    // @ts-ignore
-  } else if(keywords.some(keyword => queryKey[0].startsWith(keyword))) {
+  if(keywords.some(keyword => queryKey[0].startsWith(keyword))) {
     apiInstance = apiRuuter;
   } else {
     apiInstance = api;
