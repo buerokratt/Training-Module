@@ -31,6 +31,7 @@ const IntentsFollowupTraining: FC = () => {
       >
 
         <Tabs.Content key='regex' value='regex' className='vertical-tabs__body'>
+          <Entities />
           <Regex />
         </Tabs.Content>
       </Tabs.Root>
