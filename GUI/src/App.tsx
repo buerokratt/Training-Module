@@ -36,7 +36,7 @@ const App: FC = () => {
     <Routes>
       <Route element={<Layout />}>
         <Route index element={<Navigate to='/training/intents' />} />
-        <Route path= '/training/intents' element={<Intents />} />
+        <Route path='/training/intents' element={<Intents />} />
         <Route path='/training/common-intents' element={<CommonIntents />} />
         <Route path='/training/intents-followup-training' element={<IntentsFollowupTraining />} />
         <Route path='/training/regex/:id' element={<RegexDetail />} />

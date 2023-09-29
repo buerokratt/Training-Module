@@ -23,7 +23,3 @@ convertYamlToJson:
 returnSuccess:
   return: ${domainData.response.body}
   next: end
-
-returnUnauthorized:
-  return: "error: unauthorized"
-  next: end

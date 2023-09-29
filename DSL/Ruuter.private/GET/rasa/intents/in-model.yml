@@ -3,7 +3,7 @@ getDomainFile:
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/domain-file"
     headers:
-      cookie: ${cookie}
+      testcookie: "test"
   result: domainData
 
 returnSuccess:
