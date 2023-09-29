@@ -27,10 +27,19 @@ import TrainAndTest from 'pages/Training/TrainAndTest';
 
 const App: FC = () => {
   const store = useUserInfoStore();
-  const { data: userInfo } = useQuery<UserInfo>({
-    queryKey: ['cs-custom-jwt-userinfo'],
-    onSuccess: (data) => store.setUserInfo(data),
-  });
+  if(import.meta.env.REACT_APP_LOCAL === 'true') {
+    const { data: userInfo } = useQuery<UserInfo>({
+      queryKey: [import.meta.env.REACT_APP_AUTH_PATH, 'auth'],
+      onSuccess: (response: { data: { custom_jwt_userinfo: UserInfo } }) =>
+          store.setUserInfo(response),
+    });
+  } else {
+    const { data: userInfo } = useQuery<UserInfo>({
+      queryKey: [import.meta.env.REACT_APP_AUTH_PATH, 'auth'],
+      onSuccess: (data: { data: { custom_jwt_userinfo: UserInfo } }) =>
+          store.setUserInfo(data.data.custom_jwt_userinfo),
+    });
+  }
 
   return (
     <Routes>
