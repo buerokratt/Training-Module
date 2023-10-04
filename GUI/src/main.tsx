@@ -12,6 +12,10 @@ import { ToastProvider } from 'context/ToastContext';
 import { handlers } from 'mocks/handlers';
 import 'styles/main.scss';
 import '../i18n';
+import auth from "./services/auth";
+import apiDevV2 from "./services/api-dev-v2";
+import apiTraining from "./services/training-api";
+import apiDev from "./services/api-dev";
 
 const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
   let apiInstance;
@@ -27,6 +31,25 @@ const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
   } else {
     apiInstance = api;
   }
+  if(import.meta.env.REACT_APP_LOCAL !== true) {
+    if (queryKey.includes('prod')) {
+      const { data } = await apiDev.get(queryKey[0] as string);
+      return data;
+    }
+    if (queryKey.includes('user-profile-settings')) {
+      const { data } = await apiTraining.get(queryKey[0] as string);
+      return data;
+    }
+    if (queryKey[1] === 'prod-2') {
+      const { data } = await apiDevV2.get(queryKey[0] as string);
+      return data?.response;
+    }
+    if(queryKey[1] === 'auth') {
+      const { data } = await auth.get(queryKey[0] as string);
+      return data;
+    }
+  }
+
   const { data } = await apiInstance.get(queryKey[0] as string);
   if(queryKey.includes('entities')) {
     return data.response.data.entities;
