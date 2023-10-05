@@ -14,3 +14,11 @@ export interface Condition {
     name:  string;
     value: null;
 }
+
+export interface ResponseDataEdit {
+    [key: string]: ResponseDataResponse[]
+}
+export interface ResponseEdit {
+    response_name: string,
+    response: ResponseDataEdit
+}

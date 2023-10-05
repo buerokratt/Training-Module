@@ -26,11 +26,11 @@ const Responses: FC = () => {
     queryKey: ['responses'],
   });
   const [addFormVisible, setAddFormVisible] = useState(false);
-  const [editableRow, setEditableRow] = useState<{ id: string | number; text: string; } | null>(null);
+  const [editableRow, setEditableRow] = useState<{ id: string; text: string; } | null>(null);
   const [deletableRow, setDeletableRow] = useState<string | number | null>(null);
   const [filter, setFilter] = useState('');
   const { register, handleSubmit } = useForm<NewResponse>();
-
+  const [editingTrainingTitle, setEditingTrainingTitle] = useState<string>("");
   const formattedResponses = useMemo(() => responses ? responses.response.map((r, i) => ({
     id: i,
     response: r.name,
@@ -40,7 +40,7 @@ const Responses: FC = () => {
   useDocumentEscapeListener(() => setEditableRow(null));
 
   const responseSaveMutation = useMutation({
-    mutationFn: ({ id, text }: { id: string | number, text: string }) => editResponse(id, { text }),
+    mutationFn: ({ id, text }: { id: string, text: string }) => editResponse(id,  text),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['responses']);
       toast.open({
@@ -80,13 +80,7 @@ const Responses: FC = () => {
   });
 
   const newResponseMutation = useMutation({
-    mutationFn: (data: NewResponse) => {
-      const newResponseData = {
-        ...data,
-        name: 'utter_' + data.name,
-      };
-      return addResponse(newResponseData);
-    },
+    mutationFn: ({ name, text }: { name: string, text: string }) => editResponse(name,  text, false),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['responses']);
       setAddFormVisible(false);
@@ -109,7 +103,7 @@ const Responses: FC = () => {
     newResponseMutation.mutate(data);
   });
 
-  const handleEditableRow = async (response: { id: string | number; text: string }) => {
+  const handleEditableRow = async (response: { id: string; text: string }) => {
     setEditableRow(response);
   };
 
@@ -142,15 +136,18 @@ const Responses: FC = () => {
     }),
     columnHelper.accessor('text', {
       header: '',
-      cell: (props) => editableRow && editableRow.id === props.row.original.id ? (
+      cell: (props) => editableRow && editableRow.id === props.row.original.response ? (
         <FormTextarea
           label='label'
           name='name'
-          defaultValue={props.getValue()}
+          defaultValue={editingTrainingTitle}
           hideLabel
           minRows={1}
           maxLength={RESPONSE_TEXT_LENGTH}
           showMaxLength
+          onBlur={(e) =>
+            setEditingTrainingTitle(e.target.value)
+          }
         />
       ) : (
         <p>{props.getValue()}</p>
@@ -161,16 +158,19 @@ const Responses: FC = () => {
       header: '',
       cell: (props) => (
         <>
-          {editableRow && editableRow.id === props.row.original.id ? (
+          {editableRow && editableRow.id === props.row.original.response ? (
             <Button appearance='text'
-                    onClick={() => responseSaveMutation.mutate(editableRow)}>
+                    onClick={() => responseSaveMutation.mutate({id: editableRow.id, text: editingTrainingTitle == null ? "" : editingTrainingTitle})}>
               <Icon label={t('global.save')} icon={<MdOutlineSave color={'rgba(0,0,0,0.54)'} />} />
               {t('global.save')}
             </Button>
           ) : (
             <Button
               appearance='text'
-              onClick={() => handleEditableRow({ id: props.row.original.id, text: props.row.original.text })}
+              onClick={() => {
+                setEditingTrainingTitle(props.row.original.text);
+                handleEditableRow({ id: props.row.original.response, text: props.row.original.text });
+              } }
             >
               <Icon label={t('global.edit')} icon={<MdOutlineModeEditOutline color={'rgba(0,0,0,0.54)'} />} />
               {t('global.edit')}
@@ -186,7 +186,7 @@ const Responses: FC = () => {
     columnHelper.display({
       id: 'delete',
       cell: (props) => (
-        <Button appearance='text' onClick={() => setDeletableRow(props.row.original.id)}>
+        <Button appearance='text' onClick={() => setDeletableRow(props.row.original.response)}>
           <Icon label={t('global.delete')} icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />} />
           {t('global.delete')}
         </Button>
