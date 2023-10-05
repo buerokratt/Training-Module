@@ -2,27 +2,10 @@ assign_values:
   assign:
     parameters: ${incoming.body}
 
-authenticate:
-  template: extract-token
-  requestType: post
-  headers:
-    cookie: ${incoming.headers.cookie}
-  body:
-    role: "ROLE_ADMINISTRATOR"
-  result: permission
-
-validatePermission:
-  switch:
-    - condition: ${permission}
-      next: getDomainFile
-  next: returnUnauthorized
-
 getDomainFile:
   call: http.get
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/domain-file"
-    headers:
-      cookie: ${cookie}
   result: domainData
 
 validateEntities:
@@ -35,8 +18,6 @@ domainEntities:
   call: http.post
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/entities"
-    headers:
-      cookie: ${cookie}
     body:
       entity: ${parameters.entity_name}
   result: domainEntities
@@ -51,8 +32,6 @@ regexEntities:
   call: http.post
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/regex"
-    headers:
-      cookie: ${cookie}
     body:
       regex: ${parameters.entity_name}
       examples: false
@@ -68,8 +47,6 @@ intentEntities:
   call: http.post
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/examples/entities"
-    headers:
-      cookie: ${cookie}
     body:
       entity: ${parameters.entity_name}
       examples: false
