@@ -1,4 +1,4 @@
-import api from './api';
+import api from './temp-api';
 import { Entity } from 'types/entity';
 
 export async function addEntity(entityData: { name: string }) {
@@ -11,7 +11,7 @@ export async function editEntity(id: string | number, entityData: { name: string
   return data;
 }
 
-export async function deleteEntity(id: string | number) {
-  const { data } = await api.delete<void>(`entities/${id}`);
+export async function deleteEntity(entityData: { entity_name: string | number }) {
+  const { data } = await api.post<void>(`entities/delete`, entityData);
   return data;
 }

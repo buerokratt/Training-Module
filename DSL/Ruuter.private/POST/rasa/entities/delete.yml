@@ -74,7 +74,7 @@ convertJsonToYaml:
     body:
       version: ${domainData.response.body.response.version}
       intents: ${domainData.response.body.response.intents}
-      entities: ${deleteEntitiesData.response.body}
+      entities: ${deleteEntitiesData.response.body.data}
       slots: ${domainData.response.body.response.slots}
       forms: ${domainData.response.body.response.forms}
       actions: ${domainData.response.body.response.actions}
