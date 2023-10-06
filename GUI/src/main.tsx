@@ -12,6 +12,10 @@ import { ToastProvider } from 'context/ToastContext';
 import { handlers } from 'mocks/handlers';
 import 'styles/main.scss';
 import '../i18n';
+import auth from "./services/auth";
+import apiDevV2 from "./services/api-dev-v2";
+import apiTraining from "./services/training-api";
+import apiDev from "./services/api-dev";
 
 const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
   let apiInstance;
@@ -22,13 +26,34 @@ const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
   const keywords = ['intent', 'entities', 'in-model', 'responses'];
 
   // @ts-ignore
-  if (keywords.some(keyword => queryKey[0].startsWith(keyword))) {
+  if(keywords.some(keyword => queryKey[0].startsWith(keyword))) {
     apiInstance = apiRuuter;
   } else {
     apiInstance = api;
   }
+  if(import.meta.env.REACT_APP_LOCAL !== true) {
+    if (queryKey.includes('prod')) {
+      const { data } = await apiDev.get(queryKey[0] as string);
+      return data;
+    }
+    if (queryKey.includes('user-profile-settings')) {
+      const { data } = await apiTraining.get(queryKey[0] as string);
+      return data;
+    }
+    if (queryKey[1] === 'prod-2') {
+      const { data } = await apiDevV2.get(queryKey[0] as string);
+      return data?.response;
+    }
+    if(queryKey[1] === 'auth') {
+      const { data } = await auth.get(queryKey[0] as string);
+      return data;
+    }
+  }
 
   const { data } = await apiInstance.get(queryKey[0] as string);
+  if(queryKey.includes('entities')) {
+    return data.response.data.entities;
+  }
   return data;
 };
 
@@ -56,6 +81,17 @@ if (import.meta.env.REACT_APP_MODE === 'development-api') {
   const worker = setupWorker(...handlers);
   const prepare = async () => {
     return worker.start({
+      //This code snippet will allow to remove MSW warning messages for specific URLS
+      onUnhandledRequest(req, print) {
+        // specify routes to exclude
+        const excludedRoutes = ['rasa'];
+
+        // check if the req.url.pathname contains excludedRoutes
+        const isExcluded = excludedRoutes.some(route => req.url.pathname.includes(route))
+        if(isExcluded) {
+          return;
+        }
+        },
       serviceWorker: {
         url: '/training/mockServiceWorker.js'
       }

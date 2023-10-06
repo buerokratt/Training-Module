@@ -15,6 +15,7 @@ const PORT = process.env.OPENSEARCH_PORT || "9200" ;
 const PROTOCOL = process.env.OPENSEARCH_PROTOCOL || "https" ;
 const AUTH = process.env.OPENSEARCH_AUTH || "admin:admin" ;
 
+
 function os_open_client() {
 	var host = `${HOST}:9200`;
 	var auth = "admin:admin"; 
@@ -64,7 +65,6 @@ function getInput(req) {
 	}
 }
 
-
 /*
 	For intents, one entity per file
 */
@@ -98,6 +98,7 @@ router.post('/put/:index_name/:index_type', upload.single('input'), (req, res) =
 	For config and domain - many different types of entities in one list 
 */
 router.post('/bulk/:index_name', upload.single('input'), (req,res) => { 
+
 	var input = getInput(req);
 
 	var index_name = req.params.index_name;

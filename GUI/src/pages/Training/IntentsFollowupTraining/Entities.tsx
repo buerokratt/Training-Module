@@ -27,7 +27,7 @@ const Entities: FC = () => {
   const { data: entities } = useQuery<Entity[]>({
     queryKey: ['entities'],
   });
-  const { register, handleSubmit } = useForm<{ name: string }>();
+  const { register, handleSubmit } = useForm<{ entity: string }>();
 
   useDocumentEscapeListener(() => setEditableRow(null));
 
@@ -36,7 +36,7 @@ const Entities: FC = () => {
   };
 
   const entityAddMutation = useMutation({
-    mutationFn: (data: { name: string }) => addEntity(data),
+    mutationFn: (data: { entity: string }) => addEntity(data),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['entities']);
       toast.open({
@@ -202,7 +202,7 @@ const Entities: FC = () => {
           {newEntityFormOpen && (
             <Track gap={16}>
               <FormInput
-                {...register('name')}
+                {...register('entity')}
                 label={t('training.intent.entityName')}
                 placeholder={t('training.intents.entityName') || ''}
                 hideLabel

@@ -117,13 +117,17 @@ Server has to be running
 ## 2. YAML to JSON (and vice versa)
 
 Usage:
+
 #### POST /yaml
+
 **body:** form with field `input` OR 
 				attached file object on data field `input`
 				
 	Converts input YAMl file to JSON
 
+
 #### POST /json
+
 **body:** form with field `input` OR 
 				attached file object on data field `input`
 				
@@ -141,3 +145,4 @@ key | default value
 **OPENSEARCH_HOST** | localhost
 **OPENSEARCH_PORT** | 9200
 
+=======
