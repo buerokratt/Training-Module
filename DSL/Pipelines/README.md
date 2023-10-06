@@ -117,14 +117,27 @@ Server has to be running
 ## 2. YAML to JSON (and vice versa)
 
 Usage:
-## POST /yaml
+#### POST /yaml
 **body:** form with field `input` OR 
 				attached file object on data field `input`
 				
 	Converts input YAMl file to JSON
 
-## POST /json
+#### POST /json
 **body:** form with field `input` OR 
 				attached file object on data field `input`
 				
 	Converts input JSON file to YAML
+
+
+## 3. Configuration
+
+These values are read from environment and specify the connection to OpenSearch server:
+
+key | default value
+---|---
+**OPENSEARCH_PROTOCOL**	| https
+**OPENSEARCH_AUTH** | admin:admin
+**OPENSEARCH_HOST** | localhost
+**OPENSEARCH_PORT** | 9200
+

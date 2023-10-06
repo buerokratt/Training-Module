@@ -10,14 +10,17 @@ import { Client } from '@opensearch-project/opensearch';
 const router = express.Router();
 const upload = multer({ dest: os.tmpdir()+'/' })
 
-const HOST = process.env.OPENSEARCH_HOST || "host.docker.internal"
+const HOST = process.env.OPENSEARCH_HOST || "host.docker.internal" ;
+const PORT = process.env.OPENSEARCH_PORT || "9200" ;
+const PROTOCOL = process.env.OPENSEARCH_PROTOCOL || "https" ;
+const AUTH = process.env.OPENSEARCH_AUTH || "admin:admin" ;
 
 function os_open_client() {
 	var host = `${HOST}:9200`;
 	var auth = "admin:admin"; 
 
 	var client = new Client({
-	  node: "https://" + auth + "@" + host,
+	  node: `${PROTOCOL}://${AUTH}@${HOST}:${PORT}`,
 	  ssl: { rejectUnauthorized: false },
 	});
 	return client;
@@ -52,17 +55,21 @@ export async function osDeleteObject(index_name, obj_id) {
 	});
 }
 
+function getInput(req) {
+	if (req.file) {
+		var inp = req.file.destination+req.file.filename;
+		return YAML.parse(fs.readFileSync(inp, 'utf8'));
+	} else {
+		return YAML.parse(req.body.input);
+	}
+}
+
+
 /*
 	For intents, one entity per file
 */
 router.post('/put/:index_name/:index_type', upload.single('input'), (req, res) =>  {
-	var input;
-	if (req.file) {
-		var inp = req.file.destination+req.file.filename;
-		input = YAML.parse(fs.readFileSync(inp, 'utf8'));
-	} else {
-		input = YAML.parse(req.body.input);
-	}
+	var input = getInput(req);
 
 	if (input.nlu)
 		input = input.nlu;
@@ -91,16 +98,9 @@ router.post('/put/:index_name/:index_type', upload.single('input'), (req, res) =
 	For config and domain - many different types of entities in one list 
 */
 router.post('/bulk/:index_name', upload.single('input'), (req,res) => { 
-	var input;
-	if (req.file) {
-		var inp = req.file.destination+req.file.filename;
-		input = YAML.parse(fs.readFileSync(inp, 'utf8'));
-	} else {
-		input = YAML.parse(req.body.input);
-	}
+	var input = getInput(req);
 
 	var index_name = req.params.index_name;
-
 
 	for (let key in input) {	
 		if (key == "version")
@@ -117,13 +117,7 @@ router.post('/bulk/:index_name', upload.single('input'), (req,res) => {
 	For rules, regexes and stories with one type of entities in a list
 */
 router.post('/bulk/:index_name/:index_type', upload.single('input'), (req,res) => {
-	var input;
-	if (req.file) {
-		var inp = req.file.destination+req.file.filename;
-		input = YAML.parse(fs.readFileSync(inp, 'utf8'));
-	} else {
-		input = YAML.parse(req.body.input);
-	}
+	var input = getInput(req);
 
 	var index_name = req.params.index_name;
 	var index_type = req.params.index_type;
