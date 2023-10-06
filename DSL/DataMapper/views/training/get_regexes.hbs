@@ -8,7 +8,12 @@
           {{/each}}
         ]
         }
-      {{else}}"{{_source.regex}}"{{/if}}{{#unless @last}},{{/unless}}
+      {{else}}
+           {
+            "name":"{{_source.regex}}",
+            "id":"{{_source.regex}}"
+           }
+       {{/if}}{{#unless @last}},{{/unless}}
     {{/each}}
   ]
 }
