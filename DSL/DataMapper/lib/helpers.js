@@ -15,6 +15,10 @@ Handlebars.registerHelper('assign', function(varName, varValue, options) {
     options.data.root[varName] = varValue;
 });
 
+Handlebars.registerHelper('sortEntities', function (entities) {
+    return entities.sort((a,b) => a.name > b.name ? 1 : -1);
+});
+
 Handlebars.registerHelper('isInModel', function(intentTitle, intents) {
     const inModelIntents = intents?.inmodel;
     return Array.isArray(inModelIntents) ? inModelIntents.includes(intentTitle) : false;

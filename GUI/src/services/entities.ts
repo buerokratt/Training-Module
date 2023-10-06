@@ -1,8 +1,8 @@
-import api from './api';
+import api from './temp-api';
 import { Entity } from 'types/entity';
 
-export async function addEntity(entityData: { name: string }) {
-  const { data } = await api.post('entities', entityData);
+export async function addEntity(entityData: { entity: string }) {
+  const { data } = await api.post('entities/add', entityData);
   return data;
 }
 
