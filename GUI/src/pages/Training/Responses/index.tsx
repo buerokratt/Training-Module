@@ -11,7 +11,7 @@ import { RESPONSE_TEXT_LENGTH } from 'constants/config';
 import type { Responses as ResponsesType } from 'types/response';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import { useToast } from 'hooks/useToast';
-import { addResponse, deleteResponse, editResponse } from 'services/responses';
+import { deleteResponse, editResponse } from 'services/responses';
 
 type NewResponse = {
   name: string;
