@@ -49,17 +49,17 @@ services:
       - 9600:9600 # Performance Analyzer
     networks:
       - bykstack # All of the containers will join the same Docker bridge network
-#  node:
-#    container_name: node
-#    build:
-#      context: ./DSL/DataMapper
-#    volumes:
-#      - ./mock1:/mock1
+  node:
+    container_name: node
+    build:
+      context: ./DSL/DataMapper
+    volumes:
+      - ./mock1:/mock1
 #      - ../Service-Module/DSL/mock1:/mock1
-#    ports:
-#      - 3000:3000
-#    networks:
-#      - bykstack
+    ports:
+      - 3000:3000
+    networks:
+      - bykstack
   training_gui:
     container_name: training_gui
     build:

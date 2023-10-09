@@ -28,6 +28,7 @@ type Regex = {
 }
 
 const RegexDetail: FC = () => {
+  let updatedExampleName = '';
   const { t } = useTranslation();
   const { id } = useParams();
   const toast = useToast();
@@ -147,7 +148,18 @@ const RegexDetail: FC = () => {
   });
 
   const regexExampleEditMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string | number, data: { example: string } }) => editRegexExample(id, data),
+    mutationFn: ({example_data, regexExampleData} : {
+      example_data: {
+        new_name: string,
+        old_name: string
+      },
+      regexExampleData: {
+      regex_name: string,
+      input: {
+        regex: string,
+        examples: string[]
+      }},
+    }) => editRegexExample(example_data, regexExampleData),
     onSuccess: () => {
       toast.open({
         type: 'success',
@@ -197,6 +209,10 @@ const RegexDetail: FC = () => {
     setExampleText('');
   };
 
+  const newExampleName = (newName: string)  => {
+    updatedExampleName = newName;
+  }
+
   const regexColumns = useMemo(() => [
     columnHelper.accessor('value', {
       header: t('training.intents.examples') || '',
@@ -207,6 +223,7 @@ const RegexDetail: FC = () => {
             label=''
             defaultValue={editableRow.value}
             hideLabel
+            onChange={(e) => newExampleName(e.target.value)}
           />
         ) : props.getValue()
       ),
@@ -217,9 +234,17 @@ const RegexDetail: FC = () => {
         <>
           {editableRow && editableRow.id === props.row.original.id ? (
             <Button appearance='text' onClick={() => regexExampleEditMutation.mutate({
-              id: props.row.original.id,
-              data: { example: props.row.original.value },
-            })}>
+              example_data: {
+              new_name: updatedExampleName,
+              old_name: props.row.original.value
+              },
+              regexExampleData: {
+              regex_name: regex!.name,
+              input: {
+                regex: regex!.name,
+                examples: regex!.examples
+              },
+            }})}>
               <Icon
                 label={t('global.save')}
                 icon={<MdOutlineSave color={'rgba(0,0,0,0.54)'} />}

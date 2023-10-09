@@ -23,10 +23,10 @@ const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
 
   // Temporary solution to let some API requests use Ruuter instead of MSW
   // Add keywords to the array to make the request go into Ruuter's endpoint
-  const keywords = ['intent', 'entities', 'in-model', 'responses'];
+  const keywords = ['intent', 'entities', 'in-model', 'responses','regex','regexes'];
 
   // @ts-ignore
-  if (keywords.some(keyword => queryKey[0].startsWith(keyword))) {
+  if(keywords.some(keyword => queryKey[0].startsWith(keyword))) {
     apiInstance = apiRuuter;
   } else {
     apiInstance = api;
@@ -51,6 +51,12 @@ const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
   }
 
   const { data } = await apiInstance.get(queryKey[0] as string);
+  if(queryKey.includes('entities')) {
+    return data.response.data.entities;
+  }
+  if(queryKey.includes('regexes')) {
+    return data.response.data.regexes;
+  }
   return data;
 };
 
@@ -78,6 +84,17 @@ if (import.meta.env.REACT_APP_MODE === 'development-api') {
   const worker = setupWorker(...handlers);
   const prepare = async () => {
     return worker.start({
+      //This code snippet will allow to remove MSW warning messages for specific URLS
+      onUnhandledRequest(req, print) {
+        // specify routes to exclude
+        const excludedRoutes = ['rasa'];
+
+        // check if the req.url.pathname contains excludedRoutes
+        const isExcluded = excludedRoutes.some(route => req.url.pathname.includes(route))
+        if(isExcluded) {
+          return;
+        }
+        },
       serviceWorker: {
         url: '/training/mockServiceWorker.js'
       }

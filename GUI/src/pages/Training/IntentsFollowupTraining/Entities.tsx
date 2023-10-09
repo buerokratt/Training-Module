@@ -14,6 +14,7 @@ import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
 const Entities: FC = () => {
+  let newEntityName = '';
   const { t } = useTranslation();
   const toast = useToast();
   const queryClient = useQueryClient();
@@ -27,7 +28,7 @@ const Entities: FC = () => {
   const { data: entities } = useQuery<Entity[]>({
     queryKey: ['entities'],
   });
-  const { register, handleSubmit } = useForm<{ name: string }>();
+  const { register, handleSubmit } = useForm<{ entity: string }>();
 
   useDocumentEscapeListener(() => setEditableRow(null));
 
@@ -36,7 +37,7 @@ const Entities: FC = () => {
   };
 
   const entityAddMutation = useMutation({
-    mutationFn: (data: { name: string }) => addEntity(data),
+    mutationFn: (data: { entity: string }) => addEntity(data),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['entities']);
       toast.open({
@@ -56,7 +57,7 @@ const Entities: FC = () => {
   });
 
   const entityEditMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string | number, data: { name: string } }) => editEntity(id, data),
+    mutationFn: ({ data }: { data: { entity_name: string, entity: string, intent: string } }) => editEntity(data),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['entities']);
       toast.open({
@@ -76,7 +77,7 @@ const Entities: FC = () => {
   });
 
   const entityDeleteMutation = useMutation({
-    mutationFn: ({ id }: { id: string | number }) => deleteEntity(id),
+    mutationFn: (entityData: { entity_name: string | number }) => deleteEntity(entityData),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['entities']);
       toast.open({
@@ -97,6 +98,10 @@ const Entities: FC = () => {
 
   const columnHelper = createColumnHelper<Entity>();
 
+  const updateEntityName = (newName: string) => {
+    newEntityName = newName;
+  }
+
   const entitiesColumns = useMemo(() => [
     columnHelper.accessor('name', {
       header: t('training.intents.entities') || '',
@@ -105,6 +110,7 @@ const Entities: FC = () => {
           name={`entity-${props.row.original.id}`}
           label={t('training.intents.entity')}
           defaultValue={editableRow.name}
+          onChange={(e) => updateEntityName(e.target.value)}
           hideLabel
         />
       ) : props.row.original.relatedIntents ? (
@@ -135,8 +141,11 @@ const Entities: FC = () => {
         <>
           {editableRow && editableRow.id === props.row.original.id ? (
             <Button appearance='text' onClick={() => entityEditMutation.mutate({
-              id: props.row.original.id,
-              data: { name: props.row.original.name },
+              data: {
+                entity_name: props.row.original.name,
+                entity: newEntityName,
+                intent: 'regex'
+              },
             })}>
               <Icon
                 label={t('global.save')}
@@ -202,7 +211,7 @@ const Entities: FC = () => {
           {newEntityFormOpen && (
             <Track gap={16}>
               <FormInput
-                {...register('name')}
+                {...register('entity')}
                 label={t('training.intent.entityName')}
                 placeholder={t('training.intents.entityName') || ''}
                 hideLabel
@@ -235,7 +244,7 @@ const Entities: FC = () => {
               <Button appearance='secondary' onClick={() => setDeletableRow(null)}>{t('global.no')}</Button>
               <Button
                 appearance='error'
-                onClick={() => entityDeleteMutation.mutate({ id: deletableRow })}
+                onClick={() => entityDeleteMutation.mutate({ entity_name: deletableRow })}
               >
                 {t('global.yes')}
               </Button>
