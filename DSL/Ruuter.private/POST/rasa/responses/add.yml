@@ -60,7 +60,8 @@ updateOpenSearch:
   call: http.post
   args:
     url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/bulk/domain"
-    body: ${domainYaml.response.body.json}
+    body:
+      input: ${domainYaml.response.body.json}
   result: updateSearchResult
   next: returnSuccess
 

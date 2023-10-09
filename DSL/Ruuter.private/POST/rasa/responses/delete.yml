@@ -6,8 +6,6 @@ getDomainFile:
   call: http.get
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/domain-file"
-    headers:
-      cookie: ${incoming.headers.cookie}
   result: domainData
 
 validateResponse:
@@ -94,7 +92,8 @@ updateOpenSearch:
   call: http.post
   args:
     url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/bulk/domain"
-    body: ${domainYaml.response.body.json}
+    body:
+      input: ${domainYaml.response.body.json}
   result: updateSearchResult
   next: returnSuccess
 

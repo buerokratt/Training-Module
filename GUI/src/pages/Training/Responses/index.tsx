@@ -30,7 +30,8 @@ const Responses: FC = () => {
   const [deletableRow, setDeletableRow] = useState<string | number | null>(null);
   const [filter, setFilter] = useState('');
   const { register, handleSubmit } = useForm<NewResponse>();
-  const [editingTrainingTitle, setEditingTrainingTitle] = useState<string>("");
+//  const [editingTrainingTitle, setEditingTrainingTitle] = useState<string>("");
+  let editingTrainingTitle: string;
   const formattedResponses = useMemo(() => responses ? responses.response.map((r, i) => ({
     id: i,
     response: r.name,
@@ -38,6 +39,10 @@ const Responses: FC = () => {
   })) : [], [responses]);
 
   useDocumentEscapeListener(() => setEditableRow(null));
+
+  function setEditingTrainingTitle(title: string) {
+    editingTrainingTitle = title;
+  }
 
   const responseSaveMutation = useMutation({
     mutationFn: ({ id, text }: { id: string, text: string }) => editResponse(id,  text),
@@ -63,6 +68,7 @@ const Responses: FC = () => {
     mutationFn: ({ id }: { id: string | number }) => deleteResponse(id),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['responses']);
+
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -80,7 +86,7 @@ const Responses: FC = () => {
   });
 
   const newResponseMutation = useMutation({
-    mutationFn: ({ name, text }: { name: string, text: string }) => editResponse(name,  text, false),
+    mutationFn: ({ name}: { name: string}) => editResponse("utter_"+name,  editingTrainingTitle, false),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['responses']);
       setAddFormVisible(false);
@@ -140,12 +146,12 @@ const Responses: FC = () => {
         <FormTextarea
           label='label'
           name='name'
-          defaultValue={editingTrainingTitle}
+          defaultValue={props.getValue()}
           hideLabel
           minRows={1}
           maxLength={RESPONSE_TEXT_LENGTH}
           showMaxLength
-          onBlur={(e) =>
+          onChange={(e) =>
             setEditingTrainingTitle(e.target.value)
           }
         />
@@ -212,7 +218,7 @@ const Responses: FC = () => {
             hideLabel
             onChange={(e) => setFilter(e.target.value)}
           />
-          <Button onClick={() => setAddFormVisible(true)}>
+          <Button onClick={() => {setAddFormVisible(true); setEditingTrainingTitle("")}}>
             {t('global.add')}
           </Button>
         </Track>
@@ -237,6 +243,9 @@ const Responses: FC = () => {
                   hideLabel
                   maxLength={RESPONSE_TEXT_LENGTH}
                   showMaxLength
+                  onChange={(e) =>
+                      setEditingTrainingTitle(e.target.value)
+                  }
                 />
               </Track>
             </div>

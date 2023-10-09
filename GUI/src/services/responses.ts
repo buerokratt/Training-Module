@@ -20,6 +20,6 @@ export async function editResponse(id: string,  responseText: string, update = t
 
 
 export async function deleteResponse(id: string | number) {
-  const { data } = await api.delete<void>(`responses/${id}`);
+  const { data } = await api.post<void>(`responses/delete`, {response_name: id});
   return data;
 }
