@@ -77,7 +77,7 @@ const Entities: FC = () => {
   });
 
   const entityDeleteMutation = useMutation({
-    mutationFn: ({ id }: { id: string | number }) => deleteEntity(id),
+    mutationFn: (entityData: { entity_name: string | number }) => deleteEntity(entityData),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['entities']);
       toast.open({
@@ -244,7 +244,7 @@ const Entities: FC = () => {
               <Button appearance='secondary' onClick={() => setDeletableRow(null)}>{t('global.no')}</Button>
               <Button
                 appearance='error'
-                onClick={() => entityDeleteMutation.mutate({ id: deletableRow })}
+                onClick={() => entityDeleteMutation.mutate({ entity_name: deletableRow })}
               >
                 {t('global.yes')}
               </Button>

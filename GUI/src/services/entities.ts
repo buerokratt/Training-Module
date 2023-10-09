@@ -14,7 +14,7 @@ export async function editEntity(entityData: { entity_name: string, entity: stri
   return data;
 }
 
-export async function deleteEntity(id: string | number) {
-  const { data } = await api.delete<void>(`entities/${id}`);
+export async function deleteEntity(entityData: { entity_name: string | number }) {
+  const { data } = await api.post<void>(`entities/delete`, entityData);
   return data;
 }
