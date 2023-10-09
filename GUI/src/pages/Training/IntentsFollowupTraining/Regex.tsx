@@ -26,7 +26,7 @@ const Regex: FC = () => {
   const [addFormVisible, setAddFormVisible] = useState(false);
   const [deletableRow, setDeletableRow] = useState<string | number | null>(null);
   const { data: regexList } = useQuery<RegexTeaser[]>({
-    queryKey: ['regex'],
+    queryKey: ['regexes'],
   });
   const { data: entities } = useQuery<Entity[]>({
     queryKey: ['entities'],
