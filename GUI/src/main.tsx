@@ -52,7 +52,7 @@ const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
 
   const { data } = await apiInstance.get(queryKey[0] as string);
   if(queryKey.includes('entities')) {
-    return data.response.data.entities;
+    return data.response;
   }
   if(queryKey.includes('regexes')) {
     return data.response.data.regexes;
