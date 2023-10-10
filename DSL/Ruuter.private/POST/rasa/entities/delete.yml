@@ -24,7 +24,7 @@ domainEntities:
 
 validateDomainEntities:
   switch:
-    - condition: ${!domainEntities.response.body.response}
+    - condition: ${domainEntities.response.statusCodeValue == 200}
       next: regexEntities
   next: returnEntityHasDependencyToDomain
 
@@ -39,7 +39,7 @@ regexEntities:
 
 validateRegexEntities:
   switch:
-    - condition: ${!regexEntities.response.body.response}
+    - condition: ${regexEntities.response.statusCodeValue == 200}
       next: intentEntities
   next: returnEntityHasDependencyToRegex
 
@@ -54,7 +54,7 @@ intentEntities:
 
 validateIntentEntities:
   switch:
-    - condition: ${!intentEntities.response.body.response}
+    - condition: ${intentEntities.response.statusCodeValue == 200}
       next: deleteEntity
   next: returnEntityHasDependencyToIntent
 
@@ -96,6 +96,15 @@ saveDomainFile:
       file_path: ${fileLocations.response.body.response.domain_location}
       content: ${domainYaml.response.body.json}
   result: fileResult
+  next: updateOpenSearch
+
+updateOpenSearch:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/bulk/domain"
+    body:
+      input: ${domainYaml.response.body.json}
+  result: updateSearchResult
   next: returnSuccess
 
 returnSuccess:
