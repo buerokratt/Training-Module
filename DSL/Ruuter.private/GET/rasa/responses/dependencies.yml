@@ -1,40 +1,15 @@
-getFileLocations:
+getRulesData:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
-  result: fileLocations
+    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/rules/_search?size=10000"
+  result: getRulesResult
 
-getRulesFile:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/read"
-    body:
-      file_path: ${fileLocations.response.body.response.rules_location}
-  result: ruleFile
-
-getRulesData:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/yaml-to-json"
-    body:
-      file: ${ruleFile.response.body.file}
-  result: rulesData
-
-getStoriesFile:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/read"
-    body:
-      file_path: ${fileLocations.response.body.response.stories_location}
-  result: storiesFile
 
 getStoriesData:
-  call: http.post
+  call: http.get
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/yaml-to-json"
-    body:
-      file: ${storiesFile.response.body.file}
-  result: storiesData
+    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/stories/_search?size=10000"
+  result: getStoriesResult
 
 getResponses:
   call: http.get
@@ -55,13 +30,13 @@ mapDependenciesData:
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-responses-dependencies"
     body:
-      rules: ${rulesData.response.body.rules}
-      stories: ${storiesData.response.body.stories}
+      rules: ${getRulesResult.response.body.hits.hits}
+      stories: ${getStoriesResult.response.body.hits.hits}
       responses: ${responsesData.response.body.data.responses}
   result: dependenciesData
 
 returnSuccess:
-  return: ${dependenciesData.response.body}
+  return: ${dependenciesData.response.body.data}
   next: end
 
 returnUnauthorized:

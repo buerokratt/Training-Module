@@ -1,17 +1,18 @@
-import { FC, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { createColumnHelper } from '@tanstack/react-table';
-import { useForm } from 'react-hook-form';
-import { AxiosError } from 'axios';
-import { MdDeleteOutline, MdOutlineModeEditOutline, MdOutlineSave } from 'react-icons/md';
+import {FC, useMemo, useState} from 'react';
+import {useTranslation} from 'react-i18next';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import {createColumnHelper} from '@tanstack/react-table';
+import {useForm} from 'react-hook-form';
+import {AxiosError} from 'axios';
+import {MdDeleteOutline, MdOutlineModeEditOutline, MdOutlineSave} from 'react-icons/md';
 
-import { Button, Card, DataTable, Dialog, FormInput, FormTextarea, Icon, Label, Track } from 'components';
-import { RESPONSE_TEXT_LENGTH } from 'constants/config';
-import type { Responses as ResponsesType } from 'types/response';
+import {Button, Card, DataTable, Dialog, FormInput, FormTextarea, Icon, Label, Track} from 'components';
+import {RESPONSE_TEXT_LENGTH} from 'constants/config';
+import type {Responses as ResponsesType} from 'types/response';
+import type {Dependencies as DependenciesType} from 'types/dependencises';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
-import { useToast } from 'hooks/useToast';
-import { deleteResponse, editResponse } from 'services/responses';
+import {useToast} from 'hooks/useToast';
+import {deleteResponse, editResponse} from 'services/responses';
 
 type NewResponse = {
   name: string;
@@ -22,6 +23,9 @@ const Responses: FC = () => {
   const { t } = useTranslation();
   const toast = useToast();
   const queryClient = useQueryClient();
+  const { data: dependencies } = useQuery<DependenciesType>({
+    queryKey: ['responses/dependencies'],
+  });
   const { data: responses } = useQuery<ResponsesType>({
     queryKey: ['responses'],
   });
@@ -115,6 +119,18 @@ const Responses: FC = () => {
 
   const columnHelper = createColumnHelper<typeof formattedResponses[0]>();
 
+  const getRules = (responseId: String)  => {
+    // @ts-ignore
+    return dependencies && true ? dependencies.response.find(d => d.name === responseId)
+        .rules.map((name,i) => <p key={i}>{name}</p>) : null;
+  }
+
+  const getStories = (responseId: String)  => {
+    // @ts-ignore
+    return dependencies && true ? dependencies.response.find(d => d.name === responseId)
+        .stories.map((name,i) => <p key={i}>{name}</p>) : null;
+  }
+
   const responsesColumns = useMemo(() => [
     columnHelper.accessor('response', {
       header: t('training.responses.response') || '',
@@ -124,13 +140,12 @@ const Responses: FC = () => {
     }),
     columnHelper.display({
       id: 'dependencies',
-      cell: () => (
+      cell: (props) => (
         <Label tooltip={
           <>
-            {/* TODO: Add correct dependencies */}
             <strong>{t('global.dependencies')}</strong>
-            <p>Dep 1</p>
-            <p>Dep 2</p>
+            {getRules(props.row.original.response)}
+            {getStories(props.row.original.response)}
           </>
         }>
           {t('global.dependencies')}
