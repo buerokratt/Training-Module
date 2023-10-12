@@ -2,25 +2,10 @@ assign_values:
   assign:
     params: ${incoming.body}
 
-authenticate:
-  template: extract-token
-  requestType: post
-  headers:
-    cookie: ${incoming.headers.cookie}
-  body:
-    role: "ROLE_ADMINISTRATOR"
-  result: permission
-
-validatePermission:
-  switch:
-    - condition: ${permission}
-      next: getIntentLastChanged
-  next: returnUnauthorized
-
 getIntentLastChanged:
   call: http.post
   args:
-    url: https://host.docker.internal:8443/get-intent-last-changed
+    url: "[TRAINING_RESQL]:[TRAINING_RESQL_PORT]/get-intent-last-changed"
     body:
       intent: ${params.intent}
   result: getIntentLastChangedResult

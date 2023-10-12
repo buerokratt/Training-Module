@@ -4,7 +4,11 @@ const router = express.Router();
 
 router.post('/', (req, res) => {
     let { data, search, replace } = req.body;
-    res.json(data.replaceAll(search, replace));
+    if (search === "|") {
+        res.json(data.replace(/(examples:.*?)\|/g, '$1'));
+    } else {
+        res.json(data.replaceAll(search, replace));
+    }
 });
 
 export default router;
