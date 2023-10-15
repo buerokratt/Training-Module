@@ -5,7 +5,7 @@ import { stringify } from 'yaml';
 const router = express.Router();
 
 router.post('/', multer().array('file'), async (req, res) => {
-    let result = stringify(req.body,{ defaultStringType: 'QUOTE_DOUBLE', defaultKeyType: 'PLAIN'});
+    let result = stringify(req.body);
     res.json({ "json": result });
 });
 
