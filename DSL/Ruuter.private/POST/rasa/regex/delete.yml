@@ -79,7 +79,7 @@ mapExamples:
 
 validateExampleExists:
   switch:
-    - condition: ${mappedExamples.response.body == true}
+    - condition: ${mappedExamples.response.statusCodeValue == 200}
       next: deleteRegex
   next: returnExampleIsMissing
 
@@ -128,25 +128,25 @@ saveRegexFile:
       file_path: ${fileLocations.response.body.response.regex_location}
       content: ${regexYaml.response.body.json}
   result: fileResult
-  next: removePipe
-
-removePipe:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/replace"
-    body:
-      data: ${regexYaml.response.body.json}
-      search: "|"
-      replace: ""
-  result: result
   next: updateRegexOpenSearch
+
+#removePipe:
+#  call: http.post
+#  args:
+#    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/replace"
+#    body:
+#      data: ${regexYaml.response.body.json}
+#      search: "|"
+#      replace: ""
+#  result: result
+#  next: updateRegexOpenSearch
 
 updateRegexOpenSearch:
   call: http.post
   args:
     url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/put/regexes/regex"
     body:
-      input: ${result.response.body.json}
+      input: ${regexYaml.response.body.json}
   result: updatedRegex
   next: returnSuccess
 
