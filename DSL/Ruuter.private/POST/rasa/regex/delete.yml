@@ -35,7 +35,7 @@ mapRegexesData:
 
 validateRegexExists:
   switch:
-    - condition: ${regexesData.response.body.regex.includes(parameters.regex_name)}
+    - condition: ${regexesData.response.body.data.regex.includes(parameters.regex_name)}
       next: replaceJsonString
   next: returnRegexIsMissing
 
@@ -44,7 +44,7 @@ replaceJsonString:
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/replace"
     body:
-      data: ${regexesData.response.body.examples}
+      data: ${regexesData.response.body.data.examples}
       search: "&quot;"
       replace: ""
   result: replacedJsonString
