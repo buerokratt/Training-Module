@@ -74,6 +74,9 @@ router.post('/put/:index_name/:index_type', upload.single('input'), (req, res) =
 	if (input.nlu)
 		input = input.nlu;
 
+	if (input.data)
+		input = input.data
+
 	var index_name = req.params.index_name;
 	var index_type = req.params.index_type;
 

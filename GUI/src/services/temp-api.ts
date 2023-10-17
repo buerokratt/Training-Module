@@ -13,6 +13,7 @@ const instance = axios.create({
 
 instance.interceptors.request.use((config) => {
     config.headers['Testcookie'] = testCookie;
+    //config.headers.host = import.meta.env.REACT_APP_RUUTER_URL;
     return config;
 });
 
