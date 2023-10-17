@@ -2,7 +2,6 @@ import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import api from '../../../services/temp-api';
 import { format } from 'date-fns';
 import { createColumnHelper } from '@tanstack/react-table';
 import { AxiosError } from 'axios';
@@ -28,19 +27,14 @@ import {
 } from 'services/regex';
 import { Entity } from 'types/entity';
 
-export type Regex = {
-  readonly id: number;
+type Regex = {
+  readonly id: string;
   name: string;
   examples: string[];
 }
 
 const RegexDetail: FC = () => {
   const { id } = useParams();
-  const initialState = {
-    id: '',
-    name: id,
-    examples: []
-  };
   let updatedExampleName = '';
   const { t } = useTranslation();
   const toast = useToast();
@@ -52,9 +46,9 @@ const RegexDetail: FC = () => {
     id: number;
     value: string;
   } | null>(null);
+  const { data: regex } = useQuery<Regex>(['regex',id, 'examples']);
   const [deletableRow, setDeletableRow] = useState<string | number | null>(null);
   const [deletableRegex, setDeletableRegex] = useState<string | number | null>(null);
-  const [regex, setRegex] = useState(initialState);
   const { data: entities } = useQuery<Entity[]>({
     queryKey: ['entities'],
   });
@@ -76,27 +70,9 @@ const RegexDetail: FC = () => {
   );
 
   useEffect(() => {
-      let isSubscribed = true;
-
-      const getRegex = async () => {
-        const {data: res} = await api.post('regex', {
-          "regex": id,
-          "examples": true
-        });
-        if (res.response && isSubscribed) {
-          setRegex(res.response);
-        }
-      };
-
-      //Causing infinite loop
-      // getRegex();
-
-      return () => {
-        isSubscribed = false;
-        const result = regex && regex.examples.map((e, index) => ({id: index, value: e}));
-        setRegexList(result ?? []);
-      }
-  },[regex?.examples])
+    const result = regex && regex.examples.map((e, index) => ({ id: index, value: e }));
+    setRegexList(result ?? []);
+  }, [regex?.examples])
 
   const regexEditMutation = useMutation({
     mutationFn: ({ id, data }: { id: string | number, data: { name: string } }) => editRegex(id, data),
