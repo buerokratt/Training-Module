@@ -1,9 +1,19 @@
 import api from './temp-api';
 import ruuter_api from './ruuter-api';
 import { saveAs } from 'file-saver';
+import {Regex} from "../pages/Training/IntentsFollowupTraining/RegexDetail";
 
 export async function addRegex(regexData: { name: string }) {
   const { data } = await api.post<{ readonly id: number; name: string }>('regex');
+  return data;
+}
+
+export async function getRegexWithExamples(regex: string | undefined) {
+  const request = {
+    "regex": regex,
+    "examples": true
+  };
+  const { data } = await api.post<{response: Regex}>('regex', request);
   return data;
 }
 

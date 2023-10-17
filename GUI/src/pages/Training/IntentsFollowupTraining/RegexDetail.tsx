@@ -2,6 +2,7 @@ import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import api from '../../../services/temp-api';
 import { format } from 'date-fns';
 import { createColumnHelper } from '@tanstack/react-table';
 import { AxiosError } from 'axios';
@@ -17,20 +18,31 @@ import {
 import { Button, Card, DataTable, Dialog, FormInput, FormSelect, FormTextarea, Icon, Track } from 'components';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import { useToast } from 'hooks/useToast';
-import { addRegexExample, deleteRegex, deleteRegexExample, downloadExamples, editRegex, editRegexExample } from 'services/regex';
+import {
+  addRegexExample,
+  deleteRegex,
+  deleteRegexExample,
+  downloadExamples,
+  editRegex,
+  editRegexExample
+} from 'services/regex';
 import { Entity } from 'types/entity';
 
-type Regex = {
+export type Regex = {
   readonly id: number;
   name: string;
   examples: string[];
-  modifiedAt: Date | string;
 }
 
 const RegexDetail: FC = () => {
+  const { id } = useParams();
+  const initialState = {
+    id: '',
+    name: id,
+    examples: []
+  };
   let updatedExampleName = '';
   const { t } = useTranslation();
-  const { id } = useParams();
   const toast = useToast();
   const navigate = useNavigate();
   const newExampleRef = useRef<HTMLTextAreaElement>(null);
@@ -42,10 +54,7 @@ const RegexDetail: FC = () => {
   } | null>(null);
   const [deletableRow, setDeletableRow] = useState<string | number | null>(null);
   const [deletableRegex, setDeletableRegex] = useState<string | number | null>(null);
-  const { data: regex } = useQuery<Regex>({
-    queryKey: [`regex/${id}`],
-    enabled: !!id,
-  });
+  const [regex, setRegex] = useState(initialState);
   const { data: entities } = useQuery<Entity[]>({
     queryKey: ['entities'],
   });
@@ -67,9 +76,27 @@ const RegexDetail: FC = () => {
   );
 
   useEffect(() => {
-    const result = regex && regex.examples.map((e, index) => ({ id: index, value: e }));
-    setRegexList(result ?? []);
-  }, [regex?.examples])
+      let isSubscribed = true;
+
+      const getRegex = async () => {
+        const {data: res} = await api.post('regex', {
+          "regex": id,
+          "examples": true
+        });
+        if (res.response && isSubscribed) {
+          setRegex(res.response);
+        }
+      };
+
+      //Causing infinite loop
+      // getRegex();
+
+      return () => {
+        isSubscribed = false;
+        const result = regex && regex.examples.map((e, index) => ({id: index, value: e}));
+        setRegexList(result ?? []);
+      }
+  },[regex?.examples])
 
   const regexEditMutation = useMutation({
     mutationFn: ({ id, data }: { id: string | number, data: { name: string } }) => editRegex(id, data),
@@ -382,12 +409,12 @@ const RegexDetail: FC = () => {
                     </Button>
                   )}
                 </Track>
-                <p style={{ color: '#4D4F5D' }}>
-                  {`${t('global.modifiedAt')} ${format(
-                    new Date(regex.modifiedAt),
-                    'dd.MM.yyyy',
-                  )}`}
-                </p>
+                {/*<p style={{ color: '#4D4F5D' }}>*/}
+                {/*  {`${t('global.modifiedAt')} ${format(*/}
+                {/*    new Date(regex.modifiedAt),*/}
+                {/*    'dd.MM.yyyy',*/}
+                {/*  )}`}*/}
+                {/*</p>*/}
               </Track>
               <Track justify='end' gap={8}>
                 <Button
