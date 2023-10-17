@@ -17,20 +17,26 @@ import {
 import { Button, Card, DataTable, Dialog, FormInput, FormSelect, FormTextarea, Icon, Track } from 'components';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import { useToast } from 'hooks/useToast';
-import { addRegexExample, deleteRegex, deleteRegexExample, downloadExamples, editRegex, editRegexExample } from 'services/regex';
+import {
+  addRegexExample,
+  deleteRegex,
+  deleteRegexExample,
+  downloadExamples,
+  editRegex,
+  editRegexExample
+} from 'services/regex';
 import { Entity } from 'types/entity';
 
 type Regex = {
-  readonly id: number;
+  readonly id: string;
   name: string;
   examples: string[];
-  modifiedAt: Date | string;
 }
 
 const RegexDetail: FC = () => {
+  const { id } = useParams();
   let updatedExampleName = '';
   const { t } = useTranslation();
-  const { id } = useParams();
   const toast = useToast();
   const navigate = useNavigate();
   const newExampleRef = useRef<HTMLTextAreaElement>(null);
@@ -40,12 +46,9 @@ const RegexDetail: FC = () => {
     id: number;
     value: string;
   } | null>(null);
+  const { data: regex } = useQuery<Regex>(['regex',id, 'examples']);
   const [deletableRow, setDeletableRow] = useState<string | number | null>(null);
   const [deletableRegex, setDeletableRegex] = useState<string | number | null>(null);
-  const { data: regex } = useQuery<Regex>({
-    queryKey: [`regex/${id}`],
-    enabled: !!id,
-  });
   const { data: entities } = useQuery<Entity[]>({
     queryKey: ['entities'],
   });
@@ -382,12 +385,12 @@ const RegexDetail: FC = () => {
                     </Button>
                   )}
                 </Track>
-                <p style={{ color: '#4D4F5D' }}>
-                  {`${t('global.modifiedAt')} ${format(
-                    new Date(regex.modifiedAt),
-                    'dd.MM.yyyy',
-                  )}`}
-                </p>
+                {/*<p style={{ color: '#4D4F5D' }}>*/}
+                {/*  {`${t('global.modifiedAt')} ${format(*/}
+                {/*    new Date(regex.modifiedAt),*/}
+                {/*    'dd.MM.yyyy',*/}
+                {/*  )}`}*/}
+                {/*</p>*/}
               </Track>
               <Track justify='end' gap={8}>
                 <Button
