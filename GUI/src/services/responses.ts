@@ -1,16 +1,25 @@
-import api from './api';
+import api from './temp-api';
+import {ResponseEdit, ResponseDataEdit} from "types/response"
 
-export async function addResponse(newResponseData: { name: string; text: string }) {
-  const { data } = await api.post<{ name: string; text: string; }>('responses', newResponseData);
-  return data;
+export async function editResponse(id: string,  responseText: string, update = true) {
+  const responseEditData = <ResponseEdit>{};
+  const responseDataEdit = <ResponseDataEdit>{};
+
+  responseEditData.response_name = id;
+  responseDataEdit[id] = [{text: responseText}];
+  responseEditData.response = responseDataEdit;
+
+  if (update) {
+    const {data} = await api.post<{ response: string }>(`responses/update`, responseEditData);
+    return data;
+  } else {
+    const {data} = await api.post<{ response: string }>(`responses/add`, responseEditData);
+    return data;
+  }
 }
 
-export async function editResponse(id: string | number, responseData: { text: string }) {
-  const { data } = await api.patch<{ name: string; text: string; }>(`responses/${id}`, responseData);
-  return data;
-}
 
 export async function deleteResponse(id: string | number) {
-  const { data } = await api.delete<void>(`responses/${id}`);
+  const { data } = await api.post<void>(`responses/delete`, {response_name: id});
   return data;
 }

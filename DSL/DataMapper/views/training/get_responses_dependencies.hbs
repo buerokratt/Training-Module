@@ -1,14 +1,14 @@
-{
+[
   {{#each responses}}
-    {{assign 'response' _source.name}}
-    "{{_source.name}}": {
+    {{assign 'response' name}}
+    {"name": "{{name}}",
       "rules": [
         {{assign 'multiple' false}}
         {{#each ../rules}}
-          {{#each steps as |step|}}
+          {{#each _source.steps as |step|}}
             {{#if (eq @root.response step.action)}}
               {{#if @root.multiple}},{{/if}}
-              "{{../rule}}"
+              "{{../_source.rule}}"
               {{assign 'multiple' true}}
             {{/if}}
           {{/each}}
@@ -17,10 +17,10 @@
       "stories": [
         {{assign 'multiple' false}}
         {{#each ../stories}}
-          {{#each steps as |step|}}
+          {{#each _source.steps as |step|}}
             {{#if (eq @root.response step.action)}}
               {{#if @root.multiple}},{{/if}}
-              "{{../story}}"
+               "{{../_source.story}}"
               {{assign 'multiple' true}}
             {{/if}}
           {{/each}}
@@ -28,4 +28,4 @@
       ]
     }{{#unless @last}},{{/unless}}
   {{/each}}
-}
+]
