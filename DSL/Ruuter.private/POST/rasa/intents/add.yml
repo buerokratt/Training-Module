@@ -1,24 +1,22 @@
 validateInputLength:
   switch:
-    - condition: ${incoming.body.intent.length > 5}
+    - condition: ${incoming.body.name.length > 5}
       next: assign_values
   next: returnTooShortError
 
 assign_values:
   assign:
-    intent: ${incoming.body.intent.replaceAll(/\s+/g, "_")}
+    intent: ${incoming.body.name.replaceAll(/\s+/g, "_")}
 
-getDomainFile:
+getIntentList:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/domain-file"
-    headers:
-      testcookie: "test"
-  result: domainData
+    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/intents"
+  result: intentList
 
 validateIntentExists:
   switch:
-    - condition: ${domainData.response.body.response.intents.includes(intent)}
+    - condition: ${intentList.response.data.includes(intent)}
       next: returnIntentExists
   next: getFileLocations
 
@@ -42,7 +40,7 @@ convertJsonToYaml:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml"
     body:
       version: "3.0"
-      nlu: ${intentFileJson.response.body}
+      nlu: ${intentFileJson.response.body.data}
   result: intentYaml
 
 saveIntentFile:
@@ -54,48 +52,31 @@ saveIntentFile:
       content: ${intentYaml.response.body.json}
   result: fileResult
 
-mergeIntents:
+removePipe:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/merge"
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/replace"
     body:
-      array1: ${[intent]}
-      array2: ${domainData.response.body.response.intents}
-  result: mergedIntents
+      data: ${intentYaml.response.body.json}
+      search: "|"
+      replace: ""
+  result: pipelineIntent
 
-convertDomainJsonToYaml:
+addInPipeline:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml"
+    url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/put/intents/intent"
     body:
-      version: ${domainData.response.body.response.version}
-      intents: ${mergedIntents.response.body}
-      entities: ${domainData.response.body.response.entities}
-      slots: ${domainData.response.body.response.slots}
-      forms: ${domainData.response.body.response.forms}
-      actions: ${domainData.response.body.response.actions}
-      responses: ${domainData.response.body.response.responses}
-      session_config: ${domainData.response.body.response.session_config}
-  result: domainYaml
-
-saveDomainFile:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/write"
-    body:
-      file_path: ${fileLocations.response.body.response.domain_location}
-      content: ${domainYaml.response.body.json}
-  result: fileResult
-  next: returnSuccess
+      input: ${pipelineIntent.response.body}
+  result: updateSearchResult
 
   addInDatabase:
     call: http.post
     args:
       url: "[TRAINING_RESQL]:[TRAINING_RESQL_PORT]/add-intent"
       body:
-        intent: ${params.intent}
+        intent: ${incoming.body.name}
         status: "ACTIVE"
-    result: getIntentLastChangedResult
 
 returnSuccess:
   return: "Intent created"

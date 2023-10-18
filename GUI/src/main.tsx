@@ -31,7 +31,7 @@ const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
   } else {
     apiInstance = api;
   }
-  if(import.meta.env.REACT_APP_LOCAL !== true) {
+  if (import.meta.env.REACT_APP_LOCAL !== true) {
     if (queryKey.includes('prod')) {
       const { data } = await apiDev.get(queryKey[0] as string);
       return data;
