@@ -48,6 +48,14 @@ const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
       const { data } = await auth.get(queryKey[0] as string);
       return data;
     }
+    if(queryKey.includes('regex') && queryKey.includes('examples')) {
+      const request = {
+        "regex": queryKey[1],
+        "examples": true
+      };
+      const { data } = await apiInstance.post(queryKey[0] as string, request)
+      return data.response;
+    }
   }
 
   const { data } = await apiInstance.get(queryKey[0] as string);

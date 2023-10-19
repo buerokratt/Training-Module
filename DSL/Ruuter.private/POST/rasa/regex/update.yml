@@ -75,7 +75,15 @@ saveRegexFile:
       file_path: ${fileLocations.response.body.response.regex_location}
       content: ${regexYaml.response.body.json}
   result: fileResult
-  next: returnSuccess
+  next: updateRegexOpenSearch
+
+updateRegexOpenSearch:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/put/regexes/regex"
+    body:
+      input: ${regexYaml.response.body.json}
+  result: returnSuccess
 
 returnSuccess:
   return: "Regex updated"

@@ -55,7 +55,7 @@ services:
       context: ./DSL/DataMapper
     volumes:
       - ./mock1:/mock1
-#      - ../Service-Module/DSL/mock1:/mock1
+      - ../Service-Module/DSL/mock1:/mock1
     ports:
       - 3000:3000
     networks:
@@ -71,15 +71,6 @@ services:
     volumes:
       - /app/node_modules
       - ./GUI:/app
-    networks:
-      - bykstack
-  postgresql:
-    image: postgres:latest
-    container_name: training-postgresql
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgres
     networks:
       - bykstack
 

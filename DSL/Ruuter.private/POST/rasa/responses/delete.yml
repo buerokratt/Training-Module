@@ -2,27 +2,10 @@ assign_values:
   assign:
     parameters: ${incoming.body}
 
-authenticate:
-  template: extract-token
-  requestType: post
-  headers:
-    cookie: ${incoming.headers.cookie}
-  body:
-    role: "ROLE_ADMINISTRATOR"
-  result: permission
-
-validatePermission:
-  switch:
-    - condition: ${permission}
-      next: getDomainFile
-  next: returnUnauthorized
-
 getDomainFile:
   call: http.get
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/domain-file"
-    headers:
-      cookie: ${incoming.headers.cookie}
   result: domainData
 
 validateResponse:
@@ -35,8 +18,6 @@ ruleResponses:
   call: http.post
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/rules/search"
-    headers:
-      cookie: ${incoming.headers.cookie}
     body:
       response: ${parameters.response_name}
       type: "responses"
@@ -52,8 +33,6 @@ storiesResponses:
   call: http.post
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/stories/search"
-    headers:
-      cookie: ${incoming.headers.cookie}
     body:
       response: ${parameters.response_name}
       type: "responses"
@@ -103,6 +82,15 @@ saveDomainFile:
       file_path: ${fileLocations.response.body.response.domain_location}
       content: ${domainYaml.response.body.json}
   result: fileResult
+  next: updateOpenSearch
+
+updateOpenSearch:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/bulk/domain"
+    body:
+      input: ${domainYaml.response.body.json}
+  result: updateSearchResult
   next: returnSuccess
 
 returnSuccess:
