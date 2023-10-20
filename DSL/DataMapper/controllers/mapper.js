@@ -20,6 +20,7 @@ router.post('/:filename', function(req, res) {
 
     const template = Handlebars.compile(file, { helpers });
     const templateResult = template(req.body);
+    //console.log("CREATED TEMPLATE: \n - - - - - - \n" + templateResult + "\n - - - - - - \n");
     const templateObject = JSON.parse(templateResult);
 
     if (type == 'csv') {
