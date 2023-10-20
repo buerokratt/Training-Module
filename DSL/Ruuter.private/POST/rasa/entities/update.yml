@@ -93,15 +93,6 @@ convertYamlToJson:
       file: ${intentFile.response.body.file}
   result: intentData
 
-splitExamples:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/split"
-    body:
-      data: ${intentData.response.body.nlu[0].examples}
-      separator: "\n"
-  result: splitExamples
-
 switchMapFileType:
   switch:
     - condition: ${parameters.intent.includes("regex")}
@@ -114,7 +105,7 @@ mapRegexesData:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-regex-file"
     body:
       regex: ${parameters.entity}
-      examples: ${splitExamples.response.body}
+      examples: ${intentData.response.body.nlu[0].examples}
   result: intentFileJson
   next: convertIntentJsonToYaml
 
