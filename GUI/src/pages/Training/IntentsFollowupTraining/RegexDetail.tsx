@@ -47,7 +47,7 @@ const RegexDetail: FC = () => {
     value: string;
   } | null>(null);
   const { data: regex } = useQuery<Regex>(['regex',id, 'examples']);
-  const [deletableRow, setDeletableRow] = useState<string | number | null>(null);
+  const [deletableRow, setDeletableRow] = useState<string | undefined | null>(null);
   const [deletableRegex, setDeletableRegex] = useState<string | number | null>(null);
   const { data: entities } = useQuery<Entity[]>({
     queryKey: ['entities'],
@@ -132,7 +132,7 @@ const RegexDetail: FC = () => {
   });
 
   const regexExampleDeleteMutation = useMutation({
-    mutationFn: ({ id }: { id: string | number }) => deleteRegexExample(id),
+    mutationFn: (data : { update_data : {regex_name: string | undefined, example: string | undefined }}) => deleteRegexExample(data),
     onSuccess: () => {
       toast.open({
         type: 'success',
@@ -276,7 +276,7 @@ const RegexDetail: FC = () => {
     columnHelper.display({
       header: '',
       cell: (props) => (
-        <Button appearance='text' onClick={() => setDeletableRow(props.row.original.id)}>
+        <Button appearance='text' onClick={() => setDeletableRow(props.row.original.value)}>
           <Icon
             label={t('global.delete')}
             icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />}
@@ -481,7 +481,7 @@ const RegexDetail: FC = () => {
               <Button appearance='secondary' onClick={() => setDeletableRow(null)}>{t('global.no')}</Button>
               <Button
                 appearance='error'
-                onClick={() => regexExampleDeleteMutation.mutate({ id: deletableRow })}
+                onClick={() => regexExampleDeleteMutation.mutate({update_data: { regex_name: regex?.name, example: deletableRow }})}
               >
                 {t('global.yes')}
               </Button>
