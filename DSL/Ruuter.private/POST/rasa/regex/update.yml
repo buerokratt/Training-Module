@@ -36,27 +36,69 @@ mapRegexesData:
 validateRegexExists:
   switch:
     - condition: ${regexesData.response.body.data.regex.includes(parameters.regex_name)}
-      next: mapRegexInput
+      next: removeQuotes
   next: returnRegexIsMissing
 
-mapRegexInput:
+removeQuotes:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-regex-file"
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/replace"
     body:
-      regex: ${parameters.input.regex}
-      examples: ${parameters.input.examples}
-  result: mappedRegexInput
+      data: ${regexesData.response.body.data.examples}
+      search: "&quot;"
+      replace: ""
+  result: removedQuotes
 
-mergeRegexes:
+updateExample:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/merge"
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/replace"
     body:
-      array1: ${regexData.response.body.nlu}
-      array2: ${mappedRegexInput.response.body.data}
-      iteratee: "regex"
-  result: mergedRegexes
+      data: ${removedQuotes.response.body}
+      search: ${parameters.input.example}
+      replace: ${parameters.input.newExample}
+  result: updatedExamples
+  next: removeHyphens
+
+removeHyphens:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/replace"
+    body:
+      data: ${updatedExamples.response.body}
+      search: "- "
+      replace: ""
+  result: removedHyp
+
+revertHyphens:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/replace"
+    body:
+      data: ${removedHyp.response.body}
+      search: "[]"
+      replace: "[- ]"
+  result: revertedHyp
+  next: splitExamples
+
+splitExamples:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/split"
+    body:
+      data: ${revertedHyp.response.body}
+      separator: "\n"
+  result: splitExamples
+  next: convertJsonToYaml
+
+checkEntity:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/check-value"
+    body:
+      hits: ${regexData.response.body}
+  result: checkResult
+  next: mapRegexesData
 
 convertJsonToYaml:
   call: http.post
@@ -64,8 +106,11 @@ convertJsonToYaml:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml"
     body:
       version: "3.0"
-      nlu: ${mergedRegexes.response.body}
+      nlu:
+      - regex: ${parameters.regex_name}
+        examples: ${splitExamples.response.body}
   result: regexYaml
+  next: saveRegexFile
 
 saveRegexFile:
   call: http.post
