@@ -13,9 +13,11 @@ Handlebars.registerHelper('ne', function(a, b) {
     return a !== b;
 });
 
+
 Handlebars.registerHelper('valueExists', function(array, value) {
     return array.includes(value);
 })
+
 
 Handlebars.registerHelper('removeEntityFromArray', function (entities, entityToRemove) {
     const index = entities.indexOf(entityToRemove);
