@@ -148,18 +148,13 @@ const RegexDetail: FC = () => {
   });
 
   const regexExampleEditMutation = useMutation({
-    mutationFn: ({example_data, regexExampleData} : {
-      example_data: {
-        new_name: string,
-        old_name: string
-      },
-      regexExampleData: {
+    mutationFn: (example_data : {
       regex_name: string,
       input: {
         regex: string,
-        examples: string[]
-      }},
-    }) => editRegexExample(example_data, regexExampleData),
+        example: string,
+        newExample: string
+    }}) => editRegexExample(example_data),
     onSuccess: () => {
       toast.open({
         type: 'success',
@@ -234,17 +229,13 @@ const RegexDetail: FC = () => {
         <>
           {editableRow && editableRow.id === props.row.original.id ? (
             <Button appearance='text' onClick={() => regexExampleEditMutation.mutate({
-              example_data: {
-              new_name: updatedExampleName,
-              old_name: props.row.original.value
-              },
-              regexExampleData: {
               regex_name: regex!.name,
               input: {
                 regex: regex!.name,
-                examples: regex!.examples
+                example: props.row.original.value,
+                newExample: updatedExampleName
               },
-            }})}>
+            })}>
               <Icon
                 label={t('global.save')}
                 icon={<MdOutlineSave color={'rgba(0,0,0,0.54)'} />}
