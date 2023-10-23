@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - dev
-    paths:
-      - '.env'
+ #   paths:
+ #     - '.env'
 
 jobs:
   PackageDeploy:
@@ -19,10 +19,7 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
 
-      - name: Setup image name
-        id: setup-image-name
-        run: |
-          ssh ubuntu@${{ secrets.SERVER_IP }} "cd /opt/etapp2/uptodate/PIPELINE && echo \"$DOCKER_TAG_CUSTOM\" > training_image.yml"
+
 
       - name: Setup and run containers
         id: setup-and-run-containers
