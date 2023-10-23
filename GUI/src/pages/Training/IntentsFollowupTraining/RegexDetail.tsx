@@ -233,7 +233,7 @@ const RegexDetail: FC = () => {
               input: {
                 regex: regex!.name,
                 example: props.row.original.value,
-                newExample: updatedExampleName
+                newExample: updatedExampleName ? updatedExampleName : props.row.original.value
               },
             })}>
               <Icon
