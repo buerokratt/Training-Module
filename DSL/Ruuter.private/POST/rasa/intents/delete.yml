@@ -7,20 +7,16 @@ assign_values:
 getIntentList:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/intents"
+    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/intents"
   result: intentList
 
 validateIntentExists:
   switch:
-    - condition: ${intentList.response.data.includes(intent)}
-      next: getFileLocations
+    - condition: ${intentList.response.body.response.data.intents}
+      next: returnIntentMissing
+    - condition: ${intentList.response.body.response.data.intents.includes(intent)}
+      next: returnIntentMissing
   next: getFileLocations
-
-validateIntentExists:
-  switch:
-    - condition: ${domainData.response.body.response.intents.includes(parameters.intent)}
-      next: getFileLocations
-  next: returnIntentMissing
 
 getFileLocations:
   call: http.get
@@ -230,7 +226,7 @@ saveDomainFile:
   result: fileResult
   next: returnSuccess
 
-deleteinPipeline:
+deleteInPipeline:
   call: http.post
   args:
     url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/delete/object/intents"

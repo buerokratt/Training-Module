@@ -7,13 +7,13 @@ export async function addIntent(newIntentData: { name: string }) {
   return data;
 }
 
-export async function editIntent(id: string | number, intentData: Omit<Partial<Intent>, 'id'>) {
-  const { data } = await api.post(`intents/update`, intentData);
+export async function editIntent(editIntentData: {oldName: string, newName: string}) {
+  const { data } = await api.post(`intents/update`, editIntentData);
   return data;
 }
 
-export async function deleteIntent(id: string | number, intentData: Omit<Partial<Intent>, 'id'>) {
-  const { data } = await api.post(`intents/delete`, intentData);
+export async function deleteIntent(deleteIntentData: { name: string }) {
+  const { data } = await api.post(`intents/delete`, deleteIntentData);
   return data;
 }
 

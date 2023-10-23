@@ -34,9 +34,7 @@ const Intents: FC = () => {
   const [editingIntentTitle, setEditingIntentTitle] = useState<string | null>(null);
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
   const [selectedIntent, setSelectedIntent] = useState<Intent | null>(null);
-  const [deletableIntent, setDeletableIntent] = useState<
-    string | number | null
-  >(null);
+  const [deletableIntent, setDeletableIntent] = useState< string | null>(null);
   const [turnIntentToServiceIntent, setTurnIntentToServiceIntent] = useState<
     Intent | null
   >(null);
@@ -142,7 +140,7 @@ const Intents: FC = () => {
   });
 
   const deleteIntentMutation = useMutation({
-    mutationFn: ({ id }: { id: string | number }) => deleteIntent(id),
+    mutationFn: (intentName: string) => deleteIntent(intentName),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['intents']);
       toast.open({
@@ -205,6 +203,7 @@ const Intents: FC = () => {
   const newIntentMutation = useMutation({
     mutationFn: (data: { name: string }) => addIntent(data),
     onSuccess: async () => {
+      await queryClient.invalidateQueries(['intents/intents-full']);
       await queryClient.invalidateQueries(['intents']);
       toast.open({
         type: 'success',
@@ -223,8 +222,8 @@ const Intents: FC = () => {
   });
 
   const intentEditMutation = useMutation({
-    mutationFn: ({ id, intent }: { id: string | number; intent: string }) =>
-      editIntent(id, { intent }),
+    mutationFn: (editIntentData: { oldName: string; newName: string }) =>
+        editIntent(editIntentData),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['intents']);
       toast.open({
@@ -242,6 +241,7 @@ const Intents: FC = () => {
     },
     onSettled: () => setEditingIntentTitle(null),
   });
+
 
   if (!intents) return <>Loading...</>;
 
@@ -362,8 +362,8 @@ const Intents: FC = () => {
                           appearance="text"
                           onClick={() =>
                             intentEditMutation.mutate({
-                              id: selectedIntent.id,
-                              intent: editingIntentTitle,
+                              oldName: selectedIntent.intent,
+                              newName: editingIntentTitle,
                             })
                           }
                         >
@@ -436,7 +436,7 @@ const Intents: FC = () => {
                     )}
                     <Button
                       appearance="error"
-                      onClick={() => setDeletableIntent(selectedIntent.id)}
+                      onClick={() => setDeletableIntent(selectedIntent.intent)}
                     >
                       {t('global.delete')}
                     </Button>
@@ -473,7 +473,7 @@ const Intents: FC = () => {
               <Button
                 appearance="error"
                 onClick={() =>
-                  deleteIntentMutation.mutate({ id: deletableIntent })
+                  deleteIntentMutation.mutate(deletableIntent)
                 }
               >
                 {t('global.yes')}

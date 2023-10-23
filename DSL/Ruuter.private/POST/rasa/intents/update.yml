@@ -1,26 +1,29 @@
 assign_values:
   assign:
-    intent: ${incoming.body.name.replaceAll(/\s+/g, "_")}
-    intent_pipeline: ${incoming.body.name.replaceAll(/[\\s_]+/g, "")}
-    intent_old_name: ${incoming.body.name.replaceAll(/\s+/g, "_")}
+    intent: ${incoming.body.newName.replaceAll(/\s+/g, "_")}
+    intent_pipeline: ${incoming.body.newName.replaceAll(/[\\s_]+/g, "")}
+    intent_old_name: ${incoming.body.oldName.replaceAll(/\s+/g, "_")}
+    intent_old_name_pipeline: ${incoming.body.oldName.replaceAll(/[\\s_]+/g, "")}
 
 validateInputLength:
   switch:
     - condition: ${intent.length > 5}
-      next: getDomainFile
+      next: getIntentList
   next: returnTooShortError
 
 getIntentList:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/intents"
-  result: intentListOpenSearch
+    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/intents"
+  result: intentList
 
 validateIntentExists:
   switch:
-    - condition: ${intentListOpenSearch.response.data.includes(intent)}
-      next: getFileLocations
-  next: returnIntentMissing
+    - condition: ${intentList.response.body.response.data.intents}
+      next: returnIntentExists
+    - condition: ${intentList.response.body.response.data.intents.includes(intent)}
+      next: returnIntentExists
+  next: getFileLocations
 
 getFileLocations:
   call: http.get
@@ -37,7 +40,7 @@ checkIntentFileYaml:
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/check"
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
+      file_path: ${fileLocations.response.body.response.intents_location + intent_old_name + file_end}
   result: fileExists
 
 validateFileExists:
@@ -145,7 +148,7 @@ checkIntentFileTmp:
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/check"
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
+      file_path: ${fileLocations.response.body.response.intents_location + intent_old_name + file_end}
   result: tmpFileExists
 
 validateTmpFileExists:
@@ -159,7 +162,7 @@ getIntentFile:
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/read"
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
+      file_path: ${fileLocations.response.body.response.intents_location + intent_old_name + file_end}
   result: intentFile
 
 convertYamlToJson:
@@ -216,6 +219,40 @@ saveIntentFile:
       content: ${intentYaml.response.body.json}
   result: fileResult
 
+removePipe:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/replace"
+    body:
+      data: ${intentYaml.response.body.json}
+      search: "|"
+      replace: ""
+  result: pipelineIntent
+
+removeOldIntentFromPipeline:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/delete/object/intents"
+    body:
+      id: ${intent_old_name_pipeline}
+  result: updateSearchResult
+
+addNewIntentInPipeline:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/put/intents/intent"
+    body:
+      input: ${pipelineIntent.response.body}
+  result: updateSearchResult
+
+addInDatabase:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]:[#TRAINING_RESQL_PORT]/add-intent"
+    body:
+      intent: ${incoming.body.newName}
+      status: "ACTIVE"
+
 deleteOldIntentFile:
   call: http.post
   args:
@@ -234,7 +271,7 @@ validateExistsInDomain:
   switch:
     - condition: ${domainData.response.body.response.intents.includes(intent_old_name)}
       next: mergeIntents
-  next: addInDatabase
+  next: returnSuccess
 
 mergeIntents:
   call: http.post
@@ -279,41 +316,6 @@ saveDomainFile:
       content: ${domainYaml.response.body.json}
   result: fileResult
   next: returnSuccess
-
-removePipe:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/replace"
-    body:
-      data: ${intentYaml.response.body.json}
-      search: "|"
-      replace: ""
-  result: pipelineIntent
-
-removeOldIntentFromPipeline:
-  call: http.post
-  args:
-    url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/delete/object/intents"
-    body:
-      id: ${intent_pipeline}
-  result: updateSearchResult
-
-addNewIntentInPipeline:
-  call: http.post
-  args:
-    url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/put/intents/intent"
-    body:
-      input: ${pipelineIntent.response.body}
-  result: updateSearchResult
-
-addInDatabase:
-  call: http.post
-  args:
-    url: "[TRAINING_RESQL]:[TRAINING_RESQL_PORT]/add-intent"
-    body:
-      intent: ${params.intent}
-      status: "ACTIVE"
-  result: getIntentLastChangedResult
 
 returnSuccess:
   return: "Intent updated"

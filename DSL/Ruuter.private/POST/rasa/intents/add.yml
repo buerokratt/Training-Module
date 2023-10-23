@@ -16,7 +16,9 @@ getIntentList:
 
 validateIntentExists:
   switch:
-    - condition: ${intentList.response.data.includes(intent)}
+    - condition: ${intentList.response.body.response.data.intents}
+      next: returnIntentsError
+    - condition: ${intentList.response.body.response.data.intents.includes(intent)}
       next: returnIntentExists
   next: getFileLocations
 
@@ -70,13 +72,13 @@ addInPipeline:
       input: ${pipelineIntent.response.body}
   result: updateSearchResult
 
-  addInDatabase:
-    call: http.post
-    args:
-      url: "[TRAINING_RESQL]:[TRAINING_RESQL_PORT]/add-intent"
-      body:
-        intent: ${incoming.body.name}
-        status: "ACTIVE"
+addInDatabase:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]:[#TRAINING_RESQL_PORT]/add-intent"
+    body:
+      intent: ${incoming.body.name}
+      status: "ACTIVE"
 
 returnSuccess:
   return: "Intent created"
@@ -90,4 +92,9 @@ returnTooShortError:
 returnIntentExists:
   status: 409
   return: "Intent with that name already exists"
+  next: end
+
+returnIntentsError:
+  status: 409
+  return: "Intents parsing error"
   next: end
