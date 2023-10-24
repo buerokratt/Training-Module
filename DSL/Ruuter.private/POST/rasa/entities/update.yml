@@ -54,6 +54,14 @@ saveDomainFile:
       content: ${domainYaml.response.body.json}
   result: fileResult
 
+updateDomainOpenSearch:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/bulk/domain"
+    body:
+      input: ${domainYaml.response.body.json}
+  result: updateSearchResult
+
 switchFileType:
   switch:
     - condition: ${parameters.intent.includes("regex")}
@@ -85,25 +93,6 @@ convertYamlToJson:
       file: ${intentFile.response.body.file}
   result: intentData
 
-replaceString:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/replace"
-    body:
-      data: ${intentData.response.body.nlu[0].examples}
-      search: "- "
-      replace: ""
-  result: replacedString
-
-splitExamples:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/split"
-    body:
-      data: ${replacedString.response.body}
-      separator: "\n"
-  result: splitExamples
-
 switchMapFileType:
   switch:
     - condition: ${parameters.intent.includes("regex")}
@@ -116,7 +105,7 @@ mapRegexesData:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-regex-file"
     body:
       regex: ${parameters.entity}
-      examples: ${splitExamples.response.body}
+      examples: ${intentData.response.body.nlu[0].examples}
   result: intentFileJson
   next: convertIntentJsonToYaml
 
@@ -135,7 +124,7 @@ convertIntentJsonToYaml:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml"
     body:
       version: "3.0"
-      nlu: ${intentFileJson.response.body}
+      nlu: ${intentFileJson.response.body.data}
   result: intentYaml
 
 switchSaveFileType:
@@ -152,7 +141,24 @@ saveRegexFile:
       file_path: ${fileLocations.response.body.response.regex_location}
       content: ${intentYaml.response.body.json}
   result: fileResult
-  next: returnSuccess
+
+removePipe:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/replace"
+    body:
+      data: ${intentYaml.response.body.json}
+      search: "|"
+      replace: ""
+  result: result
+
+updateRegexOpenSearch:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/put/regexes/regex"
+    body:
+      input: ${result.response.body}
+  result: returnSuccess
 
 saveIntentFile:
   call: http.post

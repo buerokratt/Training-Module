@@ -9,7 +9,7 @@ import { Chat as ChatType } from 'types/chat';
 import { Message } from 'types/message';
 import { useToast } from 'hooks/useToast';
 import { addExample } from 'services/intents';
-import { addResponse } from 'services/responses';
+import { editResponse } from 'services/responses';
 import ChatMessage from './ChatMessage';
 import ChatEvent from './ChatEvent';
 import NewExampleModal from './NewExampleModal';
@@ -71,7 +71,7 @@ const HistoricalChat: FC<ChatProps> = ({ chat }) => {
         ...data,
         name: 'utter_' + data.name,
       };
-      return addResponse(newResponseData);
+      return editResponse(newResponseData.name, newResponseData.text, false);
     },
     onSuccess: async () => {
       toast.open({

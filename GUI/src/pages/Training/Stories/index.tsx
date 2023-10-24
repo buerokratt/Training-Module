@@ -7,25 +7,33 @@ import { createColumnHelper } from '@tanstack/react-table';
 import { MdDeleteOutline, MdOutlineModeEditOutline } from 'react-icons/md';
 
 import { Button, DataTable, FormInput, Icon, Track } from 'components';
-import { Rule } from 'types/rule';
-import { Story } from 'types/story';
+import {Rule, Rules} from 'types/rule';
+import {Stories as StoriesType, Story} from 'types/story';
 
 const Stories: FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { data: stories } = useQuery<Story[]>({
+  const { data: storiesResponse } = useQuery<StoriesType>({
     queryKey: ['stories'],
   });
-  const { data: rules } = useQuery<Rule[]>({
+  const { data: rulesResponse } = useQuery<Rules>({
     queryKey: ['rules'],
   });
   const [selectedTab, setSelectedTab] = useState<string>('stories');
   const [filter, setFilter] = useState('');
+  const rules = useMemo(() => rulesResponse ? rulesResponse.response.map((r, i) => ({
+    id: r.id,
+    rule: r.id
+  })) : [], [rulesResponse]);
+  const stories = useMemo(() => storiesResponse ? storiesResponse.response.map((r, i) => ({
+    id: r.id,
+    rule: r.id
+  })) : [], [storiesResponse]);
   const storiesColumnHelper = createColumnHelper<Story>();
   const rulesColumnHelper = createColumnHelper<Rule>();
 
   const storiesColumns = useMemo(() => [
-    storiesColumnHelper.accessor('story', {
+    storiesColumnHelper.accessor('id', {
       header: 'Story',
     }),
     storiesColumnHelper.display({
@@ -66,7 +74,7 @@ const Stories: FC = () => {
   ], [navigate, storiesColumnHelper, t]);
 
   const rulesColumns = useMemo(() => [
-    rulesColumnHelper.accessor('rule', {
+    rulesColumnHelper.accessor('id', {
       header: 'Rule',
     }),
     rulesColumnHelper.display({

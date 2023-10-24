@@ -1,7 +1,13 @@
 {
   "responses": [
     {{#each hits}}
-      {{{toJSON this._source}}}{{#unless @last}},{{/unless}}
+      {{#if (eq this._id "responses") }}
+        {{#each this._source.responses}}
+          {"name": {{{toJSON @key}}},
+           "response": {{{toJSON this}}}
+          }{{#unless @last}},{{/unless}}
+        {{/each}}
+      {{/if}}
     {{/each}}
   ]
 }

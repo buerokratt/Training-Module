@@ -1,7 +1,10 @@
 {
   "rules": [
     {{#each hits}}
-          "{{_source.rule}}"
+      {
+        "id":"{{this._source.rule}}",
+        "steps":{{{toJSON this._source.steps}}}
+      }
       {{#unless @last}},{{/unless}}
     {{/each}}
   ]
