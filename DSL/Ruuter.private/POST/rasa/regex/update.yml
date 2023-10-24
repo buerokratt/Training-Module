@@ -97,17 +97,17 @@ mapUpdatedRegexesData:
     body:
       regex: ${parameters.input.regex}
       examples: ${splitExamples.response.body}
-  result: mappedExamplesJson
-  next: convertJsonToYaml
+  result: mappedUpdatedExamples
 
-checkEntity:
+mergeRegexes:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/check-value"
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/merge"
     body:
-      hits: ${mappedExamplesJson.response.body}
-  result: checkResult
-  next: mapRegexesData
+      array1: ${regexData.response.body.nlu}
+      array2: ${mappedUpdatedExamples.response.body.data}
+      iteratee: "regex"
+  result: mergedRegexes
 
 convertJsonToYaml:
   call: http.post
@@ -115,7 +115,7 @@ convertJsonToYaml:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml"
     body:
       version: "3.0"
-      nlu: ${mappedExamplesJson.response.body.data}
+      nlu: ${mergedRegexes.response.body}
   result: regexYaml
   next: saveRegexFile
 
