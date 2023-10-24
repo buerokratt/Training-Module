@@ -1,6 +1,32 @@
-assign_values:
+checkForCookie:
+  switch:
+    - condition: ${incoming.headers.cookie == null || incoming.headers.cookie == ""}
+      next: returnUnauthorized
+  next: extractRequestData
+
+extractRequestData:
+  assign:
+    cookie: ${incoming.headers.cookie}
+  next: checkIfAuthorized
+
+checkIfAuthorized:
+  template: templates/check-user-authority
+  requestType: post
+  headers:
+    cookie: ${cookie}
+  result: authorityResult
+  next: checkAuthorityResult
+
+checkAuthorityResult:
+  switch:
+    - condition: ${authorityResult !== "false"}
+      next: assignValues
+  next: returnUnauthorized
+
+assignValues:
   assign:
     parameters: ${incoming.body}
+  next: getDomainFile
 
 getDomainFile:
   call: http.get

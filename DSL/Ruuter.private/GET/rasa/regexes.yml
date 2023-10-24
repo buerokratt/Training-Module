@@ -1,3 +1,28 @@
+checkForCookie:
+  switch:
+    - condition: ${incoming.headers.cookie == null || incoming.headers.cookie == ""}
+      next: returnUnauthorized
+  next: extractRequestData
+
+extractRequestData:
+  assign:
+    cookie: ${incoming.headers.cookie}
+  next: checkIfAuthorized
+
+checkIfAuthorized:
+  template: templates/check-user-authority
+  requestType: post
+  headers:
+    cookie: ${cookie}
+  result: authorityResult
+  next: checkAuthorityResult
+
+checkAuthorityResult:
+  switch:
+    - condition: ${authorityResult !== "false"}
+      next: getRegexes
+  next: returnUnauthorized
+
 getRegexes:
   call: http.get
   args:

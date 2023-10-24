@@ -1,15 +1,25 @@
-authenticate:
-  template: extract-token
+checkForCookie:
+  switch:
+    - condition: ${incoming.headers.cookie == null || incoming.headers.cookie == ""}
+      next: returnUnauthorized
+  next: extractRequestData
+
+extractRequestData:
+  assign:
+    cookie: ${incoming.headers.cookie}
+  next: checkIfAuthorized
+
+checkIfAuthorized:
+  template: templates/check-user-authority
   requestType: post
   headers:
-    cookie: ${incoming.headers.cookie}
-  body:
-    role: "ROLE_ADMINISTRATOR"
-  result: permission
+    cookie: ${cookie}
+  result: authorityResult
+  next: checkAuthorityResult
 
-validatePermission:
+checkAuthorityResult:
   switch:
-    - condition: ${permission}
+    - condition: ${authorityResult !== "false"}
       next: getSlots
   next: returnUnauthorized
 

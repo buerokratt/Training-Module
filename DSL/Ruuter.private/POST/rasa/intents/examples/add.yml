@@ -1,21 +1,32 @@
-assign_values:
-  assign:
-    parameters: ${incoming.body}
+checkForCookie:
+  switch:
+    - condition: ${incoming.headers.cookie == null || incoming.headers.cookie == ""}
+      next: returnUnauthorized
+  next: extractRequestData
 
-authenticate:
-  template: extract-token
+extractRequestData:
+  assign:
+    cookie: ${incoming.headers.cookie}
+  next: checkIfAuthorized
+
+checkIfAuthorized:
+  template: templates/check-user-authority
   requestType: post
   headers:
-    cookie: ${incoming.headers.cookie}
-  body:
-    role: "ROLE_ADMINISTRATOR"
-  result: permission
+    cookie: ${cookie}
+  result: authorityResult
+  next: checkAuthorityResult
 
-validatePermission:
+checkAuthorityResult:
   switch:
-    - condition: ${permission}
-      next: validateArrayExampleLength
+    - condition: ${authorityResult !== "false"}
+      next: assignValues
   next: returnUnauthorized
+
+assignValues:
+  assign:
+    parameters: ${incoming.body}
+  next: validateArrayExampleLength
 
 validateArrayExampleLength:
   call: http.post

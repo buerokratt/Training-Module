@@ -1,22 +1,33 @@
-assign_values:
+checkForCookie:
+  switch:
+    - condition: ${incoming.headers.cookie == null || incoming.headers.cookie == ""}
+      next: returnUnauthorized
+  next: extractRequestData
+
+extractRequestData:
+  assign:
+    cookie: ${incoming.headers.cookie}
+  next: checkIfAuthorized
+
+checkIfAuthorized:
+  template: templates/check-user-authority
+  requestType: post
+  headers:
+    cookie: ${cookie}
+  result: authorityResult
+  next: checkAuthorityResult
+
+checkAuthorityResult:
+  switch:
+    - condition: ${authorityResult !== "false"}
+      next: assignValues
+  next: returnUnauthorized
+
+assignValues:
   assign:
     intent: ${incoming.body.intent.replaceAll(/\s+/g, "_")}
     example: ${incoming.body.example}
-
-authenticate:
-  template: extract-token
-  requestType: post
-  headers:
-    cookie: ${incoming.headers.cookie}
-  body:
-    role: "ROLE_ADMINISTRATOR"
-  result: permission
-
-validatePermission:
-  switch:
-    - condition: ${permission}
-      next: getFileLocations
-  next: returnUnauthorized
+  next: getFileLocations
 
 getFileLocations:
   call: http.get

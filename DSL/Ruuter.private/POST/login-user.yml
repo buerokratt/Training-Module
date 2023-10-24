@@ -1,0 +1,83 @@
+checkForRequiredParameters:
+  switch:
+    - condition: ${incoming.body.login == null || incoming.body.password == null}
+      next: returnIncorrectRequest
+  next: extractRequestData
+
+extractRequestData:
+  assign:
+    login: ${incoming.body.login}
+    password: ${incoming.body.password}
+  next: loginUser
+
+login_user:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]:[#TRAINING_RESQL_PORT]/get-user-by-login"
+    body:
+      login: ${login}
+      password: ${password}
+  result: results
+  next: checkLoginResult
+
+checkLoginResult:
+  switch:
+    - condition: ${results.response.body.length != 0}
+      next: getSessionLength
+  next: returnUserNotFound
+
+getSessionLength:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]:[#TRAINING_RESQL_PORT]/get-configuration"
+    body:
+      key: "session_length"
+  result: sessionResult
+  next: checkSessionLengthResult
+
+checkSessionLengthResult:
+  switch:
+    - condition: ${session_result.response.body.length != 0}
+      next: generateCookie
+  next: returnSessionLengthNotFound
+
+generateCookie:
+  call: http.post
+  args:
+    url: "[#TRAINING_TIM]:[#TRAINING_TIM_PORT]/jwt/custom-jwt-generate"
+    body:
+      JWTName: "customJwtCookie"
+      expirationInMinutes: ${session_result.response.body[0].value}
+      content: ${results.response.body[0]}
+  result: cookieResult
+  next: assignCookie
+
+assignCookie:
+  assign:
+    setCookie:
+      customJwtCookie: ${cookie_result.response.body.token}
+      Domain: "[#DOMAIN]"
+      Secure: false
+      HttpOnly: false
+  next: returnValue
+
+returnValue:
+  headers:
+    Set-Cookie: ${setCookie}
+  return: ${cookie_result.response.body.token}
+  next: end
+
+returnSessionLengthNotFound:
+  status: 400
+  return: "Could not fetch session length"
+  next: end
+
+returnUserNotFound:
+  status: 400
+  return: "User Not Found"
+  next: end
+
+returnIncorrectRequest:
+  status: 400
+  return: "Required parameter(s) missing"
+  next: end
