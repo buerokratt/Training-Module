@@ -1,18 +1,3 @@
-authenticate:
-  template: extract-token
-  requestType: post
-  headers:
-    cookie: ${incoming.headers.cookie}
-  body:
-    role: "ROLE_ADMINISTRATOR"
-  result: permission
-
-validatePermission:
-  switch:
-    - condition: ${permission}
-      next: getStories
-  next: returnUnauthorized
-
 getStories:
   call: http.get
   args:
@@ -29,7 +14,7 @@ mapStoriesData:
   next: returnSuccess
 
 returnSuccess:
-  return: ${storiesData.response.body}
+  return: ${storiesData.response.body.data.stories}
   next: end
 
 returnUnauthorized:

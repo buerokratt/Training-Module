@@ -35,8 +35,8 @@ export async function editRegexExample(
   return data;
 }
 
-export async function deleteRegexExample(id: string | number) {
-  const { data } = await api.delete<void>(`regex/examples/${id}`);
+export async function deleteRegexExample({ update_data }: {update_data: { regex_name: string | undefined, example: string | undefined }}) {
+  const { data } = await api.post<void>(`regex/delete`,update_data);
   return data;
 }
 
