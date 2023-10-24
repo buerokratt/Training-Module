@@ -89,6 +89,15 @@ splitExamples:
       data: ${revertedHyp.response.body}
       separator: "\n"
   result: splitExamples
+
+mapUpdatedRegexesData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-regex-examples"
+    body:
+      regex: ${parameters.input.regex}
+      examples: ${splitExamples.response.body}
+  result: mappedExamplesJson
   next: convertJsonToYaml
 
 checkEntity:
@@ -96,7 +105,7 @@ checkEntity:
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/check-value"
     body:
-      hits: ${regexData.response.body}
+      hits: ${mappedExamplesJson.response.body}
   result: checkResult
   next: mapRegexesData
 
@@ -106,9 +115,7 @@ convertJsonToYaml:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml"
     body:
       version: "3.0"
-      nlu:
-      - regex: ${parameters.regex_name}
-        examples: ${splitExamples.response.body}
+      nlu: ${mappedExamplesJson.response.body.data}
   result: regexYaml
   next: saveRegexFile
 
@@ -120,15 +127,25 @@ saveRegexFile:
       file_path: ${fileLocations.response.body.response.regex_location}
       content: ${regexYaml.response.body.json}
   result: fileResult
-  next: updateRegexOpenSearch
+
+removePipe:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/replace"
+    body:
+      data: ${regexYaml.response.body.json}
+      search: "|"
+      replace: ""
+  result: result
 
 updateRegexOpenSearch:
   call: http.post
   args:
     url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/put/regexes/regex"
     body:
-      input: ${regexYaml.response.body.json}
-  result: returnSuccess
+      input: ${result.response.body}
+  result: updatedOpenSearch
+  next: returnSuccess
 
 returnSuccess:
   return: "Regex updated"
