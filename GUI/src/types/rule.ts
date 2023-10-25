@@ -1,4 +1,10 @@
+import {ResponseData} from "./response";
+
 export interface Rule {
-  readonly id: number;
-  rule: string;
+  id: string;
+  steps: string | string[]
+}
+
+export interface Rules {
+  response: Rule[];
 }

@@ -1,0 +1,26 @@
+name: Build and publish Training-Module in dev
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - '.env' 
+
+jobs:
+  PackageDeploy:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+
+      - name: Setup and run containers
+        id: setup-and-run-containers
+        run: |
+          ssh ubuntu@${{ secrets.SERVER_IP }} 'cd /opt/etapp2/uptodate/PIPELINE && python3 Training-Module.py'
+
