@@ -2,7 +2,6 @@ assign_values:
   assign:
     parameters: ${incoming.body}
     intent: ${incoming.body.name.replaceAll(/\s+/g, "_")}
-    intent_pipeline: ${incoming.body.name.replaceAll(/[\\s_]+/g, "")}
 
 getIntentList:
   call: http.get
@@ -12,9 +11,9 @@ getIntentList:
 
 validateIntentExists:
   switch:
-    - condition: ${intentList.response.body.response.data.intents}
+    - condition: ${!intentList.response.body.response.data.intents}
       next: returnIntentMissing
-    - condition: ${intentList.response.body.response.data.intents.includes(intent)}
+    - condition: ${!intentList.response.body.response.data.intents.includes(intent)}
       next: returnIntentMissing
   next: getFileLocations
 
@@ -33,7 +32,7 @@ checkIntentFileYaml:
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/check"
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
+      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
   result: fileExists
 
 validateFileExists:
@@ -51,7 +50,7 @@ checkIntentFileTmp:
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/check"
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
+      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
   result: tmpFileExists
 
 validateTmpFileExists:
@@ -87,7 +86,7 @@ convertRulesJsonToYaml:
 
 validateRuleDependency:
   switch:
-    - condition: ${rulesYaml.response.body.json.includes("intent:" + " " + parameters.intent)}
+    - condition: ${rulesYaml.response.body.json.includes("intent:" + " " + parameters.name)}
       next: returnRuleDependency
   next: getStoriesFile
 
@@ -118,7 +117,7 @@ convertStoriesJsonToYaml:
 
 validateStoriesDependency:
   switch:
-    - condition: ${storiesYaml.response.body.json.includes("intent:" + " " + parameters.intent)}
+    - condition: ${storiesYaml.response.body.json.includes("intent:" + " " + parameters.name)}
       next: returnStoriesDependency
   next: getIntentFile
 
@@ -127,7 +126,7 @@ getIntentFile:
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/read"
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
+      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
   result: intentFile
 
 convertYamlToJson:
@@ -162,7 +161,7 @@ mapIntentsData:
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-intent-file"
     body:
-      intent: ${parameters.intent}
+      intent: ${parameters.name}
       examples: ${splitExamples.response.body}
   result: intentFileJson
 
@@ -180,16 +179,16 @@ saveIntentFile:
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/write"
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + "removed/" + parameters.intent + file_end}
+      file_path: ${fileLocations.response.body.response.intents_location + "removed/" + intent + file_end}
       content: ${intentYaml.response.body.json}
   result: fileResult
 
 deleteOldIntentFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/delete"
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/delete-intent"
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
+      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
   result: deleted
 
 deleteExistingIntent:
@@ -198,7 +197,7 @@ deleteExistingIntent:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/merge/remove-array-value"
     body:
       array: ${domainData.response.body.response.intents}
-      value: ${parameters.intent}
+      value: ${intent}
   result: updatedIntents
 
 convertDomainJsonToYaml:
@@ -231,7 +230,7 @@ deleteInPipeline:
   args:
     url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/delete/object/intents"
     body:
-      id: ${intent_pipeline}
+      id: ${intent}
   result: updateSearchResult
 
 deleteInDatabase:
@@ -239,7 +238,7 @@ deleteInDatabase:
   args:
     url: "[TRAINING_RESQL]:[TRAINING_RESQL_PORT]/add-intent"
     body:
-      intent: ${params.intent}
+      intent: ${params.name}
       status: "DELETED"
   result: getIntentLastChangedResult
 

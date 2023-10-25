@@ -1,9 +1,7 @@
 assign_values:
   assign:
     intent: ${incoming.body.newName.replaceAll(/\s+/g, "_")}
-    intent_pipeline: ${incoming.body.newName.replaceAll(/[\\s_]+/g, "")}
     intent_old_name: ${incoming.body.oldName.replaceAll(/\s+/g, "_")}
-    intent_old_name_pipeline: ${incoming.body.oldName.replaceAll(/[\\s_]+/g, "")}
 
 validateInputLength:
   switch:
@@ -19,7 +17,7 @@ getIntentList:
 
 validateIntentExists:
   switch:
-    - condition: ${intentList.response.body.response.data.intents}
+    - condition: ${!intentList.response.body.response.data.intents}
       next: returnIntentExists
     - condition: ${intentList.response.body.response.data.intents.includes(intent)}
       next: returnIntentExists
@@ -173,6 +171,16 @@ convertYamlToJson:
       file: ${intentFile.response.body.file}
   result: intentData
 
+checkIfIntentEmpty:
+  switch:
+    - condition: ${intentData.response.body.nlu[0] != undefined}
+      next: replaceString
+
+assignEmptyExamples:
+  assign:
+    examplesToWriteIntoYml: []
+  next: mapIntentsData
+
 replaceString:
   call: http.post
   args:
@@ -192,13 +200,17 @@ splitExamples:
       separator: "\n"
   result: splitExamples
 
+assignExamples:
+  assign:
+    examplesToWriteIntoYml: ${splitExamples.response.body}
+
 mapIntentsData:
   call: http.post
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-intent-file"
     body:
       intent: ${intent}
-      examples: ${splitExamples.response.body}
+      examples: ${examplesToWriteIntoYml}
   result: intentFileJson
 
 convertJsonToYaml:
@@ -234,7 +246,7 @@ removeOldIntentFromPipeline:
   args:
     url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/delete/object/intents"
     body:
-      id: ${intent_old_name_pipeline}
+      id: ${intent_old_name}
   result: updateSearchResult
 
 addNewIntentInPipeline:
@@ -252,11 +264,12 @@ addInDatabase:
     body:
       intent: ${incoming.body.newName}
       status: "ACTIVE"
+  result: addInDatabaseResult
 
 deleteOldIntentFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/delete"
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/delete-intent"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + intent_old_name + file_end}
   result: deleted

@@ -82,7 +82,7 @@ router.post('/put/:index_name/:index_type', upload.single('input'), (req, res) =
 
 	if (index_type) {
 		var obj = input[0];
-		obj.id = sanitize.sanitize.addDash(obj[index_type]);
+		obj.id = obj[index_type].replaceAll(/\s+/g, "_");
 	}
 
 	osPut(index_name, obj)
