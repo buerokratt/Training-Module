@@ -105,7 +105,7 @@ deleteRegex:
 mapRegexInput:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-regex-file"
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-regex-example"
     body:
       regex: ${parameters.regex_name}
       examples: ${deletedRegex.response.body}
@@ -138,14 +138,23 @@ saveRegexFile:
       file_path: ${fileLocations.response.body.response.regex_location}
       content: ${regexYaml.response.body.json}
   result: fileResult
-  next: updateRegexOpenSearch
+
+removePipe:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/replace"
+    body:
+      data: ${regexYaml.response.body.json}
+      search: "|"
+      replace: ""
+  result: result
 
 updateRegexOpenSearch:
   call: http.post
   args:
     url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/put/regexes/regex"
     body:
-      input: ${regexYaml.response.body.json}
+      input: ${result.response.body}
   result: updatedRegex
   next: returnSuccess
 
