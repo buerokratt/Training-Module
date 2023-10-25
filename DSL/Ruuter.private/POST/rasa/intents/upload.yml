@@ -1,21 +1,7 @@
 assign_values:
   assign:
     parameters: ${incoming.body}
-
-authenticate:
-  template: extract-token
-  requestType: post
-  headers:
-    cookie: ${incoming.headers.cookie}
-  body:
-    role: "ROLE_ADMINISTRATOR"
-  result: permission
-
-validatePermission:
-  switch:
-    - condition: ${permission}
-      next: convertCsvToJson
-  next: returnUnauthorized
+  next: convertCsvToJson
 
 convertCsvToJson:
   call: http.post

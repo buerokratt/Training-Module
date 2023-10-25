@@ -2,21 +2,7 @@ assign_values:
   assign:
     intent: ${incoming.body.intent.replaceAll(/\s+/g, "_")}
     example: ${incoming.body.example}
-
-authenticate:
-  template: extract-token
-  requestType: post
-  headers:
-    cookie: ${incoming.headers.cookie}
-  body:
-    role: "ROLE_ADMINISTRATOR"
-  result: permission
-
-validatePermission:
-  switch:
-    - condition: ${permission}
-      next: getFileLocations
-  next: returnUnauthorized
+  next: getFileLocations
 
 getFileLocations:
   call: http.get

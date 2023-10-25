@@ -1,0 +1,83 @@
+check_for_required_parameters:
+  switch:
+    - condition: ${incoming.body.login == null || incoming.body.password == null}
+      next: return_incorrect_request
+  next: extract_request_data
+
+extract_request_data:
+  assign:
+    login: ${incoming.body.login}
+    password: ${incoming.body.password}
+  next: login_user
+
+login_user:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]:[#TRAINING_RESQL_PORT]/get-user-by-login"
+    body:
+      login: ${login}
+      password: ${password}
+  result: results
+  next: check_login_result
+
+check_login_result:
+  switch:
+    - condition: ${results.response.body.length != 0}
+      next: get_session_length
+  next: return_user_not_found
+
+get_session_length:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]:[#TRAINING_RESQL_PORT]/get-configuration"
+    body:
+      key: "session_length"
+  result: session_result
+  next: check_session_length_result
+
+check_session_length_result:
+  switch:
+    - condition: ${session_result.response.body.length != 0}
+      next: generate_cookie
+  next: return_session_length_not_found
+
+generate_cookie:
+  call: http.post
+  args:
+    url: "[#TRAINING_TIM]:[#TRAINING_TIM_PORT]/jwt/custom-jwt-generate"
+    body:
+      JWTName: "customJwtCookie"
+      expirationInMinutes: ${session_result.response.body[0].value}
+      content: ${results.response.body[0]}
+  result: cookie_result
+  next: assign_cookie
+
+assign_cookie:
+  assign:
+    setCookie:
+      customJwtCookie: ${cookie_result.response.body.token}
+      Domain: "[#DOMAIN]"
+      Secure: false
+      HttpOnly: false
+  next: return_value
+
+return_value:
+  headers:
+    Set-Cookie: ${setCookie}
+  return: ${cookie_result.response.body.token}
+  next: end
+
+return_session_length_not_found:
+  status: 400
+  return: "Could not fetch session length"
+  next: end
+
+return_user_not_found:
+  status: 400
+  return: "User Not Found"
+  next: end
+
+return_incorrect_request:
+  status: 400
+  return: "Required parameter(s) missing"
+  next: end
