@@ -121,13 +121,13 @@ const Responses: FC = () => {
 
   const getRules = (responseId: String)  => {
     // @ts-ignore
-    return dependencies && true ? dependencies.response.find(d => d.name === responseId)
+    return dependencies && true && dependencies.response.isArray ? dependencies.response.find(d => d.name === responseId)
         .rules.map((name,i) => <p key={i}>{name}</p>) : null;
   }
 
   const getStories = (responseId: String)  => {
     // @ts-ignore
-    return dependencies && true ? dependencies.response.find(d => d.name === responseId)
+    return dependencies && true && dependencies.response.isArray ? dependencies.response.find(d => d.name === responseId)
         .stories.map((name,i) => <p key={i}>{name}</p>) : null;
   }
 

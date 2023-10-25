@@ -1,0 +1,11 @@
+step_1:
+  call: reflect.mock
+  args:
+    response:
+      idCode: 'EE49902216518'
+      active: 'true'
+      status: 'idle'
+  result: reflected_request
+
+step_2:
+  return: ${reflected_request.response.body}

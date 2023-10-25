@@ -15,6 +15,7 @@ import '../i18n';
 import auth from "./services/auth";
 import apiDevV2 from "./services/api-dev-v2";
 import apiTraining from "./services/training-api";
+import apigeneric from "./services/apigeneric";
 import apiDev from "./services/api-dev";
 
 const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
@@ -33,8 +34,8 @@ const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
   }
   if(import.meta.env.REACT_APP_LOCAL !== true) {
     if (queryKey.includes('prod')) {
-      const { data } = await apiDev.get(queryKey[0] as string);
-      return data;
+      const { data } = await apigeneric.get(queryKey[0] as string);
+      return data?.response;
     }
     if (queryKey.includes('user-profile-settings')) {
       const { data } = await apiTraining.get(queryKey[0] as string);
@@ -95,7 +96,7 @@ if (import.meta.env.REACT_APP_MODE === 'development-api') {
       //This code snippet will allow to remove MSW warning messages for specific URLS
       onUnhandledRequest(req, print) {
         // specify routes to exclude
-        const excludedRoutes = ['rasa'];
+        const excludedRoutes = ['rasa','generic'];
 
         // check if the req.url.pathname contains excludedRoutes
         const isExcluded = excludedRoutes.some(route => req.url.pathname.includes(route))
