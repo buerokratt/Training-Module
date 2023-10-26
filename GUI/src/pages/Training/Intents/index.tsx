@@ -88,7 +88,7 @@ const Intents: FC = () => {
     })
   }
 
-  function isValidDate(dateString) {
+  function isValidDate(dateString: string | number | Date) {
     const date = new Date(dateString);
     return !isNaN(date.getTime());
   }
@@ -105,7 +105,7 @@ const Intents: FC = () => {
   }, [intents, searchParams]);
 
   const addExamplesMutation = useMutation({
-    mutationFn: ({ intentId, example }: { intentId: string | number; example: string; }) => {
+    mutationFn: ({ intentId, example }: { intentId: string; example: string; }) => {
       return addExample(intentId, { example });
     },
     onSuccess: async () => {
@@ -175,6 +175,9 @@ const Intents: FC = () => {
         message: error.message,
       });
     },
+    onSettled: () => {
+      setRefreshing(false);
+    }
   });
 
   const turnIntentIntoServiceMutation = useMutation({
@@ -235,7 +238,10 @@ const Intents: FC = () => {
         message: error.message,
       });
     },
-    onSettled: () => setFilter(''),
+    onSettled: () => {
+      setFilter('');
+      setRefreshing(false);
+    },
   });
 
   const intentEditMutation = useMutation({
@@ -263,7 +269,10 @@ const Intents: FC = () => {
         message: error.message,
       });
     },
-    onSettled: () => setEditingIntentTitle(null),
+    onSettled: () => {
+      setEditingIntentTitle(null);
+      setRefreshing(false);
+    },
   });
 
   const handleNewExample = (example: string) => {

@@ -39,29 +39,29 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
   const newExampleRef = useRef<HTMLTextAreaElement>(null);
   const [exampleText, setExampleText] = useState<string>('');
   const [editableRow, setEditableRow] = useState<{
-    id: number;
+    intentName: string;
     value: string;
   } | null>(null);
-  const [deletableRow, setDeletableRow] = useState<string | number | null>(
+  const [deletableRow, setDeletableRow] = useState<string | null>(
     null
   );
   const [exampleToIntent, setExampleToIntent] =
     useState<ExampleToIntent | null>(null);
-  const columnHelper = createColumnHelper<{ id: number; value: string }>();
+  const columnHelper = createColumnHelper<{ id: string; value: string }>();
 
   useDocumentEscapeListener(() => setEditableRow(null));
 
   const examplesData = useMemo(
-    () => examples.map((e, index) => ({ id: index, value: e })),
+    () => examples.map((selectedIntent, e) => ({ id: selectedIntent, value: e })),
     [examples]
   );
 
-  const handleEditableRow = (example: { id: number; value: string }) => {
+  const handleEditableRow = (example: { intentName: string; value: string }) => {
     setEditableRow(example);
   };
 
   const exampleToIntentMutation = useMutation({
-    mutationFn: ({ id, name }: ExampleToIntent) =>
+    mutationFn: ({ name }: ExampleToIntent) =>
       turnExampleIntoIntent({
         exampleName: name,
         intentName: selectedIntent.intent,
@@ -91,7 +91,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
       id,
       data,
     }: {
-      id: string | number;
+      id: string;
       data: { example: string };
     }) => editExample(id, data),
     onSuccess: () => {
@@ -112,7 +112,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
   });
 
   const exampleDeleteMutation = useMutation({
-    mutationFn: ({ id }: { id: string | number }) => deleteExample(id),
+    mutationFn: ({ intentName }: { intentName: string }) => deleteExample(intentName),
     onSuccess: () => {
       toast.open({
         type: 'success',
@@ -142,7 +142,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
       columnHelper.accessor('value', {
         header: t('training.intents.examples') || '',
         cell: (props) =>
-          editableRow && editableRow.id === props.row.original.id ? (
+          editableRow && editableRow.intentName === props.row.original.id ? (
             <FormTextarea
               name={`example-${props.row.original.id}`}
               label=""
@@ -183,7 +183,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
         header: '',
         cell: (props) => (
           <>
-            {editableRow && editableRow.id === props.row.original.id ? (
+            {editableRow && editableRow.intentName === props.row.original.id ? (
               <Button
                 appearance="text"
                 onClick={() =>
@@ -292,7 +292,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
               <Button
                 appearance="error"
                 onClick={() =>
-                  exampleDeleteMutation.mutate({ id: deletableRow })
+                  exampleDeleteMutation.mutate({ intentName: deletableRow })
                 }
               >
                 {t('global.yes')}

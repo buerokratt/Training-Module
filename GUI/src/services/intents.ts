@@ -17,18 +17,18 @@ export async function deleteIntent(deleteIntentData: { name: string }) {
   return data;
 }
 
-export async function addExample(intentId: string | number, exampleData: { example: string }) {
-  const { data } = await api.post<{ id: number; example: string; }>(`intents/${intentId}/examples`, exampleData);
+export async function addExample(intentName: string, exampleData: { example: string }) {
+  const { data } = await api.post<{ intentName: string; example: string; }>(`intents/examples/add`, exampleData);
   return data;
 }
 
-export async function editExample(intentId: string | number, exampleData: { example: string }) {
-  const { data } = await api.patch<{ id: number; example: string; }>(`intents/${intentId}/examples`);
+export async function editExample(intentName: string, exampleData: { example: string }) {
+  const { data } = await api.patch<{ intentName: string; example: string; }>(`intents/examples/edit`);
   return data;
 }
 
-export async function deleteExample(intentId: string | number) {
-  const { data } = await api.delete<void>(`intents/${intentId}/examples`);
+export async function deleteExample(intentName: string, exampleData: { example: string }) {
+  const { data } = await api.delete<void>(`intents/examples/delete`);
   return data;
 }
 
