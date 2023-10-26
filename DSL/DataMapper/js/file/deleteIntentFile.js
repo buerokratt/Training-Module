@@ -6,9 +6,6 @@ const router = express.Router();
 
 function customIsValidFilePath(file_path) {
     const illegalCharacterPattern = /[\\?%*:|"<>.]/;
-
-    //switched this
-    //make sure is correct
     return illegalCharacterPattern.test(file_path);
 }
 
@@ -18,33 +15,27 @@ function customBuildContentFilePath(file_path) {
 
 router.post('/', (req, res) => {
     const filePath = req.body.file_path;
-    console.log('a FILE PATH: ' + filePath);
-
     const deletePath = customBuildContentFilePath(filePath);
-    console.log('\nb DELETE PATH: ' + deletePath);
 
     if (!customIsValidFilePath(filePath)) {
         return res.status(400).json({
             error: true,
             message: 'File path contains illegal characters',
-        }).send();
+        }).send("File path contains illegal characters");
     }
 
-    console.log('\nc TRYING UNLINK ');
     fs.unlink(deletePath, (err) => {
         if (err) {
-            console.log('Error deleting file:', err);
             return res.status(500).json({
                 error: true,
                 message: 'Unable to delete file',
-            }).send();
+            }).send("Error deleting file");
         }
 
-        console.log('File deleted successfully');
         return res.status(200).json({
             error: false,
             message: 'File deleted successfully',
-        }).send();
+        }).send("Success deleting file");
     });
 });
 

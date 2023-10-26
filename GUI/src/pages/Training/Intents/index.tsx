@@ -11,7 +11,7 @@ import {
   MdOutlineSave,
 } from 'react-icons/md';
 
-import { Button, Dialog, FormInput, Icon, Tooltip, Track } from 'components';
+import {Box, Button, Dialog, FormInput, Icon, Toast, Tooltip, Track} from 'components';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import { useToast } from 'hooks/useToast';
 import { Intent } from 'types/intent';
@@ -24,6 +24,7 @@ import {
   turnIntentIntoService,
 } from 'services/intents';
 import IntentExamplesTable from './IntentExamplesTable';
+import LoadingDialog from "../../../components/LoadingDialog";
 
 const Intents: FC = () => {
   const { t } = useTranslation();
@@ -31,15 +32,16 @@ const Intents: FC = () => {
   const toast = useToast();
   const [searchParams] = useSearchParams();
   const [filter, setFilter] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
   const [editingIntentTitle, setEditingIntentTitle] = useState<string | null>(null);
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
   const [selectedIntent, setSelectedIntent] = useState<Intent | null>(null);
-  const [deletableIntent, setDeletableIntent] = useState< string | null>(null);
+  const [deletableIntent, setDeletableIntent] = useState<Intent | null>(null);
   const [turnIntentToServiceIntent, setTurnIntentToServiceIntent] = useState<
     Intent | null
   >(null);
 
-  const { data: intentsFullResponse } = useQuery({
+  const { data: intentsFullResponse, isLoading } = useQuery({
     queryKey: ['intents/intents-full'],
   });
 
@@ -52,13 +54,15 @@ const Intents: FC = () => {
 
   if (intentsFullList) {
     intentsFullList.forEach((intent: any) => {
+      const formattedTitle = intent.title.replace(/_/g, ' ');
+      const countExamples = intent.examples.length;
       const newIntent: Intent = {
-        id: intent.id,
-        intent: intent.title,
+        id: intent.title,
+        intent: formattedTitle,
         description: null,
         inModel: intent.inmodel,
         modifiedAt: '',
-        examplesCount: intent.count,
+        examplesCount: countExamples,
         examples: intent.examples
       };
       intents.push(newIntent);
@@ -72,6 +76,17 @@ const Intents: FC = () => {
       return [];
     }
   };
+
+  function queryRefresh(shouldEmptyList: boolean) {
+    if (shouldEmptyList) {
+      intentsFullList = [];
+    }
+    queryClient.cancelQueries(['intents/intents-full']);
+    queryClient.invalidateQueries(['intents/intents-full']);
+    queryClient.fetchQuery(['intents/intents-full']).then(() => {
+      setRefreshing(false);
+    })
+  }
 
   function isValidDate(dateString) {
     const date = new Date(dateString);
@@ -140,9 +155,13 @@ const Intents: FC = () => {
   });
 
   const deleteIntentMutation = useMutation({
-    mutationFn: (intentName: string) => deleteIntent(intentName),
+    mutationFn: (data: { name: string }) => deleteIntent(data),
+    onMutate: () => {
+      setRefreshing(true);
+      setDeletableIntent(null) },
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['intents']);
+      setSelectedIntent(null)
+      queryRefresh(true);
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -185,8 +204,6 @@ const Intents: FC = () => {
     return intents.filter((intent) => intent.intent?.includes(filter));
   }, [intents, filter]);
 
-  // console.log("FILTERED: " + filteredIntents);
-
   const handleTabsValueChange = useCallback(
     (value: string) => {
       setEditingIntentTitle(null);
@@ -202,9 +219,9 @@ const Intents: FC = () => {
 
   const newIntentMutation = useMutation({
     mutationFn: (data: { name: string }) => addIntent(data),
+    onMutate: () => { setRefreshing(true) },
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['intents/intents-full']);
-      await queryClient.invalidateQueries(['intents']);
+      queryRefresh(true);
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -224,8 +241,15 @@ const Intents: FC = () => {
   const intentEditMutation = useMutation({
     mutationFn: (editIntentData: { oldName: string; newName: string }) =>
         editIntent(editIntentData),
+    onMutate: () => { setRefreshing(true); },
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['intents']);
+      queryRefresh(false);
+      const updatedIntent = intents.find((intent) => intent.intent === editingIntentTitle);
+      if (updatedIntent) {
+        setSelectedIntent(updatedIntent);
+      } else {
+        setSelectedIntent(null);
+      }
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -241,9 +265,6 @@ const Intents: FC = () => {
     },
     onSettled: () => setEditingIntentTitle(null),
   });
-
-
-  if (!intents) return <>Loading...</>;
 
   const handleNewExample = (example: string) => {
     if (!selectedIntent) return;
@@ -261,6 +282,8 @@ const Intents: FC = () => {
   const handleIntentExamplesDownload = (intentId: string | number) => {
     // TODO: Add endpoint for mocking intent examples download
   };
+
+  if (isLoading) return <>Loading...</>;
 
   return (
     <>
@@ -436,7 +459,7 @@ const Intents: FC = () => {
                     )}
                     <Button
                       appearance="error"
-                      onClick={() => setDeletableIntent(selectedIntent.intent)}
+                      onClick={() => setDeletableIntent(selectedIntent)}
                     >
                       {t('global.delete')}
                     </Button>
@@ -473,7 +496,7 @@ const Intents: FC = () => {
               <Button
                 appearance="error"
                 onClick={() =>
-                  deleteIntentMutation.mutate(deletableIntent)
+                  deleteIntentMutation.mutate({name: deletableIntent.intent })
                 }
               >
                 {t('global.yes')}
@@ -511,6 +534,11 @@ const Intents: FC = () => {
         >
           <p>{t('global.removeValidation')}</p>
         </Dialog>
+      )}
+      {refreshing && (
+         <LoadingDialog title={t('global.updatingDataHead')} >
+              <p>{t('global.updatingDataBody')}</p>
+         </LoadingDialog>
       )}
     </>
   );

@@ -137,6 +137,16 @@ convertYamlToJson:
       file: ${intentFile.response.body.file}
   result: intentData
 
+checkIfIntentEmpty:
+  switch:
+    - condition: ${intentData.response.body.nlu[0] != undefined}
+      next: replaceString
+
+assignEmptyExamples:
+  assign:
+    examplesToWriteIntoYml: [ ]
+  next: mapIntentsData
+
 replaceString:
   call: http.post
   args:
@@ -156,13 +166,17 @@ splitExamples:
       separator: "\n"
   result: splitExamples
 
+assignExamples:
+  assign:
+    examplesToWriteIntoYml: ${splitExamples.response.body}
+
 mapIntentsData:
   call: http.post
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-intent-file"
     body:
       intent: ${parameters.name}
-      examples: ${splitExamples.response.body}
+      examples: ${examplesToWriteIntoYml}
   result: intentFileJson
 
 convertJsonToYaml:
@@ -183,15 +197,19 @@ saveIntentFile:
       content: ${intentYaml.response.body.json}
   result: fileResult
 
-deleteOldIntentFile:
-  call: http.post
+getDomainFile:
+  call: http.get
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/delete-intent"
-    body:
-      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
-  result: deleted
+    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/domain-file"
+  result: domainData
 
-deleteExistingIntent:
+validateExistsInDomain:
+  switch:
+    - condition: ${domainData.response.body.response.intents.includes(intent)}
+      next: mergeIntents
+  next: deleteOldIntentFile
+
+removeFromDomainArray:
   call: http.post
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/merge/remove-array-value"
@@ -223,7 +241,14 @@ saveDomainFile:
       file_path: ${fileLocations.response.body.response.domain_location}
       content: ${domainYaml.response.body.json}
   result: fileResult
-  next: returnSuccess
+
+deleteOldIntentFile:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/delete-intent"
+    body:
+      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
+  result: deleted
 
 deleteInPipeline:
   call: http.post
@@ -236,9 +261,9 @@ deleteInPipeline:
 deleteInDatabase:
   call: http.post
   args:
-    url: "[TRAINING_RESQL]:[TRAINING_RESQL_PORT]/add-intent"
+    url: "[#TRAINING_RESQL]:[#TRAINING_RESQL_PORT]/add-intent"
     body:
-      intent: ${params.name}
+      intent: ${incoming.body.name}
       status: "DELETED"
   result: getIntentLastChangedResult
 

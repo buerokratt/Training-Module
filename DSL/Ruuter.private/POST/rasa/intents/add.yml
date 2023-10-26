@@ -16,7 +16,7 @@ getIntentList:
 
 validateIntentExists:
   switch:
-    - condition: ${intentList.response.body.response.data.intents}
+    - condition: ${!intentList.response.body.response.data.intents}
       next: returnIntentsError
     - condition: ${intentList.response.body.response.data.intents.includes(intent)}
       next: returnIntentExists
@@ -79,6 +79,7 @@ addInDatabase:
     body:
       intent: ${incoming.body.name}
       status: "ACTIVE"
+  result: addIntentResult
 
 returnSuccess:
   return: "Intent created"
