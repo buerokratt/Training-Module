@@ -2,3 +2,4 @@
 .ddev
 node_modules
 burokratt
+docker-compose.local.yml

@@ -2,34 +2,17 @@ assign_values:
   assign:
     story: ${incoming.body.story}
 
-authenticate:
-  template: extract-token
-  requestType: post
-  headers:
-    cookie: ${incoming.headers.cookie}
-  body:
-    role: "ROLE_ADMINISTRATOR"
-  result: permission
-
-validatePermission:
-  switch:
-    - condition: ${permission}
-      next: getTestStoriesWithName
-  next: returnUnauthorized
-
 getStoriesWithName:
   call: http.post
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/stories"
-    headers:
-      cookie: ${cookie}
     body:
       story: ${story}
   result: storiesResult
 
 validateStories:
   switch:
-    - condition: ${storiesResult.response.body.response.story != null}
+    - condition: ${storiesResult.response.body.response.data.story == story}
       next: getFileLocations
   next: returnStoryIsMissing
 
@@ -81,6 +64,15 @@ saveStoriesFile:
       file_path: ${fileLocations.response.body.response.stories_location}
       content: ${storiesYaml.response.body.json}
   result: fileResult
+  next: updateOpenSearch
+
+updateOpenSearch:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/bulk/stories/story"
+    body:
+      input: ${storiesYaml.response.body.json}
+  result: updateSearchResult
   next: returnSuccess
 
 returnSuccess:

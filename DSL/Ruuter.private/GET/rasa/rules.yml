@@ -1,18 +1,3 @@
-authenticate:
-  template: extract-token
-  requestType: post
-  headers:
-    cookie: ${incoming.headers.cookie}
-  body:
-    role: "ROLE_ADMINISTRATOR"
-  result: permission
-
-validatePermission:
-  switch:
-    - condition: ${permission}
-      next: getRules
-  next: returnUnauthorized
-
 getRules:
   call: http.get
   args:
@@ -29,9 +14,5 @@ mapRulesData:
   next: returnSuccess
 
 returnSuccess:
-  return: ${rulesData.response.body}
-  next: end
-
-returnUnauthorized:
-  return: "error: unauthorized"
+  return: ${rulesData.response.body.data.rules}
   next: end

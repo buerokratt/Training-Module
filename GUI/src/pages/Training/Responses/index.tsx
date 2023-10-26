@@ -1,17 +1,18 @@
-import { FC, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { createColumnHelper } from '@tanstack/react-table';
-import { useForm } from 'react-hook-form';
-import { AxiosError } from 'axios';
-import { MdDeleteOutline, MdOutlineModeEditOutline, MdOutlineSave } from 'react-icons/md';
+import {FC, useMemo, useState} from 'react';
+import {useTranslation} from 'react-i18next';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import {createColumnHelper} from '@tanstack/react-table';
+import {useForm} from 'react-hook-form';
+import {AxiosError} from 'axios';
+import {MdDeleteOutline, MdOutlineModeEditOutline, MdOutlineSave} from 'react-icons/md';
 
-import { Button, Card, DataTable, Dialog, FormInput, FormTextarea, Icon, Label, Track } from 'components';
-import { RESPONSE_TEXT_LENGTH } from 'constants/config';
-import type { Responses as ResponsesType } from 'types/response';
+import {Button, Card, DataTable, Dialog, FormInput, FormTextarea, Icon, Label, Track} from 'components';
+import {RESPONSE_TEXT_LENGTH} from 'constants/config';
+import type {Responses as ResponsesType} from 'types/response';
+import type {Dependencies as DependenciesType} from 'types/dependencises';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
-import { useToast } from 'hooks/useToast';
-import { addResponse, deleteResponse, editResponse } from 'services/responses';
+import {useToast} from 'hooks/useToast';
+import {deleteResponse, editResponse} from 'services/responses';
 
 type NewResponse = {
   name: string;
@@ -22,25 +23,33 @@ const Responses: FC = () => {
   const { t } = useTranslation();
   const toast = useToast();
   const queryClient = useQueryClient();
+  const { data: dependencies } = useQuery<DependenciesType>({
+    queryKey: ['responses/dependencies'],
+  });
   const { data: responses } = useQuery<ResponsesType>({
     queryKey: ['responses'],
   });
   const [addFormVisible, setAddFormVisible] = useState(false);
-  const [editableRow, setEditableRow] = useState<{ id: string | number; text: string; } | null>(null);
+  const [editableRow, setEditableRow] = useState<{ id: string; text: string; } | null>(null);
   const [deletableRow, setDeletableRow] = useState<string | number | null>(null);
   const [filter, setFilter] = useState('');
   const { register, handleSubmit } = useForm<NewResponse>();
-
-  const formattedResponses = useMemo(() => responses ? Object.keys(responses).map((r, i) => ({
+//  const [editingTrainingTitle, setEditingTrainingTitle] = useState<string>("");
+  let editingTrainingTitle: string;
+  const formattedResponses = useMemo(() => responses ? responses.response.map((r, i) => ({
     id: i,
-    response: r,
-    text: responses[r].text,
+    response: r.name,
+    text: r.response[0].text,
   })) : [], [responses]);
 
   useDocumentEscapeListener(() => setEditableRow(null));
 
+  function setEditingTrainingTitle(title: string) {
+    editingTrainingTitle = title;
+  }
+
   const responseSaveMutation = useMutation({
-    mutationFn: ({ id, text }: { id: string | number, text: string }) => editResponse(id, { text }),
+    mutationFn: ({ id, text }: { id: string, text: string }) => editResponse(id,  text),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['responses']);
       toast.open({
@@ -63,6 +72,7 @@ const Responses: FC = () => {
     mutationFn: ({ id }: { id: string | number }) => deleteResponse(id),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['responses']);
+
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -80,13 +90,7 @@ const Responses: FC = () => {
   });
 
   const newResponseMutation = useMutation({
-    mutationFn: (data: NewResponse) => {
-      const newResponseData = {
-        ...data,
-        name: 'utter_' + data.name,
-      };
-      return addResponse(newResponseData);
-    },
+    mutationFn: ({ name}: { name: string}) => editResponse("utter_"+name,  editingTrainingTitle, false),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['responses']);
       setAddFormVisible(false);
@@ -109,11 +113,23 @@ const Responses: FC = () => {
     newResponseMutation.mutate(data);
   });
 
-  const handleEditableRow = async (response: { id: string | number; text: string }) => {
+  const handleEditableRow = async (response: { id: string; text: string }) => {
     setEditableRow(response);
   };
 
   const columnHelper = createColumnHelper<typeof formattedResponses[0]>();
+
+  const getRules = (responseId: String)  => {
+    // @ts-ignore
+    return dependencies && true && dependencies.response.isArray ? dependencies.response.find(d => d.name === responseId)
+        .rules.map((name,i) => <p key={i}>{name}</p>) : null;
+  }
+
+  const getStories = (responseId: String)  => {
+    // @ts-ignore
+    return dependencies && true && dependencies.response.isArray ? dependencies.response.find(d => d.name === responseId)
+        .stories.map((name,i) => <p key={i}>{name}</p>) : null;
+  }
 
   const responsesColumns = useMemo(() => [
     columnHelper.accessor('response', {
@@ -124,13 +140,12 @@ const Responses: FC = () => {
     }),
     columnHelper.display({
       id: 'dependencies',
-      cell: () => (
+      cell: (props) => (
         <Label tooltip={
           <>
-            {/* TODO: Add correct dependencies */}
             <strong>{t('global.dependencies')}</strong>
-            <p>Dep 1</p>
-            <p>Dep 2</p>
+            {getRules(props.row.original.response)}
+            {getStories(props.row.original.response)}
           </>
         }>
           {t('global.dependencies')}
@@ -142,7 +157,7 @@ const Responses: FC = () => {
     }),
     columnHelper.accessor('text', {
       header: '',
-      cell: (props) => editableRow && editableRow.id === props.row.original.id ? (
+      cell: (props) => editableRow && editableRow.id === props.row.original.response ? (
         <FormTextarea
           label='label'
           name='name'
@@ -151,6 +166,9 @@ const Responses: FC = () => {
           minRows={1}
           maxLength={RESPONSE_TEXT_LENGTH}
           showMaxLength
+          onChange={(e) =>
+            setEditingTrainingTitle(e.target.value)
+          }
         />
       ) : (
         <p>{props.getValue()}</p>
@@ -161,16 +179,19 @@ const Responses: FC = () => {
       header: '',
       cell: (props) => (
         <>
-          {editableRow && editableRow.id === props.row.original.id ? (
+          {editableRow && editableRow.id === props.row.original.response ? (
             <Button appearance='text'
-                    onClick={() => responseSaveMutation.mutate(editableRow)}>
+                    onClick={() => responseSaveMutation.mutate({id: editableRow.id, text: editingTrainingTitle == null ? "" : editingTrainingTitle})}>
               <Icon label={t('global.save')} icon={<MdOutlineSave color={'rgba(0,0,0,0.54)'} />} />
               {t('global.save')}
             </Button>
           ) : (
             <Button
               appearance='text'
-              onClick={() => handleEditableRow({ id: props.row.original.id, text: props.row.original.text })}
+              onClick={() => {
+                setEditingTrainingTitle(props.row.original.text);
+                handleEditableRow({ id: props.row.original.response, text: props.row.original.text });
+              } }
             >
               <Icon label={t('global.edit')} icon={<MdOutlineModeEditOutline color={'rgba(0,0,0,0.54)'} />} />
               {t('global.edit')}
@@ -186,7 +207,7 @@ const Responses: FC = () => {
     columnHelper.display({
       id: 'delete',
       cell: (props) => (
-        <Button appearance='text' onClick={() => setDeletableRow(props.row.original.id)}>
+        <Button appearance='text' onClick={() => setDeletableRow(props.row.original.response)}>
           <Icon label={t('global.delete')} icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />} />
           {t('global.delete')}
         </Button>
@@ -212,7 +233,7 @@ const Responses: FC = () => {
             hideLabel
             onChange={(e) => setFilter(e.target.value)}
           />
-          <Button onClick={() => setAddFormVisible(true)}>
+          <Button onClick={() => {setAddFormVisible(true); setEditingTrainingTitle("")}}>
             {t('global.add')}
           </Button>
         </Track>
@@ -237,6 +258,9 @@ const Responses: FC = () => {
                   hideLabel
                   maxLength={RESPONSE_TEXT_LENGTH}
                   showMaxLength
+                  onChange={(e) =>
+                      setEditingTrainingTitle(e.target.value)
+                  }
                 />
               </Track>
             </div>

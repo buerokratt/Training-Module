@@ -1,0 +1,16 @@
+step_1:
+  call: reflect.mock
+  args:
+    response:
+      userId': 1
+      forwardedChatPopupNotifications: true
+      forwardedChatSoundNotifications: true
+      forwardedChatEmailNotifications: true
+      newChatPopupNotifications: true
+      newChatSoundNotifications: true
+      newChatEmailNotifications: true
+      useAutocorrect: false
+  result: reflected_request
+
+step_2:
+  return: ${reflected_request.response.body}

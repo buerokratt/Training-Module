@@ -23,7 +23,7 @@ mapRegexesData:
   next: returnSuccess
 
 returnSuccess:
-  return: ${regexesData.response.body}
+  return: ${regexesData.response.body.data}
   next: end
 
 returnUnauthorized:
