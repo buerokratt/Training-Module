@@ -26,37 +26,40 @@ const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
   // Add keywords to the array to make the request go into Ruuter's endpoint
   const keywords = ['intent', 'entities', 'in-model', 'responses','regex','regexes','stories','rules'];
 
-  // @ts-ignore
-  if(keywords.some(keyword => queryKey[0].startsWith(keyword))) {
+  if(keywords.some(keyword => (queryKey[0] as string).startsWith(keyword))) {
     apiInstance = apiRuuter;
   } else {
     apiInstance = api;
   }
-  if(import.meta.env.REACT_APP_LOCAL !== true) {
+  if(import.meta.env.REACT_APP_LOCAL === 'true') {
     if (queryKey.includes('prod')) {
       const { data } = await apigeneric.get(queryKey[0] as string);
       return data?.response;
     }
-    if (queryKey.includes('user-profile-settings')) {
-      const { data } = await apiTraining.get(queryKey[0] as string);
-      return data;
-    }
-    if (queryKey[1] === 'prod-2') {
-      const { data } = await apiDevV2.get(queryKey[0] as string);
-      return data?.response;
-    }
-    if(queryKey[1] === 'auth') {
-      const { data } = await auth.get(queryKey[0] as string);
-      return data;
-    }
-    if(queryKey.includes('regex') && queryKey.includes('examples')) {
-      const request = {
-        "regex": queryKey[1],
-        "examples": true
-      };
-      const { data } = await apiInstance.post(queryKey[0] as string, request)
-      return data.response;
-    }
+  }
+  if (queryKey.includes('prod')) {
+    const { data } = await apiDev.get(queryKey[0] as string);
+    return data;
+  }
+  if (queryKey.includes('user-profile-settings')) {
+    const { data } = await apiTraining.get(queryKey[0] as string);
+    return data;
+  }
+  if (queryKey[1] === 'prod-2') {
+    const { data } = await apiDevV2.get(queryKey[0] as string);
+    return data?.response;
+  }
+  if(queryKey[1] === 'auth') {
+    const { data } = await auth.get(queryKey[0] as string);
+    return data;
+  }
+  if(queryKey.includes('regex') && queryKey.includes('examples')) {
+    const request = {
+      "regex": queryKey[1],
+      "examples": true
+    };
+    const { data } = await apiInstance.post(queryKey[0] as string, request)
+    return data.response;
   }
 
   const { data } = await apiInstance.get(queryKey[0] as string);
