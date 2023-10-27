@@ -17,8 +17,13 @@ export async function deleteIntent(deleteIntentData: { name: string }) {
   return data;
 }
 
-export async function addExample(intentName: string, exampleData: { example: string }) {
-  const { data } = await api.post<{ intentName: string; example: string; }>(`intents/examples/add`, exampleData);
+export async function addExample(addExampleData: { intentName: string, intentExamples: string[], newExamples: string }) {
+  const { data } = await api.post<{ intentName: string; example: string; }>(`intents/examples/add`, addExampleData);
+  return data;
+}
+
+export async function addExampleFromHistory(intentName: string, exampleData: { example: string }) {
+  const {data} = await api.post<{ intentName: string; example: string; }>(`intents/examples/add`, exampleData);
   return data;
 }
 
@@ -27,7 +32,7 @@ export async function editExample(intentName: string, exampleData: { example: st
   return data;
 }
 
-export async function deleteExample(intentName: string, exampleData: { example: string }) {
+export async function deleteExample(intentName: string, example: string) {
   const { data } = await api.delete<void>(`intents/examples/delete`);
   return data;
 }

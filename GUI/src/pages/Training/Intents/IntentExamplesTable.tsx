@@ -10,7 +10,7 @@ import {
   MdAddCircle,
 } from 'react-icons/md';
 
-import { Button, DataTable, Dialog, FormInput, FormTextarea, Icon } from 'components';
+import { Button, DataTable, Dialog, FormTextarea, Icon } from 'components';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import { INTENT_EXAMPLE_LENGTH } from 'constants/config';
 import type { Entity } from 'types/entity';
@@ -26,8 +26,6 @@ type IntentExamplesTableProps = {
   selectedIntent: Intent;
 };
 
-type ExampleToIntent = Pick<Entity, 'id' | 'name'>;
-
 const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
   examples,
   onAddNewExample,
@@ -42,11 +40,16 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
     intentName: string;
     value: string;
   } | null>(null);
-  const [deletableRow, setDeletableRow] = useState<string | null>(
+  const [deletableRow, setDeletableRow] = useState<{
+    intentName: string;
+    value: string;
+  } | null>(
     null
   );
-  const [exampleToIntent, setExampleToIntent] =
-    useState<ExampleToIntent | null>(null);
+  const [exampleToIntent, setExampleToIntent] = useState<{
+    intentName: string,
+    value: string;
+  } | null>(null);
   const columnHelper = createColumnHelper<{ id: string; value: string }>();
 
   useDocumentEscapeListener(() => setEditableRow(null));
@@ -61,10 +64,10 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
   };
 
   const exampleToIntentMutation = useMutation({
-    mutationFn: ({ name }: ExampleToIntent) =>
+    mutationFn: ({ exampleName }: {intentName: string, exampleName: string} ) =>
       turnExampleIntoIntent({
-        exampleName: name,
         intentName: selectedIntent.intent,
+        exampleName: exampleName,
       }),
     onSuccess: () => {
       toast.open({
@@ -112,7 +115,8 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
   });
 
   const exampleDeleteMutation = useMutation({
-    mutationFn: ({ intentName }: { intentName: string }) => deleteExample(intentName),
+    mutationFn: ({ intentName, example }: { intentName: string, example: string }) =>
+        deleteExample(intentName, example),
     onSuccess: () => {
       toast.open({
         type: 'success',
@@ -165,7 +169,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
         }) => (
           <Button
             appearance="text"
-            onClick={() => setExampleToIntent({ id, name })}
+            onClick={() => setExampleToIntent({ intentName: id, value: name} )}
           >
             <Icon
               label={t('training.intents.turnExampleIntoIntent')}
@@ -202,7 +206,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
             ) : (
               <Button
                 appearance="text"
-                onClick={() => handleEditableRow(props.row.original)}
+                onClick={() => handleEditableRow({ intentName: props.row.original.id, value: props.row.original.value})}
               >
                 <Icon
                   label={t('global.edit')}
@@ -223,7 +227,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
         cell: (props) => (
           <Button
             appearance="text"
-            onClick={() => setDeletableRow(props.row.original.id)}
+            onClick={() => setDeletableRow({ intentName: props.row.original.id, value: props.row.original.value })}
           >
             <Icon
               label={t('global.delete')}
@@ -238,7 +242,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
         },
       }),
     ],
-    [columnHelper, t, editableRow, entities]
+    [columnHelper, t, editableRow, entities, exampleEditMutation]
   );
 
   return (
@@ -292,7 +296,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
               <Button
                 appearance="error"
                 onClick={() =>
-                  exampleDeleteMutation.mutate({ intentName: deletableRow })
+                  exampleDeleteMutation.mutate({ intentName: deletableRow.intentName, example: deletableRow.value })
                 }
               >
                 {t('global.yes')}
@@ -318,8 +322,12 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
               </Button>
               <Button
                 appearance="error"
-                onClick={() =>
-                  exampleToIntentMutation.mutate(exampleToIntent)
+                onClick={() => {
+                    exampleToIntentMutation.mutate({
+                      intentName: exampleToIntent.intentName,
+                      exampleName: exampleToIntent.value
+                    })
+                  }
                 }
               >
                 {t('global.yes')}
