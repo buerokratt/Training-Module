@@ -1,0 +1,34 @@
+getData:
+  call: reflect.mock
+  args:
+    response:
+      data:
+        - id: 1
+          startTime: 2023-10-26T14:41:49.892Z
+          endTime: 2023-10-26T14:41:49.892Z
+          name: Jaan Tamm
+          label: Elit Etiam Cursus
+          comment: Lõpetatud
+        - id: 2
+          startTime: 2023-10-26T14:41:49.892Z
+          endTime: 2023-10-26T14:41:49.892Z
+          name: Mari Maasikas
+          label: Neque libero
+          comment: conversations
+        - id: 3
+          startTime: 2023-10-26T14:41:49.892Z
+          endTime: 2023-10-26T14:41:49.892Z
+          name: Peeter Puu
+          label: Sit ornare
+          comment: null
+        - id: 4
+          startTime: 2023-10-26T14:41:49.892Z
+          endTime: 2023-10-26T14:41:49.892Z
+          name: Mati Metsis
+          label: Tincidunt nec
+          comment: Aenean lacinia bibendum nulla sed consectetur.
+  result: reflected_request
+  next: returnData
+
+returnData:
+  return: ${reflected_request.response.body.data}
