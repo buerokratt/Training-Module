@@ -1,0 +1,40 @@
+getData:
+  call: reflect.mock
+  args:
+    response:
+      data:
+        - name: 'Testload'
+          files:
+            - filename: "failed_test_stories.yml"
+              lastModified: "2023-10-26T10:23:41.619Z"
+              fileUri: "/training/mock-results/testlood/failed_test_stories.yml"
+            - filename: 'stories_with_warnings.yml'
+              lastModified: "2023-10-26T10:23:41.619Z"
+              fileUri: "/training/mock-results/testlood/stories_with_warnings.yml"
+        - name: 'K-folds test'
+          files:
+            - filename: "stories_with_warnings.yml"
+              lastModified: "2023-10-26T10:23:41.619Z"
+              fileUri: import.meta.env.BASE_URL + 'mock-results/cross_validation/failed_test_stories.yml'
+            - filename: 'intent_confusion_matrix.png'
+              lastModified: "2023-10-26T10:23:41.619Z"
+              fileUri: import.meta.env.BASE_URL + 'mock-results/cross_validation/intent_confusion_matrix.png'
+            - filename: 'intent_errors.jsonl'
+              lastModified: "2023-10-26T10:23:41.619Z"
+              fileUri: import.meta.env.BASE_URL + 'mock-results/cross_validation/intent_errors.json'
+        - name: '80-20 (80% treeni / 20% valideeri)'
+          files:
+            - filename: 'intent_confusion_matrix.png'
+              lastModified: "2023-10-26T10:23:41.619Z"
+              fileUri: import.meta.env.BASE_URL + 'mock-results/80-20/intent_confusion_matrix.png'
+            - filename: 'intent_histogram.png'
+              lastModified: "2023-10-26T10:23:41.619Z"
+              fileUri: import.meta.env.BASE_URL + 'mock-results/80-20/intent_histogram.png'
+            - filename: 'intent_report.json'
+              lastModified: "2023-10-26T10:23:41.619Z"
+              fileUri: import.meta.env.BASE_URL + 'mock-results/80-20/intent_report.json'
+  result: reflected_request
+  next: returnData
+
+returnData:
+  return: ${reflected_request.response.body.data}

@@ -1,0 +1,32 @@
+getData:
+  call: reflect.mock
+  args:
+    response:
+      data:
+        id: 1
+        messages:
+          - name: Bürokratt
+            message: Malesuada Ipsum!
+            sentAt: 2023-10-26T14:43:06.392Z
+            type: bot
+          - name: Jaan Tamm
+            message: Fermentum Bibendum Cras
+            sentAt: 2023-10-26T14:43:06.392Z
+            type: client
+          - name: Meelis Mets
+            message: Elit Consectetur?
+            sentAt: 2023-10-26T14:43:06.392Z
+            type: client-support
+          - name: Meelis Mets
+            message: Elit Integer posuere erat a ante venenatis dapibus posuere velit aliquet.
+            sentAt: 2023-10-26T14:43:06.392Z
+            type: client-support
+          - name: Jaan Tamm
+            message: Fermentum Bibendum Cras
+            sentAt: 2023-10-26T14:43:06.392Z
+            type: client
+  result: reflected_request
+  next: returnData
+
+returnData:
+  return: ${reflected_request.response.body.data}
