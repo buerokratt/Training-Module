@@ -31,11 +31,9 @@ const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
   } else {
     apiInstance = api;
   }
-  if(import.meta.env.REACT_APP_LOCAL === 'true') {
-    if (queryKey.includes('prod')) {
+  if(import.meta.env.REACT_APP_LOCAL === 'true' && queryKey.includes('prod')) {
       const { data } = await apigeneric.get(queryKey[0] as string);
       return data?.response;
-    }
   }
   if (mockedEndpoints.some(endpoint => (queryKey[0] as string).startsWith(endpoint))) {
     const { data } = await apigeneric.get(queryKey[0] as string);
@@ -47,12 +45,12 @@ const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
   }
   if (queryKey.includes('prod')) {
     if (queryKey.includes('cs-get-all-active-chats')) {
-      const { data } = await apiDev.get('sse/'+queryKey[0] as string);
+      const { data } = await apiDev.get('sse/'+ (queryKey[0] as string));
+      return data;
     } else {
       const { data } = await apiDev.get(queryKey[0] as string);
+      return data;
     }
-    // @ts-ignore
-    return data;
   }
   if (queryKey[1] === 'prod-2') {
     const { data } = await apiDevV2.get(queryKey[0] as string);
