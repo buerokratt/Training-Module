@@ -2,9 +2,9 @@ name: Build and publish GUI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ dev ]
     paths:
-      - '.env'
+      - '.donotuse'
 
 jobs:
   PackageDeploy:

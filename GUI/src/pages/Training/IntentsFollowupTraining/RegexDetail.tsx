@@ -17,20 +17,26 @@ import {
 import { Button, Card, DataTable, Dialog, FormInput, FormSelect, FormTextarea, Icon, Track } from 'components';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import { useToast } from 'hooks/useToast';
-import { addRegexExample, deleteRegex, deleteRegexExample, downloadExamples, editRegex, editRegexExample } from 'services/regex';
+import {
+  addRegexExample,
+  deleteRegex,
+  deleteRegexExample,
+  downloadExamples,
+  editRegex,
+  editRegexExample
+} from 'services/regex';
 import { Entity } from 'types/entity';
 
 type Regex = {
-  readonly id: number;
+  readonly id: string;
   name: string;
   examples: string[];
-  modifiedAt: Date | string;
 }
 
 const RegexDetail: FC = () => {
+  const { id } = useParams();
   let updatedExampleName = '';
   const { t } = useTranslation();
-  const { id } = useParams();
   const toast = useToast();
   const navigate = useNavigate();
   const newExampleRef = useRef<HTMLTextAreaElement>(null);
@@ -40,12 +46,9 @@ const RegexDetail: FC = () => {
     id: number;
     value: string;
   } | null>(null);
-  const [deletableRow, setDeletableRow] = useState<string | number | null>(null);
+  const { data: regex } = useQuery<Regex>(['regex',id, 'examples']);
+  const [deletableRow, setDeletableRow] = useState<string | undefined | null>(null);
   const [deletableRegex, setDeletableRegex] = useState<string | number | null>(null);
-  const { data: regex } = useQuery<Regex>({
-    queryKey: [`regex/${id}`],
-    enabled: !!id,
-  });
   const { data: entities } = useQuery<Entity[]>({
     queryKey: ['entities'],
   });
@@ -129,7 +132,7 @@ const RegexDetail: FC = () => {
   });
 
   const regexExampleDeleteMutation = useMutation({
-    mutationFn: ({ id }: { id: string | number }) => deleteRegexExample(id),
+    mutationFn: (data : { update_data : {regex_name: string | undefined, example: string | undefined }}) => deleteRegexExample(data),
     onSuccess: () => {
       toast.open({
         type: 'success',
@@ -148,18 +151,13 @@ const RegexDetail: FC = () => {
   });
 
   const regexExampleEditMutation = useMutation({
-    mutationFn: ({example_data, regexExampleData} : {
-      example_data: {
-        new_name: string,
-        old_name: string
-      },
-      regexExampleData: {
+    mutationFn: (example_data : {
       regex_name: string,
       input: {
         regex: string,
-        examples: string[]
-      }},
-    }) => editRegexExample(example_data, regexExampleData),
+        example: string,
+        newExample: string
+    }}) => editRegexExample(example_data),
     onSuccess: () => {
       toast.open({
         type: 'success',
@@ -234,17 +232,13 @@ const RegexDetail: FC = () => {
         <>
           {editableRow && editableRow.id === props.row.original.id ? (
             <Button appearance='text' onClick={() => regexExampleEditMutation.mutate({
-              example_data: {
-              new_name: updatedExampleName,
-              old_name: props.row.original.value
-              },
-              regexExampleData: {
               regex_name: regex!.name,
               input: {
                 regex: regex!.name,
-                examples: regex!.examples
+                example: props.row.original.value,
+                newExample: updatedExampleName ? updatedExampleName : props.row.original.value
               },
-            }})}>
+            })}>
               <Icon
                 label={t('global.save')}
                 icon={<MdOutlineSave color={'rgba(0,0,0,0.54)'} />}
@@ -273,7 +267,7 @@ const RegexDetail: FC = () => {
     columnHelper.display({
       header: '',
       cell: (props) => (
-        <Button appearance='text' onClick={() => setDeletableRow(props.row.original.id)}>
+        <Button appearance='text' onClick={() => setDeletableRow(props.row.original.value)}>
           <Icon
             label={t('global.delete')}
             icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />}
@@ -382,12 +376,12 @@ const RegexDetail: FC = () => {
                     </Button>
                   )}
                 </Track>
-                <p style={{ color: '#4D4F5D' }}>
-                  {`${t('global.modifiedAt')} ${format(
-                    new Date(regex.modifiedAt),
-                    'dd.MM.yyyy',
-                  )}`}
-                </p>
+                {/*<p style={{ color: '#4D4F5D' }}>*/}
+                {/*  {`${t('global.modifiedAt')} ${format(*/}
+                {/*    new Date(regex.modifiedAt),*/}
+                {/*    'dd.MM.yyyy',*/}
+                {/*  )}`}*/}
+                {/*</p>*/}
               </Track>
               <Track justify='end' gap={8}>
                 <Button
@@ -478,7 +472,7 @@ const RegexDetail: FC = () => {
               <Button appearance='secondary' onClick={() => setDeletableRow(null)}>{t('global.no')}</Button>
               <Button
                 appearance='error'
-                onClick={() => regexExampleDeleteMutation.mutate({ id: deletableRow })}
+                onClick={() => regexExampleDeleteMutation.mutate({update_data: { regex_name: regex?.name, example: deletableRow }})}
               >
                 {t('global.yes')}
               </Button>

@@ -2,21 +2,6 @@ assign_values:
   assign:
     parameters: ${incoming.body}
 
-authenticate:
-  template: extract-token
-  requestType: post
-  headers:
-    cookie: ${incoming.headers.cookie}
-  body:
-    role: "ROLE_ADMINISTRATOR"
-  result: permission
-
-validatePermission:
-  switch:
-    - condition: ${permission}
-      next: getFileLocations
-  next: returnUnauthorized
-
 getFileLocations:
   call: http.get
   args:
@@ -50,7 +35,7 @@ mapRegexesData:
 
 validateRegexExists:
   switch:
-    - condition: ${regexesData.response.body.regex.includes(parameters.regex_name)}
+    - condition: ${regexesData.response.body.data.regex.includes(parameters.regex_name)}
       next: replaceJsonString
   next: returnRegexIsMissing
 
@@ -59,7 +44,7 @@ replaceJsonString:
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/replace"
     body:
-      data: ${regexesData.response.body.examples}
+      data: ${regexesData.response.body.data.examples}
       search: "&quot;"
       replace: ""
   result: replacedJsonString
@@ -74,27 +59,37 @@ replaceString:
       replace: ""
   result: replacedString
 
+returnHyphens:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/replace"
+    body:
+      data: ${replacedString.response.body}
+      search: "[]"
+      replace: "[- ]"
+  result: updatedString
+
 splitExamples:
   call: http.post
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/split"
     body:
-      data: ${replacedString.response.body}
+      data: ${updatedString.response.body}
       separator: "\n"
   result: splitExamples
 
-mapExamples:
+exampleExists:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-regex-with-example"
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/check-value-exists"
     body:
       examples: ${splitExamples.response.body}
       example_name: ${parameters.example}
-  result: mappedExamples
+  result: checkedExamples
 
 validateExampleExists:
   switch:
-    - condition: ${mappedExamples.response.body == true}
+    - condition: ${checkedExamples.response.body.data}
       next: deleteRegex
   next: returnExampleIsMissing
 
@@ -110,7 +105,7 @@ deleteRegex:
 mapRegexInput:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-regex-file"
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-regex-example"
     body:
       regex: ${parameters.regex_name}
       examples: ${deletedRegex.response.body}
@@ -122,7 +117,7 @@ mergeRegexes:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/merge"
     body:
       array1: ${regexData.response.body.nlu}
-      array2: ${mappedRegexInput.response.body}
+      array2: ${mappedRegexInput.response.body.data}
       iteratee: "regex"
   result: mergedRegexes
 
@@ -143,6 +138,24 @@ saveRegexFile:
       file_path: ${fileLocations.response.body.response.regex_location}
       content: ${regexYaml.response.body.json}
   result: fileResult
+
+removePipe:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/replace"
+    body:
+      data: ${regexYaml.response.body.json}
+      search: "|"
+      replace: ""
+  result: result
+
+updateRegexOpenSearch:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/put/regexes/regex"
+    body:
+      input: ${result.response.body}
+  result: updatedRegex
   next: returnSuccess
 
 returnSuccess:
