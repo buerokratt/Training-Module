@@ -39,6 +39,8 @@
     "anonymous": "Anonüümne",
     "title": "Pealkiri",
     "missing": "Puudub",
+    "updatingDataHead": "Palun oota",
+    "updatingDataBody": "Andmeid uuendatakse...",
     "days": {
       "monday": "Esmaspäev",
       "tuesday": "Teisipäev",

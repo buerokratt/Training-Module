@@ -1,0 +1,12 @@
+getData:
+  call: reflect.mock
+  args:
+    response:
+      data:
+        - id: 1
+          story: "happy path"
+  result: reflected_request
+  next: returnData
+
+returnData:
+  return: ${reflected_request.response.body.data}

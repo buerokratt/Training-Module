@@ -1,0 +1,18 @@
+getData:
+  call: reflect.mock
+  args:
+    response:
+      data:
+        - name: 'Testload'
+          files:
+            - filename: "failed_test_stories.yml"
+              lastModified: "2023-10-26T10:23:41.619Z"
+              fileUri: "/mock-results/testlood/failed_test_stories.yml"
+            - filename: 'stories_with_warnings.yml'
+              lastModified: "2023-10-26T10:23:41.619Z"
+              fileUri: "/training/mock-results/testlood/stories_with_warnings.yml"
+  result: reflected_request
+  next: returnData
+
+returnData:
+  return: ${reflected_request.response.body.data}

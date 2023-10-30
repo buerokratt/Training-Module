@@ -1,20 +1,19 @@
 import api from './temp-api';
-import ruuterApi from "./ruuter-api";
 import localDevApi from './local-dev-api';
 import { Intent } from 'types/intent';
 
 export async function addIntent(newIntentData: { name: string }) {
-  const { data } = await ruuterApi.post('/rasa/intents/add', newIntentData);
+  const { data } = await api.post('/intents/add', newIntentData);
   return data;
 }
 
-export async function editIntent(id: string | number, intentData: Omit<Partial<Intent>, 'id'>) {
-  const { data } = await api.patch(`intents/${id}`, intentData);
+export async function editIntent(editIntentData: {oldName: string, newName: string}) {
+  const { data } = await api.post(`intents/update`, editIntentData);
   return data;
 }
 
-export async function deleteIntent(id: string | number) {
-  const { data } = await api.delete<void>(`intents/${id}`);
+export async function deleteIntent(deleteIntentData: { name: string }) {
+  const { data } = await api.post(`intents/delete`, deleteIntentData);
   return data;
 }
 

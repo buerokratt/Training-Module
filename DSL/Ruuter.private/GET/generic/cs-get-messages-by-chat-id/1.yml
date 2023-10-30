@@ -1,0 +1,22 @@
+getData:
+  call: reflect.mock
+  args:
+    response:
+      data:
+        - id: c6eb23f6-bb36-49de-8592-6d36ac303d87
+          chatId: 5206b7bd-0812-40a8-ae1d-3774f07f06f0
+          content: Tere
+          event: greeting
+          authorId: ''
+          authorTimestamp: '2022-11-23T09:05:51.785+00:00'
+          authorFirstName: ''
+          authorLastName: ''
+          authorRole: buerokratt
+          rating: ''
+          created: '2022-11-23T09:05:51.785+00:00'
+          updated: '2022-11-23T09:05:51.795+00:00'
+  result: reflected_request
+  next: returnData
+
+returnData:
+  return: ${reflected_request.response.body.data}

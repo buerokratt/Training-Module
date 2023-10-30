@@ -38,6 +38,9 @@
     "status": "Status",
     "anonymous": "Anonymous",
     "title": "Title",
+    "missing": "Missing",
+    "updatingDataHead": "Please wait",
+    "updatingDataBody": "Processing request...",
     "days": {
       "monday": "Monday",
       "tuesday": "Tuesday",
