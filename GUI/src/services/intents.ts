@@ -27,13 +27,13 @@ export async function addExampleFromHistory(intentName: string, exampleData: { e
   return data;
 }
 
-export async function editExample(intentName: string, exampleData: { example: string }) {
-  const { data } = await api.patch<{ intentName: string; example: string; }>(`intents/examples/edit`);
+export async function editExample(editExampleData: { intentName: string, oldExample: string, newExample: string }) {
+  const { data } = await api.post<{ intentName: string; example: string; }>(`intents/examples/update`, editExampleData);
   return data;
 }
 
-export async function deleteExample(intentName: string, example: string) {
-  const { data } = await api.delete<void>(`intents/examples/delete`);
+export async function deleteExample(deleteExampleData: { intentName: string, example: string }) {
+  const { data } = await api.post<{ intentName: string; example: string; }>(`intents/examples/delete`, deleteExampleData);
   return data;
 }
 

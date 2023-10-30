@@ -77,14 +77,16 @@ const Intents: FC = () => {
     }
   };
 
-  function queryRefresh(shouldEmptyList: boolean) {
-    if (shouldEmptyList) {
-      intentsFullList = [];
-    }
+  function queryRefresh(selectIntent: string | null) {
+    setSelectedIntent(null);
     queryClient.cancelQueries(['intents/intents-full']);
-    queryClient.invalidateQueries(['intents/intents-full']);
     queryClient.fetchQuery(['intents/intents-full']).then(() => {
       setRefreshing(false);
+      if (intents.length > 0) {
+        setSelectedIntent(() => {
+          return intents.find((intent) => intent.intent === selectIntent) || null;
+        });
+      }
     })
   }
 
@@ -126,6 +128,9 @@ const Intents: FC = () => {
         message: error.message,
       });
     },
+    onSettled: () => {
+      queryRefresh(selectedIntent.intent);
+    }
   });
 
   const removeFromModelMutation = useMutation({
@@ -160,7 +165,7 @@ const Intents: FC = () => {
       setDeletableIntent(null) },
     onSuccess: async () => {
       setSelectedIntent(null)
-      queryRefresh(true);
+      queryRefresh(null);
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -223,7 +228,7 @@ const Intents: FC = () => {
     mutationFn: (data: { name: string }) => addIntent(data),
     onMutate: () => { setRefreshing(true) },
     onSuccess: async () => {
-      queryRefresh(true);
+      queryRefresh(filter);
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -248,13 +253,7 @@ const Intents: FC = () => {
         editIntent(editIntentData),
     onMutate: () => { setRefreshing(true); },
     onSuccess: async () => {
-      queryRefresh(false);
-      const updatedIntent = intents.find((intent) => intent.intent === editingIntentTitle);
-      if (updatedIntent) {
-        setSelectedIntent(updatedIntent);
-      } else {
-        setSelectedIntent(null);
-      }
+      queryRefresh(editingIntentTitle);
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -483,6 +482,7 @@ const Intents: FC = () => {
                     onAddNewExample={handleNewExample}
                     entities={entities ?? []}
                     selectedIntent={selectedIntent}
+                    queryRefresh={queryRefresh}
                   />
                 )}
               </div>
