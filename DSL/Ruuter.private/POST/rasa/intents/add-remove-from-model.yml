@@ -1,0 +1,69 @@
+assign_values:
+  assign:
+    intent: ${incoming.body.name.replaceAll(/\s+/g, "_")}
+    inModel: ${incoming.body.inModel}
+
+getDomainFile:
+  call: http.get
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/domain-file"
+    headers:
+      testcookie: "test"
+  result: domainData
+
+isInModel:
+  switch:
+    - condition: ${inModel}
+      next: mergeIntents
+  next: convertDomainJsonToYaml
+
+removeFromDomainArray:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/merge/remove-array-value"
+    body:
+      array: ${domainData.response.body.response.intents}
+      value: ${intent}
+  result: updatedIntents
+  next: saveDomainFile
+
+mergeIntents:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/merge"
+    body:
+      array1: ${[intent]}
+      array2: ${domainData.response.body.response.intents}
+  result: mergedIntents
+
+convertDomainJsonToYaml:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml"
+    body:
+      version: ${domainData.response.body.response.version}
+      intents: ${mergedIntents.response.body}
+      entities: ${domainData.response.body.response.entities}
+      slots: ${domainData.response.body.response.slots}
+      forms: ${domainData.response.body.response.forms}
+      actions: ${domainData.response.body.response.actions}
+      responses: ${domainData.response.body.response.responses}
+      session_config: ${domainData.response.body.response.session_config}
+  result: domainYaml
+
+updateDomainOpenSearch:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/bulk/domain"
+    body:
+      input: ${domainYaml.response.body.json}
+  result: updateSearchResult
+
+saveDomainFile:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/write"
+    body:
+      file_path: ${fileLocations.response.body.response.domain_location}
+      content: ${domainYaml.response.body.json}
+  result: fileResult
