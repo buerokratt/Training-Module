@@ -130,13 +130,6 @@ makeArrayFromExamples:
     newExamples: ${[newExamples]}
   next: mergeExamples
 
-#  TODO: needs clarification
-#  validateMinimumExampleCount:
-#    switch:
-#      - condition: ${mergedExamples.response.body.length >= 10}
-#        next: mapIntentsData
-#    next: returnTooFewExamples
-
 mapIntentsData:
   call: http.post
   args:
