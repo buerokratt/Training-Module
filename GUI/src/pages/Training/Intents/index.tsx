@@ -18,7 +18,7 @@ import { Intent } from 'types/intent';
 import { Entity } from 'types/entity';
 import {
   addExample,
-  addIntent,
+  addIntent, addRemoveIntentModel,
   deleteIntent,
   editIntent,
   turnIntentIntoService,
@@ -129,33 +129,8 @@ const Intents: FC = () => {
       });
     },
     onSettled: () => {
-      queryRefresh(selectedIntent.intent);
+      queryRefresh(selectedIntent?.intent || '');
     }
-  });
-
-  const removeFromModelMutation = useMutation({
-    mutationFn: ({
-      id,
-      data,
-    }: {
-      id: string | number;
-      data: { inModel: boolean };
-    }) => editIntent(id, data),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries(['intents']);
-      toast.open({
-        type: 'success',
-        title: t('global.notification'),
-        message: 'Intent removed from model',
-      });
-    },
-    onError: (error: AxiosError) => {
-      toast.open({
-        type: 'error',
-        title: t('global.notificationError'),
-        message: error.message,
-      });
-    },
   });
 
   const deleteIntentMutation = useMutation({
@@ -273,11 +248,48 @@ const Intents: FC = () => {
     },
   });
 
+  const intentModelMutation = useMutation({
+    mutationFn: (intentModelData: { name: string; inModel: boolean }) =>
+        addRemoveIntentModel(intentModelData),
+    onMutate: () => {
+      setRefreshing(true);
+    },
+    onSuccess: async () => {
+      if (selectedIntent?.inModel === true) {
+        toast.open({
+          type: 'success',
+          title: t('global.notification'),
+          message: 'Intent removed from model',
+        });
+      } else {
+        toast.open({
+          type: 'success',
+          title: t('global.notification'),
+          message: 'Intent added to model',
+        });
+      }
+      queryRefresh(selectedIntent?.intent || '');
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
+    onSettled: () => {
+      setEditingIntentTitle(null);
+      setRefreshing(false);
+    },
+  });
+
   const handleNewExample = (example: string) => {
     if (!selectedIntent) return;
-    addExamplesMutation.mutate({ intentName: selectedIntent.intent,
-                                      intentExamples: selectedIntent.examples,
-                                      newExamples: example });
+    addExamplesMutation.mutate({
+        intentName: selectedIntent.intent,
+        intentExamples: selectedIntent.examples,
+        newExamples: example
+    });
   };
 
   const handleIntentExamplesUpload = (intentId: string | number) => {
@@ -455,16 +467,21 @@ const Intents: FC = () => {
                       <Button
                         appearance="secondary"
                         onClick={() =>
-                          removeFromModelMutation.mutate({
-                            id: selectedIntent.id,
-                            data: { inModel: false },
+                          intentModelMutation.mutate({
+                            name: selectedIntent.intent,
+                            inModel: true,
                           })
                         }
                       >
                         {t('training.intents.removeFromModel')}
                       </Button>
                     ) : (
-                      <Button>{t('training.intents.addToModel')}</Button>
+                        <Button onClick={() =>
+                            intentModelMutation.mutate({
+                              name: selectedIntent.intent,
+                              inModel: false
+                            })
+                        }>{t('training.intents.addToModel')}</Button>
                     )}
                     <Button
                       appearance="error"

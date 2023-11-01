@@ -17,6 +17,11 @@ export async function deleteIntent(deleteIntentData: { name: string }) {
   return data;
 }
 
+export async function addRemoveIntentModel(intentModelData: {name: string, inModel: boolean}) {
+  const { data } = await api.post(`intents/add-remove-from-model`, intentModelData);
+  return data;
+}
+
 export async function addExample(addExampleData: { intentName: string, intentExamples: string[], newExamples: string }) {
   const { data } = await api.post<{ intentName: string; example: string; }>(`intents/examples/add`, addExampleData);
   return data;
