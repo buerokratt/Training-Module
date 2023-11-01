@@ -22,6 +22,7 @@ import {
   deleteIntent,
   editIntent,
   turnIntentIntoService,
+  uploadCsvFile
 } from 'services/intents';
 import IntentExamplesTable from './IntentExamplesTable';
 import LoadingDialog from "../../../components/LoadingDialog";
@@ -248,7 +249,7 @@ const Intents: FC = () => {
     },
   });
 
-  const intentModelMutation = useMutation({
+  const intentAddRemoveFromModelMutation = useMutation({
     mutationFn: (intentModelData: { name: string; inModel: boolean }) =>
         addRemoveIntentModel(intentModelData),
     onMutate: () => {
@@ -292,13 +293,46 @@ const Intents: FC = () => {
     });
   };
 
-  const handleIntentExamplesUpload = (intentId: string | number) => {
-    // TODO: Add endpoint for mocking intent examples file upload
+  const handleIntentExamplesUpload = (intentName: string) => {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = '.csv';
+
+    input.addEventListener('change', (event) => {
+      const target = event.target as HTMLInputElement;
+      if (!target.files || !target.files[0]) return;
+      const file = target.files[0];
+
+      if (file) {
+        uploadCsvFileMutation.mutate({intentName, file});
+      }
+    });
+
     input.click();
   };
+
+  const uploadCsvFileMutation = useMutation(
+      (examplesUploadData: {intentName: string, file: File}) =>
+          uploadCsvFile(examplesUploadData),
+      {
+        onMutate: () => {
+        },
+        onSuccess: () => {
+          queryRefresh(selectedIntent?.intent || '');
+          toast.open({
+            type: 'success',
+            title: t('global.notification'),
+            message: 'CSV file uploaded successfully',
+          });
+        },
+        onError: (error: AxiosError) => {
+          toast.open({
+            type: 'error',
+            title: t('global.notificationError'),
+            message: 'CSV file upload failed: ' + error.message,
+          });
+        },
+   });
 
   const handleIntentExamplesDownload = (intentId: string | number) => {
     // TODO: Add endpoint for mocking intent examples download
@@ -450,7 +484,7 @@ const Intents: FC = () => {
                     <Button
                       appearance="secondary"
                       onClick={() =>
-                        handleIntentExamplesUpload(selectedIntent.id)
+                        handleIntentExamplesUpload(selectedIntent.intent)
                       }
                     >
                       {t('training.intents.upload')}
@@ -467,7 +501,7 @@ const Intents: FC = () => {
                       <Button
                         appearance="secondary"
                         onClick={() =>
-                          intentModelMutation.mutate({
+                            intentAddRemoveFromModelMutation.mutate({
                             name: selectedIntent.intent,
                             inModel: true,
                           })
@@ -477,7 +511,7 @@ const Intents: FC = () => {
                       </Button>
                     ) : (
                         <Button onClick={() =>
-                            intentModelMutation.mutate({
+                            intentAddRemoveFromModelMutation.mutate({
                               name: selectedIntent.intent,
                               inModel: false
                             })
