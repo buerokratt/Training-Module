@@ -47,10 +47,10 @@ https://admin.play.buerokratt.ee/training
 
 ### TIM
 
-- if you are running `Locally` then you need to curl the login request or run it on postman first to create and store the cookie in TIM and then on the browser create the cookie manully in the browser with name `customJwtCookie` and the value return from the curl
-  the curl request is as follows:
+- if you are running `Locally` then you need to curl the login request or run it on postman first to create and store the cookie in TIM and then on the browser create the cookie manually in the browser with name `customJwtCookie` and the value return from the curl
+ request is as follows:
 ```
 curl -X POST -H "Content-Type: application/json" -d '{
   "login": "EE30303039914",
   "password": ""
-}' http://localhost:8086/login-user
+}' http://localhost:8085/login-user

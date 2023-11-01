@@ -1,15 +1,14 @@
 authenticate:
-  template: extract-token
+  template: check-user-authority
   requestType: post
   headers:
-    cookie: ${incoming.headers.testcookie}
-  body:
-    role: "ROLE_ADMINISTRATOR"
-  result: permission
+    cookie: ${cookie}
+  result: authority_result
+  next: check_authority_result
 
-validate_permission:
+check_authority_result:
   switch:
-    - condition: ${permission}
+    - condition: ${authority_result !== "false"}
       next: guard_success
   next: guard_fail
 
