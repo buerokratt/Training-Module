@@ -14,8 +14,8 @@ getDomainFile:
 isInModel:
   switch:
     - condition: ${inModel}
-      next: mergeIntents
-  next: convertDomainJsonToYaml
+      next: removeFromDomainArray
+  next: mergeIntents
 
 removeFromDomainArray:
   call: http.post
@@ -25,7 +25,7 @@ removeFromDomainArray:
       array: ${domainData.response.body.response.intents}
       value: ${intent}
   result: updatedIntents
-  next: saveDomainFile
+  next: convertDomainJsonToYaml
 
 mergeIntents:
   call: http.post
@@ -34,7 +34,7 @@ mergeIntents:
     body:
       array1: ${[intent]}
       array2: ${domainData.response.body.response.intents}
-  result: mergedIntents
+  result: updatedIntents
 
 convertDomainJsonToYaml:
   call: http.post
@@ -42,7 +42,7 @@ convertDomainJsonToYaml:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml"
     body:
       version: ${domainData.response.body.response.version}
-      intents: ${mergedIntents.response.body}
+      intents: ${updatedIntents.response.body}
       entities: ${domainData.response.body.response.entities}
       slots: ${domainData.response.body.response.slots}
       forms: ${domainData.response.body.response.forms}
@@ -59,6 +59,12 @@ updateDomainOpenSearch:
       input: ${domainYaml.response.body.json}
   result: updateSearchResult
 
+getFileLocations:
+  call: http.get
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+  result: fileLocations
+
 saveDomainFile:
   call: http.post
   args:
@@ -67,3 +73,17 @@ saveDomainFile:
       file_path: ${fileLocations.response.body.response.domain_location}
       content: ${domainYaml.response.body.json}
   result: fileResult
+
+returnSuccessText:
+  switch:
+    - condition: ${inModel}
+      next: returnSuccessRemoved
+  next: returnSuccessAdded
+
+returnSuccessAdded:
+  return: "Intent added to model"
+  next: end
+
+returnSuccessRemoved:
+  return: "Intent removed from model"
+  next: end

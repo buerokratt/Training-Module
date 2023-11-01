@@ -18,9 +18,9 @@ import { Intent } from 'types/intent';
 import { Entity } from 'types/entity';
 import {
   addExample,
-  addIntent, addIntentToModel,
+  addIntent, addRemoveIntentModel,
   deleteIntent,
-  editIntent, removeIntentFromModel,
+  editIntent,
   turnIntentIntoService,
 } from 'services/intents';
 import IntentExamplesTable from './IntentExamplesTable';
@@ -249,13 +249,8 @@ const Intents: FC = () => {
   });
 
   const intentModelMutation = useMutation({
-    mutationFn: (intentModelData: { name: string; inModel: boolean }) => {
-      if (intentModelData.inModel) {
-        return addIntentToModel(intentModelData);
-      } else {
-        return removeIntentFromModel(intentModelData);
-      }
-    },
+    mutationFn: (intentModelData: { name: string; inModel: boolean }) =>
+        addRemoveIntentModel(intentModelData),
     onMutate: () => {
       setRefreshing(true);
     },
