@@ -25,7 +25,7 @@ ruleResponses:
 
 validateRuleResponses:
   switch:
-    - condition: ${ruleResponses.response.body.response.rules.length == 0}
+    - condition: ${ruleResponses.response.data.rules.length == 0}
       next: storiesResponses
   next: returnResponseHasDependencyToRules
 
@@ -40,7 +40,7 @@ storiesResponses:
 
 validateStoriesResponses:
   switch:
-    - condition: ${storiesResponses.response.body.response.stories.length == 0}
+    - condition: ${storiesResponses.response.data.stories.length == 0}
       next: deleteKey
   next: returnResponseHasDependencyToStories
 
