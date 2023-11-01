@@ -255,12 +255,20 @@ const Intents: FC = () => {
       setRefreshing(true);
     },
     onSuccess: async () => {
+      if (selectedIntent?.inModel === true) {
+        toast.open({
+          type: 'success',
+          title: t('global.notification'),
+          message: 'Intent removed from model',
+        });
+      } else {
+        toast.open({
+          type: 'success',
+          title: t('global.notification'),
+          message: 'Intent added to model',
+        });
+      }
       queryRefresh(selectedIntent?.intent || '');
-      toast.open({
-        type: 'success',
-        title: t('global.notification'),
-        message: 'Intent title saved',
-      });
     },
     onError: (error: AxiosError) => {
       toast.open({
