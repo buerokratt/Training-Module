@@ -133,31 +133,6 @@ const Intents: FC = () => {
     }
   });
 
-  const removeFromModelMutation = useMutation({
-    mutationFn: ({
-      id,
-      data,
-    }: {
-      id: string | number;
-      data: { inModel: boolean };
-    }) => editIntent(id, data),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries(['intents']);
-      toast.open({
-        type: 'success',
-        title: t('global.notification'),
-        message: 'Intent removed from model',
-      });
-    },
-    onError: (error: AxiosError) => {
-      toast.open({
-        type: 'error',
-        title: t('global.notificationError'),
-        message: error.message,
-      });
-    },
-  });
-
   const deleteIntentMutation = useMutation({
     mutationFn: (data: { name: string }) => deleteIntent(data),
     onMutate: () => {
