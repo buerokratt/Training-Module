@@ -1,0 +1,25 @@
+getFileLocations:
+  call: http.get
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+  result: fileLocations
+
+getRulesFile:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/read"
+    body:
+      file_path: ${fileLocations.response.body.response.rules_location}
+  result: rulesFile
+
+convertYamlToJson:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/yaml-to-json"
+    body:
+      file: ${rulesFile.response.body.file}
+  result: rulesData
+
+returnSuccess:
+  return: ${rulesData.response.body}
+  next: end

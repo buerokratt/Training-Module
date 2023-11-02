@@ -1,7 +1,6 @@
 assign_values:
   assign:
     parameters: ${incoming.body}
-  next: getFileLocations
 
 getFileLocations:
   call: http.get
