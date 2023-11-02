@@ -1,8 +1,7 @@
 assign_values:
   assign:
-    intent: ${incoming.body.intent.replaceAll(/\s+/g, "_")}
+    intent: ${incoming.body.intentName.replaceAll(/\s+/g, "_")}
     example: ${incoming.body.example}
-  next: getFileLocations
 
 getFileLocations:
   call: http.get
@@ -111,8 +110,35 @@ convertJsonToYaml:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml"
     body:
       version: "3.0"
-      nlu: ${intentFileJson.response.body}
+      nlu: ${intentFileJson.response.body.data}
   result: intentYaml
+
+removePipe:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/replace"
+    body:
+      data: ${intentYaml.response.body.json}
+      search: "|"
+      replace: ""
+  result: pipelineIntent
+
+addNewIntentInPipeline:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/put/intents/intent"
+    body:
+      input: ${pipelineIntent.response.body}
+  result: updateSearchResult
+
+addInDatabase:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]:[#TRAINING_RESQL_PORT]/add-intent"
+    body:
+      intent: ${incoming.body.intentName}
+      status: "ACTIVE"
+  result: addInDatabaseResult
 
 saveIntentFile:
   call: http.post

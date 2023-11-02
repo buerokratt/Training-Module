@@ -1,7 +1,8 @@
 assign_values:
   assign:
-    parameters: ${incoming.body}
-  next: getFileLocations
+    intent: ${incoming.body.intentName.replaceAll(/\s+/g, "_")}
+    oldExample: ${incoming.body.oldExample}
+    newExample: ${incoming.body.newExample}
 
 getFileLocations:
   call: http.get
@@ -18,7 +19,7 @@ checkIntentFileYaml:
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/check"
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
+      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
   result: fileExists
 
 validateFileExists:
@@ -36,7 +37,7 @@ checkIntentFileTmp:
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/check"
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
+      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
   result: tmpFileExists
 
 validateTmpFileExists:
@@ -50,7 +51,7 @@ getIntentFile:
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/read"
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
+      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
   result: intentFile
 
 convertYamlToJson:
@@ -82,9 +83,9 @@ splitExamples:
 
 validateExample:
   switch:
-    - condition: ${!splitExamples.response.body.includes(parameters.example)}
+    - condition: ${!splitExamples.response.body.includes(oldExample)}
       next: returnExampleIsMissing
-    - condition: ${parameters.new_example.length >= 500}
+    - condition: ${newExample.length >= 500}
       next: returnExampleTooLong
   next: replaceExistingExample
 
@@ -93,8 +94,8 @@ replaceExistingExample:
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/merge/replace-array-element"
     body:
-      element: ${parameters.example}
-      newValue: ${parameters.new_example}
+      element: ${oldExample}
+      newValue: ${newExample}
       array: ${splitExamples.response.body}
   result: replacedExamples
 
@@ -103,7 +104,7 @@ mapIntentsData:
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-intent-file"
     body:
-      intent: ${parameters.intent}
+      intent: ${intent}
       examples: ${replacedExamples.response.body}
   result: intentFileJson
 
@@ -113,15 +114,42 @@ convertJsonToYaml:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml"
     body:
       version: "3.0"
-      nlu: ${intentFileJson.response.body}
+      nlu: ${intentFileJson.response.body.data}
   result: intentYaml
+
+removePipe:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/replace"
+    body:
+      data: ${intentYaml.response.body.json}
+      search: "|"
+      replace: ""
+  result: pipelineIntent
+
+addIntentInPipeline:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/put/intents/intent"
+    body:
+      input: ${pipelineIntent.response.body}
+  result: updateSearchResult
+
+addInDatabase:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]:[#TRAINING_RESQL_PORT]/add-intent"
+    body:
+      intent: ${incoming.body.intentName}
+      status: "ACTIVE"
+  result: addInDatabaseResult
 
 saveIntentFile:
   call: http.post
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/write"
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
+      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
       content: ${intentYaml.response.body.json}
   result: fileResult
   next: returnSuccess

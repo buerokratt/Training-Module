@@ -8,7 +8,7 @@ import { ReactComponent as BykLogoWhite } from 'assets/logo-white.svg';
 import { Chat as ChatType } from 'types/chat';
 import { Message } from 'types/message';
 import { useToast } from 'hooks/useToast';
-import { addExample } from 'services/intents';
+import { addExampleFromHistory} from 'services/intents';
 import { editResponse } from 'services/responses';
 import ChatMessage from './ChatMessage';
 import ChatEvent from './ChatEvent';
@@ -47,7 +47,7 @@ const HistoricalChat: FC<ChatProps> = ({ chat }) => {
       intent: string;
       newIntent: boolean;
       intentName?: string;
-    }) => addExample(data.intent, { example: data.example }),
+    }) => addExampleFromHistory(data.intent, { example: data.example }),
     onSuccess: async () => {
       toast.open({
         type: 'success',

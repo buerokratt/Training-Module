@@ -17,18 +17,28 @@ export async function deleteIntent(deleteIntentData: { name: string }) {
   return data;
 }
 
-export async function addExample(intentId: string | number, exampleData: { example: string }) {
-  const { data } = await api.post<{ id: number; example: string; }>(`intents/${intentId}/examples`, exampleData);
+export async function addRemoveIntentModel(intentModelData: {name: string, inModel: boolean}) {
+  const { data } = await api.post(`intents/add-remove-from-model`, intentModelData);
   return data;
 }
 
-export async function editExample(intentId: string | number, exampleData: { example: string }) {
-  const { data } = await api.patch<{ id: number; example: string; }>(`intents/${intentId}/examples`);
+export async function addExample(addExampleData: { intentName: string, intentExamples: string[], newExamples: string }) {
+  const { data } = await api.post<{ intentName: string; example: string; }>(`intents/examples/add`, addExampleData);
   return data;
 }
 
-export async function deleteExample(intentId: string | number) {
-  const { data } = await api.delete<void>(`intents/${intentId}/examples`);
+export async function addExampleFromHistory(intentName: string, exampleData: { example: string }) {
+  const {data} = await api.post<{ intentName: string; example: string; }>(`intents/examples/add`, exampleData);
+  return data;
+}
+
+export async function editExample(editExampleData: { intentName: string, oldExample: string, newExample: string }) {
+  const { data } = await api.post<{ intentName: string; example: string; }>(`intents/examples/update`, editExampleData);
+  return data;
+}
+
+export async function deleteExample(deleteExampleData: { intentName: string, example: string }) {
+  const { data } = await api.post<{ intentName: string; example: string; }>(`intents/examples/delete`, deleteExampleData);
   return data;
 }
 

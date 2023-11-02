@@ -1,5 +1,5 @@
 export interface Intent {
-  readonly id: number;
+  id: string;
   intent: string;
   description: string | null;
   inModel: boolean;

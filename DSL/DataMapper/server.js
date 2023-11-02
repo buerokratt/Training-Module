@@ -27,7 +27,7 @@ import mergeObjects from "./js/util/mergeObjects.js";
 import mergeRemoveKey from "./js/util/mergeRemoveKey.js";
 import mergeRemoveArrayValue from "./js/util/mergeRemoveArrayValue.js";
 import mergeReplaceArrayElement from "./js/util/mergeReplaceArrayElement.js";
-import validate from "./js/util/validate.js";
+import validate from "./js/util/arrayExamplesLength.js.js";
 import yamlToJson from "./js/convert/yamlToJson.js";
 import jsonToYaml from "./js/convert/jsonToYaml.js";
 import csvToJson from "./js/convert/csvToJson.js";
