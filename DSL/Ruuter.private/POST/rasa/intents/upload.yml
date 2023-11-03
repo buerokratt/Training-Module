@@ -1,22 +1,28 @@
 assign_values:
   assign:
-    intentName: ${incoming.body.intentName.replaceAll(/\s+/g, "_")}
-    file: ${incoming.body.file}
+    parameters: ${incoming.body}
 
-getIntentFile:
-  call: http.post
-  args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/intents/get-intent-file"
-    body:
-      intent: ${incoming.body.intentName}
-  result: intentJson
+authenticate:
+  template: extract-token
+  requestType: post
+  headers:
+    cookie: ${incoming.headers.cookie}
+  body:
+    role: "ROLE_ADMINISTRATOR"
+  result: permission
 
-convertIncomingCsvToJson:
+validatePermission:
+  switch:
+    - condition: ${permission}
+      next: convertCsvToJson
+  next: returnUnauthorized
+
+convertCsvToJson:
   call: http.post
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/csv-to-json"
     body:
-      file: ${file}
+      file: ${parameters.file}
   result: jsonData
 
 mapCsvToArray:
@@ -25,30 +31,17 @@ mapCsvToArray:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/csv-examples-to-array"
     body:
       examples: ${jsonData.response.body}
-  result: examplesFromCsv
+  result: examples
 
-checkIfExistingIntentEmpty:
-  switch:
-    - condition: ${intentJson.response.body.nlu[0] != undefined}
-      next: assignExamples
-
-assignEmptyExamples:
-  assign:
-    existingExamples: []
-  next: checkIfExampleIsList
-
-assignExamples:
-  assign:
-    existingExamples: intentJson.response.body.nlu[0].examples
-
-checkIfExampleIsList:
+addExamples:
   call: http.post
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/intents/examples/add"
+    headers:
+      cookie: ${cookie}
     body:
-      intentName: ${intentJson.response}
-      intentExamples: ${existingExamples}
-      newExamples: ${examplesFromCsv.response.body}
+      intent: ${parameters.intent}
+      examples: ${examples.response.body}
   result: addResult
 
 returnSuccess:

@@ -1,6 +1,6 @@
 import api from './temp-api';
 import localDevApi from './local-dev-api';
-import {Intent} from 'types/intent';
+import { Intent } from 'types/intent';
 
 export async function addIntent(newIntentData: { name: string }) {
   const { data } = await api.post('/intents/add', newIntentData);
@@ -40,17 +40,6 @@ export async function editExample(editExampleData: { intentName: string, oldExam
 export async function deleteExample(deleteExampleData: { intentName: string, example: string }) {
   const { data } = await api.post<{ intentName: string; example: string; }>(`intents/examples/delete`, deleteExampleData);
   return data;
-}
-
-export async function uploadCsvFile(examplesUploadData: { intentName: string, file: File }) {
-  const formData = new FormData();
-  formData.append('file', examplesUploadData.file);
-
-  try {
-    await api.post(`intents/examples/upload`, formData);
-  } catch (error) {
-    throw error;
-  }
 }
 
 export async function turnExampleIntoIntent(data: {
