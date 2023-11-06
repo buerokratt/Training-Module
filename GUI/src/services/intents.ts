@@ -1,5 +1,6 @@
 import api from './temp-api';
 import localDevApi from './local-dev-api';
+import fileApi from './file.api';
 import { Intent } from 'types/intent';
 
 export async function addIntent(newIntentData: { name: string }) {
@@ -41,6 +42,21 @@ export async function deleteExample(deleteExampleData: { intentName: string, exa
   const { data } = await api.post<{ intentName: string; example: string; }>(`intents/examples/delete`, deleteExampleData);
   return data;
 }
+
+export async function downloadExamples(downloadExampleData: { intentName: string }) {
+  const { data } = await api.post<{ intentName: string; }>(`intents/download`, downloadExampleData);
+  return data;
+}
+
+export async function uploadExamples(uploadExampleData: { intentName: string, formData: any }) {
+  const formData = new FormData();
+  formData.append('file', uploadExampleData.formData);
+  formData.append('intentName', uploadExampleData.intentName);
+
+  const { data } = await fileApi.post('/intents/upload', formData);
+  return data;
+}
+
 
 export async function turnExampleIntoIntent(data: {
   exampleName: string;

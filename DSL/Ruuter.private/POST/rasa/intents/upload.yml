@@ -1,28 +1,19 @@
 assign_values:
   assign:
-    parameters: ${incoming.body}
+    file: ${incoming.body.file}
 
-authenticate:
-  template: extract-token
-  requestType: post
-  headers:
-    cookie: ${incoming.headers.cookie}
-  body:
-    role: "ROLE_ADMINISTRATOR"
-  result: permission
+    # try with name in params next
 
-validatePermission:
-  switch:
-    - condition: ${permission}
-      next: convertCsvToJson
-  next: returnUnauthorized
+returnStep:
+  return: ${incoming.body}
+  next: end
 
 convertCsvToJson:
   call: http.post
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/csv-to-json"
     body:
-      file: ${parameters.file}
+      file: ${file}
   result: jsonData
 
 mapCsvToArray:
@@ -37,18 +28,12 @@ addExamples:
   call: http.post
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/intents/examples/add"
-    headers:
-      cookie: ${cookie}
     body:
-      intent: ${parameters.intent}
+      intent: ${intentName}
       examples: ${examples.response.body}
   result: addResult
 
 returnSuccess:
   return: ${addResult.response.body.response}
-  next: end
-
-returnUnauthorized:
-  return: "error: unauthorized"
   next: end
 
