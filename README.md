@@ -13,6 +13,10 @@ This repo will primarily contain
 ---
 ## Notes for the Developers
 ### Docker related (local development)
+- Clone [TIM](https://github.com/buerokratt/TIM)
+- Go to src -> main -> resources -> application.properties & modify security.allowlist.jwt value to `security.allowlist.jwt=ruuter,resql,resql_users,tim,tim-postgresql,node_server,data_mapper,gui_dev,127.0.0.1,::1`
+- Navigate to TIM and build the image `docker build -t tim .`
+
 - Run GUI in your local machine: `npm run dev`
 - Docker-compose.yml
   - ruuter -> use commented out image to test the following:
@@ -40,3 +44,13 @@ COPY ./exirain-header-0.0.21.tgz .
 > Bürokratt Play acts the same as `dev` environment. Play gets updated after new code commits reach `main` branch, so the result can be faulty and/or down at any given time.
 
 https://admin.play.buerokratt.ee/training
+
+### TIM
+
+- if you are running `Locally` then you need to curl the login request or run it on postman first to create and store the cookie in TIM and then on the browser create the cookie manually in the browser with name `customJwtCookie` and the value return from the curl
+ request is as follows:
+```
+curl -X POST -H "Content-Type: application/json" -d '{
+  "login": "EE30303039914",
+  "password": ""
+}' http://localhost:8085/login-user
