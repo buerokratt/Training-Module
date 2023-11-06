@@ -71,34 +71,35 @@ services:
     networks:
       - bykstack
 
-  tim:
-    container_name: tim
-    image: tim
-    depends_on:
-      - tim-postgresql
-    ports:
-      - 8085:8085
-    networks:
-      - bykstack
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    cpus: "0.5" # Example CPU limit
-    mem_limit: "512M" # Example memory limit
+  # TIM part is commented out in case a developer needs to run just the training module part
+  # tim:
+  #  container_name: tim
+  #  image: tim
+  #  depends_on:
+  #    - tim-postgresql
+  #  ports:
+  #    - 8085:8085
+  #  networks:
+  #    - bykstack
+  #  extra_hosts:
+  #    - "host.docker.internal:host-gateway"
+  #  cpus: "0.5"  (Example CPU limit)
+  #  mem_limit: "512M"  (Example memory limit)
 
-  tim-postgresql:
-    container_name: tim-postgresql
-    image: postgres:14.1
-    environment:
-      - POSTGRES_USER=tim
-      - POSTGRES_PASSWORD=123
-      - POSTGRES_DB=tim
-      - POSTGRES_HOST_AUTH_METHOD=trust
-    volumes:
-      - ./tim-db:/var/lib/postgresql/data
-    ports:
-      - 9876:5432
-    networks:
-      - bykstack
+  # tim-postgresql:
+  #  container_name: tim-postgresql
+  #  image: postgres:14.1
+  #  environment:
+  #    - POSTGRES_USER=tim
+  #    - POSTGRES_PASSWORD=123
+  #    - POSTGRES_DB=tim
+  #    - POSTGRES_HOST_AUTH_METHOD=trust
+  #  volumes:
+  #    - ./tim-db:/var/lib/postgresql/data
+  #  ports:
+  #    - 9876:5432
+  #  networks:
+  #    - bykstack
 
 volumes:
   opensearch-data:
