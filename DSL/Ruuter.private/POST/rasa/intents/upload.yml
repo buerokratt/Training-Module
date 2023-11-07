@@ -1,19 +1,13 @@
 assign_values:
   assign:
-    file: ${incoming.body.file}
-
-    # try with name in params next
-
-returnStep:
-  return: ${incoming.body}
-  next: end
+    intentName: ${incoming.params.intentName}
 
 convertCsvToJson:
   call: http.post
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/csv-to-json"
     body:
-      file: ${file}
+      file: ${incoming.body}
   result: jsonData
 
 mapCsvToArray:
@@ -29,8 +23,9 @@ addExamples:
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/intents/examples/add"
     body:
-      intent: ${intentName}
-      examples: ${examples.response.body}
+      intentName: ${intentName}
+      intentExamples: []
+      newExamples: ${examples.response.body.data}
   result: addResult
 
 returnSuccess:

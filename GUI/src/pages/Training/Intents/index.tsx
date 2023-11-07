@@ -312,9 +312,8 @@ const Intents: FC = () => {
   });
 
   const intentUploadMutation = useMutation({
-    mutationFn: async (fileUploadData: {intentName: string, formData: any}) => {
-      await uploadExamples(fileUploadData);
-    },
+    mutationFn: ({ intentName, formData }: { intentName: string, formData: File }) =>
+        uploadExamples(intentName, formData),
     onSuccess: () => {
       toast.open({
         type: 'success',
@@ -330,8 +329,6 @@ const Intents: FC = () => {
       });
     },
   });
-
-
 
   const handleNewExample = (example: string) => {
     if (!selectedIntent) return;
@@ -359,8 +356,8 @@ const Intents: FC = () => {
 
       try {
         await intentUploadMutation.mutateAsync({
-          intentName: selectedIntent?.intent || '',
-          formData: file,
+          intentName: selectedIntent?.id || '',
+          formData: file
         });
       } catch (error) {
       }

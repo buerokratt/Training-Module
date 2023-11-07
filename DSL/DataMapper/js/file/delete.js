@@ -18,10 +18,7 @@ router.post('/', (req, res) => {
 
   try {
     fs.unlinkSync(filePath);
-    return {
-      error: false,
-        message: 'File deleted successfully'
-    }
+    res.json(true).send();
   } catch (err) {
     return {
       error: true,

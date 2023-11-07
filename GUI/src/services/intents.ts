@@ -48,12 +48,11 @@ export async function downloadExamples(downloadExampleData: { intentName: string
   return data;
 }
 
-export async function uploadExamples(uploadExampleData: { intentName: string, formData: any }) {
-  const formData = new FormData();
-  formData.append('file', uploadExampleData.formData);
-  formData.append('intentName', uploadExampleData.intentName);
+export async function uploadExamples(intentName: string, formData: File) {
+  const formDataRequest = new FormData();
+  formDataRequest.append('file', formData);
 
-  const { data } = await fileApi.post('/intents/upload', formData);
+  const { data } = await fileApi.post(`/intents/upload?intentName=${intentName}`, formDataRequest);
   return data;
 }
 
