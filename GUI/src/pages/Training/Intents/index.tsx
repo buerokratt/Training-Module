@@ -20,7 +20,7 @@ import {
   addExample,
   addIntent, addRemoveIntentModel,
   deleteIntent, downloadExamples,
-  editIntent,
+  editIntent, getLastModified,
   turnIntentIntoService, uploadExamples,
 } from 'services/intents';
 import IntentExamplesTable from './IntentExamplesTable';
@@ -192,6 +192,7 @@ const Intents: FC = () => {
       if (!intents) return;
       const selectedIntent = intents.find((intent) => intent.intent === value);
       if (selectedIntent) {
+        selectedIntent.modifiedAt = lastModifiedMutation.mutate(selectedIntent.intent);
         setSelectedIntent(selectedIntent);
         setSelectedTab(selectedIntent.intent);
       }
@@ -338,6 +339,21 @@ const Intents: FC = () => {
         newExamples: example
     });
   };
+
+  // const lastModifiedMutation = useMutation({
+  //   mutationFn: (intentModifiedData: { intentName: string }) => {
+  //       selectedIntent?.modifiedAt = getLastModified(intentModifiedData);
+  //   },
+  //   onSuccess: () => {
+  //   },
+  //   onError: (error: AxiosError) => {
+  //     toast.open({
+  //       type: 'error',
+  //       title: t('global.notificationError'),
+  //       message: error.message,
+  //     });
+  //   },
+  // });
 
   const handleIntentExamplesUpload = (intentId: string | number) => {
     const input = document.createElement('input');

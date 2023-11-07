@@ -23,6 +23,11 @@ export async function addRemoveIntentModel(intentModelData: {name: string, inMod
   return data;
 }
 
+export async function getLastModified(intentModifiedData: {intentName: string}) {
+  const { data } = await api.post(`intents/modified`, intentModifiedData);
+  return data;
+}
+
 export async function addExample(addExampleData: { intentName: string, intentExamples: string[], newExamples: string }) {
   const { data } = await api.post<{ intentName: string; example: string; }>(`intents/examples/add`, addExampleData);
   return data;
