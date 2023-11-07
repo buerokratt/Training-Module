@@ -1,21 +1,7 @@
 assign_values:
   assign:
     params: ${incoming.body}
-
-authenticate:
-  template: extract-token
-  requestType: post
-  headers:
-    cookie: ${incoming.headers.cookie}
-  body:
-    role: "ROLE_ADMINISTRATOR"
-  result: permission
-
-validatePermission:
-  switch:
-    - condition: ${permission}
-      next: getFormsSlots
-  next: returnUnauthorized
+  next: getFormsSlots
 
 getFormsSlots:
   call: http.post
