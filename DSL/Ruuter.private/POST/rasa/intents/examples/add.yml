@@ -110,15 +110,6 @@ assignExamples:
   assign:
     examplesToWriteIntoYml: ${splitExamples.response.body}
 
-mergeExamples:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/merge"
-    body:
-      array1: ${newExamples}
-      array2: ${examplesToWriteIntoYml}
-  result: mergedExamples
-
 checkIfExampleIsList:
   switch:
     - condition: ${Array.isArray(newExamples)}
@@ -129,6 +120,15 @@ makeArrayFromExamples:
   assign:
     newExamples: ${[newExamples]}
   next: mergeExamples
+
+mergeExamples:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/merge"
+    body:
+      array1: ${newExamples}
+      array2: ${examplesToWriteIntoYml}
+  result: mergedExamples
 
 mapIntentsData:
   call: http.post

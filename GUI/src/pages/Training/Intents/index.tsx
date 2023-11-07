@@ -19,9 +19,9 @@ import { Entity } from 'types/entity';
 import {
   addExample,
   addIntent, addRemoveIntentModel,
-  deleteIntent,
+  deleteIntent, downloadExamples,
   editIntent,
-  turnIntentIntoService,
+  turnIntentIntoService, uploadExamples,
 } from 'services/intents';
 import IntentExamplesTable from './IntentExamplesTable';
 import LoadingDialog from "../../../components/LoadingDialog";
@@ -283,6 +283,53 @@ const Intents: FC = () => {
     },
   });
 
+  const intentDownloadMutation = useMutation({
+    mutationFn: (intentModelData: { intentName: string }) =>
+        downloadExamples(intentModelData),
+    onSuccess: (data) => {
+      // @ts-ignore
+      const blob = new Blob([data], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = selectedIntent?.id + '.csv';
+      a.click();
+      window.URL.revokeObjectURL(url);
+
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: 'Examples sent for downloading',
+      });
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
+  });
+
+  const intentUploadMutation = useMutation({
+    mutationFn: ({ intentName, formData }: { intentName: string, formData: File }) =>
+        uploadExamples(intentName, formData),
+    onSuccess: () => {
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: 'File uploaded successfully',
+      });
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
+  });
+
   const handleNewExample = (example: string) => {
     if (!selectedIntent) return;
     addExamplesMutation.mutate({
@@ -293,16 +340,32 @@ const Intents: FC = () => {
   };
 
   const handleIntentExamplesUpload = (intentId: string | number) => {
-    // TODO: Add endpoint for mocking intent examples file upload
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = '.csv';
+
+    input.addEventListener('change', async (event) => {
+      const fileInput = event.target as HTMLInputElement;
+      const files = fileInput.files;
+
+      if (!files || files.length === 0) {
+        return;
+      }
+
+      const file = files[0];
+
+      try {
+        await intentUploadMutation.mutateAsync({
+          intentName: selectedIntent?.id || '',
+          formData: file
+        });
+      } catch (error) {
+      }
+    });
+
     input.click();
   };
 
-  const handleIntentExamplesDownload = (intentId: string | number) => {
-    // TODO: Add endpoint for mocking intent examples download
-  };
 
   if (isLoading) return <>Loading...</>;
 
@@ -458,7 +521,9 @@ const Intents: FC = () => {
                     <Button
                       appearance="secondary"
                       onClick={() =>
-                        handleIntentExamplesDownload(selectedIntent.id)
+                        intentDownloadMutation.mutate({
+                          intentName: selectedIntent.intent
+                        })
                       }
                     >
                       {t('training.intents.download')}

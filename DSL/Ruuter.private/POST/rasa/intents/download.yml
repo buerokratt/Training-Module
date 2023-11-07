@@ -1,7 +1,6 @@
 assign_values:
   assign:
-    intent: "common_tervitus"
-  next: getFileLocations
+    intentName: ${incoming.body.intentName.replaceAll(/\s+/g, "_")}
 
 getFileLocations:
   call: http.get
@@ -9,64 +8,27 @@ getFileLocations:
     url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
   result: fileLocations
 
-assignFilePath:
-  assign:
-    file_end: "_nlu.yml"
-
-checkIntentFileYaml:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/check"
-    body:
-      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
-  result: fileExists
-
-validateFileExists:
-  switch:
-    - condition: ${fileExists.response.body}
-      next: getIntentFile
-  next: assignTmpFilePath
-
-assignTmpFilePath:
-  assign:
-    file_end: "_nlu.yml.tmp"
-
-checkIntentFileTmp:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/check"
-    body:
-      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
-  result: tmpFileExists
-
-validateTmpFileExists:
-  switch:
-    - condition: ${tmpFileExists.response.body}
-      next: getIntentFile
-  next: returnIntentFileMissing
-
 getIntentFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/read"
+    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/intents/get-intent-file"
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
+      intentName: ${incoming.body.intentName}
+      returnType: "json"
   result: intentFile
 
-convertYamlToJson:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/yaml-to-json"
-    body:
-      file: ${intentFile.response.body.file}
-  result: intentData
+checkIfIntentEmpty:
+  switch:
+    - condition: ${intentFile.response.body.response.nlu[0] != undefined}
+      next: replaceString
+  next: returnIntentExamplesMissing
 
 replaceString:
   call: http.post
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/replace"
     body:
-      data: ${intentData.response.body.nlu[0].examples}
+      data: ${intentFile.response.body.response.nlu[0].examples}
       search: "- "
       replace: ""
   result: replacedString
@@ -84,24 +46,29 @@ mapIntentsData:
   call: http.post
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-intent-csv"
-    headers:
-      type: 'csv'
     body:
       examples: ${splitExamples.response.body}
+    headers:
+      type: 'csv'
   result: csvData
-  next: returnSuccess
+
+checkResponse:
+  switch:
+    - condition: ${csvData.response.body != undefined}
+      next: returnSuccess
+  next: returnIntentExamplesMissing
 
 returnSuccess:
   wrapper: false
   headers:
-    Content-disposition: ${"attachment;filename=" + intent + ".csv"}
+    "Content-disposition": ${"attachment;filename=" + intentName + ".csv"}
   return: ${csvData.response.body.response}
   next: end
 
-returnUnauthorized:
-  return: "error: unauthorized"
+returnIntentFileMissing:
+  return: "Intent file is missing"
   next: end
 
-returnIntentFileMissing:
-  return: "Intent file to update is missing"
+returnIntentExamplesMissing:
+  return: "Intent has no examples"
   next: end

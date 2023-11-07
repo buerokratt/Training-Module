@@ -1,14 +1,13 @@
 assign_values:
   assign:
-    parameters: ${incoming.body}
-  next: convertCsvToJson
+    intentName: ${incoming.params.intentName}
 
 convertCsvToJson:
   call: http.post
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/csv-to-json"
     body:
-      file: ${parameters.file}
+      file: ${incoming.body}
   result: jsonData
 
 mapCsvToArray:
@@ -23,18 +22,13 @@ addExamples:
   call: http.post
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/intents/examples/add"
-    headers:
-      cookie: ${cookie}
     body:
-      intent: ${parameters.intent}
-      examples: ${examples.response.body}
+      intentName: ${intentName}
+      intentExamples: []
+      newExamples: ${examples.response.body.data}
   result: addResult
 
 returnSuccess:
   return: ${addResult.response.body.response}
-  next: end
-
-returnUnauthorized:
-  return: "error: unauthorized"
   next: end
 

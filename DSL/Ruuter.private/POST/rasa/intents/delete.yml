@@ -245,7 +245,7 @@ saveDomainFile:
 deleteOldIntentFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/delete-intent"
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/delete"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
   result: deleted
