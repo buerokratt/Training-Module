@@ -255,7 +255,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
             </Track>
           </Collapsible>
 
-          {intents && (
+          {intents && Array.isArray(intents) && (
             <Collapsible title={t('training.intents.title')} defaultOpen>
               <Track direction='vertical' align='stretch' gap={4}>
                 {intents.map((intent) =>
@@ -297,7 +297,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
             </Collapsible>
           )}
 
-          {forms && (
+          {forms && Array.isArray(forms) && (
             <Collapsible title={t('training.forms.title')}>
               <Track direction='vertical' align='stretch' gap={4}>
                 {forms.map((form) => (
@@ -318,7 +318,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
             </Collapsible>
           )}
 
-          {slots && (
+          {slots && Array.isArray(slots) && (
             <Collapsible title={t('training.slots.title')}>
               <Track direction='vertical' align='stretch' gap={4}>
                 {slots.map((slot) => (
