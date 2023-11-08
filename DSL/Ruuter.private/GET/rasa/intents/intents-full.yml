@@ -17,7 +17,7 @@ getDomainFile:
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/domain-file"
     headers:
-      testcookie: "test"
+      cookie: ${incoming.headers.cookie}
   result: getDomainDataResult
 
 getIntentsExampleCount:
@@ -27,6 +27,12 @@ getIntentsExampleCount:
     body:
       id: "intents-with-examples-count"
   result: getIntentCountResult
+
+checkIfIntentsExists:
+  switch:
+    - condition: ${getIntentDataResult.response.body.data.intents != null}
+      next: assignResults
+  next: returnNoIntentsFound
 
 assignResults:
   assign:
@@ -46,4 +52,8 @@ mapIntentsData:
 
 returnSuccess:
   return: ${getIntentDataResult.response.body}
+  next: end
+
+returnNoIntentsFound:
+  return: "Error: no intents found"
   next: end

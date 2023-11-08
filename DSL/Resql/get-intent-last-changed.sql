@@ -1,1 +1,1 @@
-SELECT * FROM intent WHERE intent = :intent AND status = 'ACTIVE' ORDER BY start_date DESC LIMIT 1;
+SELECT * FROM intent WHERE intent = :intent AND status = 'ACTIVE' ORDER BY created DESC LIMIT 1;

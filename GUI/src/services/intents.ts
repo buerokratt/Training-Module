@@ -24,7 +24,7 @@ export async function addRemoveIntentModel(intentModelData: {name: string, inMod
 }
 
 export async function getLastModified(intentModifiedData: {intentName: string}) {
-  const { data } = await api.post(`intents/modified`, intentModifiedData);
+  const { data } = await api.post(`intents/last-modified`, intentModifiedData);
   return data;
 }
 

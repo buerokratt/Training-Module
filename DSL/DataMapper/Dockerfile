@@ -10,6 +10,6 @@ COPY views views
 COPY package.json .
 COPY server.js .
 
-RUN npm i -g npm@latest
+RUN npm i -g npm@9.5.0
 RUN npm install
 ENTRYPOINT ["npm","start"]

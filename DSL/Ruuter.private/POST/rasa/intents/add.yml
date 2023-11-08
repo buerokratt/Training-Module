@@ -12,6 +12,8 @@ getIntentList:
   call: http.get
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/intents"
+    headers:
+      cookie: ${incoming.headers.cookie}
   result: intentList
 
 validateIntentExists:
@@ -26,6 +28,8 @@ getFileLocations:
   call: http.get
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+    headers:
+      cookie: ${incoming.headers.cookie}
   result: fileLocations
 
 mapIntentsData:
