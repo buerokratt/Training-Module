@@ -1,0 +1,20 @@
+getData:
+  call: reflect.mock
+  args:
+    response:
+      data:
+        response:
+          - id: 1
+            steps: "step11"
+          - id: 2
+            steps: "step21"
+          - id: 3
+            steps:
+              - "step31"
+              - "step32"
+              - "step33"
+  result: reflected_request
+  next: returnData
+
+returnData:
+  return: ${reflected_request.response.body.data}

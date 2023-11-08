@@ -24,7 +24,7 @@ const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
   // Temporary solution to let some API requests use Ruuter instead of MSW
   // Add keywords to the array to make the request go into Ruuter's endpoint
   // Implemented endpoints must be removed from mockedEnpoints array
-  const keywords = ['intent', 'entities', 'in-model', 'responses','regex','regexes','stories','rules'];
+  const keywords = ['intent', 'intents', 'entities', 'in-model', 'responses','regex','regexes','stories','rules', 'slots'];
 
   if(keywords.some(keyword => (queryKey[0] as string).startsWith(keyword))) {
     apiInstance = apiRuuter;

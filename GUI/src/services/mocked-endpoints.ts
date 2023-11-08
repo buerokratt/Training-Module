@@ -3,7 +3,7 @@
 * */
 export const mockedEndpoints : string[] = [
     'forms',
-    'slots',
+    'slots', 
     'results',
     'results/1',
     'models',
@@ -15,5 +15,10 @@ export const mockedEndpoints : string[] = [
     'conversations/1',
     'cs-get-messages-by-chat-id',
     'cs-get-messages-by-chat-id/1',
-    'cs-get-all-ended-chats'
+    'cs-get-all-ended-chats',
+    'intents', 
+    'responses',
+    'entities',
+    'rules',
+    'stories',
 ];
