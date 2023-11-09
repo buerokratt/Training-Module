@@ -20,7 +20,7 @@ import {
   addExample,
   addIntent, addRemoveIntentModel,
   deleteIntent, downloadExamples,
-  editIntent,
+  editIntent, getLastModified,
   turnIntentIntoService, uploadExamples,
 } from 'services/intents';
 import IntentExamplesTable from './IntentExamplesTable';
@@ -159,6 +159,17 @@ const Intents: FC = () => {
     }
   });
 
+  const intentModifiedMutation = useMutation({
+    mutationFn: (data: { intentName: string }) => getLastModified(data),
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
+  });
+
   const turnIntentIntoServiceMutation = useMutation({
     mutationFn: ({ intent }: { intent: Intent }) => turnIntentIntoService(intent),
     onSuccess: async (_, { intent }) => {
@@ -187,17 +198,27 @@ const Intents: FC = () => {
   }, [intents, filter]);
 
   const handleTabsValueChange = useCallback(
-    (value: string) => {
-      setEditingIntentTitle(null);
-      if (!intents) return;
-      const selectedIntent = intents.find((intent) => intent.intent === value);
-      if (selectedIntent) {
-        setSelectedIntent(selectedIntent);
-        setSelectedTab(selectedIntent.intent);
-      }
-    },
-    [intents]
+      (value: string) => {
+        setEditingIntentTitle(null);
+        setSelectedIntent(null);
+        if (!intents) return;
+        const selectedIntent = intents.find((intent) => intent.intent === value);
+        if (selectedIntent) {
+          intentModifiedMutation.mutate(
+              { intentName: selectedIntent.intent },
+              {
+                onSuccess: (data) => {
+                  selectedIntent.modifiedAt = data.response;
+                  setSelectedIntent(selectedIntent);
+                  setSelectedTab(selectedIntent.intent);
+                },
+              }
+          );
+        }
+      },
+      [intentModifiedMutation, intents]
   );
+
 
   const newIntentMutation = useMutation({
     mutationFn: (data: { name: string }) => addIntent(data),
@@ -339,7 +360,7 @@ const Intents: FC = () => {
     });
   };
 
-  const handleIntentExamplesUpload = (intentId: string | number) => {
+  const handleIntentExamplesUpload = () => {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = '.csv';
@@ -489,16 +510,15 @@ const Intents: FC = () => {
                         </Button>
                       )}
                     </Track>
-                    <p style={{ color: '#4D4F5D' }}>{t('global.modifiedAt')}:
+                    <p style={{ color: '#4D4F5D' }}>
+                      {t('global.modifiedAt')}:
                       {isValidDate(selectedIntent.modifiedAt) ? (
-                          ` ${format(
-                              new Date(selectedIntent.modifiedAt),
-                              'dd.MM.yyyy'
-                          )}`
+                          ` ${format(new Date(selectedIntent.modifiedAt), 'dd.MM.yyyy')}`
                       ) : (
                           ` ${t('global.missing')}`
                       )}
                     </p>
+
 
                   </Track>
                   <Track justify="end" gap={8} isMultiline={true}>
@@ -513,7 +533,7 @@ const Intents: FC = () => {
                     <Button
                       appearance="secondary"
                       onClick={() =>
-                        handleIntentExamplesUpload(selectedIntent.id)
+                        handleIntentExamplesUpload()
                       }
                     >
                       {t('training.intents.upload')}

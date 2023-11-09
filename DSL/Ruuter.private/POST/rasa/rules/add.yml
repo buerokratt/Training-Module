@@ -6,6 +6,8 @@ getRuleWithName:
   call: http.post
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/rules"
+    headers:
+      cookie: ${incoming.headers.cookie}
     body:
       rule: ${body.rule}
   result: ruleResult
@@ -20,6 +22,8 @@ getFileLocations:
   call: http.get
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+    headers:
+      cookie: ${incoming.headers.cookie}
   result: fileLocations
 
 getRulesFile:
