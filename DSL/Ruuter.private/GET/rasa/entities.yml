@@ -1,7 +1,7 @@
 getEntities:
   call: http.get
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/domain/_search?size=10000"
+    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/entities/_search?size=10000"
   result: getEntitiesResult
 
 mapEntitiesData:
