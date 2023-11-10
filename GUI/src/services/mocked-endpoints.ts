@@ -2,8 +2,8 @@
 * List of endpoints mocked via ruuter for future implementations
 * */
 export const mockedEndpoints : string[] = [
-    'forms',
-    'slots', 
+    // 'forms',
+    // 'slots', 
     'results',
     'results/1',
     'models',
@@ -16,9 +16,9 @@ export const mockedEndpoints : string[] = [
     'cs-get-messages-by-chat-id',
     'cs-get-messages-by-chat-id/1',
     'cs-get-all-ended-chats',
-    'intents', 
-    'responses',
-    'entities',
-    'rules',
-    'stories',
+    // 'intents', 
+    // 'responses',
+    // 'entities',
+    // 'rules',
+    // 'stories',
 ];
