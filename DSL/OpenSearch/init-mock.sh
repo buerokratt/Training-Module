@@ -51,3 +51,7 @@ curl -L -X POST 'http://localhost:9200/_scripts/regex-with-name' -H 'Content-Typ
 #Examples entities
 curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/examples-entities" -ku admin:admin --data-binary "@fieldMappings/examples-entities.json"
 curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/examples-entities/_bulk" -ku admin:admin --data-binary "@mock/examples-entities.json"
+
+#Slots
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/slots" -ku admin:admin --data-binary "@fieldMappings/slots.json"
+curl -H "Content-Type: application/x-ndjson" -X PUT "http://localhost:9200/slots/_bulk" -ku admin:admin --data-binary "@mock/slots.json"
