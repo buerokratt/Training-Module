@@ -1,16 +1,13 @@
 assign_values:
   assign:
     intentName: ${incoming.body.intentName.replaceAll(/\s+/g, "_")}
-    # TODO: Revert back
-    # cookie: ${incoming.headers.cookie}
-    cookie: "Cookie"
 
 extract_token_data:
   call: http.post
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/mock-tim-custom-jwt-userinfo"
     headers:
-      cookie: ${cookie}
+      cookie: ${incoming.headers.cookie}
     body:
       cookieName: "customJwtCookie"
   result: jwtResult
@@ -26,7 +23,7 @@ get_domain_file:
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/domain-file"
     headers:
-      cookie: ${cookie}
+      cookie: ${incoming.headers.cookie}
   result: domainData
 
 validate_intent_exists:
@@ -39,6 +36,8 @@ get_file_locations:
   call: http.get
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+    headers:
+      cookie: ${incoming.headers.cookie}
   result: fileLocations
 
 get_existing_intent_file:

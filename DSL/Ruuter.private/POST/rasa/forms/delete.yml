@@ -8,7 +8,7 @@ getDomainFile:
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/domain-file"
     headers:
-      cookie: ${cookie}
+      cookie: ${incoming.headers.cookie}
   result: domainData
 
 validateForms:
@@ -22,7 +22,7 @@ ruleForms:
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/rules/search"
     headers:
-      cookie: ${cookie}
+      cookie: ${incoming.headers.cookie}
     body:
       form: ${parameters.form_name}
       type: "forms"
@@ -39,7 +39,7 @@ storiesForms:
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/stories/search"
     headers:
-      cookie: ${cookie}
+      cookie: ${incoming.headers.cookie}
     body:
       form: ${parameters.form_name}
       type: "forms"
@@ -79,6 +79,8 @@ getFileLocations:
   call: http.get
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+    headers:
+      cookie: ${incoming.headers.cookie}
   result: fileLocations
 
 saveDomainFile:

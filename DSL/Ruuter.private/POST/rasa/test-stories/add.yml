@@ -8,7 +8,7 @@ getTestStoriesWithName:
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/test-stories"
     headers:
-      cookie: ${cookie}
+      cookie: ${incoming.headers.cookie}
     body:
       story: ${parameters.story}
   result: testStoriesResult
@@ -23,6 +23,8 @@ getFileLocations:
   call: http.get
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+    headers:
+      cookie: ${incoming.headers.cookie}
   result: fileLocations
 
 getStoriesFile:

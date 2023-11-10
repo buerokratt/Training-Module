@@ -23,7 +23,7 @@ ruleResponses:
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/rules/search"
     headers:
-      cookie: ${cookie}
+      cookie: ${incoming.headers.cookie}
     body:
       response: ${params.response_name}
       type: "responses"
@@ -34,7 +34,7 @@ storiesResponses:
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/stories/search"
     headers:
-      cookie: ${cookie}
+      cookie: ${incoming.headers.cookie}
     body:
       response: ${params.response_name}
       type: "responses"
