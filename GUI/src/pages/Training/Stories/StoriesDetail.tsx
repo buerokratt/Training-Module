@@ -149,7 +149,6 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
 
   const handleNodeDelete = (id: string) => {
     setDeleteId(id)
-    setDeleteConfirmation(true)
   };
 
   const handleNodeDeleteConfimed = () => {
@@ -157,7 +156,6 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
       const deleteIndex = prevNodes.findIndex((n) => n.id === deleteId);
       return prevNodes.slice(0, deleteIndex);
     });
-    setDeleteConfirmation(false)
     setDeleteId('');
   }
 
@@ -470,13 +468,13 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
         </div>
       </div>
 
-      {deleteId && deleteConfirmation && (
+      {deleteId && (
         <Dialog
           title={t('training.responses.deleteStory')}
-          onClose={() => setDeleteConfirmation(false)}
+          onClose={() => setDeleteId('')}
           footer={
             <>
-              <Button appearance='secondary' onClick={() => setDeleteConfirmation(false)}>{t('global.no')}</Button>
+              <Button appearance='secondary' onClick={() => setDeleteId('')}>{t('global.no')}</Button>
               <Button
                 appearance='error'
                 onClick={handleNodeDeleteConfimed}
