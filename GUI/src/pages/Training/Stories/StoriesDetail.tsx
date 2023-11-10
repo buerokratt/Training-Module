@@ -63,6 +63,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   const queryClient = useQueryClient();
   const [deleteConfirmation, setDeleteConfirmation] = useState(false);
   const [restartConfirmation, setRestartConfirmation] = useState(false);
+  const [deleteId, setDeleteId] = useState('');
   const [editableTitle, setEditableTitle] = useState<string | null>(null);
   const { data: story } = useQuery<Story>({
     queryKey: [`stories/${id}`],
@@ -147,11 +148,18 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   const onConnect = useCallback((params: Connection) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
 
   const handleNodeDelete = (id: string) => {
+    setDeleteId(id)
+    setDeleteConfirmation(true)
+  };
+
+  const handleNodeDeleteConfimed = () => {
     setNodes((prevNodes) => {
-      const deleteIndex = prevNodes.findIndex((n) => n.id === id);
+      const deleteIndex = prevNodes.findIndex((n) => n.id === deleteId);
       return prevNodes.slice(0, deleteIndex);
     });
-  };
+    setDeleteConfirmation(false)
+    setDeleteId('');
+  }
 
   const handleNodeAdd = (
     {
@@ -461,6 +469,26 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
           </Track>
         </div>
       </div>
+
+      {deleteId && deleteConfirmation && (
+        <Dialog
+          title={t('training.responses.deleteStory')}
+          onClose={() => setDeleteConfirmation(false)}
+          footer={
+            <>
+              <Button appearance='secondary' onClick={() => setDeleteConfirmation(false)}>{t('global.no')}</Button>
+              <Button
+                appearance='error'
+                onClick={handleNodeDeleteConfimed}
+              >
+                {t('global.yes')}
+              </Button>
+            </>
+          }
+        >
+          <p>{t('global.removeValidation')}</p>
+        </Dialog>
+      )}
 
       {id && deleteConfirmation && (
         <Dialog
