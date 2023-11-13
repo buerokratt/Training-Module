@@ -5,7 +5,6 @@ export const generateRasaStoryData = (
   mode: string,
   nodes: Node<any, string | undefined>[]
 ) => {
-  console.log(nodes);
 
   const steps = nodes.map(({ data: { type, label, payload, checkpoint }}) => {
     switch (type) {
@@ -17,9 +16,7 @@ export const generateRasaStoryData = (
         case 'intentNode':
             return {
                 intent: label,
-                action: `utter_${label}`,
-                entities: node.entities || [],
-                slots: node.slots || [],
+                entities: (payload.entities || payload || []).map((x: any) => ({ [x.label]: x.value })),
             };
         case 'responseNode':
             return { action: label };

@@ -25,7 +25,7 @@ const IntentNode: FC<NodeDataProps> = ({ data }) => {
   });
   const { control, watch } = useForm<{ entities: { label: string; value: string }[] }>({
     defaultValues: {
-      entities: [
+      entities: data.payload.entities || [
         { label: t('training.intents.entity') || '', value: '' },
       ],
     },
