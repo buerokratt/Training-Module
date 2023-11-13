@@ -296,20 +296,20 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
             </Collapsible>
           )}
 
-          {responses && (
+          {responses && Array.isArray(responses) && (
             <Collapsible title={t('training.responses.title')}>
               <Track direction='vertical' align='stretch' gap={4}>
-                {Object.keys(responses).map((response, index) => (
+                {responses.map((response, index) => (
                   <button
-                    key={`${responses[response].text}-${index}`}
+                    key={response.name}
                     onClick={() => handleNodeAdd({
-                      label: response,
+                      label: response.name,
                       type: 'responseNode',
                       className: 'response',
                     })}
                   >
                     <Box color='yellow'>
-                      {response}
+                      {response.name}
                     </Box>
                   </button>
                 ))}
