@@ -31,6 +31,7 @@ import { addStory, deleteStory, editStory } from 'services/stories';
 import CustomNode from './CustomNode';
 import './StoriesDetail.scss';
 import useDocumentEscapeListener from '../../../hooks/useDocumentEscapeListener';
+import { generateRasaStoryData } from '../../../services/rasa';
 
 const GRID_UNIT = 16;
 
@@ -180,17 +181,21 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
         },
       }]);
 
+      const id = String(prevNodes.length + 1);
       return [
         ...prevNodes,
         {
-          id: String(prevNodes.length + 1),
+          id,
           position: { x: (12 * GRID_UNIT) - 160 + 32, y: newNodeY },
           type: 'customNode',
           data: {
+            id,
             label,
             onDelete: handleNodeDelete,
             type,
             checkpoint,
+            onPayloadChange: handleNodePayloadChange,
+            payload: {},
           },
           className,
         },
@@ -227,14 +232,12 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
       ];
     });
 
+    const data = generateRasaStoryData(editableTitle, mode, nodes);
     if (mode === 'new') {
-      // TODO: provide correct data for new story
-      addStoryMutation.mutate({ story: 'test' });
+      addStoryMutation.mutate(data);
     }
-    if (mode === 'edit') {
-      if (!id) return;
-      // TODO: provide correct data for editable story
-      editStoryMutation.mutate({ id, data: { story: 'test' } });
+    if (mode === 'edit' && id) {
+      editStoryMutation.mutate({ id, ...data });
     }
   };
 
@@ -242,6 +245,17 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     setNodes(initialNodes);
     setRestartConfirmation(false);
   };
+
+  const handleNodePayloadChange = (id: string, payload: any) => {
+    setNodes((prevNodes) => { 
+      return prevNodes.map((node) => {
+        if(node.id !== id) {
+          return node;
+        }
+        return {...node, data: { ...node.data, payload }};
+      })
+    });
+  }
 
   return (
     <Track gap={16} align='left' style={{ margin: '-16px' }}>
@@ -417,11 +431,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
             {editableTitle ? (
               <Button
                 appearance='text'
-                onClick={() =>
-                  mode === 'new'
-                    ? addStoryMutation.mutate({ story: 'test' })
-                    : id ? editStoryMutation.mutate({ id, data: { story: 'test' } }) : undefined
-                }
+                onClick={handleGraphSave}
               >
                 <Icon icon={<MdOutlineSave />} />
                 {t('global.save')}
