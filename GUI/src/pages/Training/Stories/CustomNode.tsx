@@ -13,9 +13,12 @@ import ConditionNode from './ConditionNode';
 
 type NodeDataProps = {
   data: {
+    id: string;
     label: string;
     onDelete: (id: string) => void;
     type: string;
+    onPayloadChange: (id: string, payload: any) => void;
+    payload: any,
   }
 }
 

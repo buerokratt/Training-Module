@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 
@@ -6,17 +6,25 @@ import { FormInput, Track } from 'components';
 
 type NodeDataProps = {
   data: {
+    id: string;
     label: string;
     onDelete: (id: string) => void;
     type: string;
     checkpoint?: boolean;
+    onPayloadChange: (id: string, data: any) => void;
+    payload: any;
   }
 }
 
 const ActionNode: FC<NodeDataProps> = ({ data }) => {
   const { t } = useTranslation();
   const { checkpoint } = data;
-  const { register } = useForm();
+  const { register, watch } = useForm();
+
+  useEffect(() => {
+    const { unsubscribe } = watch((value) => data.onPayloadChange(data.id, value));
+    return () => unsubscribe();
+  }, [watch]);
 
   return (
     <>

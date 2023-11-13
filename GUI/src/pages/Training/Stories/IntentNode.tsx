@@ -1,4 +1,4 @@
-import { FC, memo } from 'react';
+import { FC, memo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import { useQuery } from '@tanstack/react-query';
@@ -9,9 +9,12 @@ import { Entity } from 'types/entity';
 
 type NodeDataProps = {
   data: {
+    id: string;
     label: string;
     onDelete: (id: string) => void;
     type: string;
+    onPayloadChange: (id: string, data: any) => void;
+    payload: any;
   }
 }
 
@@ -20,7 +23,7 @@ const IntentNode: FC<NodeDataProps> = ({ data }) => {
   const { data: entities } = useQuery<Entity[]>({
     queryKey: ['entities'],
   });
-  const { control } = useForm<{ entities: { label: string; value: string }[] }>({
+  const { control, watch } = useForm<{ entities: { label: string; value: string }[] }>({
     defaultValues: {
       entities: [
         { label: t('training.intents.entity') || '', value: '' },
@@ -31,6 +34,14 @@ const IntentNode: FC<NodeDataProps> = ({ data }) => {
     control,
     name: 'entities',
   });
+
+  useEffect(() => {
+    const { unsubscribe } = watch((value) => {
+      const entities = value.entities?.map(x => x?.value).filter(Boolean);
+      data.onPayloadChange(data.id, entities);
+    });
+    return () => unsubscribe();
+  }, [watch]);
 
   return (
     <>
