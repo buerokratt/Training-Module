@@ -12,6 +12,7 @@ import ReactFlow, {
   Background,
   Connection,
   MarkerType,
+  MiniMap,
   Node,
   useEdgesState,
   useNodesState,
@@ -459,10 +460,10 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
             snapToGrid
             snapGrid={[GRID_UNIT, GRID_UNIT]}
             defaultViewport={{ x: 0, y: 0, zoom: 0 }}
-            minZoom={1}
-            maxZoom={1}
+            panOnScroll
             nodeTypes={nodeTypes}
           >
+            <MiniMap />
             <Background color='#D2D3D8' gap={16} lineWidth={2} />
           </ReactFlow>
         </div>
