@@ -10,8 +10,13 @@ export const generateRasaStoryData = (
     switch (type) {
         case 'conditionNode':
             return { 
-              intent: 'condition',
-              action: 'action'
+              condition: (payload.conditions || payload || []).map((x: any) => {
+                if(x.active_loop)
+                  return { active_loop: x.active_loop.label }
+                if(x.slot)
+                  return { slot_was_set: { [x.slot.label]: x.value } }
+                return null;
+              }).filter(Boolean),
             };
         case 'intentNode':
             return {
