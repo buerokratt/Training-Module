@@ -73,7 +73,7 @@ saveStoriesFile:
 updateOpenSearch:
   call: http.post
   args:
-    url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/bulk/stories/story"
+    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/bulk/stories/story"
     body:
       input: ${storiesYaml.response.body.json}
   result: updateSearchResult
