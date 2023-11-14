@@ -13,10 +13,19 @@ type NodeDataProps = {
     label: string;
     onDelete: (id: string) => void;
     type: string;
-    onPayloadChange: (id: string, data: any) => void;
-    payload: any;
+    onPayloadChange: (id: string, data: EntityPayload) => void;
+    payload: IntentPayload;
   }
 }
+
+type IntentPayload = {
+  entities?: ({
+    label: string;
+    value: string;
+  } | undefined)[] | undefined;
+}
+
+type EntityPayload = (string | undefined)[] | undefined;
 
 const IntentNode: FC<NodeDataProps> = ({ data }) => {
   const { t } = useTranslation();

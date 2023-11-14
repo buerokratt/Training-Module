@@ -13,17 +13,17 @@ type NodeDataProps = {
     label: string;
     onDelete: (id: string) => void;
     type: string;
-    onPayloadChange: (id: string, data: any) => void;
-    payload: any;
+    onPayloadChange: (id: string, data: Conditions) => void;
+    payload: Conditions;
   };
 };
 
 type Conditions = {
-  conditions: {
-    active_loop?: string;
-    slot?: string;
-    value?: string;
-  }[];
+  conditions?: ({
+    active_loop?: string | undefined;
+    slot?: string | undefined;
+    value?: string | undefined;
+  }| undefined)[] | undefined;
 };
 
 const ConditionNode: FC<NodeDataProps> = ({ data }) => {

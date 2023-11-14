@@ -10,9 +10,13 @@ type NodeDataProps = {
     label: string;
     onDelete: (id: string) => void;
     type: string;
-    onPayloadChange: (id: string, data: any) => void;
-    payload: any;
+    onPayloadChange: (id: string, data: SlotPayload) => void;
+    payload: SlotPayload;
   }
+}
+
+type SlotPayload = {
+  value?: string;
 }
 
 const SlotNode: FC<NodeDataProps> = ({ data }) => {

@@ -11,9 +11,13 @@ type NodeDataProps = {
     onDelete: (id: string) => void;
     type: string;
     checkpoint?: boolean;
-    onPayloadChange: (id: string, data: any) => void;
-    payload: any;
+    onPayloadChange: (id: string, data: ActionPayload) => void;
+    payload: ActionPayload;
   }
+}
+
+type ActionPayload = { 
+  value?: string;
 }
 
 const ActionNode: FC<NodeDataProps> = ({ data }) => {
@@ -33,7 +37,11 @@ const ActionNode: FC<NodeDataProps> = ({ data }) => {
           {'label' in data && <p><strong>{data.label}</strong></p>}
           <Track style={{ width: '100%' }}>
             <div style={{ flex: 1 }}>
-              <FormInput {...register('value')} label={t('training.value')} />
+              <FormInput
+                {...register('value')}
+                label={t('training.value')}
+                defaultValue={data.payload.value || ''}
+              />
             </div>
           </Track>
         </>

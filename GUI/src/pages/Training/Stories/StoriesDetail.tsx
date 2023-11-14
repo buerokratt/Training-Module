@@ -460,6 +460,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
             snapToGrid
             snapGrid={[GRID_UNIT, GRID_UNIT]}
             defaultViewport={{ x: 0, y: 0, zoom: 0 }}
+            zoomOnDoubleClick
             panOnScroll
             nodeTypes={nodeTypes}
           >
