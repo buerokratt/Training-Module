@@ -1,0 +1,29 @@
+assign_values:
+  assign:
+    params: ${incoming.body}
+
+getStoriesWithName:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/stories/_search/template"
+    body:
+      id: "story-with-name"
+      params: ${params}
+  result: getStoriesResult
+
+mapStoriesData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-story-with-name"
+    body:
+      hits: ${getStoriesResult.response.body.hits.hits}
+  result: storiesData
+  next: returnSuccess
+
+returnSuccess:
+  return: ${storiesData.response.body.data}
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
+  next: end
