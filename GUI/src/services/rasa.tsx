@@ -1,12 +1,7 @@
 import { Node } from 'reactflow';
 
-export const generateRasaStoryData = (
-  editableTitle: string | null,
-  mode: string,
-  nodes: Node<any, string | undefined>[]
-) => {
-
-  const steps = nodes.map(({ data: { type, label, payload, checkpoint }}) => {
+export const generateStorySteps = (nodes: Node<any, string | undefined>[]) => 
+  nodes.map(({ data: { type, label, payload, checkpoint }}) => {
     switch (type) {
         case 'conditionNode':
             return { 
@@ -44,9 +39,3 @@ export const generateRasaStoryData = (
             return null;
     }
   }).filter(Boolean);
-
-  return {
-      story: editableTitle || (mode === 'new' ? 'new_story' : 'edit_story'),
-      steps,
-  };
-};

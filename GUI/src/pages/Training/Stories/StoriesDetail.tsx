@@ -32,7 +32,7 @@ import { addStory, deleteStory, editStory } from 'services/stories';
 import CustomNode from './CustomNode';
 import './StoriesDetail.scss';
 import useDocumentEscapeListener from '../../../hooks/useDocumentEscapeListener';
-import { generateRasaStoryData } from '../../../services/rasa';
+import { generateStorySteps } from '../../../services/rasa';
 
 const GRID_UNIT = 16;
 
@@ -68,7 +68,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   const [deleteId, setDeleteId] = useState('');
   const [editableTitle, setEditableTitle] = useState<string | null>(null);
   const { data: story } = useQuery<Story>({
-    queryKey: [`stories/${id}`],
+    queryKey: ['story-by-name', id],
     enabled: !!id,
   });
   const { data: intents } = useQuery<Intent[]>({
@@ -204,7 +204,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     });
   };
 
-  const handleGraphSave = () => {
+  const addOutputNode = () => {
     setNodes((prevNodes) => {
       const prevNode = prevNodes[prevNodes.length - 1];
       if (prevNode.type === 'output') return prevNodes;
@@ -232,13 +232,28 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
         },
       ];
     });
+  }
 
-    const data = generateRasaStoryData(editableTitle, mode, nodes);
+  const handleGraphSave = () => {
+    const isRename = editableTitle && editableTitle !== id;
+    if(!isRename) {
+      addOutputNode();
+    }
+
+    const data = {
+      story: editableTitle || id,
+      steps: generateStorySteps(nodes),
+    };
+    
     if (mode === 'new') {
       addStoryMutation.mutate(data);
     }
     if (mode === 'edit' && id) {
-      editStoryMutation.mutate({ id, ...data });
+      editStoryMutation.mutate({id, data});
+    }
+
+    if(isRename){
+      navigate(`/training/stories/${editableTitle}`, { replace: true });
     }
   };
 
@@ -427,7 +442,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
                 hideLabel
               />
             ) : (
-              <h2 className='h3'>{mode === 'new' ? t('global.title') : 'Cursus Nibh Ullamcorper'}</h2>
+              <h2 className='h3'>{mode === 'new' ? t('global.title') : (story?.story || 'Cursus Nibh Ullamcorper')}</h2>
             )}
             {editableTitle ? (
               <Button
@@ -441,7 +456,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
               <Button
                 appearance='text'
                 onClick={() =>
-                  setEditableTitle(mode === 'new' ? t('global.title') : 'Cursus Nibh Ullamcorper')
+                  setEditableTitle(mode === 'new' ? t('global.title') : (story?.story || 'Cursus Nibh Ullamcorper'))
                 }
               >
                 <Icon icon={<MdOutlineModeEditOutline />} />
@@ -459,7 +474,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
             onConnect={onConnect}
             snapToGrid
             snapGrid={[GRID_UNIT, GRID_UNIT]}
-            defaultViewport={{ x: 0, y: 0, zoom: 0 }}
+            defaultViewport={{ x: 0, y: 0, zoom: 1 }}
             zoomOnDoubleClick
             panOnScroll
             nodeTypes={nodeTypes}
@@ -475,7 +490,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
             {mode === 'edit' && (
               <Button appearance='error' onClick={() => setDeleteConfirmation(true)}>{t('global.delete')}</Button>
             )}
-            <Button onClick={() => handleGraphSave()}>{t('global.save')}</Button>
+            <Button onClick={handleGraphSave}>{t('global.save')}</Button>
           </Track>
         </div>
       </div>
