@@ -69,14 +69,14 @@ saveStoriesFile:
       file_path: ${fileLocations.response.body.response.stories_location}
       content: ${storiesYaml.response.body.json}
   result: fileResult
-  next: updateOpenSearch
 
 updateOpenSearch:
   call: http.post
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/bulk/stories/story"
+    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/stories/_doc"
     body:
-      input: ${storiesYaml.response.body.json}
+      story: ${body.story}
+      steps: ${body.steps}
   result: updateSearchResult
   next: returnSuccess
 

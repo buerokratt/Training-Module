@@ -81,14 +81,20 @@ saveStoriesFile:
       file_path: ${fileLocations.response.body.response.stories_location}
       content: ${storiesYaml.response.body.json}
   result: fileResult
-  next: updateOpenSearch
 
-updateOpenSearch:
+deleteOldOpenSearchEntry:
+  call: http.delete
+  args:
+    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/stories/_doc/${storiesResult.response.body.response.id}"
+  result: updateSearchResult
+
+addNewOpenSearchEntry:
   call: http.post
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/bulk/stories/story"
+    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/stories/_doc"
     body:
-      input: ${storiesYaml.response.body.json}
+      story: ${storyData.story}
+      steps: ${storyData.steps}
   result: updateSearchResult
   next: returnSuccess
 

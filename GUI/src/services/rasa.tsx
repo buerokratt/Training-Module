@@ -1,6 +1,6 @@
 import { Node } from 'reactflow';
 
-export const generateStorySteps = (nodes: Node<any, string | undefined>[]) => 
+export const generateStoryStepsFromNodes = (nodes: Node[]) => 
   nodes.map(({ data: { type, label, payload, checkpoint }}) => {
     switch (type) {
         case 'conditionNode':
@@ -39,3 +39,70 @@ export const generateStorySteps = (nodes: Node<any, string | undefined>[]) =>
             return null;
     }
   }).filter(Boolean);
+
+export const generateNodesFromStorySteps = (steps) : Node[] => steps?.map((step) => {
+    console.log(step)
+    let type;
+    let label;
+    let payload;
+    let className;
+
+    if (step.condition) {
+      type = 'conditionNode';
+      className = 'condition';
+      payload = {
+        conditions: step?.condition?.map((condition) => {
+          if (condition.active_loop) {
+            return { active_loop: { label: condition.active_loop } };
+          }
+          if (condition.slot_was_set) {
+            const [slotLabel, value] = Object.entries(condition.slot_was_set)[0];
+            return { slot: { label: slotLabel, value } };
+          }
+          return null;
+        }),
+      };
+    } else if (step.intent) {
+      type = 'intentNode';
+      className = 'intent';
+      label = step.intent;
+      payload = {
+        entities: step?.entities?.map((entity) => {
+          const [entityLabel, value] = Object.entries(entity)[0];
+          return { label: entityLabel, value };
+        }),
+      };
+    } else if (step.action) {
+      if (step.active_loop !== undefined) {
+        type = 'formNode';
+        className = 'form';
+        label = step.action;
+        payload = { active_loop: step.active_loop !== null };
+      } else {
+        type = 'responseNode';
+        className = 'response';
+        label = step.action;
+      }
+    } else if (step.slot_was_set) {
+      type = 'slotNode';
+      className = 'slot';
+      const [slotLabel, value] = Object.entries(step.slot_was_set)[0];
+      label = slotLabel;
+      payload = { value };
+    } else if (step.action) {
+      type = 'actionNode';
+      className = 'action';
+      label = step.action;
+      payload = { value: step.action };
+    }
+    else {
+      return null;
+    }
+
+    return {
+      label,
+      type,
+      className,
+      payload,
+    };
+}).filter(Boolean);

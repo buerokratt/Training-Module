@@ -71,11 +71,9 @@ saveStoriesFile:
   next: updateOpenSearch
 
 updateOpenSearch:
-  call: http.post
+  call: http.delete
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/bulk/stories/story"
-    body:
-      input: ${storiesYaml.response.body.json}
+    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/stories/_doc/${storiesResult.response.body.response.id}"
   result: updateSearchResult
   next: returnSuccess
 
