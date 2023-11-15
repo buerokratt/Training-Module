@@ -1,7 +1,7 @@
 getResponses:
   call: http.get
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/domain/_search?size=10000"
+    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/responses/_search?size=10000"
   result: getResponsesResult
 
 mapResponsesData:
@@ -15,6 +15,7 @@ mapResponsesData:
 
 returnSuccess:
   return: ${responsesData.response.body.data.responses}
+  wrapper: false
   next: end
 
 returnUnauthorized:

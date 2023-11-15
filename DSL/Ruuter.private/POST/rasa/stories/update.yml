@@ -1,22 +1,25 @@
 assign_values:
   assign:
-    body: ${incoming.body}
+    id: ${incoming.body.id}
+    storyData: ${incoming.body.data}
 
 getStoriesWithName:
   call: http.post
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/stories"
+    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/story-by-name"
     headers:
       cookie: ${incoming.headers.cookie}
     body:
-      story: ${body.story}
+      story: ${id}
   result: storiesResult
 
 validateStories:
   switch:
-    - condition: ${storiesResult.response.body.response.data.story == body.story}
-      next: getFileLocations
-  next: returnStoryIsMissing
+    - condition: ${storiesResult.response.body.response.story != id}
+      next: returnStoryIsMissing
+    - condition: ${storyData.story != id && storiesResult.response.body.response.story == storyData.story}
+      next: returnStoryExists
+  next: getFileLocations
 
 getFileLocations:
   call: http.get
@@ -42,13 +45,22 @@ convertYamlToJson:
       file: ${storiesFile.response.body.file}
   result: storiesData
 
+deleteStory:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/delete-story"
+    body:
+      stories: ${storiesData.response.body.stories}
+      story_name: ${id}
+  result: deleteStoriesData
+
 mergeStories:
   call: http.post
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/merge"
     body:
-      array1: ${storiesData.response.body.stories}
-      array2: ${[body]}
+      array1: ${deleteStoriesData.response.body.data}
+      array2: ${[storyData]}
       iteratee: "story"
   result: mergedStories
 
@@ -69,14 +81,20 @@ saveStoriesFile:
       file_path: ${fileLocations.response.body.response.stories_location}
       content: ${storiesYaml.response.body.json}
   result: fileResult
-  next: updateOpenSearch
 
-updateOpenSearch:
+deleteOldOpenSearchEntry:
+  call: http.delete
+  args:
+    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/stories/_doc/${storiesResult.response.body.response.id}"
+  result: updateSearchResult
+
+addNewOpenSearchEntry:
   call: http.post
   args:
-    url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/bulk/stories/story"
+    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/stories/_doc"
     body:
-      input: ${storiesYaml.response.body.json}
+      story: ${storyData.story}
+      steps: ${storyData.steps}
   result: updateSearchResult
   next: returnSuccess
 
@@ -86,4 +104,9 @@ returnSuccess:
 
 returnStoryIsMissing:
   return: "Can't find story to update"
+  next: end
+
+returnStoryExists:
+  return: "Story exists"
+  status: 409
   next: end

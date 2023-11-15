@@ -1,8 +1,8 @@
 import {ResponseData} from "./response";
 
 export interface Story {
-  id: string;
-  steps: string | string[]
+  story: string;
+  steps: string | string[];
 }
 export interface Stories {
   response: Story[];

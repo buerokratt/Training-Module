@@ -1,4 +1,4 @@
-import { FC, useCallback, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
@@ -12,6 +12,7 @@ import ReactFlow, {
   Background,
   Connection,
   MarkerType,
+  MiniMap,
   Node,
   useEdgesState,
   useNodesState,
@@ -29,10 +30,11 @@ import { Slot } from 'types/slot';
 import { useToast } from 'hooks/useToast';
 import { addStory, deleteStory, editStory } from 'services/stories';
 import CustomNode from './CustomNode';
-import './StoriesDetail.scss';
 import useDocumentEscapeListener from '../../../hooks/useDocumentEscapeListener';
+import { generateStoryStepsFromNodes, generateNodesFromStorySteps } from 'services/rasa';
+import { GRID_UNIT, generateNewEdge, generateNewNode } from 'services/nodes';
+import './StoriesDetail.scss';
 
-const GRID_UNIT = 16;
 
 const nodeTypes = {
   customNode: CustomNode,
@@ -63,9 +65,17 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   const queryClient = useQueryClient();
   const [deleteConfirmation, setDeleteConfirmation] = useState(false);
   const [restartConfirmation, setRestartConfirmation] = useState(false);
+  const [deleteId, setDeleteId] = useState('');
   const [editableTitle, setEditableTitle] = useState<string | null>(null);
-  const { data: story } = useQuery<Story>({
-    queryKey: [`stories/${id}`],
+  const [story, setStory] = useState<Story | undefined | null>(null);
+
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+
+  const onConnect = useCallback((params: Connection) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
+
+  const { data: storyData } = useQuery<Story>({
+    queryKey: ['story-by-name', id],
     enabled: !!id,
   });
   const { data: intents } = useQuery<Intent[]>({
@@ -82,6 +92,23 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   });
 
   useDocumentEscapeListener(() => setEditableTitle(null));
+
+  useEffect(() => {
+    setStory(storyData ?? story);
+
+    let nodes = [...initialNodes];
+    let edges: any[] = []; 
+
+    generateNodesFromStorySteps(storyData?.steps || story?.steps || [])
+      .forEach((x) => {
+        edges.push(generateNewEdge(nodes, edges));
+        nodes.push(generateNewNode({...x, nodes, handleNodeDelete, handleNodePayloadChange,}));
+      });
+      
+    setNodes(nodes);
+    setEdges(edges);
+
+  }, [storyData]);
 
   const addStoryMutation = useMutation({
     mutationFn: (data: StoryDTO) => addStory(data),
@@ -141,17 +168,17 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     },
   });
 
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-
-  const onConnect = useCallback((params: Connection) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
-
   const handleNodeDelete = (id: string) => {
+    setDeleteId(id)
+  };
+
+  const handleNodeDeleteConfimed = () => {
     setNodes((prevNodes) => {
-      const deleteIndex = prevNodes.findIndex((n) => n.id === id);
+      const deleteIndex = prevNodes.findIndex((n) => n.id === deleteId);
       return prevNodes.slice(0, deleteIndex);
     });
-  };
+    setDeleteId('');
+  }
 
   const handleNodeAdd = (
     {
@@ -159,76 +186,73 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
       type,
       className,
       checkpoint,
-    }: { label: string; type: string, className: string, checkpoint?: boolean }) => {
+      payload,
+    }: { label: string; type: string, className: string, checkpoint?: boolean, payload?: any }) => {
     setNodes((prevNodes) => {
-      const prevNode = prevNodes[prevNodes.length - 1];
-      if (prevNode.type === 'output') return prevNodes;
-      const newNodeY = (prevNode.position.y + (prevNode.height || 0)) + (4 * GRID_UNIT);
+      const prevNodeType = prevNodes[prevNodes.length - 1].type;
+      if (prevNodeType === 'output') return prevNodes;
 
-      setEdges((prevEdges) => [...edges, {
-        id: `edge-${prevEdges.length}`,
-        source: prevNodes[prevNodes.length - 1].id,
-        target: String(prevNodes.length + 1),
-        markerEnd: {
-          type: MarkerType.ArrowClosed,
-        },
-      }]);
+      setEdges((prevEdges) => [...edges, generateNewEdge(prevNodes, prevEdges)]);
 
       return [
         ...prevNodes,
-        {
-          id: String(prevNodes.length + 1),
-          position: { x: (12 * GRID_UNIT) - 160 + 32, y: newNodeY },
-          type: 'customNode',
-          data: {
-            label,
-            onDelete: handleNodeDelete,
-            type,
-            checkpoint,
-          },
+        generateNewNode({
+          label,
+          type,
           className,
-        },
+          checkpoint,
+          payload,
+          handleNodeDelete,
+          handleNodePayloadChange,
+          nodes: prevNodes,
+        }),
       ];
     });
   };
 
-  const handleGraphSave = () => {
+  const addOutputNode = () => {
     setNodes((prevNodes) => {
-      const prevNode = prevNodes[prevNodes.length - 1];
-      if (prevNode.type === 'output') return prevNodes;
-      const newNodeY = (prevNode.position.y + (prevNode.height || 0)) + (4 * GRID_UNIT);
+      const prevNodeType = prevNodes[prevNodes.length - 1].type;
+      if (prevNodeType === 'output') return prevNodes;
 
-      setEdges((prevEdges) => [...edges, {
-        id: `edge-${prevEdges.length}`,
-        source: prevNodes[prevNodes.length - 1].id,
-        target: String(prevNodes.length + 1),
-        markerEnd: {
-          type: MarkerType.ArrowClosed,
-        },
-      }]);
+      setEdges((prevEdges) => [...edges, generateNewEdge(prevNodes, prevEdges)]);
 
       return [
         ...prevNodes,
-        {
-          id: String(prevNodes.length + 1),
-          type: 'output',
-          position: { x: 12 * GRID_UNIT, y: newNodeY },
-          data: {
-            label: <MdOutlineStop />,
-          },
+        generateNewNode({
+          nodeType: 'output',
           className: 'end',
-        },
+          label: <MdOutlineStop />,
+          nodes: prevNodes,
+        }),
       ];
     });
+  }
 
-    if (mode === 'new') {
-      // TODO: provide correct data for new story
-      addStoryMutation.mutate({ story: 'test' });
+  const title = story?.story || t('global.title');
+
+  const handleGraphSave = () => {
+    const isRename = editableTitle && editableTitle !== id;
+    if(!isRename) {
+      addOutputNode();
     }
-    if (mode === 'edit') {
-      if (!id) return;
-      // TODO: provide correct data for editable story
-      editStoryMutation.mutate({ id, data: { story: 'test' } });
+
+    const data = {
+      story: editableTitle || id || title,
+      steps: generateStoryStepsFromNodes(nodes),
+    };
+    
+    if (mode === 'new') {
+      addStoryMutation.mutate(data);
+    }
+    if (mode === 'edit' && id) {
+      editStoryMutation.mutate({id, data});
+    }
+
+    if(isRename){
+      navigate(`/training/stories/${editableTitle}`, { replace: true });
+      setEditableTitle(null);
+      setStory({ steps: story?.steps, story: editableTitle });
     }
   };
 
@@ -236,6 +260,17 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     setNodes(initialNodes);
     setRestartConfirmation(false);
   };
+
+  const handleNodePayloadChange = (id: string, payload: any) => {
+    setNodes((prevNodes) => { 
+      return prevNodes.map((node) => {
+        if(node.id !== id) {
+          return node;
+        }
+        return {...node, data: { ...node.data, payload }};
+      })
+    });
+  }
 
   return (
     <Track gap={16} align='left' style={{ margin: '-16px' }}>
@@ -255,7 +290,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
             </Track>
           </Collapsible>
 
-          {intents && (
+          {intents && Array.isArray(intents) && (
             <Collapsible title={t('training.intents.title')} defaultOpen>
               <Track direction='vertical' align='stretch' gap={4}>
                 {intents.map((intent) =>
@@ -276,20 +311,20 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
             </Collapsible>
           )}
 
-          {responses && (
+          {responses && Array.isArray(responses) && (
             <Collapsible title={t('training.responses.title')}>
               <Track direction='vertical' align='stretch' gap={4}>
-                {Object.keys(responses).map((response, index) => (
+                {responses.map((response, index) => (
                   <button
-                    key={`${responses[response].text}-${index}`}
+                    key={response.name}
                     onClick={() => handleNodeAdd({
-                      label: response,
+                      label: response.name,
                       type: 'responseNode',
                       className: 'response',
                     })}
                   >
                     <Box color='yellow'>
-                      {response}
+                      {response.name}
                     </Box>
                   </button>
                 ))}
@@ -297,7 +332,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
             </Collapsible>
           )}
 
-          {forms && (
+          {forms && Array.isArray(forms) && (
             <Collapsible title={t('training.forms.title')}>
               <Track direction='vertical' align='stretch' gap={4}>
                 {forms.map((form) => (
@@ -318,7 +353,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
             </Collapsible>
           )}
 
-          {slots && (
+          {slots && Array.isArray(slots) && (
             <Collapsible title={t('training.slots.title')}>
               <Track direction='vertical' align='stretch' gap={4}>
                 {slots.map((slot) => (
@@ -406,16 +441,12 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
                 hideLabel
               />
             ) : (
-              <h2 className='h3'>{mode === 'new' ? t('global.title') : 'Cursus Nibh Ullamcorper'}</h2>
+              <h2 className='h3'>{title}</h2>
             )}
             {editableTitle ? (
               <Button
                 appearance='text'
-                onClick={() =>
-                  mode === 'new'
-                    ? addStoryMutation.mutate({ story: 'test' })
-                    : id ? editStoryMutation.mutate({ id, data: { story: 'test' } }) : undefined
-                }
+                onClick={handleGraphSave}
               >
                 <Icon icon={<MdOutlineSave />} />
                 {t('global.save')}
@@ -424,7 +455,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
               <Button
                 appearance='text'
                 onClick={() =>
-                  setEditableTitle(mode === 'new' ? t('global.title') : 'Cursus Nibh Ullamcorper')
+                  setEditableTitle(title)
                 }
               >
                 <Icon icon={<MdOutlineModeEditOutline />} />
@@ -442,11 +473,12 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
             onConnect={onConnect}
             snapToGrid
             snapGrid={[GRID_UNIT, GRID_UNIT]}
-            defaultViewport={{ x: 0, y: 0, zoom: 0 }}
-            minZoom={1}
-            maxZoom={1}
+            defaultViewport={{ x: 0, y: 0, zoom: 1 }}
+            zoomOnDoubleClick
+            panOnScroll
             nodeTypes={nodeTypes}
           >
+            <MiniMap />
             <Background color='#D2D3D8' gap={16} lineWidth={2} />
           </ReactFlow>
         </div>
@@ -457,10 +489,30 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
             {mode === 'edit' && (
               <Button appearance='error' onClick={() => setDeleteConfirmation(true)}>{t('global.delete')}</Button>
             )}
-            <Button onClick={() => handleGraphSave()}>{t('global.save')}</Button>
+            <Button onClick={handleGraphSave}>{t('global.save')}</Button>
           </Track>
         </div>
       </div>
+
+      {deleteId && (
+        <Dialog
+          title={t('training.responses.deleteStory')}
+          onClose={() => setDeleteId('')}
+          footer={
+            <>
+              <Button appearance='secondary' onClick={() => setDeleteId('')}>{t('global.no')}</Button>
+              <Button
+                appearance='error'
+                onClick={handleNodeDeleteConfimed}
+              >
+                {t('global.yes')}
+              </Button>
+            </>
+          }
+        >
+          <p>{t('global.removeValidation')}</p>
+        </Dialog>
+      )}
 
       {id && deleteConfirmation && (
         <Dialog

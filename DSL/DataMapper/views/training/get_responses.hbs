@@ -1,13 +1,25 @@
 {
   "responses": [
     {{#each hits}}
-      {{#if (eq this._id "responses") }}
-        {{#each this._source.responses}}
-          {"name": {{{toJSON @key}}},
-           "response": {{{toJSON this}}}
-          }{{#unless @last}},{{/unless}}
-        {{/each}}
-      {{/if}}
+      {
+        "name": "{{_source.name}}",
+        "response": [
+          {{#each _source.response}}
+            {
+              "text": "{{text}}"{{#if condition}},
+              "condition": [
+                {{#each condition}}
+                  {
+                    "type": "{{type}}",
+                    "name": "{{name}}",
+                    "value": {{#if value}}"{{value}}"{{else}}null{{/if}}
+                  }{{#unless @last}},{{/unless}}
+                {{/each}}
+              ]{{/if}}
+            }{{#unless @last}},{{/unless}}
+          {{/each}}
+        ]
+      }{{#unless @last}},{{/unless}}
     {{/each}}
   ]
 }

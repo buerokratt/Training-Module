@@ -1,4 +1,4 @@
-import { FC, memo } from 'react';
+import { FC, memo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Controller, useForm } from 'react-hook-form';
 
@@ -6,15 +6,27 @@ import { Switch, Track } from 'components';
 
 type NodeDataProps = {
   data: {
+    id: string;
     label: string;
     onDelete: (id: string) => void;
     type: string;
+    onPayloadChange: (id: string, data: FormPayload) => void;
+    payload: FormPayload;
   }
+}
+
+type FormPayload = { 
+  active_loop?: boolean;
 }
 
 const FormNode: FC<NodeDataProps> = ({ data }) => {
   const { t } = useTranslation();
-  const { control } = useForm();
+  const { control, watch } = useForm();
+
+  useEffect(() => {
+    const { unsubscribe } = watch((value) => data.onPayloadChange(data.id, value));
+    return () => unsubscribe();
+  }, [watch]);
 
   return (
     <>
@@ -28,7 +40,8 @@ const FormNode: FC<NodeDataProps> = ({ data }) => {
               <Switch
                 {...field}
                 label='active_loop'
-                defaultChecked={true}
+                defaultChecked={data.payload?.active_loop ?? true}
+                onCheckedChange={(checked) => field.onChange(checked)}
               />
             )}
           />

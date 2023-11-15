@@ -14,5 +14,6 @@ mapIntentsData:
   next: returnSuccess
 
 returnSuccess:
-  return: ${intentsData.response.body}
+  return: ${intentsData.response.body.data.intents}
+  wrapper: false
   next: end

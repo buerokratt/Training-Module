@@ -1,14 +1,12 @@
 {
     "entities": [
     {{#each hits}}
-        {{#if (eq this._id "entities") }}
-            {{#each this._source.entities}}
-                {
-                "id": "{{ this }}",
-                "name": "{{ this }}"
-                }
-                {{#unless @last}},{{/unless}}
-            {{/each}}
+        {{#if (eq this._index "entities") }}
+            {
+              "id": "{{ this._id }}",
+              "name": "{{ this._source.entity }}"
+            }
+            {{#unless @last}},{{/unless}}
         {{/if}}
     {{/each}}
     ]

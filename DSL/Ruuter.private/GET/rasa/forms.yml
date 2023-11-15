@@ -14,7 +14,8 @@ mapFormsData:
   next: returnSuccess
 
 returnSuccess:
-  return: ${formsData.response.body}
+  return: ${formsData.response.body.data.forms}
+  wrapper: false
   next: end
 
 returnUnauthorized:
