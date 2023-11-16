@@ -39,3 +39,21 @@ stories:
   - action: utter_service_car_rent
   - intent: common_hüvasti_jätmine
   - action: utter_common_hüvasti_jätmine
+
+- story: User responds with good mood
+  steps:
+    - intent: greet
+    - action: utter_greet
+    - intent: mood_selected
+      entities:
+        - mood: "good"
+    - action: utter_handle_good_mood
+
+- story: User responds with sad mood
+  steps:
+    - intent: greet
+    - action: utter_greet
+    - intent: mood_selected
+      entities:
+        - mood: "sad"
+    - action: utter_handle_sad_mood

@@ -11,6 +11,8 @@ intents:
   - common_teenus_ilm
   - andmekaitse_küsimused
   - service_car_rent
+  - greet
+  - mood_selected
 
 entities:
   - asukoht
@@ -115,6 +117,19 @@ responses:
           value: null
       text: "Kahjuks ei saanud ma praegu piirkonnast aru ja ei oska ilma kohta midagi öelda. Kuidas saan abiks olla?"
     - text: "#weather; {common_teenus_ilm_asukoht};"
+  
+  utter_ask_mood:
+    - text: "How are you feeling today?"
+      buttons:
+        - title: "Good"
+          payload: "/mood_selected{\"mood\":\"good\"}"
+        - title: "Sad"
+          payload: "/mood_selected{\"mood\":\"sad\"}"
+  utter_handle_good_mood:
+    - text: "I'm happy to hear that!"
+  utter_handle_sad_mood:
+    - text: "I'm sorry to hear that."
+
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true
