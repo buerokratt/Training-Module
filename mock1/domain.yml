@@ -117,7 +117,9 @@ responses:
           value: null
       text: "Kahjuks ei saanud ma praegu piirkonnast aru ja ei oska ilma kohta midagi öelda. Kuidas saan abiks olla?"
     - text: "#weather; {common_teenus_ilm_asukoht};"
-  
+  utter_common_esimene_tervitus:
+    - text: "Tere! Kuidas saan abiks olla?"
+ 
   utter_ask_mood:
     - text: "How are you feeling today?"
       buttons:
@@ -129,7 +131,8 @@ responses:
     - text: "I'm happy to hear that!"
   utter_handle_sad_mood:
     - text: "I'm sorry to hear that."
-
+  utter_greet:
+    - text: "Hey! How are you?"
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true
