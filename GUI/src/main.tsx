@@ -4,8 +4,6 @@ import { BrowserRouter } from 'react-router-dom';
 import {QueryClient, QueryClientProvider, QueryFunction} from '@tanstack/react-query';
 
 import api from 'services/api';
-import apiRuuter from 'services/temp-api';
-
 import App from './App';
 import { ToastProvider } from 'context/ToastContext';
 import 'styles/main.scss';
@@ -13,30 +11,20 @@ import '../i18n';
 import auth from "./services/auth";
 import apiDevV2 from "./services/api-dev-v2";
 import apiTraining from "./services/training-api";
-import apigeneric from "./services/apigeneric";
+import apiGeneric from "./services/apigeneric";
 import {mockedEndpoints} from "./services/mocked-endpoints";
 import apiDev from "./services/api-dev";
 
 const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
-  let apiInstance;
 
-
-  // Temporary solution to let some API requests use Ruuter instead of MSW
-  // Add keywords to the array to make the request go into Ruuter's endpoint
-  // Implemented endpoints must be removed from mockedEnpoints array
-  const keywords = ['intent', 'intents', 'entities', 'in-model', 'responses','regex','regexes','stories','rules', 'slots', 'forms', 'story', 'story-by-name'];
-
-  if(keywords.some(keyword => (queryKey[0] as string).startsWith(keyword))) {
-    apiInstance = apiRuuter;
-  } else {
-    apiInstance = api;
-  }
-  if(import.meta.env.REACT_APP_LOCAL === 'true' && queryKey.includes('prod')) {
-      const { data } = await apigeneric.get(queryKey[0] as string);
+  if (import.meta.env.REACT_APP_LOCAL === 'true' && queryKey.includes('prod')) {
+      const { data } = await apiGeneric.get(queryKey[0] as string);
+  if (import.meta.env.REACT_APP_LOCAL === 'true' && queryKey.includes('prod')) {
+      const { data } = await apiGeneric.get(queryKey[0] as string);
       return data?.response;
   }
   if (mockedEndpoints.some(endpoint => (queryKey[0] as string).startsWith(endpoint))) {
-    const { data } = await apigeneric.get(queryKey[0] as string);
+    const { data } = await apiGeneric.get(queryKey[0] as string);
     return data?.response;
   }
   if (queryKey.includes('user-profile-settings')) {
@@ -68,18 +56,18 @@ const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
       "regex": queryKey[1],
       "examples": true
     };
-    const { data } = await apiInstance.post(queryKey[0] as string, request)
+    const { data } = await api.post(queryKey[0] as string, request)
     return data.response;
   }
   if(queryKey.includes('story-by-name')) {
     const request = {
       "story": queryKey[1]
     };
-    const { data } = await apiInstance.post(queryKey[0] as string, request)
+    const { data } = await api.post(queryKey[0] as string, request)
     return data.response;
   }
 
-  const { data } = await apiInstance.get(queryKey[0] as string);
+  const { data } = await api.get(queryKey[0] as string);
   if(queryKey.includes('entities')) {
     return data.response;
   }
