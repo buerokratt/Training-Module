@@ -1,0 +1,26 @@
+getData:
+  call: reflect.mock
+  args:
+    response:
+      data:
+        - text: "This is the first response."
+          condition:
+            - type: "ConditionType1"
+              name: "ConditionName1"
+              value: null
+            - type: "ConditionType2"
+              name: "ConditionName2"
+              value: null
+        - text: "This is the second response."
+          condition:
+            - type: "ConditionType3"
+              name: "ConditionName3"
+              value: null
+        - text: "Another response without conditions."
+        - text: "Another response 2 without conditions."
+
+  result: reflected_request
+  next: returnData
+
+returnData:
+  return: ${reflected_request.response.body.data}

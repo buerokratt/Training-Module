@@ -1,0 +1,41 @@
+getData:
+  call: reflect.mock
+  args:
+    response:
+      data:
+        - id: 1
+          intent: "Greeting"
+          description: "A friendly greeting"
+          inModel: true
+          modifiedAt: "2023-11-05"
+          examplesCount: 5
+          examples:
+            - "Hello!"
+            - "Hi there!"
+            - "Greetings!"
+            - "Good day!"
+        - id: 2
+          intent: "Farewell"
+          description: "A friendly greeting"
+          inModel: true
+          modifiedAt: "2023-11-05"
+          examplesCount: 3
+          examples:
+            - "Goodbye"
+            - "Farewell"
+            - "See you later"
+        - id: 3
+          intent: "Thanksgiving"
+          description: "Expressing gratitude"
+          inModel: true
+          modifiedAt: "2023-11-05"
+          examplesCount: 3
+          examples:
+            - "Thank you!"
+            - "I appreciate it."
+            - "Grateful for your help."
+  result: reflected_request
+  next: returnData
+
+returnData:
+  return: ${reflected_request.response.body.data}

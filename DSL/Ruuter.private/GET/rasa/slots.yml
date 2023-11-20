@@ -14,7 +14,8 @@ mapSlotsData:
   next: returnSuccess
 
 returnSuccess:
-  return: ${slotsData.response.body}
+  return: ${slotsData.response.body.data.slots}
+  wrapper: false
   next: end
 
 returnUnauthorized:

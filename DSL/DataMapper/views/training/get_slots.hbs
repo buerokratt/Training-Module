@@ -1,7 +1,10 @@
 {
   "slots": [
     {{#each hits}}
-          "{{_source.slot}}"
+      {
+        "id": "{{_source._id}}",
+        "name": "{{_source.slot}}"
+      }
       {{#unless @last}},{{/unless}}
     {{/each}}
   ]

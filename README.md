@@ -37,6 +37,20 @@ Current solution uses the module from packed file. This means that when building
 COPY ./exirain-header-0.0.21.tgz .
 ```
 
+
+### DMapper issue
+- To build DataMapper docker image on Apple silicon processors change its [Dockerfile](/DSL/DataMapper/Dockerfile) as following:    
+
+```
+FROM node:19-alpine
+
+RUN apk add --no-cache chromium
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+
+....
+```
+
 # Testing
 
 ## Bürokratt Play
@@ -54,3 +68,4 @@ curl -X POST -H "Content-Type: application/json" -d '{
   "login": "EE30303039914",
   "password": ""
 }' http://localhost:8085/login-user
+```

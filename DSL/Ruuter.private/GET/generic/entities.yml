@@ -1,0 +1,31 @@
+getData:
+  call: reflect.mock
+  args:
+    response:
+      data:
+        - id: 1
+          name: "Person"
+          relatedIntents: 
+            - "Greet"
+            - "Introduce"
+        - id: 2
+          name: "Location"
+          relatedIntents:
+            - "FindLocation"
+            - "Navigate"
+        - id: 3
+          name: "Event"
+          relatedIntents:
+            - "ScheduleEvent"
+            - "CancelEvent"
+        - id: 4
+          name: "Animal"
+          relatedIntents:
+            - "ScheduleEvent"
+            - "CancelEvent"
+
+  result: reflected_request
+  next: returnData
+
+returnData:
+  return: ${reflected_request.response.body.data}

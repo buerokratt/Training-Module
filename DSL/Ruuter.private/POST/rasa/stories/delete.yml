@@ -1,20 +1,20 @@
 assign_values:
   assign:
-    story: ${incoming.body.story}
+    body: ${incoming.body}
 
 getStoriesWithName:
   call: http.post
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/stories"
+    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/story-by-name"
     headers:
       cookie: ${incoming.headers.cookie}
     body:
-      story: ${story}
+      story: ${body.story}
   result: storiesResult
 
 validateStories:
   switch:
-    - condition: ${storiesResult.response.body.response.data.story == story}
+    - condition: ${storiesResult.response.body.response.story == body.story}
       next: getFileLocations
   next: returnStoryIsMissing
 
@@ -48,7 +48,7 @@ deleteStory:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/delete-story"
     body:
       stories: ${storiesData.response.body.stories}
-      story_name: ${story}
+      story_name: ${body.story}
   result: deleteStoriesData
 
 convertJsonToYaml:
@@ -71,11 +71,9 @@ saveStoriesFile:
   next: updateOpenSearch
 
 updateOpenSearch:
-  call: http.post
+  call: http.delete
   args:
-    url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/bulk/stories/story"
-    body:
-      input: ${storiesYaml.response.body.json}
+    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/stories/_doc/${storiesResult.response.body.response.id}"
   result: updateSearchResult
   next: returnSuccess
 

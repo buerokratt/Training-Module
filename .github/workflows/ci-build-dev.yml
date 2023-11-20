@@ -22,5 +22,5 @@ jobs:
       - name: Setup and run containers
         id: setup-and-run-containers
         run: |
-          ssh ubuntu@${{ secrets.SERVER_IP }} 'cd /opt/etapp2/uptodate/PIPELINE && python3 Training-Module.py'
+          ssh ubuntu@${{ secrets.SERVER_IP }} 'cd /opt/etapp2/uptodate/PIPELINE && python3 byk-train.py'
 

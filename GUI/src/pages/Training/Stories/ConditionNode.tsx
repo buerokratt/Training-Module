@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
@@ -9,18 +9,21 @@ import { MdOutlineDelete } from 'react-icons/md';
 
 type NodeDataProps = {
   data: {
+    id: string;
     label: string;
     onDelete: (id: string) => void;
     type: string;
+    onPayloadChange: (id: string, data: Conditions) => void;
+    payload: Conditions;
   };
 };
 
 type Conditions = {
-  conditions: {
-    active_loop?: string;
-    slot?: string;
-    value?: string;
-  }[];
+  conditions?: ({
+    active_loop?: string | undefined;
+    slot?: string | undefined;
+    value?: string | undefined;
+  }| undefined)[] | undefined;
 };
 
 const ConditionNode: FC<NodeDataProps> = ({ data }) => {
@@ -28,7 +31,7 @@ const ConditionNode: FC<NodeDataProps> = ({ data }) => {
   const { data: forms } = useQuery<Form[]>({
     queryKey: ['forms'],
   });
-  const { control } = useForm<Conditions>({
+  const { control, watch } = useForm<Conditions>({
     defaultValues: {
       conditions: [{ active_loop: '' }, { slot: '', value: 'null' }],
     },
@@ -37,6 +40,11 @@ const ConditionNode: FC<NodeDataProps> = ({ data }) => {
     control,
     name: 'conditions',
   });
+
+  useEffect(() => {
+    const { unsubscribe } = watch((value) => data.onPayloadChange(data.id, value));
+    return () => unsubscribe();
+  }, [watch]);
 
   return (
     <>

@@ -73,7 +73,7 @@ saveRulesFile:
 updateOpenSearch:
   call: http.post
   args:
-    url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/bulk/rules/rule"
+    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/bulk/rules/rule"
     body:
       input: ${rulesYaml.response.body.json}
   result: updateSearchResult
