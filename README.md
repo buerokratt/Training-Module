@@ -30,11 +30,11 @@ Ready to go: **docker-compose up -d**
 The external header component and its version is defined in the package.json file located inside GUI folder.
 That line must be updated when header version or location changes.
 ```  
- "@exirain/header": "file:exirain-header-0.0.21.tgz"
+ "@exirain/header": "file:exirain-header-0.0.28.tgz"
 ```
 Current solution uses the module from packed file. This means that when building docker image, a line to the docker script needs to be added for copying the file.
 ``` 
-COPY ./exirain-header-0.0.21.tgz .
+COPY ./exirain-header-0.0.28.tgz .
 ```
 
 
