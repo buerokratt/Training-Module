@@ -19,9 +19,9 @@ getIntentList:
 
 validateIntentExists:
   switch:
-    - condition: ${!intentList.response.body.response.data.intents}
+    - condition: ${!intentList.response.body}
       next: returnIntentExists
-    - condition: ${intentList.response.body.response.data.intents.includes(intent)}
+    - condition: ${intentList.response.body.includes(intent)}
       next: returnIntentExists
   next: getFileLocations
 

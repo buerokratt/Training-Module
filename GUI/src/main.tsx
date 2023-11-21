@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import {QueryClient, QueryClientProvider, QueryFunction} from '@tanstack/react-query';
 
-import api from 'services/api';
+import apiInstance from 'services/api';
 import App from './App';
 import { ToastProvider } from 'context/ToastContext';
 import 'styles/main.scss';
@@ -18,10 +18,8 @@ import apiDev from "./services/api-dev";
 const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
 
   if (import.meta.env.REACT_APP_LOCAL === 'true' && queryKey.includes('prod')) {
-      const { data } = await apiGeneric.get(queryKey[0] as string);
-  if (import.meta.env.REACT_APP_LOCAL === 'true' && queryKey.includes('prod')) {
-      const { data } = await apiGeneric.get(queryKey[0] as string);
-      return data?.response;
+    const { data } = await apiGeneric.get(queryKey[0] as string);
+    return data?.response;
   }
   if (mockedEndpoints.some(endpoint => (queryKey[0] as string).startsWith(endpoint))) {
     const { data } = await apiGeneric.get(queryKey[0] as string);
@@ -56,22 +54,22 @@ const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
       "regex": queryKey[1],
       "examples": true
     };
-    const { data } = await api.post(queryKey[0] as string, request)
+    const { data } = await apiInstance.post(queryKey[0] as string, request)
     return data.response;
   }
   if(queryKey.includes('story-by-name')) {
     const request = {
       "story": queryKey[1]
     };
-    const { data } = await api.post(queryKey[0] as string, request)
+    const { data } = await apiInstance.post(queryKey[0] as string, request)
     return data.response;
   }
 
-  const { data } = await api.get(queryKey[0] as string);
-  if(queryKey.includes('entities')) {
+  const { data } = await apiInstance.get(queryKey[0] as string);
+  if (queryKey.includes('entities')) {
     return data.response;
   }
-  if(queryKey.includes('regexes')) {
+  if (queryKey.includes('regexes')) {
     return data.response.data.regexes;
   }
   return data;

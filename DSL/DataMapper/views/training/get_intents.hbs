@@ -1,11 +1,7 @@
 {
-  "intents": [
-    {{#each hits}}
-      {
-        "id": "{{_id}}",
-        "intent": "{{_source.intent}}"
-      }
-     {{#unless @last}},{{/unless}}
-    {{/each}}
-  ]
+"intents": [
+{{#each hits}}
+    "{{_source.intent}}"{{#unless @last}},{{/unless}}
+{{/each}}
+]
 }
