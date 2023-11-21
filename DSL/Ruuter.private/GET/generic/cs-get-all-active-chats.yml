@@ -3,63 +3,64 @@ step_1:
   args:
     response:
       data:
-        - id: '22fa5630-6f92-4d50-92ba-685c872383af'
-          customerSupportId: ''
-          customerSupportDisplayName: ''
-          endUserId: ''
-          endUserFirstName: ''
-          endUserLastName: ''
-          status: 'OPEN'
-          created: '2023-01-17T13:18:38.808+00:00'
-          updated: '2023-01-17T13:19:26.348+00:00'
-          ended: null
-          endUserOs: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36'
-          endUserUrl: 'https://test.buerokratt.ee/'
-          forwardedToName: null
-          forwardedByUser: ''
-          forwardedFromCsa: ''
-          forwardedToCsa: ''
-          lastMessage: 'Suunan teid klienditeenindajale. Varuge natukene kannatust.'
-          contactsMessage: null
-          lastMessageTimestamp: '2023-01-17T13:19:26.316+00:00'
-        - id: '5206b7bd-0812-40a8-ae1d-3774f07f06f0'
-          customerSupportId: ''
-          customerSupportDisplayName: ''
-          endUserId: ''
-          endUserFirstName: ''
-          endUserLastName: ''
-          status: 'OPEN'
-          created: '2023-01-19T13:38:32.421+00:00'
-          updated: '2023-01-19T13:38:32.430+00:00'
-          ended: null
-          endUserOs: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36'
-          endUserUrl: 'https://test.buerokratt.ee/'
-          forwardedToName: null
-          forwardedByUser: ''
-          forwardedFromCsa: ''
-          forwardedToCsa: ''
-          lastMessage: 'aitäh'
-          contactsMessage: null
-          lastMessageTimestamp: '2022-11-23T09:33:56.803+00:00'
-        - id: 'b7bba1c2-b7ab-4b17-825a-2d66a7d16fc4'
-          customerSupportId: ''
-          customerSupportDisplayName: ''
-          endUserId: ''
-          endUserFirstName: ''
-          endUserLastName: ''
-          status: 'OPEN'
-          created: '2023-01-19T13:38:32.421+00:00'
-          updated: '2023-01-19T13:38:32.430+00:00'
-          ended: null
-          endUserOs: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36'
-          endUserUrl: 'https://test.buerokratt.ee/'
-          forwardedToName: null
-          forwardedByUser: ''
-          forwardedFromCsa: ''
-          forwardedToCsa: ''
-          lastMessage: 'dasnhpwa'
-          contactsMessage: null
-          lastMessageTimestamp: '2023-01-18T12:24:54.557+00:00'
+        get_all_active_chats:
+          - id: '22fa5630-6f92-4d50-92ba-685c872383af'
+            customerSupportId: ''
+            customerSupportDisplayName: ''
+            endUserId: ''
+            endUserFirstName: ''
+            endUserLastName: ''
+            status: 'OPEN'
+            created: '2023-01-17T13:18:38.808+00:00'
+            updated: '2023-01-17T13:19:26.348+00:00'
+            ended: null
+            endUserOs: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36'
+            endUserUrl: 'https://test.buerokratt.ee/'
+            forwardedToName: null
+            forwardedByUser: ''
+            forwardedFromCsa: ''
+            forwardedToCsa: ''
+            lastMessage: 'Suunan teid klienditeenindajale. Varuge natukene kannatust.'
+            contactsMessage: null
+            lastMessageTimestamp: '2023-01-17T13:19:26.316+00:00'
+          - id: '5206b7bd-0812-40a8-ae1d-3774f07f06f0'
+            customerSupportId: ''
+            customerSupportDisplayName: ''
+            endUserId: ''
+            endUserFirstName: ''
+            endUserLastName: ''
+            status: 'OPEN'
+            created: '2023-01-19T13:38:32.421+00:00'
+            updated: '2023-01-19T13:38:32.430+00:00'
+            ended: null
+            endUserOs: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36'
+            endUserUrl: 'https://test.buerokratt.ee/'
+            forwardedToName: null
+            forwardedByUser: ''
+            forwardedFromCsa: ''
+            forwardedToCsa: ''
+            lastMessage: 'aitäh'
+            contactsMessage: null
+            lastMessageTimestamp: '2022-11-23T09:33:56.803+00:00'
+          - id: 'b7bba1c2-b7ab-4b17-825a-2d66a7d16fc4'
+            customerSupportId: ''
+            customerSupportDisplayName: ''
+            endUserId: ''
+            endUserFirstName: ''
+            endUserLastName: ''
+            status: 'OPEN'
+            created: '2023-01-19T13:38:32.421+00:00'
+            updated: '2023-01-19T13:38:32.430+00:00'
+            ended: null
+            endUserOs: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36'
+            endUserUrl: 'https://test.buerokratt.ee/'
+            forwardedToName: null
+            forwardedByUser: ''
+            forwardedFromCsa: ''
+            forwardedToCsa: ''
+            lastMessage: 'dasnhpwa'
+            contactsMessage: null
+            lastMessageTimestamp: '2023-01-18T12:24:54.557+00:00'
   result: reflected_request
 
 step_2:

@@ -2,9 +2,11 @@ step_1:
   call: reflect.mock
   args:
     response:
-      idCode: 'EE49902216518'
-      active: 'true'
-      status: 'idle'
+      data:
+        get_customer_support_activity:
+          - idCode: 'EE49902216518'
+            active: 'true'
+            status: 'idle'
   result: reflected_request
 
 step_2:
