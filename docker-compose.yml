@@ -100,6 +100,16 @@ services:
   #    - 9876:5432
   #  networks:
   #    - bykstack
+  pipelines:
+    container_name: pipelines
+    build:
+      context: ./DSL/Pipelines
+    environment:
+      - OPENSEARCH_PROTOCOL=http
+    ports:
+      - 3010:3010
+    networks:
+      - bykstack
 
 volumes:
   opensearch-data:
