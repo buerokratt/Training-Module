@@ -5,7 +5,7 @@ assign_values:
 getDomainFile:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/domain-file"
+    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/domain-file"
     headers:
       cookie: ${incoming.headers.cookie}
   result: domainData
@@ -19,7 +19,7 @@ validateResponse:
 ruleResponses:
   call: http.post
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/rules/search"
+    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/rasa/rules/search"
     headers:
       cookie: ${incoming.headers.cookie}
     body:
@@ -36,7 +36,7 @@ validateRuleResponses:
 storiesResponses:
   call: http.post
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/stories/search"
+    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/rasa/stories/search"
     headers:
       cookie: ${incoming.headers.cookie}
     body:
@@ -77,7 +77,7 @@ convertJsonToYaml:
 getFileLocations:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
     headers:
       cookie: ${incoming.headers.cookie}
   result: fileLocations

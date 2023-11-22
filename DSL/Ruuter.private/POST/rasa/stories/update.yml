@@ -6,7 +6,7 @@ assign_values:
 getStoriesWithName:
   call: http.post
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/story-by-name"
+    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/rasa/story-by-name"
     headers:
       cookie: ${incoming.headers.cookie}
     body:
@@ -24,7 +24,7 @@ validateStories:
 getFileLocations:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
     headers:
       cookie: ${incoming.headers.cookie}
   result: fileLocations
