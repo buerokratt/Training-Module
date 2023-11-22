@@ -5,7 +5,7 @@ assign_values:
 extract_token_data:
   call: http.post
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/mock-tim-custom-jwt-userinfo"
+    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/mock-tim-custom-jwt-userinfo"
     headers:
       cookie: ${incoming.headers.cookie}
     body:
@@ -21,7 +21,7 @@ validate_administrator:
 get_domain_file:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/domain-file"
+    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/domain-file"
     headers:
       cookie: ${incoming.headers.cookie}
   result: domainData
@@ -35,7 +35,7 @@ validate_intent_exists:
 get_file_locations:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
     headers:
       cookie: ${incoming.headers.cookie}
   result: fileLocations

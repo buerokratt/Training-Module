@@ -21,7 +21,7 @@ validateResponse:
 ruleResponses:
   call: http.post
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/rules/search"
+    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/rasa/rules/search"
     headers:
       cookie: ${incoming.headers.cookie}
     body:
@@ -32,7 +32,7 @@ ruleResponses:
 storiesResponses:
   call: http.post
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/stories/search"
+    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/rasa/stories/search"
     headers:
       cookie: ${incoming.headers.cookie}
     body:
