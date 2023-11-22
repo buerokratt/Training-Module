@@ -48,8 +48,8 @@ const CommonIntents: FC = () => {
   }, [intents, searchParams]);
 
   const addExamplesMutation = useMutation({
-    mutationFn: ({ intentId, example }: { intentId: string | number; example: string; }) => {
-      return addExample(intentId, { example });
+    mutationFn: (exampleData: { intentId: string | number; example: string; }) => {
+      return addExample( exampleData);
     },
     onSuccess: async () => {
       if (selectedIntent) {

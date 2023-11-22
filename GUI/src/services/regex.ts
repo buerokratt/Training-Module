@@ -1,4 +1,4 @@
-import api from './temp-api';
+import api from './api';
 import ruuter_api from './ruuter-api';
 import { saveAs } from 'file-saver';
 

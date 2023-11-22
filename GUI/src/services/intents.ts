@@ -1,4 +1,4 @@
-import api from './temp-api';
+import api from './api';
 import localDevApi from './local-dev-api';
 import fileApi from './file.api';
 import { Intent } from 'types/intent';

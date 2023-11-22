@@ -16,6 +16,7 @@ export const mockedEndpoints : string[] = [
     'cs-get-messages-by-chat-id',
     'cs-get-messages-by-chat-id/1',
     'cs-get-all-ended-chats',
+    'appeals'
     // 'intents', 
     // 'responses',
     // 'entities',
