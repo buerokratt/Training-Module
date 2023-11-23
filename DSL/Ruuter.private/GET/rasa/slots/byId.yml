@@ -1,0 +1,35 @@
+assign_values:
+  assign:
+    parameters: ${incoming.body}
+
+getSlots:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/domain/_search?pretty=true"
+    body:
+      query:
+        match:
+          _id: 'slots'
+  result: getSlotsResult
+
+mapSlotsData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-slot-details"
+    body:
+      hits: "g"
+  result: slotsData
+  next: returnSuccess
+
+returnSuccess:
+  return: ${slotsData.response.body.data}
+  wrapper: false
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
+  next: end
+
+returnNotFount:
+  return: "ERROR: slot not found"
+  next: end
