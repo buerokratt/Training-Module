@@ -50,7 +50,7 @@ const Intents: FC = () => {
   });
 
   let intentsFullList = intentsFullResponse?.response?.data?.intents;
-  const intents: Intent[] = [];
+  let intents: Intent[] = [];
 
   if (intentsFullList) {
     intentsFullList.forEach((intent: any) => {
@@ -77,18 +77,17 @@ const Intents: FC = () => {
     }
   };
 
-  function queryRefresh(selectIntent: string | null) {
+  const queryRefresh = useCallback(function queryRefresh(selectIntent: string | null) {
     setSelectedIntent(null);
-    queryClient.cancelQueries(['intents/intents-full']);
-    queryClient.fetchQuery(['intents/intents-full']).then(() => {
+    queryClient.fetchQuery(["intents/intents-full"]).then(() => {
       setRefreshing(false);
       if (intents.length > 0) {
         setSelectedIntent(() => {
           return intents.find((intent) => intent.intent === selectIntent) || null;
         });
       }
-    })
-  }
+    });
+  }, [intents, queryClient]);
 
   function isValidDate(dateString: string | number | Date) {
     const date = new Date(dateString);
@@ -109,11 +108,14 @@ const Intents: FC = () => {
   const addExamplesMutation = useMutation({
     mutationFn: (addExamplesData: { intentName: string, intentExamples: string[], newExamples: string }) =>
         addExample(addExamplesData),
+    onMutate: () => { setRefreshing(true) },
     onSuccess: async () => {
+      await queryClient.invalidateQueries(['intents/intents-full']);
+      await queryClient.refetchQueries(['intents/intents-full']);
+      getExampleArrayForIntentId(selectedIntent as Intent).push('');
+      setRefreshing(false);
       if (selectedIntent) {
-        await queryClient.invalidateQueries({
-          queryKey: [`intents/intents-full`],
-        });
+        setRefreshing(false);
       }
       toast.open({
         type: 'success',
@@ -141,6 +143,7 @@ const Intents: FC = () => {
     onSuccess: async () => {
       setSelectedIntent(null)
       queryRefresh(null);
+      setRefreshing(false);
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -155,19 +158,13 @@ const Intents: FC = () => {
       });
     },
     onSettled: () => {
+      intents = intents.filter(intent => intent.intent !== selectedIntent?.intent);
       setRefreshing(false);
     }
   });
 
   const intentModifiedMutation = useMutation({
     mutationFn: (data: { intentName: string }) => getLastModified(data),
-    onError: (error: AxiosError) => {
-      toast.open({
-        type: 'error',
-        title: t('global.notificationError'),
-        message: error.message,
-      });
-    },
   });
 
   const turnIntentIntoServiceMutation = useMutation({
@@ -204,6 +201,7 @@ const Intents: FC = () => {
         if (!intents) return;
         const selectedIntent = intents.find((intent) => intent.intent === value);
         if (selectedIntent) {
+          queryRefresh(selectedIntent.intent || '');
           intentModifiedMutation.mutate(
               { intentName: selectedIntent.intent },
               {
@@ -212,11 +210,16 @@ const Intents: FC = () => {
                   setSelectedIntent(selectedIntent);
                   setSelectedTab(selectedIntent.intent);
                 },
+                onError: (error) => {
+                  selectedIntent.modifiedAt = "";
+                  setSelectedIntent(selectedIntent);
+                  setSelectedTab(selectedIntent.intent);
+                }
               }
           );
         }
       },
-      [intentModifiedMutation, intents]
+      [intentModifiedMutation, intents, queryRefresh]
   );
 
 
