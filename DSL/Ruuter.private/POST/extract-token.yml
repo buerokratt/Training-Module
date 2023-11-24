@@ -1,7 +1,7 @@
 extractTokenData:
   call: http.post
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/mock-tim-custom-jwt-userinfo"
+    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/mock-tim-custom-jwt-userinfo"
     headers:
       cookie: ${incoming.headers.cookie}
     body:

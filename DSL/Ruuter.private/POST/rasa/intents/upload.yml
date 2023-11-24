@@ -21,7 +21,7 @@ mapCsvToArray:
 addExamples:
   call: http.post
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/intents/examples/add"
+    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/rasa/intents/examples/add"
     headers:
       cookie: ${incoming.headers.cookie}
     body:

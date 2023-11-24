@@ -1,7 +1,11 @@
 getIntents:
-  call: http.get
+  call: http.post
   args:
     url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/intents/_search?size=10000"
+    body:
+      query:
+        prefix:
+          id: "common_"
   result: getIntentsResult
 
 getIntentsData:
