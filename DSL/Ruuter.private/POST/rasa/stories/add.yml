@@ -73,7 +73,7 @@ saveStoriesFile:
 updateOpenSearch:
   call: http.post
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/stories/_doc"
+    url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/bulk/stories/story"
     body:
       story: ${body.story}
       steps: ${body.steps}
