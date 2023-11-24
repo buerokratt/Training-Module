@@ -24,3 +24,18 @@ jobs:
         run: |
           ssh ubuntu@${{ secrets.SERVER_IP }} 'cd /opt/etapp2/uptodate/PIPELINE && python3 byk-train.py'
 
+  Opensearch:
+    needs: PackageDeploy
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Run Opensearch
+        run: |
+          ssh ubuntu@${{ secrets.SERVER_IP }} 'cd /opt/etapp2/uptodate/PIPELINE && python3 train_init.py'
+
+  Pipelines:
+    needs: Opensearch
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Run Pipelines
+        run: |
+          ssh ubuntu@${{ secrets.SERVER_IP }} 'cd /opt/etapp2/uptodate/PIPELINE && python3 train_init_pipeline.py'
