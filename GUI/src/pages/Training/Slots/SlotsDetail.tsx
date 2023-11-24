@@ -40,7 +40,7 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
     enabled: mode === 'edit' && !!params.id,
   });
   const { data: intents } = useQuery<Intent[]>({
-    queryKey: ['intents'],
+    queryKey: ['intent-and-id'],
   });
   const { data: entities } = useQuery<Entity[]>({
     queryKey: ['entities'],
