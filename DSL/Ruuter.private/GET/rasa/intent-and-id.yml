@@ -1,0 +1,19 @@
+getIntents:
+  call: http.get
+  args:
+    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/intents/_search?size=10000"
+  result: getIntentsResult
+
+mapIntentsData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-intent-and-id"
+    body:
+      hits: ${getIntentsResult.response.body.hits.hits}
+  result: intentsData
+  next: returnSuccess
+
+returnSuccess:
+  return: ${intentsData.response.body.data.intents}
+  wrapper: false
+  next: end
