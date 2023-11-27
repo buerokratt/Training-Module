@@ -36,11 +36,18 @@ const Responses: FC = () => {
   const { register, handleSubmit } = useForm<NewResponse>();
 //  const [editingTrainingTitle, setEditingTrainingTitle] = useState<string>("");
   let editingTrainingTitle: string;
-  const formattedResponses = useMemo(() => responses ? responses.response.map((r, i) => ({
-    id: i,
-    response: r.name,
-    text: r.response[0].text,
-  })) : [], [responses]);
+  const formattedResponses = useMemo(() => {
+    if (responses && responses.response) {
+      return responses.response.map((r, i) => ({
+        id: i,
+        response: r.name,
+        text: r.response[0].text,
+      }));
+    } else {
+      return [];
+    }
+  }, [responses]);
+
 
   useDocumentEscapeListener(() => setEditableRow(null));
 
