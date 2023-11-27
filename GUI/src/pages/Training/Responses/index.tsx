@@ -27,7 +27,7 @@ const Responses: FC = () => {
     queryKey: ['responses/dependencies'],
   });
   const { data: responses } = useQuery<ResponsesType>({
-    queryKey: ['responses'],
+    queryKey: ['responses-list'],
   });
   const [addFormVisible, setAddFormVisible] = useState(false);
   const [editableRow, setEditableRow] = useState<{ id: string; text: string; } | null>(null);
@@ -37,11 +37,12 @@ const Responses: FC = () => {
 //  const [editingTrainingTitle, setEditingTrainingTitle] = useState<string>("");
   let editingTrainingTitle: string;
   const formattedResponses = useMemo(() => {
-    if (responses && responses.response) {
-      return responses.response.map((r, i) => ({
+    // @ts-ignore
+    if (responses && responses.length > 0) {
+      return responses[0].response.map((r, i) => ({
         id: i,
         response: r.name,
-        text: r.response[0].text,
+        text: r.text,
       }));
     } else {
       return [];

@@ -81,7 +81,3 @@ returnResponseExists:
 returnResponseTooLong:
   return: "Response text is too long"
   next: end
-
-returnUnauthorized:
-  return: "error: unauthorized"
-  next: end
