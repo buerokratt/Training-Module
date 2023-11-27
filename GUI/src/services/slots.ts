@@ -12,6 +12,6 @@ export async function editSlot(id: string | number, formData: SlotEditDTO) {
 }
 
 export async function deleteSlot(id: string | number) {
-  const { data } = await api.delete<void>(`slots/${id}`);
+  const { data } = await api.post<void>(`slots/delete`);
   return data;
 }
