@@ -36,7 +36,7 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
   const queryClient = useQueryClient();
   const [selectedSlotType, setSelectedSlotType] = useState<string | null>(null);
   const { data: slot } = useQuery<Slot>({
-    queryKey: [`slots/byId`],
+    queryKey: [`slots/slotById`,params.id],
     enabled: mode === 'edit' && !!params.id,
   });
   const { data: intents } = useQuery<Intent[]>({
@@ -117,11 +117,10 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
       </Track>
       <Card>
         <Track direction='vertical' align='left' gap={8}>
-          <FormInput {...register('name')} label={t('training.slots.slotName')} />
+          <FormInput {...register('name')} defaultValue={params.id} label={t('training.slots.slotName')} />
           <Controller name='type' control={control} render={({ field }) =>
             <FormSelect
               {...field}
-              onLoad={() => field.onChange(slot?.type)}
               defaultValue={slot?.type}
               label={t('training.slots.slotType')}
               options={slotTypes}
@@ -134,7 +133,7 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
           <Controller name='influenceConversation' control={control} render={({ field }) =>
             <Switch
               {...field}
-              defaultChecked={slot?.influenceConversation}
+              checked={slot?.influenceConversation}
               label={t('training.slots.influenceConversation')}
             />
           } />
