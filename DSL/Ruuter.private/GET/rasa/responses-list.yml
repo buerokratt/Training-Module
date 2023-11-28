@@ -8,10 +8,6 @@ getResponses:
       _source: responses
   result: getResponsesResult
 
-#checkResponse:
-#  return: ${getResponsesResult.response.body.hits.hits}
-#  next: end
-
 mapResponsesData:
   call: http.post
   args:
