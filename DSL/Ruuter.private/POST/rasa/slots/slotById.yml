@@ -1,6 +1,6 @@
 assign_values:
   assign:
-    parameters: ${incoming.body}
+    slot: ${incoming.body.slot}
 
 getSlots:
   call: http.post
@@ -12,12 +12,29 @@ getSlots:
           _id: 'slots'
   result: getSlotsResult
 
+assignResponse:
+  assign:
+    slotResponse: ${getSlotsResult.response.body.hits.hits}
+
+checkSlotResponse:
+  switch:
+    - condition: ${slotResponse.length > 0}
+      next: checkSlotIsPresent
+  next: returnNotFound
+
+checkSlotIsPresent:
+  switch:
+    - condition: ${Object.keys(slotResponse[0]._source.slots).includes(slot)}
+      next: mapSlotsData
+  next: returnNotFound
+
 mapSlotsData:
   call: http.post
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-slot-details"
     body:
-      hits: "g"
+      name: ${slot}
+      hits: ${slotResponse[0]._source.slots[slot]}
   result: slotsData
   next: returnSuccess
 
@@ -30,6 +47,6 @@ returnUnauthorized:
   return: "error: unauthorized"
   next: end
 
-returnNotFount:
+returnNotFound:
   return: "ERROR: slot not found"
   next: end

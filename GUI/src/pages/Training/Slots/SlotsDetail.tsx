@@ -20,11 +20,11 @@ type SlotsDetailProps = {
 const slotTypes = [
   {
     label: 'text',
-    value: 'text',
+    value: 'from_text',
   },
   {
     label: 'entity',
-    value: 'entity',
+    value: 'from_entity',
   },
 ];
 
@@ -34,9 +34,9 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
   const toast = useToast();
   const params = useParams();
   const queryClient = useQueryClient();
-  const [selectedSlotType, setSelectedSlotType] = useState<string | null>(null);
+  const [selectedSlotType, setSelectedSlotType] = useState<'from_text' | 'from_entity' | null>(null);
   const { data: slot } = useQuery<Slot>({
-    queryKey: [`slots/byId`],
+    queryKey: [`slots/slotById`,params.id],
     enabled: mode === 'edit' && !!params.id,
   });
   const { data: intents } = useQuery<Intent[]>({
@@ -46,17 +46,16 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
     queryKey: ['entities'],
   });
 
-  const { register, control, handleSubmit, reset, setValue } = useForm<SlotCreateDTO>({
+  const { register, control, handleSubmit, reset } = useForm<SlotCreateDTO>({
     mode: 'onChange',
     shouldUnregister: true,
   });
   useEffect(() => {
     if (slot) {
-      setValue('type', slot.type)
-      setSelectedSlotType(slot.type)
+      setSelectedSlotType(slot?.mappings?.type)
       reset(slot);
     }
-  }, [reset, slot, setValue]);
+  }, [reset, slot]);
 
   const newSlotMutation = useMutation({
     mutationFn: (data: SlotCreateDTO) => createSlot(data),
@@ -117,12 +116,11 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
       </Track>
       <Card>
         <Track direction='vertical' align='left' gap={8}>
-          <FormInput {...register('name')} label={t('training.slots.slotName')} />
-          <Controller name='type' control={control} render={({ field }) =>
+          <FormInput {...register('name')} defaultValue={params.id} label={t('training.slots.slotName')} />
+          <Controller name='mappings.type' control={control} render={({ field }) =>
             <FormSelect
               {...field}
-              onLoad={() => field.onChange(slot?.type)}
-              defaultValue={slot?.type}
+              defaultValue={slot?.mappings.type}
               label={t('training.slots.slotType')}
               options={slotTypes}
               onSelectionChange={(selection) => {
@@ -134,7 +132,7 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
           <Controller name='influenceConversation' control={control} render={({ field }) =>
             <Switch
               {...field}
-              defaultChecked={slot?.influenceConversation}
+              checked={slot?.influenceConversation}
               label={t('training.slots.influenceConversation')}
             />
           } />
@@ -145,9 +143,10 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
           <h2 className='h5'>{t('training.slots.mapping')}</h2>
         }>
           <Track direction='vertical' gap={8} align='left'>
-            {entities && selectedSlotType === 'entity' && (
+            {entities && selectedSlotType === 'from_entity' && (
               <FormSelect
                 {...register('mappings.entity')}
+                defaultValue={slot?.mappings.entity}
                 label='Entity'
                 options={entities.map((entity) => ({ label: entity.name, value: String(entity.id) }))}
               />
@@ -156,11 +155,13 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
               <FormCheckboxes {...register('mappings.intent')} label='Intent' items={intents.map((intent) => ({
                 label: intent.intent,
                 value: String(intent.id),
+                checked: slot?.mappings?.intent?.includes(intent.intent)
               }))} />}
             {intents &&
               <FormCheckboxes {...register('mappings.notIntent')} label='Not intent' items={intents.map((intent) => ({
                 label: intent.intent,
                 value: String(intent.id),
+                checked: slot?.mappings?.notIntent?.includes(intent.intent)
               }))} />}
           </Track>
         </Card>

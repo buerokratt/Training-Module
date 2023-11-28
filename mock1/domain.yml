@@ -34,15 +34,13 @@ slots:
     type: text
     influence_conversation: true
     mappings:
-      - type: from_entity
-        entity: asukoht
-        intent: common_teenus_ilm
-      - type: from_entity
-        entity: asukoht
-        intent: nlu_fallback
-      - type: from_entity
-        entity: asukoht
-        intent: rahvaarv
+      type: from_entity
+      entity: asukoht
+      intent:
+        - common_teenus_ilm
+        - nlu_fallback
+      not_intent:
+        - rahvaarv
 
 forms:
   custom_fallback_form:
