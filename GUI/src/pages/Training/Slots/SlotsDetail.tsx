@@ -20,11 +20,11 @@ type SlotsDetailProps = {
 const slotTypes = [
   {
     label: 'text',
-    value: 'text',
+    value: 'from_text',
   },
   {
     label: 'entity',
-    value: 'entity',
+    value: 'from_entity',
   },
 ];
 
@@ -34,7 +34,7 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
   const toast = useToast();
   const params = useParams();
   const queryClient = useQueryClient();
-  const [selectedSlotType, setSelectedSlotType] = useState<string | null>(null);
+  const [selectedSlotType, setSelectedSlotType] = useState<'from_text' | 'from_entity' | null>(null);
   const { data: slot } = useQuery<Slot>({
     queryKey: [`slots/slotById`,params.id],
     enabled: mode === 'edit' && !!params.id,
@@ -46,17 +46,20 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
     queryKey: ['entities'],
   });
 
-  const { register, control, handleSubmit, reset, setValue } = useForm<SlotCreateDTO>({
+  console.log(intents);
+
+  const { register, control, handleSubmit, reset } = useForm<SlotCreateDTO>({
     mode: 'onChange',
     shouldUnregister: true,
   });
   useEffect(() => {
     if (slot) {
-      setValue('type', slot.type)
-      setSelectedSlotType(slot.type)
+      setSelectedSlotType(slot?.mappings?.type)
       reset(slot);
     }
-  }, [reset, slot, setValue]);
+  }, [reset, slot]);
+
+  console.log(selectedSlotType)
 
   const newSlotMutation = useMutation({
     mutationFn: (data: SlotCreateDTO) => createSlot(data),
@@ -118,10 +121,10 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
       <Card>
         <Track direction='vertical' align='left' gap={8}>
           <FormInput {...register('name')} defaultValue={params.id} label={t('training.slots.slotName')} />
-          <Controller name='type' control={control} render={({ field }) =>
+          <Controller name='mappings.type' control={control} render={({ field }) =>
             <FormSelect
               {...field}
-              defaultValue={slot?.type}
+              defaultValue={slot?.mappings.type}
               label={t('training.slots.slotType')}
               options={slotTypes}
               onSelectionChange={(selection) => {
@@ -144,9 +147,10 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
           <h2 className='h5'>{t('training.slots.mapping')}</h2>
         }>
           <Track direction='vertical' gap={8} align='left'>
-            {entities && selectedSlotType === 'entity' && (
+            {entities && selectedSlotType === 'from_entity' && (
               <FormSelect
                 {...register('mappings.entity')}
+                defaultValue={slot?.mappings.entity}
                 label='Entity'
                 options={entities.map((entity) => ({ label: entity.name, value: String(entity.id) }))}
               />
@@ -155,11 +159,13 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
               <FormCheckboxes {...register('mappings.intent')} label='Intent' items={intents.map((intent) => ({
                 label: intent.intent,
                 value: String(intent.id),
+                checked: slot?.mappings?.intent?.includes(intent.intent)
               }))} />}
             {intents &&
               <FormCheckboxes {...register('mappings.notIntent')} label='Not intent' items={intents.map((intent) => ({
                 label: intent.intent,
                 value: String(intent.id),
+                checked: slot?.mappings?.notIntent?.includes(intent.intent)
               }))} />}
           </Track>
         </Card>
