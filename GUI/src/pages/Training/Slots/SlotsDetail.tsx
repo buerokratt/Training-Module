@@ -46,8 +46,6 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
     queryKey: ['entities'],
   });
 
-  console.log(intents);
-
   const { register, control, handleSubmit, reset } = useForm<SlotCreateDTO>({
     mode: 'onChange',
     shouldUnregister: true,
@@ -58,8 +56,6 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
       reset(slot);
     }
   }, [reset, slot]);
-
-  console.log(selectedSlotType)
 
   const newSlotMutation = useMutation({
     mutationFn: (data: SlotCreateDTO) => createSlot(data),
