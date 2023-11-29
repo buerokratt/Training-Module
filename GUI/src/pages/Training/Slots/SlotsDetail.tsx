@@ -125,7 +125,7 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
               options={slotTypes}
               onSelectionChange={(selection) => {
                 setSelectedSlotType((selection?.value) || null);
-                field.onChange(selection);
+                field.onChange(selection?.value);
               }}
             />
           } />
@@ -133,6 +133,7 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
             <Switch
               {...field}
               checked={slot?.influenceConversation}
+              onCheckedChange={(e) => field.onChange(e)}
               label={t('training.slots.influenceConversation')}
             />
           } />
