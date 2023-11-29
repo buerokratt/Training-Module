@@ -23,7 +23,7 @@ ruleResponses:
     headers:
       cookie: ${incoming.headers.cookie}
     body:
-      response: ${parameters.response_name}
+      value: ${parameters.response_name}
       type: "responses"
   result: ruleResponses
 
@@ -40,7 +40,7 @@ storiesResponses:
     headers:
       cookie: ${incoming.headers.cookie}
     body:
-      response: ${parameters.response_name}
+      search: ${parameters.response_name}
       type: "responses"
   result: storiesResponses
 
