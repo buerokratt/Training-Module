@@ -132,7 +132,7 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
           <Controller name='influenceConversation' control={control} render={({ field }) =>
             <Switch
               {...field}
-              checked={slot?.influenceConversation}
+              defaultChecked={slot?.influenceConversation}
               onCheckedChange={(e) => field.onChange(e)}
               label={t('training.slots.influenceConversation')}
             />

@@ -2,6 +2,10 @@ import api from './api';
 import { Slot, SlotCreateDTO, SlotEditDTO } from 'types/slot';
 
 export async function createSlot(formData: SlotCreateDTO) {
+  if (formData.influenceConversation === undefined) {
+    formData.influenceConversation = false;
+  }
+  console.log(formData)
   const { data } = await api.post<Slot>(`slots`, formData);
   return data;
 }
