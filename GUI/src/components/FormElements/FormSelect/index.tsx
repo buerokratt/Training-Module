@@ -1,4 +1,4 @@
-import { FC, ReactNode, SelectHTMLAttributes, useId, useState } from 'react';
+import {FC, forwardRef, ReactNode, SelectHTMLAttributes, useId, useState} from 'react';
 import { useSelect } from 'downshift';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
@@ -22,7 +22,7 @@ const itemToString = (item: ({ label: string, value: string } | null)) => {
   return item ? item.value : '';
 };
 
-const FormSelect: FC<FormSelectProps> = (
+const FormSelect = forwardRef<HTMLUListElement,FormSelectProps>((
   {
     label,
     hideLabel,
@@ -33,6 +33,7 @@ const FormSelect: FC<FormSelectProps> = (
     onSelectionChange,
     ...rest
   },
+  ref,
 ) => {
   const id = useId();
   const { t } = useTranslation();
@@ -73,10 +74,10 @@ const FormSelect: FC<FormSelectProps> = (
           </p>
           <Icon label='Dropdown icon' size='medium' icon={<MdArrowDropDown color='#5D6071' />} />
         </div>
-        <ul className='select__menu' {...getMenuProps()}>
+        <ul className='select__menu' ref={ref} {...getMenuProps()}>
           {isOpen && (
             options.map((item, index) => (
-              <li className={clsx('select__option', { 'select__option--selected': highlightedIndex === index })}
+              <li  ref={ref} className={clsx('select__option', { 'select__option--selected': highlightedIndex === index })}
                   key={`${item.value}${index}`} {...getItemProps({ item, index })}>
                 {item.label}
               </li>
@@ -86,7 +87,7 @@ const FormSelect: FC<FormSelectProps> = (
       </div>
     </div>
   );
-};
+});
 
 
 export default FormSelect;

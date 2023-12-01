@@ -5,8 +5,15 @@ export async function createSlot(formData: SlotCreateDTO) {
   if (formData.influenceConversation === undefined) {
     formData.influenceConversation = false;
   }
-  console.log(formData)
-  const { data } = await api.post<Slot>(`slots`, formData);
+  const slot = {
+    slot: {
+      [formData.name] : {
+        influenceConversation : [formData.influenceConversation],
+        mappings: [formData.mappings]
+      }
+    }
+  }
+  const { data } = await api.post<Slot>(`slots/add`, slot);
   return data;
 }
 
