@@ -5,7 +5,7 @@ assign_values:
 getStoriesWithName:
   call: http.post
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/rasa/story-by-name"
+    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/stories"
     headers:
       cookie: ${incoming.headers.cookie}
     body:
@@ -14,7 +14,7 @@ getStoriesWithName:
 
 validateStories:
   switch:
-    - condition: ${storiesResult.response.body.response.story != body.story}
+    - condition: ${storiesResult.response.body.response.data.story != body.story}
       next: getFileLocations
   next: returnStoryExists
 
@@ -73,10 +73,9 @@ saveStoriesFile:
 updateOpenSearch:
   call: http.post
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/stories/_doc"
+    url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/bulk/stories/story"
     body:
-      story: ${body.story}
-      steps: ${body.steps}
+      input: ${storiesYaml.response.body.json}
   result: updateSearchResult
   next: returnSuccess
 
