@@ -57,6 +57,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
   } | null>(null);
   const columnHelper = createColumnHelper<{ id: string; value: string }>();
 
+  // rework
   const handleRefresh = (selectIntent: string) => {
     queryRefresh(selectIntent);
   };
