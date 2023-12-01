@@ -1,13 +1,17 @@
 getSlots:
-  call: http.get
+  call: http.post
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/slots/_search?size=10000"
+    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/domain/_search?pretty=true"
+    body:
+      query:
+        match:
+          _id: 'slots'
   result: getSlotsResult
 
 mapSlotsData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-slots"
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/extract-slot-keys"
     body:
       hits: ${getSlotsResult.response.body.hits.hits}
   result: slotsData

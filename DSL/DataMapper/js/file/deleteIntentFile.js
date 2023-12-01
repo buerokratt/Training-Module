@@ -21,7 +21,7 @@ router.post('/', (req, res) => {
         return res.status(400).json({
             error: true,
             message: 'File path contains illegal characters',
-        }).send("File path contains illegal characters");
+        });
     }
 
     fs.unlink(deletePath, (err) => {
@@ -29,13 +29,13 @@ router.post('/', (req, res) => {
             return res.status(500).json({
                 error: true,
                 message: 'Unable to delete file',
-            }).send("Error deleting file");
+            });
         }
 
         return res.status(200).json({
             error: false,
             message: 'File deleted successfully',
-        }).send("Success deleting file");
+        });
     });
 });
 

@@ -8,6 +8,22 @@ Handlebars.registerHelper('eq', function(a, b) {
     return a == b;
 });
 
+
+Handlebars.registerHelper('extractSlotKeys', function(obj) {
+    const keys = [];
+    console.log(obj)
+
+    function iterate(obj) {
+        for (const key in obj) {
+            keys.push(key)
+        }
+    }
+
+    iterate(obj);
+
+    return keys;
+});
+
 Handlebars.registerHelper('ne', function(a, b) {
     return a !== b;
 });

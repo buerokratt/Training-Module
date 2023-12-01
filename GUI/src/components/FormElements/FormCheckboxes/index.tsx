@@ -15,6 +15,7 @@ type FormCheckboxesType = {
   items: {
     label: string;
     value: string;
+    checked: boolean | undefined;
   }[];
   [rest: string]: any;
   type?: CheckboxType;
@@ -38,7 +39,7 @@ const FormCheckboxes: FC<FormCheckboxesType> = ({ label, name, hideLabel, onValu
       <div className='checkboxes__wrapper'>
         {items.map((item, index) => (
           <div key={`${item.value}-${index}`} className='checkboxes__item'>
-            <input type='checkbox' name={name} id={`${id}-${item.value}`} value={item.value}
+            <input type='checkbox' name={name} id={`${id}-${item.value}`} checked={item.checked} value={item.value}
                    onChange={handleValuesChange} />
             <label htmlFor={`${id}-${item.value}`}>{item.label}</label>
           </div>
