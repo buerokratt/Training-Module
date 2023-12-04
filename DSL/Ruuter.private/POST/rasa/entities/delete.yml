@@ -5,7 +5,9 @@ assign_values:
 getDomainFile:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/domain-file"
+    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/domain-file"
+    headers:
+      cookie: ${incoming.headers.cookie}
   result: domainData
 
 validateEntities:
@@ -17,21 +19,25 @@ validateEntities:
 domainEntities:
   call: http.post
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/entities"
+    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/rasa/entities"
+    headers:
+      cookie: ${incoming.headers.cookie}
     body:
       entity: ${parameters.entity_name}
   result: domainEntities
 
 validateDomainEntities:
   switch:
-    - condition: ${!domainEntities.response.body.response}
+    - condition: ${domainEntities.response.statusCodeValue == 200}
       next: regexEntities
   next: returnEntityHasDependencyToDomain
 
 regexEntities:
   call: http.post
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/regex"
+    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/rasa/regex"
+    headers:
+      cookie: ${incoming.headers.cookie}
     body:
       regex: ${parameters.entity_name}
       examples: false
@@ -39,14 +45,16 @@ regexEntities:
 
 validateRegexEntities:
   switch:
-    - condition: ${!regexEntities.response.body.response}
+    - condition: ${regexEntities.response.statusCodeValue == 200}
       next: intentEntities
   next: returnEntityHasDependencyToRegex
 
 intentEntities:
   call: http.post
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/examples/entities"
+    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/rasa/examples/entities"
+    headers:
+      cookie: ${incoming.headers.cookie}
     body:
       entity: ${parameters.entity_name}
       examples: false
@@ -54,7 +62,7 @@ intentEntities:
 
 validateIntentEntities:
   switch:
-    - condition: ${!intentEntities.response.body.response}
+    - condition: ${intentEntities.response.statusCodeValue == 200}
       next: deleteEntity
   next: returnEntityHasDependencyToIntent
 
@@ -85,7 +93,9 @@ convertJsonToYaml:
 getFileLocations:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+    headers:
+      cookie: ${incoming.headers.cookie}
   result: fileLocations
 
 saveDomainFile:
@@ -96,6 +106,15 @@ saveDomainFile:
       file_path: ${fileLocations.response.body.response.domain_location}
       content: ${domainYaml.response.body.json}
   result: fileResult
+  next: updateOpenSearch
+
+updateOpenSearch:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/bulk/domain"
+    body:
+      input: ${domainYaml.response.body.json}
+  result: updateSearchResult
   next: returnSuccess
 
 returnSuccess:

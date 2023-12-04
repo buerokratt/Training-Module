@@ -1,4 +1,4 @@
-import api from './temp-api';
+import api from './api';
 import ruuter_api from './ruuter-api';
 import { saveAs } from 'file-saver';
 
@@ -24,26 +24,19 @@ export async function addRegexExample(regexExampleData: { example: string }) {
 
 export async function editRegexExample(
     example_data: {
-      new_name: string,
-      old_name: string
-    },
-    regexExampleData : {
       regex_name: string,
       input: {
         regex: string,
-        examples: string[]
+        example: string,
+        newExample: string
       }})
 {
-  const index = regexExampleData.input.examples.indexOf(example_data.old_name);
-  if(index !== -1 && example_data.new_name.trim().length > 0) {
-    regexExampleData.input.examples[index] = example_data.new_name;
-  }
-  const { data } = await api.post<{ regex_name: string }>(`regex/update`, regexExampleData);
+  const { data } = await api.post<{ regex_name: string }>(`regex/update`, example_data);
   return data;
 }
 
-export async function deleteRegexExample(id: string | number) {
-  const { data } = await api.delete<void>(`regex/examples/${id}`);
+export async function deleteRegexExample({ update_data }: {update_data: { regex_name: string | undefined, example: string | undefined }}) {
+  const { data } = await api.post<void>(`regex/delete`,update_data);
   return data;
 }
 

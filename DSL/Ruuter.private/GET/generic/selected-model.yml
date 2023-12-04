@@ -1,0 +1,14 @@
+getData:
+  call: reflect.mock
+  args:
+    response:
+      data:
+        - id: 1
+          name: "20220322-155051-potential-proton.tar.gz"
+          lastTrained: "2023-10-26T10:23:41.619Z"
+          active: true
+  result: reflected_request
+  next: returnData
+
+returnData:
+  return: ${reflected_request.response.body.data}

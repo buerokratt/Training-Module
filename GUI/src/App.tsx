@@ -3,7 +3,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 
 import { Layout } from 'components';
-import useUserInfoStore from 'store/store';
+import useStore from 'store/store';
 import { UserInfo } from 'types/userInfo';
 import Intents from 'pages/Training/Intents';
 import CommonIntents from 'pages/Training/Intents/CommonIntents';
@@ -26,18 +26,21 @@ import RegexDetail from 'pages/Training/IntentsFollowupTraining/RegexDetail';
 import TrainAndTest from 'pages/Training/TrainAndTest';
 
 const App: FC = () => {
-  const store = useUserInfoStore();
   if(import.meta.env.REACT_APP_LOCAL === 'true') {
-    const { data: userInfo } = useQuery<UserInfo>({
-      queryKey: [import.meta.env.REACT_APP_AUTH_PATH, 'auth'],
-      onSuccess: (response: { data: { custom_jwt_userinfo: UserInfo } }) =>
-          store.setUserInfo(response),
-    });
+    const { data } = useQuery<UserInfo>({
+      queryKey: ['cs-custom-jwt-userinfo', 'prod'],
+      onSuccess: (res: any) => useStore.getState().setUserInfo(res)
+    })
   } else {
     const { data: userInfo } = useQuery<UserInfo>({
       queryKey: [import.meta.env.REACT_APP_AUTH_PATH, 'auth'],
-      onSuccess: (data: { data: { custom_jwt_userinfo: UserInfo } }) =>
-          store.setUserInfo(data.data.custom_jwt_userinfo),
+      onSuccess: (data: { data: { custom_jwt_userinfo: UserInfo } }) => {
+        localStorage.setItem(
+            'exp',
+            data.data.custom_jwt_userinfo.JWTExpirationTimestamp
+        );
+        return useStore.getState().setUserInfo(data.data.custom_jwt_userinfo);
+      }
     });
   }
 

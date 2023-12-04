@@ -11,19 +11,20 @@ import {
   MdOutlineSave,
 } from 'react-icons/md';
 
-import { Button, Dialog, FormInput, Icon, Tooltip, Track } from 'components';
+import {Button, Dialog, FormInput, Icon, Tooltip, Track} from 'components';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import { useToast } from 'hooks/useToast';
 import { Intent } from 'types/intent';
 import { Entity } from 'types/entity';
 import {
   addExample,
-  addIntent,
-  deleteIntent,
-  editIntent,
-  turnIntentIntoService,
+  addIntent, addRemoveIntentModel,
+  deleteIntent, downloadExamples,
+  editIntent, getLastModified,
+  turnIntentIntoService, uploadExamples,
 } from 'services/intents';
 import IntentExamplesTable from './IntentExamplesTable';
+import LoadingDialog from "../../../components/LoadingDialog";
 
 const Intents: FC = () => {
   const { t } = useTranslation();
@@ -31,17 +32,16 @@ const Intents: FC = () => {
   const toast = useToast();
   const [searchParams] = useSearchParams();
   const [filter, setFilter] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
   const [editingIntentTitle, setEditingIntentTitle] = useState<string | null>(null);
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
   const [selectedIntent, setSelectedIntent] = useState<Intent | null>(null);
-  const [deletableIntent, setDeletableIntent] = useState<
-    string | number | null
-  >(null);
+  const [deletableIntent, setDeletableIntent] = useState<Intent | null>(null);
   const [turnIntentToServiceIntent, setTurnIntentToServiceIntent] = useState<
     Intent | null
   >(null);
 
-  const { data: intentsFullResponse } = useQuery({
+  const { data: intentsFullResponse, isLoading } = useQuery({
     queryKey: ['intents/intents-full'],
   });
 
@@ -50,17 +50,19 @@ const Intents: FC = () => {
   });
 
   let intentsFullList = intentsFullResponse?.response?.data?.intents;
-  const intents: Intent[] = [];
+  let intents: Intent[] = [];
 
   if (intentsFullList) {
     intentsFullList.forEach((intent: any) => {
+      const formattedTitle = intent.title.replace(/_/g, ' ');
+      const countExamples = intent.examples.length;
       const newIntent: Intent = {
-        id: intent.id,
-        intent: intent.title,
+        id: intent.title,
+        intent: formattedTitle,
         description: null,
         inModel: intent.inmodel,
         modifiedAt: '',
-        examplesCount: intent.count,
+        examplesCount: countExamples,
         examples: intent.examples
       };
       intents.push(newIntent);
@@ -75,7 +77,19 @@ const Intents: FC = () => {
     }
   };
 
-  function isValidDate(dateString) {
+  const queryRefresh = useCallback(function queryRefresh(selectIntent: string | null) {
+    setSelectedIntent(null);
+    queryClient.fetchQuery(["intents/intents-full"]).then(() => {
+      setRefreshing(false);
+      if (intents.length > 0) {
+        setSelectedIntent(() => {
+          return intents.find((intent) => intent.intent === selectIntent) || null;
+        });
+      }
+    });
+  }, [intents, queryClient]);
+
+  function isValidDate(dateString: string | number | Date) {
     const date = new Date(dateString);
     return !isNaN(date.getTime());
   }
@@ -92,14 +106,16 @@ const Intents: FC = () => {
   }, [intents, searchParams]);
 
   const addExamplesMutation = useMutation({
-    mutationFn: ({ intentId, example }: { intentId: string | number; example: string; }) => {
-      return addExample(intentId, { example });
-    },
+    mutationFn: (addExamplesData: { intentName: string, intentExamples: string[], newExamples: string }) =>
+        addExample(addExamplesData),
+    onMutate: () => { setRefreshing(true) },
     onSuccess: async () => {
+      await queryClient.invalidateQueries(['intents/intents-full']);
+      await queryClient.refetchQueries(['intents/intents-full']);
+      getExampleArrayForIntentId(selectedIntent as Intent).push('');
+      setRefreshing(false);
       if (selectedIntent) {
-        await queryClient.invalidateQueries({
-          queryKey: [`intents/${selectedIntent.id}/examples`],
-        });
+        setRefreshing(false);
       }
       toast.open({
         type: 'success',
@@ -114,37 +130,20 @@ const Intents: FC = () => {
         message: error.message,
       });
     },
-  });
-
-  const removeFromModelMutation = useMutation({
-    mutationFn: ({
-      id,
-      data,
-    }: {
-      id: string | number;
-      data: { inModel: boolean };
-    }) => editIntent(id, data),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries(['intents']);
-      toast.open({
-        type: 'success',
-        title: t('global.notification'),
-        message: 'Intent removed from model',
-      });
-    },
-    onError: (error: AxiosError) => {
-      toast.open({
-        type: 'error',
-        title: t('global.notificationError'),
-        message: error.message,
-      });
-    },
+    onSettled: () => {
+      queryRefresh(selectedIntent?.intent || '');
+    }
   });
 
   const deleteIntentMutation = useMutation({
-    mutationFn: ({ id }: { id: string | number }) => deleteIntent(id),
+    mutationFn: (data: { name: string }) => deleteIntent(data),
+    onMutate: () => {
+      setRefreshing(true);
+      setDeletableIntent(null) },
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['intents']);
+      setSelectedIntent(null)
+      queryRefresh(null);
+      setRefreshing(false);
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -158,6 +157,14 @@ const Intents: FC = () => {
         message: error.message,
       });
     },
+    onSettled: () => {
+      intents = intents.filter(intent => intent.intent !== selectedIntent?.intent);
+      setRefreshing(false);
+    }
+  });
+
+  const intentModifiedMutation = useMutation({
+    mutationFn: (data: { intentName: string }) => getLastModified(data),
   });
 
   const turnIntentIntoServiceMutation = useMutation({
@@ -187,25 +194,40 @@ const Intents: FC = () => {
     return intents.filter((intent) => intent.intent?.includes(filter));
   }, [intents, filter]);
 
-  // console.log("FILTERED: " + filteredIntents);
-
   const handleTabsValueChange = useCallback(
-    (value: string) => {
-      setEditingIntentTitle(null);
-      if (!intents) return;
-      const selectedIntent = intents.find((intent) => intent.intent === value);
-      if (selectedIntent) {
-        setSelectedIntent(selectedIntent);
-        setSelectedTab(selectedIntent.intent);
-      }
-    },
-    [intents]
+      (value: string) => {
+        setEditingIntentTitle(null);
+        setSelectedIntent(null);
+        if (!intents) return;
+        const selectedIntent = intents.find((intent) => intent.intent === value);
+        if (selectedIntent) {
+          queryRefresh(selectedIntent.intent || '');
+          intentModifiedMutation.mutate(
+              { intentName: selectedIntent.intent },
+              {
+                onSuccess: (data) => {
+                  selectedIntent.modifiedAt = data.response;
+                  setSelectedIntent(selectedIntent);
+                  setSelectedTab(selectedIntent.intent);
+                },
+                onError: (error) => {
+                  selectedIntent.modifiedAt = "";
+                  setSelectedIntent(selectedIntent);
+                  setSelectedTab(selectedIntent.intent);
+                }
+              }
+          );
+        }
+      },
+      [intentModifiedMutation, intents, queryRefresh]
   );
+
 
   const newIntentMutation = useMutation({
     mutationFn: (data: { name: string }) => addIntent(data),
+    onMutate: () => { setRefreshing(true) },
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['intents']);
+      queryRefresh(filter);
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -219,14 +241,18 @@ const Intents: FC = () => {
         message: error.message,
       });
     },
-    onSettled: () => setFilter(''),
+    onSettled: () => {
+      setFilter('');
+      setRefreshing(false);
+    },
   });
 
   const intentEditMutation = useMutation({
-    mutationFn: ({ id, intent }: { id: string | number; intent: string }) =>
-      editIntent(id, { intent }),
+    mutationFn: (editIntentData: { oldName: string; newName: string }) =>
+        editIntent(editIntentData),
+    onMutate: () => { setRefreshing(true); },
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['intents']);
+      queryRefresh(editingIntentTitle);
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -240,27 +266,132 @@ const Intents: FC = () => {
         message: error.message,
       });
     },
-    onSettled: () => setEditingIntentTitle(null),
+    onSettled: () => {
+      setEditingIntentTitle(null);
+      setRefreshing(false);
+    },
   });
 
-  if (!intents) return <>Loading...</>;
+  const intentModelMutation = useMutation({
+    mutationFn: (intentModelData: { name: string; inModel: boolean }) =>
+        addRemoveIntentModel(intentModelData),
+    onMutate: () => {
+      setRefreshing(true);
+    },
+    onSuccess: async () => {
+      if (selectedIntent?.inModel === true) {
+        toast.open({
+          type: 'success',
+          title: t('global.notification'),
+          message: 'Intent removed from model',
+        });
+      } else {
+        toast.open({
+          type: 'success',
+          title: t('global.notification'),
+          message: 'Intent added to model',
+        });
+      }
+      queryRefresh(selectedIntent?.intent || '');
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
+    onSettled: () => {
+      setEditingIntentTitle(null);
+      setRefreshing(false);
+    },
+  });
+
+  const intentDownloadMutation = useMutation({
+    mutationFn: (intentModelData: { intentName: string }) =>
+        downloadExamples(intentModelData),
+    onSuccess: (data) => {
+      // @ts-ignore
+      const blob = new Blob([data], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = selectedIntent?.id + '.csv';
+      a.click();
+      window.URL.revokeObjectURL(url);
+
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: 'Examples sent for downloading',
+      });
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
+  });
+
+  const intentUploadMutation = useMutation({
+    mutationFn: ({ intentName, formData }: { intentName: string, formData: File }) =>
+        uploadExamples(intentName, formData),
+    onSuccess: () => {
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: 'File uploaded successfully',
+      });
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
+  });
 
   const handleNewExample = (example: string) => {
     if (!selectedIntent) return;
-    addExamplesMutation.mutate({ intentId: selectedIntent.id, example });
+    addExamplesMutation.mutate({
+        intentName: selectedIntent.intent,
+        intentExamples: selectedIntent.examples,
+        newExamples: example
+    });
   };
 
-  const handleIntentExamplesUpload = (intentId: string | number) => {
-    // TODO: Add endpoint for mocking intent examples file upload
+  const handleIntentExamplesUpload = () => {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = '.csv';
+
+    input.addEventListener('change', async (event) => {
+      const fileInput = event.target as HTMLInputElement;
+      const files = fileInput.files;
+
+      if (!files || files.length === 0) {
+        return;
+      }
+
+      const file = files[0];
+
+      try {
+        await intentUploadMutation.mutateAsync({
+          intentName: selectedIntent?.id || '',
+          formData: file
+        });
+      } catch (error) {
+      }
+    });
+
     input.click();
   };
 
-  const handleIntentExamplesDownload = (intentId: string | number) => {
-    // TODO: Add endpoint for mocking intent examples download
-  };
+
+  if (isLoading) return <>Loading...</>;
 
   return (
     <>
@@ -362,8 +493,8 @@ const Intents: FC = () => {
                           appearance="text"
                           onClick={() =>
                             intentEditMutation.mutate({
-                              id: selectedIntent.id,
-                              intent: editingIntentTitle,
+                              oldName: selectedIntent.intent,
+                              newName: editingIntentTitle,
                             })
                           }
                         >
@@ -382,16 +513,15 @@ const Intents: FC = () => {
                         </Button>
                       )}
                     </Track>
-                    <p style={{ color: '#4D4F5D' }}>{t('global.modifiedAt')}:
+                    <p style={{ color: '#4D4F5D' }}>
+                      {t('global.modifiedAt')}:
                       {isValidDate(selectedIntent.modifiedAt) ? (
-                          ` ${format(
-                              new Date(selectedIntent.modifiedAt),
-                              'dd.MM.yyyy'
-                          )}`
+                          ` ${format(new Date(selectedIntent.modifiedAt), 'dd.MM.yyyy')}`
                       ) : (
                           ` ${t('global.missing')}`
                       )}
                     </p>
+
 
                   </Track>
                   <Track justify="end" gap={8} isMultiline={true}>
@@ -406,7 +536,7 @@ const Intents: FC = () => {
                     <Button
                       appearance="secondary"
                       onClick={() =>
-                        handleIntentExamplesUpload(selectedIntent.id)
+                        handleIntentExamplesUpload()
                       }
                     >
                       {t('training.intents.upload')}
@@ -414,7 +544,9 @@ const Intents: FC = () => {
                     <Button
                       appearance="secondary"
                       onClick={() =>
-                        handleIntentExamplesDownload(selectedIntent.id)
+                        intentDownloadMutation.mutate({
+                          intentName: selectedIntent.intent
+                        })
                       }
                     >
                       {t('training.intents.download')}
@@ -423,20 +555,25 @@ const Intents: FC = () => {
                       <Button
                         appearance="secondary"
                         onClick={() =>
-                          removeFromModelMutation.mutate({
-                            id: selectedIntent.id,
-                            data: { inModel: false },
+                          intentModelMutation.mutate({
+                            name: selectedIntent.intent,
+                            inModel: true,
                           })
                         }
                       >
                         {t('training.intents.removeFromModel')}
                       </Button>
                     ) : (
-                      <Button>{t('training.intents.addToModel')}</Button>
+                        <Button onClick={() =>
+                            intentModelMutation.mutate({
+                              name: selectedIntent.intent,
+                              inModel: false
+                            })
+                        }>{t('training.intents.addToModel')}</Button>
                     )}
                     <Button
                       appearance="error"
-                      onClick={() => setDeletableIntent(selectedIntent.id)}
+                      onClick={() => setDeletableIntent(selectedIntent)}
                     >
                       {t('global.delete')}
                     </Button>
@@ -450,6 +587,7 @@ const Intents: FC = () => {
                     onAddNewExample={handleNewExample}
                     entities={entities ?? []}
                     selectedIntent={selectedIntent}
+                    queryRefresh={queryRefresh}
                   />
                 )}
               </div>
@@ -473,7 +611,7 @@ const Intents: FC = () => {
               <Button
                 appearance="error"
                 onClick={() =>
-                  deleteIntentMutation.mutate({ id: deletableIntent })
+                  deleteIntentMutation.mutate({name: deletableIntent.intent })
                 }
               >
                 {t('global.yes')}
@@ -511,6 +649,11 @@ const Intents: FC = () => {
         >
           <p>{t('global.removeValidation')}</p>
         </Dialog>
+      )}
+      {refreshing && (
+         <LoadingDialog title={t('global.updatingDataHead')} >
+              <p>{t('global.updatingDataBody')}</p>
+         </LoadingDialog>
       )}
     </>
   );

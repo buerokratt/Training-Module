@@ -15,12 +15,13 @@ router.post('/', (req, res) => {
         res.status(400).send('Relative paths are not allowed');
         return;
     }
+
     fs.access(filePath, (err) => {
         if (err) {
             console.error(err);
-            res.json(false);
+            res.json(false).send();
         } else {
-            res.json(true);
+            res.json(true).send();
         }
     });
 });

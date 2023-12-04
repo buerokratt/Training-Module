@@ -1,0 +1,12 @@
+step_1:
+  call: reflect.mock
+  args:
+    response:
+      data:
+        get_user:
+          - authorities:
+              - "ROLE_ADMINISTRATOR"
+  result: reflected_request
+
+step_2:
+  return: ${reflected_request.response.body}

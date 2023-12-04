@@ -1,14 +1,19 @@
 import express from 'express';
 import multer from 'multer';
 import Papa from 'papaparse';
-import base64ToText from './base64ToText.js';
-
+import fs from 'fs';
 const router = express.Router();
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
-router.post('/', multer().array('file'), async (req, res) => {
-    const file = base64ToText(req.body.file);
-    let result = Papa.parse(file, { skipEmptyLines: true });
-    res.send(result.data);
+router.post('/', upload.single('file'), async (req, res) => {
+    if (!req.body.file) {
+        return res.status(400).json({ error: "No file uploaded" }).send();
+    }
+    const fileContent = Object.values(req.body.file)[0];
+    const result = Papa.parse(fileContent, { skipEmptyLines: true });
+    const csvData = result.data;
+    res.json(csvData);
 });
 
 export default router;

@@ -2,42 +2,28 @@ assign_values:
   assign:
     rule: ${incoming.body.rule}
 
-authenticate:
-  template: extract-token
-  requestType: post
-  headers:
-    cookie: ${incoming.headers.cookie}
-  body:
-    role: "ROLE_ADMINISTRATOR"
-  result: permission
-
-validatePermission:
-  switch:
-    - condition: ${permission}
-      next: getFileLocations
-      # next: getRuleWithName comment back in after opensearch starts persisting data changes, as currently it breaks the flow
-  next: returnUnauthorized
-
 getRuleWithName:
   call: http.post
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/rules"
+    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/rasa/rules"
     headers:
-      cookie: ${cookie}
+      cookie: ${incoming.headers.cookie}
     body:
       rule: ${rule}
   result: ruleResult
 
 validateRules:
   switch:
-    - condition: ${ruleResult.response.body.response.rule != null}
+    - condition: ${ruleResult.response.body.response.data.rule == rule}
       next: getFileLocations
   next: returnRulesIsMissing
 
 getFileLocations:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+    headers:
+      cookie: ${incoming.headers.cookie}
   result: fileLocations
 
 getRulesFile:
@@ -82,6 +68,15 @@ saveRulesFile:
       file_path: ${fileLocations.response.body.response.rules_location}
       content: ${rulesYaml.response.body.json}
   result: fileResult
+  next: updateOpenSearch
+
+updateOpenSearch:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/bulk/rules/rule"
+    body:
+      input: ${rulesYaml.response.body.json}
+  result: updateSearchResult
   next: returnSuccess
 
 returnSuccess:

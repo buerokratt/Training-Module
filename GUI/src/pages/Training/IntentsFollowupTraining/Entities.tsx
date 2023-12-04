@@ -25,8 +25,8 @@ const Entities: FC = () => {
   } | null>(null);
   const [deletableRow, setDeletableRow] = useState<string | number | null>(null);
   const [newEntityFormOpen, setNewEntityFormOpen] = useState(false);
-  const { data: entities } = useQuery<Entity[]>({
-    queryKey: ['entities'],
+  const { data: entities, refetch } = useQuery<Entity[]>({
+    queryKey: ['entities']
   });
   const { register, handleSubmit } = useForm<{ entity: string }>();
 
@@ -40,6 +40,7 @@ const Entities: FC = () => {
     mutationFn: (data: { entity: string }) => addEntity(data),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['entities']);
+      refetch();
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -60,6 +61,7 @@ const Entities: FC = () => {
     mutationFn: ({ data }: { data: { entity_name: string, entity: string, intent: string } }) => editEntity(data),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['entities']);
+      refetch();
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -80,6 +82,7 @@ const Entities: FC = () => {
     mutationFn: (entityData: { entity_name: string | number }) => deleteEntity(entityData),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['entities']);
+      refetch();
       toast.open({
         type: 'success',
         title: t('global.notification'),

@@ -11,8 +11,16 @@ import { Button, Card, Dialog, FormInput, Icon, Switch, Tooltip, Track } from 'c
 import { useToast } from 'hooks/useToast';
 import { Intent } from 'types/intent';
 import { Entity } from 'types/entity';
-import { addExample, deleteIntent, editIntent } from 'services/intents';
+import {
+  addExample,
+  addRemoveIntentModel,
+  deleteIntent, downloadExamples,
+  editIntent,
+  getLastModified,
+  uploadExamples
+} from 'services/intents';
 import IntentExamplesTable from './IntentExamplesTable';
+import LoadingDialog from "../../../components/LoadingDialog";
 
 const CommonIntents: FC = () => {
   const { t } = useTranslation();
@@ -24,38 +32,83 @@ const CommonIntents: FC = () => {
   const [selectedIntent, setSelectedIntent] = useState<Intent | null>(null);
   const [deletableIntent, setDeletableIntent] = useState<string | number | null>(null);
   const [filter, setFilter] = useState('');
-  const { data: intents } = useQuery<Intent[]>({
-    queryKey: ['intents'],
-    enabled: commonIntentsEnabled,
+  const [refreshing, setRefreshing] = useState(false);
+
+  const { data: intentsFullResponse, isLoading } = useQuery({
+    queryKey: ['intents/common-intents'],
   });
-  const { data: examples } = useQuery<string[]>({
-    queryKey: [`intents/${selectedIntent?.id}/examples`, selectedIntent?.id],
-    enabled: !!selectedIntent,
-  });
+
   const { data: entities } = useQuery<Entity[]>({
     queryKey: ['entities'],
   });
 
+  let intentsFullList = intentsFullResponse?.response?.data?.intents;
+  let commonIntents: Intent[] = [];
+
+  if (intentsFullList) {
+    intentsFullList.forEach((intent: any) => {
+      const formattedTitle = intent.title.replace(/_/g, ' ');
+      const countExamples = intent.examples.length;
+      const newIntent: Intent = {
+        id: intent.title,
+        intent: formattedTitle,
+        description: null,
+        inModel: intent.inmodel,
+        modifiedAt: '',
+        examplesCount: countExamples,
+        examples: intent.examples
+      };
+      commonIntents.push(newIntent);
+    });
+  }
+
   useEffect(() => {
     const queryIntentName = searchParams.get('intent');
-    if (intents && queryIntentName) {
-      const queryIntent = intents.find((intent) => intent.intent === queryIntentName);
+    if (commonIntents && queryIntentName) {
+      const queryIntent = commonIntents.find((intent) => intent.intent === queryIntentName);
       if (queryIntent) {
         setSelectedIntent(queryIntent);
         setSelectedTab(queryIntentName);
       }
     }
-  }, [intents, searchParams]);
+  }, [commonIntents, searchParams]);
+
+  const getExampleArrayForIntentId = (intent: Intent): string[] => {
+    if (selectedIntent) {
+      return selectedIntent.examples;
+    } else {
+      return [];
+    }
+  };
+
+  function isValidDate(dateString: string | number | Date) {
+    const date = new Date(dateString);
+    return !isNaN(date.getTime());
+  }
+
+  const queryRefresh = useCallback(function queryRefresh(selectIntent: string | null) {
+    setSelectedIntent(null);
+    queryClient.fetchQuery(["intents/intents-full"]).then(() => {
+      setRefreshing(false);
+      if (commonIntents.length > 0) {
+        setSelectedIntent(() => {
+          return commonIntents.find((intent) => intent.intent === selectIntent) || null;
+        });
+      }
+    });
+  }, [commonIntents, queryClient]);
 
   const addExamplesMutation = useMutation({
-    mutationFn: ({ intentId, example }: { intentId: string | number; example: string; }) => {
-      return addExample(intentId, { example });
-    },
+    mutationFn: (addExamplesData: { intentName: string, intentExamples: string[], newExamples: string }) =>
+        addExample(addExamplesData),
+    onMutate: () => { setRefreshing(true) },
     onSuccess: async () => {
+      await queryClient.invalidateQueries(['intents/intents-full']);
+      await queryClient.refetchQueries(['intents/intents-full']);
+      getExampleArrayForIntentId(selectedIntent as Intent).push('');
+      setRefreshing(false);
       if (selectedIntent) {
-        await queryClient.invalidateQueries({
-          queryKey: [`intents/${selectedIntent.id}/examples`],
-        });
+        setRefreshing(false);
       }
       toast.open({
         type: 'success',
@@ -70,17 +123,32 @@ const CommonIntents: FC = () => {
         message: error.message,
       });
     },
+    onSettled: () => {
+      queryRefresh(selectedIntent?.intent || '');
+    }
   });
 
   const intentModelMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string | number, data: { inModel: boolean } }) => editIntent(id, data),
+    mutationFn: (intentModelData: { name: string; inModel: boolean }) =>
+        addRemoveIntentModel(intentModelData),
+    onMutate: () => {
+      setRefreshing(true);
+    },
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['intents']);
-      toast.open({
-        type: 'success',
-        title: t('global.notification'),
-        message: 'Intent updated',
-      });
+      if (selectedIntent?.inModel === true) {
+        toast.open({
+          type: 'success',
+          title: t('global.notification'),
+          message: 'Intent removed from model',
+        });
+      } else {
+        toast.open({
+          type: 'success',
+          title: t('global.notification'),
+          message: 'Intent added to model',
+        });
+      }
+      queryRefresh(selectedIntent?.intent || '');
     },
     onError: (error: AxiosError) => {
       toast.open({
@@ -89,12 +157,20 @@ const CommonIntents: FC = () => {
         message: error.message,
       });
     },
+    onSettled: () => {
+      setRefreshing(false);
+    },
   });
 
   const deleteIntentMutation = useMutation({
-    mutationFn: ({ id }: { id: string | number }) => deleteIntent(id),
+    mutationFn: (data: { name: string }) => deleteIntent(data),
+    onMutate: () => {
+      setRefreshing(true);
+      setDeletableIntent(null) },
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['intents']);
+      setSelectedIntent(null)
+      queryRefresh(null);
+      setRefreshing(false);
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -108,42 +184,132 @@ const CommonIntents: FC = () => {
         message: error.message,
       });
     },
+    onSettled: () => {
+      commonIntents = commonIntents.filter(intent => intent.intent !== selectedIntent?.intent);
+      setRefreshing(false);
+    }
   });
 
-  const filteredIntents = useMemo(
-    () =>
-      intents ? intents.filter((intent) => intent.intent.includes(filter)) : [],
-    [intents, filter],
-  );
+  const filteredIntents = useMemo(() => {
+    if (!commonIntents) return [];
+    return commonIntents.filter((intent) => intent.intent?.includes(filter));
+  }, [commonIntents, filter]);
+
+  const intentModifiedMutation = useMutation({
+    mutationFn: (data: { intentName: string }) => getLastModified(data),
+  });
 
   const handleTabsValueChange = useCallback(
-    (value: string) => {
-      if (!intents) return;
-      const selectedIntent = intents.find((intent) => intent.intent === value);
-      if (selectedIntent) {
-        setSelectedIntent(selectedIntent);
-        setSelectedTab(selectedIntent.intent);
-      }
-    },
-    [intents],
+      (value: string) => {
+        setSelectedIntent(null);
+        if (!commonIntents) return;
+        const selectedIntent = commonIntents.find((intent) => intent.intent === value);
+        if (selectedIntent) {
+          queryRefresh(selectedIntent.intent || '');
+          intentModifiedMutation.mutate(
+              { intentName: selectedIntent.intent },
+              {
+                onSuccess: (data) => {
+                  selectedIntent.modifiedAt = data.response;
+                  setSelectedIntent(selectedIntent);
+                  setSelectedTab(selectedIntent.intent);
+                },
+                onError: () => {
+                  selectedIntent.modifiedAt = "";
+                  setSelectedIntent(selectedIntent);
+                  setSelectedTab(selectedIntent.intent);
+                }
+              }
+          );
+        }
+      },
+      [intentModifiedMutation, commonIntents, queryRefresh]
   );
 
   const handleNewExample = (example: string) => {
     if (!selectedIntent) return;
-    addExamplesMutation.mutate({ intentId: selectedIntent.id, example });
+    addExamplesMutation.mutate({
+      intentName: selectedIntent.intent,
+      intentExamples: selectedIntent.examples,
+      newExamples: example
+    });
   };
 
-  const handleIntentExamplesUpload = (intentId: string | number) => {
-    // TODO: Add endpoint for mocking intent examples file upload
+  const intentDownloadMutation = useMutation({
+    mutationFn: (intentModelData: { intentName: string }) =>
+        downloadExamples(intentModelData),
+    onSuccess: (data) => {
+      // @ts-ignore
+      const blob = new Blob([data], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = selectedIntent?.id + '.csv';
+      a.click();
+      window.URL.revokeObjectURL(url);
+
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: 'Examples sent for downloading',
+      });
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
+  });
+
+  const handleIntentExamplesUpload = () => {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = '.csv';
+
+    input.addEventListener('change', async (event) => {
+      const fileInput = event.target as HTMLInputElement;
+      const files = fileInput.files;
+
+      if (!files || files.length === 0) {
+        return;
+      }
+
+      const file = files[0];
+
+      try {
+        await intentUploadMutation.mutateAsync({
+          intentName: selectedIntent?.id || '',
+          formData: file
+        });
+      } catch (error) {
+      }
+    });
+
     input.click();
   };
 
-  const handleIntentExamplesDownload = (intentId: string | number) => {
-    // TODO: Add endpoint for mocking intent examples download
-  };
+  const intentUploadMutation = useMutation({
+    mutationFn: ({ intentName, formData }: { intentName: string, formData: File }) =>
+        uploadExamples(intentName, formData),
+    onSuccess: () => {
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: 'File uploaded successfully',
+      });
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
+  });
+
+  if (isLoading) return <>Loading...</>;
 
   return (
     <>
@@ -172,7 +338,7 @@ const CommonIntents: FC = () => {
         </Track>
       </Card>
 
-      {commonIntentsEnabled && intents && (
+      {commonIntentsEnabled && commonIntents && (
         <Tabs.Root
           id="tabs"
           className='vertical-tabs'
@@ -248,17 +414,19 @@ const CommonIntents: FC = () => {
                       <h3>{selectedIntent.intent}</h3>
                     </Track>
                     <p style={{ color: '#4D4F5D' }}>
-                      {`${t('global.modifiedAt')} ${format(
-                        new Date(selectedIntent.modifiedAt),
-                        'dd.MM.yyyy',
-                      )}`}
+                      {t('global.modifiedAt')}:
+                      {isValidDate(selectedIntent.modifiedAt) ? (
+                          ` ${format(new Date(selectedIntent.modifiedAt), 'dd.MM.yyyy')}`
+                      ) : (
+                          ` ${t('global.missing')}`
+                      )}
                     </p>
                   </Track>
                   <Track justify='end' gap={8}>
                     <Button
                       appearance='secondary'
                       onClick={() =>
-                        handleIntentExamplesUpload(selectedIntent.id)
+                        handleIntentExamplesUpload()
                       }
                     >
                       {t('training.intents.upload')}
@@ -266,7 +434,9 @@ const CommonIntents: FC = () => {
                     <Button
                       appearance='secondary'
                       onClick={() =>
-                        handleIntentExamplesDownload(selectedIntent.id)
+                          intentDownloadMutation.mutate({
+                            intentName: selectedIntent.intent
+                          })
                       }
                     >
                       {t('training.intents.download')}
@@ -275,17 +445,21 @@ const CommonIntents: FC = () => {
                       <Button
                         appearance='secondary'
                         onClick={() =>
-                          intentModelMutation.mutate({ id: selectedIntent.id, data: { inModel: false } })
+                            intentModelMutation.mutate({
+                              name: selectedIntent.intent,
+                              inModel: true,
+                            })
                         }
                       >
                         {t('training.intents.removeFromModel')}
                       </Button>
                     ) : (
-                      <Button onClick={() =>
-                        intentModelMutation.mutate({ id: selectedIntent.id, data: { inModel: true } })
-                      }>
-                        {t('training.intents.addToModel')}
-                      </Button>
+                        <Button onClick={() =>
+                            intentModelMutation.mutate({
+                              name: selectedIntent.intent,
+                              inModel: false
+                            })
+                        }>{t('training.intents.addToModel')}</Button>
                     )}
                     <Button
                       appearance='error'
@@ -296,14 +470,15 @@ const CommonIntents: FC = () => {
                   </Track>
                 </Track>
               </div>
-              <div className='vertical-tabs__content'>
-                {examples && (
-                  <IntentExamplesTable
-                    examples={examples}
-                    onAddNewExample={handleNewExample}
-                    entities={entities ?? []}
-                    selectedIntent={ selectedIntent }
-                  />
+              <div className="vertical-tabs__content">
+                {getExampleArrayForIntentId(selectedIntent) && (
+                    <IntentExamplesTable
+                        examples={getExampleArrayForIntentId(selectedIntent) }
+                        onAddNewExample={handleNewExample}
+                        entities={entities ?? []}
+                        selectedIntent={selectedIntent}
+                        queryRefresh={queryRefresh}
+                    />
                 )}
               </div>
             </Tabs.Content>
@@ -320,7 +495,9 @@ const CommonIntents: FC = () => {
               <Button appearance='secondary' onClick={() => setDeletableIntent(null)}>{t('global.no')}</Button>
               <Button
                 appearance='error'
-                onClick={() => deleteIntentMutation.mutate({ id: deletableIntent })}
+                onClick={() =>
+                    deleteIntentMutation.mutate({name: deletableIntent.intent })
+                }
               >
                 {t('global.yes')}
               </Button>
@@ -329,6 +506,11 @@ const CommonIntents: FC = () => {
         >
           <p>{t('global.removeValidation')}</p>
         </Dialog>
+      )}
+      {refreshing && (
+          <LoadingDialog title={t('global.updatingDataHead')} >
+            <p>{t('global.updatingDataBody')}</p>
+          </LoadingDialog>
       )}
     </>
   );

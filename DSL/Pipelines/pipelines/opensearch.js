@@ -74,12 +74,15 @@ router.post('/put/:index_name/:index_type', upload.single('input'), (req, res) =
 	if (input.nlu)
 		input = input.nlu;
 
+	if (input.data)
+		input = input.data
+
 	var index_name = req.params.index_name;
 	var index_type = req.params.index_type;
 
 	if (index_type) {
 		var obj = input[0];
-		obj.id = sanitize.sanitize.addDash(obj[index_type]);
+		obj.id = obj[index_type].replaceAll(/\s+/g, "_");
 	}
 
 	osPut(index_name, obj)
@@ -149,6 +152,20 @@ router.post('/delete/:index_name', (req,res) => {
 	});
 
 })
+
+router.post('/delete/object/:index_name', (req, res) => {
+	var index_name = req.params.index_name;
+	var obj_id = req.body.id;
+
+	osDeleteObject(index_name, obj_id).then((ret) => {
+		res.status(200);
+		res.end(JSON.stringify(ret));
+	}).catch((e) => {
+		res.status(500);
+		res.end();
+		console.log(e);
+	});
+});
 
 router.post('/delete/:index_name/:obj_id', (req, res) => {
 	var index_name = req.params.index_name;

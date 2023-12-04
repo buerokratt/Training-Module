@@ -1,42 +1,29 @@
 assign_values:
   assign:
-    story: ${incoming.body.story}
-
-authenticate:
-  template: extract-token
-  requestType: post
-  headers:
-    cookie: ${incoming.headers.cookie}
-  body:
-    role: "ROLE_ADMINISTRATOR"
-  result: permission
-
-validatePermission:
-  switch:
-    - condition: ${permission}
-      next: getTestStoriesWithName
-  next: returnUnauthorized
+    body: ${incoming.body}
 
 getStoriesWithName:
   call: http.post
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/stories"
+    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/rasa/story-by-name"
     headers:
-      cookie: ${cookie}
+      cookie: ${incoming.headers.cookie}
     body:
-      story: ${story}
+      story: ${body.story}
   result: storiesResult
 
 validateStories:
   switch:
-    - condition: ${storiesResult.response.body.response.story != null}
+    - condition: ${storiesResult.response.body.response.story == body.story}
       next: getFileLocations
   next: returnStoryIsMissing
 
 getFileLocations:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+    headers:
+      cookie: ${incoming.headers.cookie}
   result: fileLocations
 
 getStoriesFile:
@@ -61,7 +48,7 @@ deleteStory:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/delete-story"
     body:
       stories: ${storiesData.response.body.stories}
-      story_name: ${story}
+      story_name: ${body.story}
   result: deleteStoriesData
 
 convertJsonToYaml:
@@ -81,6 +68,13 @@ saveStoriesFile:
       file_path: ${fileLocations.response.body.response.stories_location}
       content: ${storiesYaml.response.body.json}
   result: fileResult
+  next: updateOpenSearch
+
+updateOpenSearch:
+  call: http.delete
+  args:
+    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/stories/_doc/${storiesResult.response.body.response.id}"
+  result: updateSearchResult
   next: returnSuccess
 
 returnSuccess:

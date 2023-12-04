@@ -2,22 +2,19 @@ version: '3.9'
 services:
   ruuter:
     container_name: byk-private-ruuter
-    build:
-      context: ./ruuter
-      dockerfile: Dockerfile
+    image: ruuter
     environment:
       - application.cors.allowedOrigins=http://localhost:3001, http://localhost:3002
     volumes:
       - ./DSL/Ruuter.private:/DSL
+      - ./constants.ini:/app/constants.ini
     ports:
       - 8080:8080
     networks:
       - bykstack
   resql:
     container_name: byk-resql
-    build:
-      context: ./Resql
-      dockerfile: Dockerfile
+    image: resql
     ports:
       - 8082:8082
     volumes:
@@ -55,7 +52,7 @@ services:
       context: ./DSL/DataMapper
     volumes:
       - ./mock1:/mock1
-#      - ../Service-Module/DSL/mock1:/mock1
+      - ../Service-Module/DSL/mock1:/mock2
     ports:
       - 3000:3000
     networks:
@@ -73,13 +70,44 @@ services:
       - ./GUI:/app
     networks:
       - bykstack
-  postgresql:
-    image: postgres:latest
-    container_name: training-postgresql
+
+  # TIM part is commented out in case a developer needs to run just the training module part
+  # tim:
+  #  container_name: tim
+  #  image: tim
+  #  depends_on:
+  #    - tim-postgresql
+  #  ports:
+  #    - 8085:8085
+  #  networks:
+  #    - bykstack
+  #  extra_hosts:
+  #    - "host.docker.internal:host-gateway"
+  #  cpus: "0.5"  (Example CPU limit)
+  #  mem_limit: "512M"  (Example memory limit)
+
+  # tim-postgresql:
+  #  container_name: tim-postgresql
+  #  image: postgres:14.1
+  #  environment:
+  #    - POSTGRES_USER=tim
+  #    - POSTGRES_PASSWORD=123
+  #    - POSTGRES_DB=tim
+  #    - POSTGRES_HOST_AUTH_METHOD=trust
+  #  volumes:
+  #    - ./tim-db:/var/lib/postgresql/data
+  #  ports:
+  #    - 9876:5432
+  #  networks:
+  #    - bykstack
+  pipelines:
+    container_name: pipelines
+    build:
+      context: ./DSL/Pipelines
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgres
+      - OPENSEARCH_PROTOCOL=http
+    ports:
+      - 3010:3010
     networks:
       - bykstack
 

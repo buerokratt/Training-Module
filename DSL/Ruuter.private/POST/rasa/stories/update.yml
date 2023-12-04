@@ -1,42 +1,32 @@
 assign_values:
   assign:
-    body: ${incoming.body}
-
-authenticate:
-  template: extract-token
-  requestType: post
-  headers:
-    cookie: ${incoming.headers.cookie}
-  body:
-    role: "ROLE_ADMINISTRATOR"
-  result: permission
-
-validatePermission:
-  switch:
-    - condition: ${permission}
-      next: getTestStoriesWithName
-  next: returnUnauthorized
+    id: ${incoming.body.id}
+    storyData: ${incoming.body.data}
 
 getStoriesWithName:
   call: http.post
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/stories"
+    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/rasa/story-by-name"
     headers:
-      cookie: ${cookie}
+      cookie: ${incoming.headers.cookie}
     body:
-      story: ${body.story}
+      story: ${id}
   result: storiesResult
 
 validateStories:
   switch:
-    - condition: ${storiesResult.response.body.response.story != null}
-      next: getFileLocations
-  next: returnStoryIsMissing
+    - condition: ${storiesResult.response.body.response.story != id}
+      next: returnStoryIsMissing
+    - condition: ${storyData.story != id && storiesResult.response.body.response.story == storyData.story}
+      next: returnStoryExists
+  next: getFileLocations
 
 getFileLocations:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+    headers:
+      cookie: ${incoming.headers.cookie}
   result: fileLocations
 
 getStoriesFile:
@@ -55,13 +45,22 @@ convertYamlToJson:
       file: ${storiesFile.response.body.file}
   result: storiesData
 
+deleteStory:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/delete-story"
+    body:
+      stories: ${storiesData.response.body.stories}
+      story_name: ${id}
+  result: deleteStoriesData
+
 mergeStories:
   call: http.post
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/merge"
     body:
-      array1: ${storiesData.response.body.stories}
-      array2: ${[body]}
+      array1: ${deleteStoriesData.response.body.data}
+      array2: ${[storyData]}
       iteratee: "story"
   result: mergedStories
 
@@ -82,6 +81,21 @@ saveStoriesFile:
       file_path: ${fileLocations.response.body.response.stories_location}
       content: ${storiesYaml.response.body.json}
   result: fileResult
+
+deleteOldOpenSearchEntry:
+  call: http.delete
+  args:
+    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/stories/_doc/${storiesResult.response.body.response.id}"
+  result: updateSearchResult
+
+addNewOpenSearchEntry:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/stories/_doc"
+    body:
+      story: ${storyData.story}
+      steps: ${storyData.steps}
+  result: updateSearchResult
   next: returnSuccess
 
 returnSuccess:
@@ -90,4 +104,9 @@ returnSuccess:
 
 returnStoryIsMissing:
   return: "Can't find story to update"
+  next: end
+
+returnStoryExists:
+  return: "Story exists"
+  status: 409
   next: end

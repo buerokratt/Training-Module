@@ -1,36 +1,36 @@
 assign_values:
   assign:
-    intent: ${incoming.body.intent.replaceAll(/\s+/g, "_")}
-    intent_old_name: ${incoming.body.intent.replaceAll(/\s+/g, "_")}
+    intent: ${incoming.body.newName.replaceAll(/\s+/g, "_")}
+    intent_old_name: ${incoming.body.oldName.replaceAll(/\s+/g, "_")}
 
 validateInputLength:
   switch:
     - condition: ${intent.length > 5}
-      next: getDomainFile
+      next: getIntentList
   next: returnTooShortError
 
-getDomainFile:
+getIntentList:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/domain-file"
-  resu  lt: domainData
-
-validateNameExists:
-  switch:
-    - condition: ${domainData.response.body.response.intents.includes(intent_old_name)}
-      next: returnIntentExists
-  next: validateIntentExists
+    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/rasa/intents"
+    headers:
+      cookie: ${incoming.headers.cookie}
+  result: intentList
 
 validateIntentExists:
   switch:
-    - condition: ${domainData.response.body.response.intents.includes(intent_old_name)}
-      next: getFileLocations
-  next: returnIntentMissing
+    - condition: ${!intentList.response.body}
+      next: returnIntentExists
+    - condition: ${intentList.response.body.includes(intent)}
+      next: returnIntentExists
+  next: getFileLocations
 
 getFileLocations:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+    headers:
+      cookie: ${incoming.headers.cookie}
   result: fileLocations
 
 assignFilePath:
@@ -42,7 +42,7 @@ checkIntentFileYaml:
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/check"
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
+      file_path: ${fileLocations.response.body.response.intents_location + intent_old_name + file_end}
   result: fileExists
 
 validateFileExists:
@@ -150,7 +150,7 @@ checkIntentFileTmp:
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/check"
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
+      file_path: ${fileLocations.response.body.response.intents_location + intent_old_name + file_end}
   result: tmpFileExists
 
 validateTmpFileExists:
@@ -164,7 +164,7 @@ getIntentFile:
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/read"
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
+      file_path: ${fileLocations.response.body.response.intents_location + intent_old_name + file_end}
   result: intentFile
 
 convertYamlToJson:
@@ -174,6 +174,16 @@ convertYamlToJson:
     body:
       file: ${intentFile.response.body.file}
   result: intentData
+
+checkIfIntentEmpty:
+  switch:
+    - condition: ${intentData.response.body.nlu[0] != undefined}
+      next: replaceString
+
+assignEmptyExamples:
+  assign:
+    examplesToWriteIntoYml: []
+  next: mapIntentsData
 
 replaceString:
   call: http.post
@@ -194,13 +204,17 @@ splitExamples:
       separator: "\n"
   result: splitExamples
 
+assignExamples:
+  assign:
+    examplesToWriteIntoYml: ${splitExamples.response.body}
+
 mapIntentsData:
   call: http.post
   args:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-intent-file"
     body:
       intent: ${intent}
-      examples: ${splitExamples.response.body}
+      examples: ${examplesToWriteIntoYml}
   result: intentFileJson
 
 convertJsonToYaml:
@@ -209,7 +223,7 @@ convertJsonToYaml:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml"
     body:
       version: "3.0"
-      nlu: ${intentFileJson.response.body}
+      nlu: ${intentFileJson.response.body.data}
   result: intentYaml
 
 saveIntentFile:
@@ -221,13 +235,62 @@ saveIntentFile:
       content: ${intentYaml.response.body.json}
   result: fileResult
 
+removePipe:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/replace"
+    body:
+      data: ${intentYaml.response.body.json}
+      search: "|"
+      replace: ""
+  result: pipelineIntent
+
+removeOldIntentFromPipeline:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/delete/object/intents"
+    body:
+      id: ${intent_old_name}
+  result: updateSearchResult
+
+addNewIntentInPipeline:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/put/intents/intent"
+    body:
+      input: ${pipelineIntent.response.body}
+  result: updateSearchResult
+
+addInDatabase:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]:[#TRAINING_RESQL_PORT]/add-intent"
+    body:
+      intent: ${incoming.body.newName}
+      status: "ACTIVE"
+  result: addInDatabaseResult
+
 deleteOldIntentFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/delete"
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/delete-intent"
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
+      file_path: ${fileLocations.response.body.response.intents_location + intent_old_name + file_end}
   result: deleted
+
+getDomainFile:
+  call: http.get
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/domain-file"
+    headers:
+      cookie: ${incoming.headers.cookie}
+  result: domainData
+
+validateExistsInDomain:
+  switch:
+    - condition: ${domainData.response.body.response.intents.includes(intent_old_name)}
+      next: mergeIntents
+  next: returnSuccess
 
 mergeIntents:
   call: http.post
@@ -272,15 +335,6 @@ saveDomainFile:
       content: ${domainYaml.response.body.json}
   result: fileResult
   next: returnSuccess
-
-  addInDatabase:
-    call: http.post
-    args:
-      url: "[TRAINING_RESQL]:[TRAINING_RESQL_PORT]/add-intent"
-      body:
-        intent: ${params.intent}
-        status: "ACTIVE"
-    result: getIntentLastChangedResult
 
 returnSuccess:
   return: "Intent updated"

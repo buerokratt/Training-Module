@@ -1,22 +1,19 @@
 getResponses:
   call: http.get
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/responses/_search?size=10000"
+    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/domain/_search?size=10000"
   result: getResponsesResult
 
-#mapResponsesData:
-#  call: http.post
-#  args:
-#    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-responses"
-#    body:
-#      hits: ${getResponsesResult.response.body.hits.hits}
-#  result: responsesData
-#  next: returnSuccess
+mapResponsesData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-responses"
+    body:
+      hits: ${getResponsesResult.response.body.hits.hits}
+  result: responsesData
+  next: returnSuccess
 
 returnSuccess:
-  return: ${getResponsesResult.response.body}
-  next: end
-
-returnUnauthorized:
-  return: "error: unauthorized"
+  return: ${responsesData.response.body.data.responses}
+  wrapper: false
   next: end

@@ -1,7 +1,25 @@
 {
   "responses": [
     {{#each hits}}
-      {{{toJSON this._source}}}{{#unless @last}},{{/unless}}
+      {
+        "name": "{{_source.name}}",
+        "response": [
+          {{#each _source.response}}
+            {
+              "text": "{{text}}"{{#if condition}},
+              "condition": [
+                {{#each condition}}
+                  {
+                    "type": "{{type}}",
+                    "name": "{{name}}",
+                    "value": {{#if value}}"{{value}}"{{else}}null{{/if}}
+                  }{{#unless @last}},{{/unless}}
+                {{/each}}
+              ]{{/if}}
+            }{{#unless @last}},{{/unless}}
+          {{/each}}
+        ]
+      }{{#unless @last}},{{/unless}}
     {{/each}}
   ]
 }
