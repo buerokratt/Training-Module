@@ -6,8 +6,8 @@ export async function createSlot(formData: SlotCreateDTO) {
   return data;
 }
 
-export async function editSlot(id: string | number, formData: SlotEditDTO) {
-  const { data } = await api.patch<Slot>(`slots/${id}`, formData);
+export async function editSlot(formData: SlotEditDTO) {
+  const { data } = await api.post<Slot>(`slots/update`, formData);
   return data;
 }
 
