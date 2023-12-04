@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -34,7 +34,8 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
   const toast = useToast();
   const params = useParams();
   const queryClient = useQueryClient();
-  const [selectedSlotType, setSelectedSlotType] = useState<'from_text' | 'from_entity' | null>(null);
+  const [selectedSlotType, setSelectedSlotType] = useState<'from_text' | 'from_entity' | null>('from_text');
+  const [selectedEntity, setSelectedEntity] = useState<string | null>(null);
   const { data: slot } = useQuery<Slot>({
     queryKey: [`slots/slotById`,params.id],
     enabled: mode === 'edit' && !!params.id,
@@ -53,6 +54,7 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
   useEffect(() => {
     if (slot) {
       setSelectedSlotType(slot?.mappings?.type)
+      setSelectedEntity(slot?.mappings?.entity || null)
       reset(slot);
     }
   }, [reset, slot]);
@@ -145,12 +147,17 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
         }>
           <Track direction='vertical' gap={8} align='left'>
             {entities && selectedSlotType === 'from_entity' && (
-              <FormSelect
-                {...register('mappings.entity')}
-                defaultValue={slot?.mappings.entity}
-                label='Entity'
-                options={entities.map((entity) => ({ label: entity.name, value: String(entity.id) }))}
-              />
+                <Controller name='mappings.entity' control={control} render={({ field }) =>
+                  <FormSelect
+                      {...field}
+                      label='Entity'
+                      options={entities.map((entity) => ({ label: entity.name, value: entity.name }))}
+                      onSelectionChange={(selection) => {
+                        setSelectedEntity((selection?.value || null));
+                        field.onChange(selection?.value);
+                      }}
+                  />}
+                />
             )}
             {intents &&
               <FormCheckboxes {...register('mappings.intent')} label='Intent' items={intents.map((intent) => ({
