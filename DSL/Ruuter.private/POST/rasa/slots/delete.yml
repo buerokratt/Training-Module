@@ -1,6 +1,6 @@
 assign_values:
   assign:
-    parameters: ${incoming.body}
+    slot: ${incoming.body.slotName}
   next: getDomainFile
 
 getDomainFile:
@@ -13,7 +13,7 @@ getDomainFile:
 
 validateSlots:
   switch:
-    - condition: ${domainData.response.body.response.slots[parameters.slot_name] != null}
+    - condition: ${domainData.response.body.response.slots[slot] != null && Object.keys(domainData.response.body.response.slots).includes(slot)}
       next: formSlots
   next: returnSlotIsMissing
 
@@ -24,12 +24,12 @@ formSlots:
     headers:
       cookie: ${incoming.headers.cookie}
     body:
-      slot: ${parameters.slot_name}
+      slot: ${slot}
   result: formSlots
 
 validateFormSlots:
   switch:
-    - condition: ${formSlots.response.body.response.forms.length == 0}
+    - condition: ${formSlots.response.body.response.data.forms.length == 0}
       next: ruleSlots
   next: returnSlotHasDependencyToForms
 
@@ -40,13 +40,13 @@ ruleSlots:
     headers:
       cookie: ${incoming.headers.cookie}
     body:
-      slot: ${parameters.slot_name}
+      slot: ${slot}
       type: "slots"
   result: ruleSlots
 
 validateRuleSlots:
   switch:
-    - condition: ${ruleSlots.response.body.response.rules.length == 0}
+    - condition: ${ruleSlots.response.body.response.data.rules.length == 0}
       next: storiesSlots
   next: returnSlotHasDependencyToRules
 
@@ -57,13 +57,13 @@ storiesSlots:
     headers:
       cookie: ${incoming.headers.cookie}
     body:
-      slot: ${parameters.slot_name}
+      slot: ${slot}
       type: "slots"
   result: storiesSlots
 
 validateStoriesSlots:
   switch:
-    - condition: ${storiesSlots.response.body.response.stories.length == 0}
+    - condition: ${storiesSlots.response.body.response.data.stories.length == 0}
       next: deleteKey
   next: returnSlotHasDependencyToStories
 
@@ -73,7 +73,7 @@ deleteKey:
     url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/merge/remove-key"
     body:
       object: ${domainData.response.body.response.slots}
-      key: ${parameters.slot_name}
+      key: ${slot}
   result: keyDeletedData
 
 convertJsonToYaml:
@@ -107,6 +107,14 @@ saveDomainFile:
       file_path: ${fileLocations.response.body.response.domain_location}
       content: ${domainYaml.response.body.json}
   result: fileResult
+
+updateOpenSearch:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/bulk/domain"
+    body:
+      input: ${domainYaml.response.body.json}
+  result: updateSearchResult
   next: returnSuccess
 
 returnSuccess:

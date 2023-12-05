@@ -18,7 +18,7 @@ const Slots: FC = () => {
   const queryClient = useQueryClient();
   const [filter, setFilter] = useState('');
   const [deletableSlot, setDeletableSlot] = useState<string | number | null>(null);
-  const { data: slots } = useQuery<Slot[]>({
+  const { data: slots,refetch } = useQuery<Slot[]>({
     queryKey: ['slots'],
   });
 
@@ -26,6 +26,7 @@ const Slots: FC = () => {
     mutationFn: ({ id }: { id: string | number }) => deleteSlot(id),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['slots']);
+      refetch()
       toast.open({
         type: 'success',
         title: t('global.notification'),
