@@ -49,6 +49,13 @@ const Responses: FC = () => {
     }
   }, [responses]);
 
+  // TODO: test if helps
+  const timeOutTest = () => {
+    setTimeout(() => {
+      return null;
+    }, 3000);
+  }
+
 
   useDocumentEscapeListener(() => setEditableRow(null));
 
@@ -58,12 +65,16 @@ const Responses: FC = () => {
 
   const responseSaveMutation = useMutation({
     mutationFn: ({ id, text }: { id: string, text: string }) => editResponse(id,  text),
+    onMutate: async () => {
+      await queryClient.cancelQueries(['responses-list']);
+    },
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['responses']);
-      toast.open({
-        type: 'success',
-        title: t('global.notification'),
-        message: 'Response saved',
+      queryClient.fetchQuery(['responses-list']).then(() => {
+        toast.open({
+          type: 'success',
+          title: t('global.notification'),
+          message: 'Response saved',
+        });
       });
     },
     onError: (error: AxiosError) => {
@@ -99,13 +110,19 @@ const Responses: FC = () => {
 
   const newResponseMutation = useMutation({
     mutationFn: ({ name}: { name: string}) => editResponse("utter_"+name,  editingTrainingTitle, false),
+    onMutate: async () => {
+      await queryClient.cancelQueries(['responses-list']);
+    },
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['responses']);
+      timeOutTest();
       setAddFormVisible(false);
-      toast.open({
-        type: 'success',
-        title: t('global.notification'),
-        message: 'New response added',
+      queryClient.fetchQuery(['responses-list']).then((data) => {
+        formattedResponses();
+        toast.open({
+          type: 'success',
+          title: t('global.notification'),
+          message: 'Response saved',
+        });
       });
     },
     onError: (error: AxiosError) => {

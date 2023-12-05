@@ -7,10 +7,10 @@ checkForIncomingType:
   switch:
     - condition: ${params.type == "responses"}
       next: getRulesSearchForResponses
-    - condition: ${params.type == "slots"}
-      next: getRulesSearchForResponses
     - condition: ${params.type == "forms"}
-      next: getRulesSearchForResponses
+      next: getRulesSearchForForms
+    - condition: ${params.type == "slots"}
+      next: getRulesSearchForSlots
 
 getRulesSearch:
   call: http.post
@@ -56,10 +56,14 @@ getRulesSearchForSlots:
     url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/rules/_search/template"
     body:
       id: ${"rule-with-slots"}
+      params:
+        slotname: ${value}
       source:
         query:
-          match:
-            condition.slot-was_set: ${value}
+          bool:
+            should:
+              - exists:
+                  field: "condition.slot_was_set.{{slotname}}"
   result: getRulesResult
   next: mapRulesData
 

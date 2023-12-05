@@ -116,7 +116,3 @@ returnResponseHasDependencyToRules:
 returnResponseHasDependencyToStories:
   return: "Deleting a response is forbidden because it has relation to stories"
   next: end
-
-returnUnauthorized:
-  return: "error: unauthorized"
-  next: end
