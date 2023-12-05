@@ -1,4 +1,4 @@
-import {ChangeEvent, forwardRef, useId, useState} from 'react';
+import React, {ChangeEvent, forwardRef, useId, useState} from 'react';
 
 import './FormCheckboxes.scss';
 import clsx from 'clsx';
