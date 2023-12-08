@@ -1,10 +1,11 @@
 export interface Slot {
   readonly id: number;
   name: string;
-  type: 'text' | 'entity';
+  type: 'text';
   influenceConversation: boolean;
-  mappings?: {
-    entity: string | null;
+  mappings: {
+    type: 'from_text' | 'from_entity';
+    entity: string;
     intent: string[] | null;
     notIntent: string[] | null;
   };

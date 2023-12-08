@@ -78,7 +78,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     queryKey: ['story-by-name', id],
     enabled: !!id,
   });
-  const { data: intents } = useQuery<Intent[]>({
+  const { data: intents } = useQuery<string[]>({
     queryKey: ['intents'],
   });
   const { data: responses } = useQuery<Responses>({
@@ -295,15 +295,15 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
               <Track direction='vertical' align='stretch' gap={4}>
                 {intents.map((intent) =>
                   <button
-                    key={intent.id}
+                    key={intent}
                     onClick={() => handleNodeAdd({
-                      label: intent.intent,
+                      label: intent,
                       type: 'intentNode',
                       className: 'intent',
                     })}
                   >
                     <Box color='blue'>
-                      {intent.intent}
+                      {intent}
                     </Box>
                   </button>,
                 )}
@@ -337,7 +337,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
               <Track direction='vertical' align='stretch' gap={4}>
                 {forms.map((form) => (
                   <button
-                    key={form.id}
+                    key={form.form}
                     onClick={() => handleNodeAdd({
                       label: form.form,
                       type: 'formNode',
@@ -358,7 +358,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
               <Track direction='vertical' align='stretch' gap={4}>
                 {slots.map((slot) => (
                   <button
-                    key={slot.id}
+                    key={slot.name}
                     onClick={() => handleNodeAdd({
                       label: slot.name,
                       type: 'slotNode',
