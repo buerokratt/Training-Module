@@ -59,9 +59,9 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
   });
   useEffect(() => {
     if (slot) {
-      setSelectedSlotType(slot.mappings.type)
       setSelectedEntity(slot.mappings.entity)
       setInfluenceConversation(slot.influenceConversation)
+      setSelectedSlotType(slot.mappings.type)
       reset(slot);
     }
   }, [reset, slot]);

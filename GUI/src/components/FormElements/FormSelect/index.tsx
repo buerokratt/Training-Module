@@ -1,4 +1,4 @@
-import React,{ FC, ReactNode, SelectHTMLAttributes, useId, useState } from 'react';
+import React, {FC, ReactNode, SelectHTMLAttributes, useEffect, useId, useState} from 'react';
 import { useSelect } from 'downshift';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
@@ -38,6 +38,9 @@ const FormSelect: FC<FormSelectProps> = (
     const { t } = useTranslation();
     const defaultSelected = options.find((o) => o.value === defaultValue) || null;
     const [selectedItem, setSelectedItem] = useState<{ label: string, value: string } | null>(defaultSelected);
+    useEffect(() => {
+        setSelectedItem(options.find((o) => o.value === defaultValue) || null);
+    }, [defaultValue, options]);
     const {
         isOpen,
         getToggleButtonProps,
