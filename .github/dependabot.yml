@@ -1,0 +1,10 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      time: "08:00"
+      interval: "daily"
+    allow:
+      - dependency-name: "@buerokratt-ria"
+    open-pull-requests-limit: 1
