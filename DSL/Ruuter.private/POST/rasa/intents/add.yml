@@ -1,6 +1,6 @@
 validateInputLength:
   switch:
-    - condition: ${incoming.body.name.length > 5}
+    - condition: ${incoming.body.name.length > 2}
       next: assign_values
   next: returnTooShortError
 
