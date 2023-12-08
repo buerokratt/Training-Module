@@ -1,4 +1,4 @@
-import {FC, useEffect, useMemo, useState} from 'react';
+import {FC, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {createColumnHelper} from '@tanstack/react-table';
@@ -13,7 +13,6 @@ import type {Dependencies as DependenciesType} from 'types/dependencises';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import {useToast} from 'hooks/useToast';
 import {deleteResponse, editResponse} from 'services/responses';
-import {useSearchParams} from "react-router-dom";
 
 type NewResponse = {
   name: string;
@@ -35,10 +34,9 @@ const Responses: FC = () => {
   const [deletableRow, setDeletableRow] = useState<string | number | null>(null);
   const [filter, setFilter] = useState('');
   const { register, handleSubmit } = useForm<NewResponse>();
-//  const [editingTrainingTitle, setEditingTrainingTitle] = useState<string>("");
+
   let editingTrainingTitle: string;
   const formattedResponses = useMemo(() => {
-    // @ts-ignore
     if (responses && responses.length > 0) {
       return responses[0].response.map((r, i) => ({
         id: i,
