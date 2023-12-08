@@ -1,4 +1,4 @@
-import {FC, useMemo, useState} from 'react';
+import {FC, useEffect, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {createColumnHelper} from '@tanstack/react-table';
@@ -13,6 +13,7 @@ import type {Dependencies as DependenciesType} from 'types/dependencises';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import {useToast} from 'hooks/useToast';
 import {deleteResponse, editResponse} from 'services/responses';
+import {useSearchParams} from "react-router-dom";
 
 type NewResponse = {
   name: string;
@@ -48,14 +49,6 @@ const Responses: FC = () => {
       return [];
     }
   }, [responses]);
-
-  // TODO: test if helps
-  const timeOutTest = () => {
-    setTimeout(() => {
-      return null;
-    }, 3000);
-  }
-
 
   useDocumentEscapeListener(() => setEditableRow(null));
 
@@ -111,12 +104,10 @@ const Responses: FC = () => {
   const newResponseMutation = useMutation({
     mutationFn: ({ name}: { name: string}) => editResponse("utter_"+name,  editingTrainingTitle, false),
     onMutate: async () => {
-      await queryClient.cancelQueries(['responses-list']);
     },
     onSuccess: async () => {
-      timeOutTest();
       setAddFormVisible(false);
-      queryClient.fetchQuery(['responses-list']).then((data) => {
+      queryClient.refetchQueries(['responses-list']).then((data) => {
         formattedResponses();
         toast.open({
           type: 'success',
