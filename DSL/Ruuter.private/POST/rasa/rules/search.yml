@@ -5,11 +5,11 @@ assign_values:
 
 checkForIncomingType:
   switch:
-    - condition: ${params.type == "responses"}
+    - condition: ${type == "responses"}
       next: getRulesSearchForResponses
-    - condition: ${params.type == "forms"}
+    - condition: ${type == "forms"}
       next: getRulesSearchForForms
-    - condition: ${params.type == "slots"}
+    - condition: ${type == "slots"}
       next: getRulesSearchForSlots
 
 getRulesSearch:
