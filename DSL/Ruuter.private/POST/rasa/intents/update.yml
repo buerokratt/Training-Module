@@ -5,7 +5,7 @@ assign_values:
 
 validateInputLength:
   switch:
-    - condition: ${intent.length > 5}
+    - condition: ${intent.length > 2}
       next: getIntentList
   next: returnTooShortError
 

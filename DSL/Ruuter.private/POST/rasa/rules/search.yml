@@ -1,15 +1,71 @@
 assign_values:
   assign:
-    params: ${incoming.body}
+    type: ${incoming.body.type}
+    value: ${incoming.body.value}
+
+checkForIncomingType:
+  switch:
+    - condition: ${type == "responses"}
+      next: getRulesSearchForResponses
+    - condition: ${type == "forms"}
+      next: getRulesSearchForForms
+    - condition: ${type == "slots"}
+      next: getRulesSearchForSlots
 
 getRulesSearch:
   call: http.post
   args:
     url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/rules/_search/template"
     body:
-      id: ${"rule-with-"+params.type}
-      params: ${params}
+      id: ${"rule-with-"+type}
   result: getRulesResult
+
+getRulesSearchForResponses:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/rules/_search/template"
+    body:
+      id: ${"rule-with-responses"}
+      source:
+        query:
+          match:
+            "steps.action": ${value}
+  result: getRulesResult
+  next: mapRulesData
+
+getRulesSearchForForms:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/rules/_search/template"
+    body:
+      id: ${"rule-with-forms"}
+      source:
+        query:
+          bool:
+            should:
+              - match:
+                  steps.action: ${value}
+              - match:
+                  steps.active_loop: ${value}
+  result: getRulesResult
+  next: mapRulesData
+
+getRulesSearchForSlots:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/rules/_search/template"
+    body:
+      id: ${"rule-with-slots"}
+      params:
+        slotname: ${value}
+      source:
+        query:
+          bool:
+            should:
+              - exists:
+                  field: "condition.slot_was_set.{{slotname}}"
+  result: getRulesResult
+  next: mapRulesData
 
 mapRulesData:
   call: http.post
@@ -22,8 +78,4 @@ mapRulesData:
 
 returnSuccess:
   return: ${rulesData.response.body}
-  next: end
-
-returnUnauthorized:
-  return: "error: unauthorized"
   next: end

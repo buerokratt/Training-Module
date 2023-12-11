@@ -25,7 +25,7 @@ ruleResponses:
     headers:
       cookie: ${incoming.headers.cookie}
     body:
-      response: ${params.response_name}
+      value: ${params.response_name}
       type: "responses"
   result: ruleResponses
 

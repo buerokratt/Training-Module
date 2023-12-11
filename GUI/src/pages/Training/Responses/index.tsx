@@ -27,27 +27,26 @@ const Responses: FC = () => {
     queryKey: ['responses/dependencies'],
   });
   const { data: responses } = useQuery<ResponsesType>({
-    queryKey: ['responses'],
+    queryKey: ['responses-list'],
   });
   const [addFormVisible, setAddFormVisible] = useState(false);
   const [editableRow, setEditableRow] = useState<{ id: string; text: string; } | null>(null);
   const [deletableRow, setDeletableRow] = useState<string | number | null>(null);
   const [filter, setFilter] = useState('');
   const { register, handleSubmit } = useForm<NewResponse>();
-//  const [editingTrainingTitle, setEditingTrainingTitle] = useState<string>("");
+
   let editingTrainingTitle: string;
   const formattedResponses = useMemo(() => {
-    if (responses && responses.response) {
-      return responses.response.map((r, i) => ({
+    if (responses && responses.length > 0) {
+      return responses[0].response.map((r, i) => ({
         id: i,
         response: r.name,
-        text: r.response[0].text,
+        text: r.text,
       }));
     } else {
       return [];
     }
   }, [responses]);
-
 
   useDocumentEscapeListener(() => setEditableRow(null));
 
@@ -57,12 +56,16 @@ const Responses: FC = () => {
 
   const responseSaveMutation = useMutation({
     mutationFn: ({ id, text }: { id: string, text: string }) => editResponse(id,  text),
+    onMutate: async () => {
+      await queryClient.cancelQueries(['responses-list']);
+    },
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['responses']);
-      toast.open({
-        type: 'success',
-        title: t('global.notification'),
-        message: 'Response saved',
+      queryClient.fetchQuery(['responses-list']).then(() => {
+        toast.open({
+          type: 'success',
+          title: t('global.notification'),
+          message: 'Response saved',
+        });
       });
     },
     onError: (error: AxiosError) => {
@@ -98,13 +101,17 @@ const Responses: FC = () => {
 
   const newResponseMutation = useMutation({
     mutationFn: ({ name}: { name: string}) => editResponse("utter_"+name,  editingTrainingTitle, false),
+    onMutate: async () => {
+    },
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['responses']);
       setAddFormVisible(false);
-      toast.open({
-        type: 'success',
-        title: t('global.notification'),
-        message: 'New response added',
+      queryClient.refetchQueries(['responses-list']).then((data) => {
+        formattedResponses();
+        toast.open({
+          type: 'success',
+          title: t('global.notification'),
+          message: 'Response saved',
+        });
       });
     },
     onError: (error: AxiosError) => {

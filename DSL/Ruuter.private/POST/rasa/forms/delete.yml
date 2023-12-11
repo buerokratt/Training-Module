@@ -24,7 +24,7 @@ ruleForms:
     headers:
       cookie: ${incoming.headers.cookie}
     body:
-      form: ${parameters.form_name}
+      value: ${parameters.form_name}
       type: "forms"
   result: ruleForms
 
