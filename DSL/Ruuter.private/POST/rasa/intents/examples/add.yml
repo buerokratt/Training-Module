@@ -7,7 +7,7 @@ assign_values:
 validateArrayExampleLength:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/validate/array-elements-length"
+    url: "[#TRAINING_DMAPPER]/validate/array-elements-length"
     body:
       array: ${intentExamples}
       length: 500
@@ -22,7 +22,7 @@ validateLength:
 getFileLocations:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+    url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
     headers:
       cookie: ${incoming.headers.cookie}
   result: fileLocations
@@ -34,7 +34,7 @@ assignFilePath:
 checkIntentFileYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/check"
+    url: "[#TRAINING_DMAPPER]/file/check"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + intentName + file_end}
   result: fileExists
@@ -52,7 +52,7 @@ assignTmpFilePath:
 checkIntentFileTmp:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/check"
+    url: "[#TRAINING_DMAPPER]/file/check"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + intentName + file_end}
   result: tmpFileExists
@@ -66,7 +66,7 @@ validateTmpFileExists:
 getIntentFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/read"
+    url: "[#TRAINING_DMAPPER]/file/read"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + intentName + file_end}
   result: intentFile
@@ -74,7 +74,7 @@ getIntentFile:
 convertYamlToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
     body:
       file: ${intentFile.response.body.file}
   result: intentData
@@ -92,7 +92,7 @@ assignEmptyExamples:
 replaceString:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/replace"
+    url: "[#TRAINING_DMAPPER]/convert/string/replace"
     body:
       data: ${intentData.response.body.nlu[0].examples}
       search: "- "
@@ -102,7 +102,7 @@ replaceString:
 splitExamples:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/split"
+    url: "[#TRAINING_DMAPPER]/convert/string/split"
     body:
       data: ${replacedString.response.body}
       separator: "\n"
@@ -126,7 +126,7 @@ makeArrayFromExamples:
 mergeExamples:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/merge"
+    url: "[#TRAINING_DMAPPER]/merge"
     body:
       array1: ${newExamples}
       array2: ${examplesToWriteIntoYml}
@@ -135,7 +135,7 @@ mergeExamples:
 mapIntentsData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-intent-file"
+    url: "[#TRAINING_DMAPPER]/dmapper/get-intent-file"
     body:
       intent: ${intentName}
       examples: ${mergedExamples.response.body}
@@ -144,7 +144,7 @@ mapIntentsData:
 convertJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
     body:
       version: "3.0"
       nlu: ${intentFileJson.response.body.data}
@@ -153,7 +153,7 @@ convertJsonToYaml:
 saveIntentFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/write"
+    url: "[#TRAINING_DMAPPER]/file/write"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + intentName + file_end}
       content: ${intentYaml.response.body.json}
@@ -162,7 +162,7 @@ saveIntentFile:
 removePipe:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/replace"
+    url: "[#TRAINING_DMAPPER]/convert/string/replace"
     body:
       data: ${intentYaml.response.body.json}
       search: "|"
@@ -172,7 +172,7 @@ removePipe:
 addNewIntentInPipeline:
   call: http.post
   args:
-    url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/put/intents/intent"
+    url: "[#TRAINING_PIPELINE]/put/intents/intent"
     body:
       input: ${pipelineIntent.response.body}
   result: updateSearchResult
@@ -180,7 +180,7 @@ addNewIntentInPipeline:
 addInDatabase:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]:[#TRAINING_RESQL_PORT]/add-intent"
+    url: "[#TRAINING_RESQL]/add-intent"
     body:
       intent: ${incoming.body.intentName}
       status: "ACTIVE"

@@ -5,7 +5,7 @@ assign_values:
 getSlots:
   call: http.post
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/domain/_search?pretty=true"
+    url: "[#TRAINING_OPENSEARCH]/domain/_search?pretty=true"
     body:
       query:
         match:
@@ -31,7 +31,7 @@ checkSlotIsPresent:
 mapSlotsData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-slot-details"
+    url: "[#TRAINING_DMAPPER]/dmapper/get-slot-details"
     body:
       name: ${slot}
       hits: ${slotResponse[0]._source.slots[slot]}

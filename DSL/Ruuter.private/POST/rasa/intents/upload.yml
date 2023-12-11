@@ -5,7 +5,7 @@ assign_values:
 convertCsvToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/csv-to-json"
+    url: "[#TRAINING_DMAPPER]/convert/csv-to-json"
     body:
       file: ${incoming.body}
   result: jsonData
@@ -13,7 +13,7 @@ convertCsvToJson:
 mapCsvToArray:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/csv-examples-to-array"
+    url: "[#TRAINING_DMAPPER]/dmapper/csv-examples-to-array"
     body:
       examples: ${jsonData.response.body}
   result: examples
@@ -21,7 +21,7 @@ mapCsvToArray:
 addExamples:
   call: http.post
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/rasa/intents/examples/add"
+    url: "[#TRAINING_PUBLIC_RUUTER]/rasa/intents/examples/add"
     headers:
       cookie: ${incoming.headers.cookie}
     body:

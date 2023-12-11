@@ -5,7 +5,7 @@ assign_values:
 getFileLocations:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+    url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
     headers:
       cookie: ${incoming.headers.cookie}
   result: fileLocations
@@ -13,7 +13,7 @@ getFileLocations:
 getRegexFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/read"
+    url: "[#TRAINING_DMAPPER]/file/read"
     body:
       file_path: ${fileLocations.response.body.response.regex_location}
   result: regexFile
@@ -21,7 +21,7 @@ getRegexFile:
 convertYamlToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
     body:
       file: ${regexFile.response.body.file}
   result: regexData
@@ -29,7 +29,7 @@ convertYamlToJson:
 mapRegexesData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-regex-with-regex"
+    url: "[#TRAINING_DMAPPER]/dmapper/get-regex-with-regex"
     body:
       regexes: ${regexData.response.body.nlu}
       regex_name: ${parameters.regex_name}
@@ -38,7 +38,7 @@ mapRegexesData:
 replaceJsonString:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/replace"
+    url: "[#TRAINING_DMAPPER]/convert/string/replace"
     body:
       data: ${regexesData.response.body.examples}
       search: "&quot;"
@@ -48,7 +48,7 @@ replaceJsonString:
 replaceString:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/replace"
+    url: "[#TRAINING_DMAPPER]/convert/string/replace"
     body:
       data: ${replacedJsonString.response.body}
       search: "- "
@@ -58,7 +58,7 @@ replaceString:
 splitExamples:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/split"
+    url: "[#TRAINING_DMAPPER]/convert/string/split"
     body:
       data: ${replacedString.response.body}
       separator: "\n"
@@ -67,7 +67,7 @@ splitExamples:
 mapExamples:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-regex-with-example"
+    url: "[#TRAINING_DMAPPER]/dmapper/get-regex-with-example"
     body:
       examples: ${splitExamples.response.body}
       example_name: ${parameters.example}

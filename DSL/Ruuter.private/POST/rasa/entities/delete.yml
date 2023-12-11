@@ -5,7 +5,7 @@ assign_values:
 getDomainFile:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/domain-file"
+    url: "[#TRAINING_PUBLIC_RUUTER]/domain-file"
     headers:
       cookie: ${incoming.headers.cookie}
   result: domainData
@@ -19,7 +19,7 @@ validateEntities:
 domainEntities:
   call: http.post
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/rasa/entities"
+    url: "[#TRAINING_PUBLIC_RUUTER]/rasa/entities"
     headers:
       cookie: ${incoming.headers.cookie}
     body:
@@ -35,7 +35,7 @@ validateDomainEntities:
 regexEntities:
   call: http.post
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/rasa/regex"
+    url: "[#TRAINING_PUBLIC_RUUTER]/rasa/regex"
     headers:
       cookie: ${incoming.headers.cookie}
     body:
@@ -52,7 +52,7 @@ validateRegexEntities:
 intentEntities:
   call: http.post
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/rasa/examples/entities"
+    url: "[#TRAINING_PUBLIC_RUUTER]/rasa/examples/entities"
     headers:
       cookie: ${incoming.headers.cookie}
     body:
@@ -69,7 +69,7 @@ validateIntentEntities:
 deleteEntity:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/delete-entity"
+    url: "[#TRAINING_DMAPPER]/dmapper/delete-entity"
     body:
       entities: ${domainData.response.body.response.entities}
       entity_name: ${parameters.entity_name}
@@ -78,7 +78,7 @@ deleteEntity:
 convertJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
     body:
       version: ${domainData.response.body.response.version}
       intents: ${domainData.response.body.response.intents}
@@ -93,7 +93,7 @@ convertJsonToYaml:
 getFileLocations:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+    url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
     headers:
       cookie: ${incoming.headers.cookie}
   result: fileLocations
@@ -101,7 +101,7 @@ getFileLocations:
 saveDomainFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/write"
+    url: "[#TRAINING_DMAPPER]/file/write"
     body:
       file_path: ${fileLocations.response.body.response.domain_location}
       content: ${domainYaml.response.body.json}
@@ -111,7 +111,7 @@ saveDomainFile:
 updateOpenSearch:
   call: http.post
   args:
-    url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/bulk/domain"
+    url: "[#TRAINING_PIPELINE]/bulk/domain"
     body:
       input: ${domainYaml.response.body.json}
   result: updateSearchResult

@@ -6,7 +6,7 @@ assign_values:
 getDomainFile:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/domain-file"
+    url: "[#TRAINING_PUBLIC_RUUTER]/domain-file"
     headers:
       cookie: ${incoming.headers.cookie}
   result: domainData
@@ -20,7 +20,7 @@ isInModel:
 removeFromDomainArray:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/merge/remove-array-value"
+    url: "[#TRAINING_DMAPPER]/merge/remove-array-value"
     body:
       array: ${domainData.response.body.response.intents}
       value: ${intent}
@@ -30,7 +30,7 @@ removeFromDomainArray:
 mergeIntents:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/merge"
+    url: "[#TRAINING_DMAPPER]/merge"
     body:
       array1: ${[intent]}
       array2: ${domainData.response.body.response.intents}
@@ -39,7 +39,7 @@ mergeIntents:
 convertDomainJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
     body:
       version: ${domainData.response.body.response.version}
       intents: ${updatedIntents.response.body}
@@ -54,7 +54,7 @@ convertDomainJsonToYaml:
 updateDomainOpenSearch:
   call: http.post
   args:
-    url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/bulk/domain"
+    url: "[#TRAINING_PIPELINE]/bulk/domain"
     body:
       input: ${domainYaml.response.body.json}
   result: updateSearchResult
@@ -62,7 +62,7 @@ updateDomainOpenSearch:
 getFileLocations:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+    url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
     headers:
       cookie: ${incoming.headers.cookie}
   result: fileLocations
@@ -70,7 +70,7 @@ getFileLocations:
 saveDomainFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/write"
+    url: "[#TRAINING_DMAPPER]/file/write"
     body:
       file_path: ${fileLocations.response.body.response.domain_location}
       content: ${domainYaml.response.body.json}

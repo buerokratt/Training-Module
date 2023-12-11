@@ -1,13 +1,13 @@
 getResponses:
   call: http.get
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/domain/_search?size=10000"
+    url: "[#TRAINING_OPENSEARCH]/domain/_search?size=10000"
   result: getResponsesResult
 
 mapResponsesData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-responses"
+    url: "[#TRAINING_DMAPPER]/dmapper/get-responses"
     body:
       hits: ${getResponsesResult.response.body.hits.hits}
   result: responsesData
