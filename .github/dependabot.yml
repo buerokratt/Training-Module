@@ -1,7 +1,7 @@
 version: 2
 updates:
   - package-ecosystem: "npm"
-    directory: "/"
+    directory: "/GUI"
     schedule:
       time: "08:00"
       interval: "daily"
