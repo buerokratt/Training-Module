@@ -27,6 +27,10 @@ ruleResponses:
       type: "responses"
   result: ruleResponses
 
+ruleResponsesReturn:
+  return: ${ruleResponses}
+  next: end
+
 validateRuleResponses:
   switch:
     - condition: ${ruleResponses.response.data.rules.length == 0}
