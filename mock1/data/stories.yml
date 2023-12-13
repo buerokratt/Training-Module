@@ -23,6 +23,8 @@ stories:
   steps:
   - checkpoint: check_stuff
   - action: utter_common_hüvasti_jätmine
+  - checkpoint: check_stuff2
+  - action: utter_fallback_kontroll
 
 - story: car_rent1
   steps:
