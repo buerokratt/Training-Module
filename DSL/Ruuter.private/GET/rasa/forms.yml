@@ -1,13 +1,13 @@
 getForms:
   call: http.get
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/forms/_search?size=10000"
+    url: "[#TRAINING_OPENSEARCH]/forms/_search?size=10000"
   result: getFormsResult
 
 mapFormsData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-forms"
+    url: "[#TRAINING_DMAPPER]/dmapper/get-forms"
     body:
       hits: ${getFormsResult.response.body.hits.hits}
   result: formsData

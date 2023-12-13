@@ -1,13 +1,13 @@
 getIntents:
   call: http.get
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/intents/_search?size=10000"
+    url: "[#TRAINING_OPENSEARCH]/intents/_search?size=10000"
   result: getIntentsResult
 
 mapIntentsData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-intents"
+    url: "[#TRAINING_DMAPPER]/dmapper/get-intents"
     body:
       hits: ${getIntentsResult.response.body.hits.hits}
   result: intentsData

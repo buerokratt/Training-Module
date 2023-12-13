@@ -25,17 +25,15 @@ This repo will primarily contain
   
 Ready to go: **docker-compose up -d**
 
-### Use external header component.
+### Use external components.
 
-The external header component and its version is defined in the package.json file located inside GUI folder.
-That line must be updated when header version or location changes.
+Currently Header and Main Navigation used as external components, they are defined as dependency in package.json
 ```  
- "@exirain/header": "file:exirain-header-0.0.28.tgz"
+ "@buerokrat-ria/header": "^0.0.1"
+ "@buerokrat-ria/menu": "^0.0.1"
+ "@buerokrat-ria/styles": "^0.0.1"
 ```
-Current solution uses the module from packed file. This means that when building docker image, a line to the docker script needs to be added for copying the file.
-``` 
-COPY ./exirain-header-0.0.28.tgz .
-```
+
 
 
 ### DMapper issue

@@ -5,7 +5,7 @@ assign_values:
 getRuleWithName:
   call: http.post
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/rasa/rules"
+    url: "[#TRAINING_PUBLIC_RUUTER]/rasa/rules"
     headers:
       cookie: ${incoming.headers.cookie}
     body:
@@ -21,7 +21,7 @@ validateRules:
 getFileLocations:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+    url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
     headers:
       cookie: ${incoming.headers.cookie}
   result: fileLocations
@@ -29,7 +29,7 @@ getFileLocations:
 getRulesFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/read"
+    url: "[#TRAINING_DMAPPER]/file/read"
     body:
       file_path: ${fileLocations.response.body.response.rules_location}
   result: ruleFile
@@ -37,7 +37,7 @@ getRulesFile:
 convertYamlToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
     body:
       file: ${ruleFile.response.body.file}
   result: rulesData
@@ -45,7 +45,7 @@ convertYamlToJson:
 mergeRules:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/merge"
+    url: "[#TRAINING_DMAPPER]/merge"
     body:
       array1: ${rulesData.response.body.rules}
       array2: ${[body]}
@@ -55,7 +55,7 @@ mergeRules:
 convertJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
     body:
       version: "3.0"
       rules: ${mergedRules.response.body}
@@ -64,7 +64,7 @@ convertJsonToYaml:
 saveRulesFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/write"
+    url: "[#TRAINING_DMAPPER]/file/write"
     body:
       file_path: ${fileLocations.response.body.response.rules_location}
       content: ${rulesYaml.response.body.json}
@@ -74,7 +74,7 @@ saveRulesFile:
 updateOpenSearch:
   call: http.post
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/bulk/rules/rule"
+    url: "[#TRAINING_PIPELINE]/bulk/rules/rule"
     body:
       input: ${rulesYaml.response.body.json}
   result: updateSearchResult

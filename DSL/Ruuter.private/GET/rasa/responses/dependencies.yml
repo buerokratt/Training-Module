@@ -1,26 +1,26 @@
 getRulesData:
   call: http.get
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/rules/_search?size=10000"
+    url: "[#TRAINING_OPENSEARCH]/rules/_search?size=10000"
   result: getRulesResult
 
 
 getStoriesData:
   call: http.get
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/stories/_search?size=10000"
+    url: "[#TRAINING_OPENSEARCH]/stories/_search?size=10000"
   result: getStoriesResult
 
 getResponses:
   call: http.get
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/domain/_search?size=10000"
+    url: "[#TRAINING_OPENSEARCH]/domain/_search?size=10000"
   result: getResponsesResult
 
 mapResponsesData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-responses"
+    url: "[#TRAINING_DMAPPER]/dmapper/get-responses"
     body:
       hits: ${getResponsesResult.response.body.hits.hits}
   result: responsesData
@@ -28,7 +28,7 @@ mapResponsesData:
 mapDependenciesData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-responses-dependencies"
+    url: "[#TRAINING_DMAPPER]/dmapper/get-responses-dependencies"
     body:
       rules: ${getRulesResult.response.body.hits.hits}
       stories: ${getStoriesResult.response.body.hits.hits}

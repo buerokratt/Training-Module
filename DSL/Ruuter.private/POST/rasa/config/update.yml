@@ -6,7 +6,7 @@ assign_values:
 getFileLocations:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+    url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
     headers:
       cookie: ${incoming.headers.cookie}
   result: fileLocations
@@ -14,7 +14,7 @@ getFileLocations:
 convertJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
     body:
       recipe: ${input.recipe}
       language: ${input.language}
@@ -25,7 +25,7 @@ convertJsonToYaml:
 saveConfigFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/write"
+    url: "[#TRAINING_DMAPPER]/file/write"
     body:
       file_path: ${fileLocations.response.body.response.config_location}
       content: ${configYaml.response.body.json}

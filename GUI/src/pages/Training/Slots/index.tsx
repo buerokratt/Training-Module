@@ -1,4 +1,4 @@
-import { FC, useMemo, useState } from 'react';
+import {FC, useEffect, useMemo, useState} from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
@@ -21,6 +21,10 @@ const Slots: FC = () => {
   const { data: slots,refetch } = useQuery<Slot[]>({
     queryKey: ['slots'],
   });
+
+  useEffect(() => {
+    refetch()
+  }, [slots,refetch]);
 
   const deleteSlotMutation = useMutation({
     mutationFn: ({ id }: { id: string | number }) => deleteSlot(id),

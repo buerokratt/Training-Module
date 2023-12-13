@@ -6,7 +6,7 @@ extractRequestData:
 getFileLocations:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+    url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
     headers:
       cookie: ${incoming.headers.cookie}
   result: fileLocations
@@ -14,7 +14,7 @@ getFileLocations:
 checkModelFileExists:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/check"
+    url: "[#TRAINING_DMAPPER]/file/check"
     body:
       file_path: ${fileLocations.response.body.response.training_result_location + '/' + parameters.trained_model + '/' + parameters.file_name}
   result: fileExists
@@ -28,7 +28,7 @@ validateFileExists:
 getTrainedModelFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/read"
+    url: "[#TRAINING_DMAPPER]/file/read"
     body:
       file_path: ${fileLocations.response.body.response.training_result_location + '/' + parameters.trained_model + '/' + parameters.file_name}
   result: modelFile
