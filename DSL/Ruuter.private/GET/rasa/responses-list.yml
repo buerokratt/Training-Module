@@ -1,7 +1,7 @@
 getResponses:
   call: http.get
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/domain/_search"
+    url: "[#TRAINING_OPENSEARCH]/domain/_search"
     query:
       size: 10000
       q: _id:responses
@@ -11,7 +11,7 @@ getResponses:
 mapResponsesData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-responses-list"
+    url: "[#TRAINING_DMAPPER]/dmapper/get-responses-list"
     body:
       response: ${getResponsesResult.response.body.hits.hits}
   result: responsesData

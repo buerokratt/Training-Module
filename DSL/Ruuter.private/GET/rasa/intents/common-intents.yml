@@ -1,7 +1,7 @@
 getIntents:
   call: http.post
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/intents/_search?size=10000"
+    url: "[#TRAINING_OPENSEARCH]/intents/_search?size=10000"
     body:
       query:
         prefix:
@@ -11,7 +11,7 @@ getIntents:
 getIntentsData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-intents-with-examples"
+    url: "[#TRAINING_DMAPPER]/dmapper/get-intents-with-examples"
     body:
       hits: ${getIntentsResult.response.body.hits.hits}
   result: getIntentDataResult
@@ -19,7 +19,7 @@ getIntentsData:
 getDomainFile:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/domain-file"
+    url: "[#TRAINING_PUBLIC_RUUTER]/domain-file"
     headers:
       cookie: ${incoming.headers.cookie}
   result: getDomainDataResult
@@ -27,7 +27,7 @@ getDomainFile:
 getIntentsExampleCount:
   call: http.post
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/intents/_search/template"
+    url: "[#TRAINING_OPENSEARCH]/intents/_search/template"
     body:
       id: "intents-with-examples-count"
   result: getIntentCountResult
@@ -48,7 +48,7 @@ assignResults:
 mapIntentsData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-intents-full"
+    url: "[#TRAINING_DMAPPER]/dmapper/get-intents-full"
     body:
       intents: ${intents}
   result: getIntentDataResult

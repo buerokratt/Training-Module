@@ -6,7 +6,7 @@ assignValues:
 getTestStoriesWithName:
   call: http.post
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/test-stories/_search/template"
+    url: "[#TRAINING_OPENSEARCH]/test-stories/_search/template"
     body:
       id: "test-story-with-name"
       params: ${params}
@@ -15,7 +15,7 @@ getTestStoriesWithName:
 mapTestStoriesData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-test-stories"
+    url: "[#TRAINING_DMAPPER]/dmapper/get-test-stories"
     body:
       hits: ${getTestStoriesResult.response.body.hits.hits}
   result: testStoriesData

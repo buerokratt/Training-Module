@@ -15,7 +15,7 @@ checkForIncomingType:
 getRulesSearch:
   call: http.post
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/rules/_search/template"
+    url: "[#TRAINING_OPENSEARCH]/rules/_search/template"
     body:
       id: ${"rule-with-"+type}
   result: getRulesResult
@@ -23,7 +23,7 @@ getRulesSearch:
 getRulesSearchForResponses:
   call: http.post
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/rules/_search/template"
+    url: "[#TRAINING_OPENSEARCH]/rules/_search/template"
     body:
       id: ${"rule-with-responses"}
       source:
@@ -36,7 +36,7 @@ getRulesSearchForResponses:
 getRulesSearchForForms:
   call: http.post
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/rules/_search/template"
+    url: "[#TRAINING_OPENSEARCH]/rules/_search/template"
     body:
       id: ${"rule-with-forms"}
       source:
@@ -53,7 +53,7 @@ getRulesSearchForForms:
 getRulesSearchForSlots:
   call: http.post
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/rules/_search/template"
+    url: "[#TRAINING_OPENSEARCH]/rules/_search/template"
     body:
       id: ${"rule-with-slots"}
       params:
@@ -70,7 +70,7 @@ getRulesSearchForSlots:
 mapRulesData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-rules"
+    url: "[#TRAINING_DMAPPER]/dmapper/get-rules"
     body:
       hits: ${getRulesResult.response.body.hits.hits}
   result: rulesData

@@ -6,7 +6,7 @@ assign_values:
 getTestStoriesWithName:
   call: http.post
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/rasa/test-stories"
+    url: "[#TRAINING_PUBLIC_RUUTER]/rasa/test-stories"
     headers:
       cookie: ${incoming.headers.cookie}
     body:
@@ -22,7 +22,7 @@ validateTestStories:
 getFileLocations:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+    url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
     headers:
       cookie: ${incoming.headers.cookie}
   result: fileLocations
@@ -30,7 +30,7 @@ getFileLocations:
 getStoriesFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/read"
+    url: "[#TRAINING_DMAPPER]/file/read"
     body:
       file_path: ${fileLocations.response.body.response.test_stories_location}
   result: testStoriesFile
@@ -38,7 +38,7 @@ getStoriesFile:
 convertYamlToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
     body:
       file: ${testStoriesFile.response.body.file}
   result: testStoriesData
@@ -46,7 +46,7 @@ convertYamlToJson:
 mergeStories:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/merge"
+    url: "[#TRAINING_DMAPPER]/merge"
     body:
       array1: ${testStoriesData.response.body.stories}
       array2: ${[parameters]}
@@ -56,7 +56,7 @@ mergeStories:
 convertJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
     body:
       stories: ${mergedTestStories.response.body}
   result: testStoriesYaml
@@ -64,7 +64,7 @@ convertJsonToYaml:
 saveFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/write"
+    url: "[#TRAINING_DMAPPER]/file/write"
     body:
       file_path: ${fileLocations.response.body.response.test_stories_location}
       content: ${testStoriesYaml.response.body.json}
