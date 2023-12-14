@@ -40,7 +40,7 @@ ruleSlots:
     headers:
       cookie: ${incoming.headers.cookie}
     body:
-      value: ${parameters.slot_name}
+      value: ${slot}
       type: "slots"
   result: ruleSlots
 
