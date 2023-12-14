@@ -1,6 +1,6 @@
 validateInputLength:
   switch:
-    - condition: ${incoming.body.name.length > 5}
+    - condition: ${incoming.body.name.length > 2}
       next: assign_values
   next: returnTooShortError
 
@@ -11,7 +11,7 @@ assign_values:
 getIntentList:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/rasa/intents"
+    url: "[#TRAINING_PUBLIC_RUUTER]/rasa/intents"
     headers:
       cookie: ${incoming.headers.cookie}
   result: intentList
@@ -27,7 +27,7 @@ validateIntentExists:
 getFileLocations:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+    url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
     headers:
       cookie: ${incoming.headers.cookie}
   result: fileLocations
@@ -35,7 +35,7 @@ getFileLocations:
 mapIntentsData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-intent-file"
+    url: "[#TRAINING_DMAPPER]/dmapper/get-intent-file"
     body:
       intent: ${intent}
   result: intentFileJson
@@ -43,7 +43,7 @@ mapIntentsData:
 convertJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
     body:
       version: "3.0"
       nlu: ${intentFileJson.response.body.data}
@@ -52,7 +52,7 @@ convertJsonToYaml:
 saveIntentFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/write"
+    url: "[#TRAINING_DMAPPER]/file/write"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + intent + "_nlu.yml.tmp"}
       content: ${intentYaml.response.body.json}
@@ -61,7 +61,7 @@ saveIntentFile:
 removePipe:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/replace"
+    url: "[#TRAINING_DMAPPER]/convert/string/replace"
     body:
       data: ${intentYaml.response.body.json}
       search: "|"
@@ -71,7 +71,7 @@ removePipe:
 addInPipeline:
   call: http.post
   args:
-    url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/put/intents/intent"
+    url: "[#TRAINING_PIPELINE]/put/intents/intent"
     body:
       input: ${pipelineIntent.response.body}
   result: updateSearchResult
@@ -79,7 +79,7 @@ addInPipeline:
 addInDatabase:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]:[#TRAINING_RESQL_PORT]/add-intent"
+    url: "[#TRAINING_RESQL]/add-intent"
     body:
       intent: ${incoming.body.name}
       status: "ACTIVE"

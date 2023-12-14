@@ -6,7 +6,7 @@ assign_values:
 getFormsSlots:
   call: http.post
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/forms/_search/template"
+    url: "[#TRAINING_OPENSEARCH]/forms/_search/template"
     body:
       id: "form-with-slot"
       params: ${params}
@@ -15,7 +15,7 @@ getFormsSlots:
 mapFormsSlotsData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-forms-search-slots"
+    url: "[#TRAINING_DMAPPER]/dmapper/get-forms-search-slots"
     body:
       hits: ${getFormsResultSlots.response.body.hits.hits}
   result: formsData

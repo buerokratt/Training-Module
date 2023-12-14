@@ -5,7 +5,7 @@ assign_values:
 getRulesWithName:
   call: http.post
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/rules/_search/template"
+    url: "[#TRAINING_OPENSEARCH]/rules/_search/template"
     body:
       id: "rule-with-name"
       params: ${params}
@@ -15,7 +15,7 @@ getRulesWithName:
 mapRulesData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-rule-with-name"
+    url: "[#TRAINING_DMAPPER]/dmapper/get-rule-with-name"
     body:
       hits: ${getRulesResult.response.body.hits.hits}
   result: rulesData

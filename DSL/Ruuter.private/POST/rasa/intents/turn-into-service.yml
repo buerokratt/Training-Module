@@ -5,7 +5,7 @@ assign_values:
 extract_token_data:
   call: http.post
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/mock-tim-custom-jwt-userinfo"
+    url: "[#TRAINING_PUBLIC_RUUTER]/mock-tim-custom-jwt-userinfo"
     headers:
       cookie: ${incoming.headers.cookie}
     body:
@@ -21,7 +21,7 @@ validate_administrator:
 get_domain_file:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/domain-file"
+    url: "[#TRAINING_PUBLIC_RUUTER]/domain-file"
     headers:
       cookie: ${incoming.headers.cookie}
   result: domainData
@@ -35,7 +35,7 @@ validate_intent_exists:
 get_file_locations:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+    url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
     headers:
       cookie: ${incoming.headers.cookie}
   result: fileLocations
@@ -43,7 +43,7 @@ get_file_locations:
 get_existing_intent_file:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/read"
+    url: "[#TRAINING_DMAPPER]/file/read"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + intentName + "_nlu.yml"}
   result: intentFile
@@ -51,7 +51,7 @@ get_existing_intent_file:
 convert_yaml_to_json:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
     body:
       file: ${intentFile.response.body.file}
   result: intentData
@@ -59,7 +59,7 @@ convert_yaml_to_json:
 manipulate_existing_examples:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/replace"
+    url: "[#TRAINING_DMAPPER]/convert/string/replace"
     body:
       data: ${intentData.response.body.nlu[0].examples}
       search: "- "
@@ -69,7 +69,7 @@ manipulate_existing_examples:
 split_existing_examles:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/split"
+    url: "[#TRAINING_DMAPPER]/convert/string/split"
     body:
       data: ${manipulateExistingExamplesResult.response.body}
       separator: "\n"
@@ -78,7 +78,7 @@ split_existing_examles:
 get_new_service_intent_file:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-intent-file"
+    url: "[#TRAINING_DMAPPER]/dmapper/get-intent-file"
     body:
       intent: ${"service_" + intentName}
       examples: ${splitedExamples.response.body}
@@ -87,7 +87,7 @@ get_new_service_intent_file:
 convert_intent_json_to_yaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
     body:
       version: "3.0"
       nlu: ${intentFileJson.response.body}
@@ -96,7 +96,7 @@ convert_intent_json_to_yaml:
 save_intent_file:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/write"
+    url: "[#TRAINING_DMAPPER]/file/write"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + "service_" + intentName + "_nlu.tmp"}
       content: ${intentYaml.response.body.json}
@@ -105,7 +105,7 @@ save_intent_file:
 delete_old_intent_file:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/delete"
+    url: "[#TRAINING_DMAPPER]/file/delete"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + intentName + "_nlu.yml"}
   result: deleteResult
@@ -113,7 +113,7 @@ delete_old_intent_file:
 merge_new_intent_into_existing_intents:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/merge/replace-array-element"
+    url: "[#TRAINING_DMAPPER]/merge/replace-array-element"
     body:
       array: ${domainData.response.body.response.intents}
       element: ${intentName}
@@ -123,7 +123,7 @@ merge_new_intent_into_existing_intents:
 update_existing_domain_response:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/domain/update-existing-response"
+    url: "[#TRAINING_DMAPPER]/domain/update-existing-response"
     body:
       json: ${domainData.response.body.response.responses}
       searchKey: ${intentName}
@@ -134,7 +134,7 @@ update_existing_domain_response:
 convert_domain_json_to_yaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
     body:
       version: ${domainData.response.body.response.version}
       intents: ${mergedIntents.response.body}
@@ -149,7 +149,7 @@ convert_domain_json_to_yaml:
 resave_domain_file:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/write"
+    url: "[#TRAINING_DMAPPER]/file/write"
     body:
       file_path: ${fileLocations.response.body.response.domain_location}
       content: ${domainYaml.response.body.json}
@@ -159,7 +159,7 @@ resave_domain_file:
 get_rules_file:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/read"
+    url: "[#TRAINING_DMAPPER]/file/read"
     body:
       file_path: ${fileLocations.response.body.response.rules_location}
   result: ruleFile
@@ -167,7 +167,7 @@ get_rules_file:
 convert_rules_yaml_to_json:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
     body:
       file: ${ruleFile.response.body.file}
   result: rulesData
@@ -175,7 +175,7 @@ convert_rules_yaml_to_json:
 find_rule_by_intent_name:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/rules/remove-by-intent-name"
+    url: "[#TRAINING_DMAPPER]/rules/remove-by-intent-name"
     body:
       rulesJson: ${rulesData.response.body.rules}
       searchIntentName: ${intentName}
@@ -184,7 +184,7 @@ find_rule_by_intent_name:
 rules_json_to_yaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
     body: 
       version: "3.0"
       rules: ${rulesResult.response.body}
@@ -193,7 +193,7 @@ rules_json_to_yaml:
 resave_rules_file:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/write"
+    url: "[#TRAINING_DMAPPER]/file/write"
     body:
       file_path: ${fileLocations.response.body.response.rules_location}
       content: ${rulesYaml.response.body.json}

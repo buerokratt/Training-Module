@@ -6,7 +6,7 @@ assignParameters:
 getFileLocations:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+    url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
     headers:
       cookie: ${incoming.headers.cookie}
   result: fileLocations
@@ -18,7 +18,7 @@ assignFilePath:
 checkIntentFileYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/check"
+    url: "[#TRAINING_DMAPPER]/file/check"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
   result: fileExists
@@ -36,7 +36,7 @@ assignTmpFilePath:
 checkIntentFileTmp:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/check"
+    url: "[#TRAINING_DMAPPER]/file/check"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
   result: tmpFileExists
@@ -50,7 +50,7 @@ validateTmpFileExists:
 getIntentFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/read"
+    url: "[#TRAINING_DMAPPER]/file/read"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
   result: intentFile
@@ -63,7 +63,7 @@ checkReturnType:
 convertYamlToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
     body:
       file: ${intentFile.response.body.file}
   result: intentData

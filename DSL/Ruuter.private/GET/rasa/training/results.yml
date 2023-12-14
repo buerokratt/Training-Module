@@ -1,7 +1,7 @@
 getFileLocations:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+    url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
     headers:
       cookie: ${incoming.headers.cookie}
   result: fileLocations
@@ -9,7 +9,7 @@ getFileLocations:
 getTrainingResultsDirectory:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/read-directory"
+    url: "[#TRAINING_DMAPPER]/file/read-directory"
     body:
       file_path: ${fileLocations.response.body.response.training_result_location}
   result: trainingResults

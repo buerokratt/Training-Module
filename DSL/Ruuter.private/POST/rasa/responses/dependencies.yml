@@ -6,7 +6,7 @@ assign_values:
 getResponsesWithNameAndText:
   call: http.post
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/responses/_search/template"
+    url: "[#TRAINING_OPENSEARCH]/responses/_search/template"
     body:
       id: "response-with-name-and-text"
       params: ${params}
@@ -21,18 +21,18 @@ validateResponse:
 ruleResponses:
   call: http.post
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/rasa/rules/search"
+    url: "[#TRAINING_PUBLIC_RUUTER]/rasa/rules/search"
     headers:
       cookie: ${incoming.headers.cookie}
     body:
-      response: ${params.response_name}
+      value: ${params.response_name}
       type: "responses"
   result: ruleResponses
 
 storiesResponses:
   call: http.post
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/rasa/stories/search"
+    url: "[#TRAINING_PUBLIC_RUUTER]/rasa/stories/search"
     headers:
       cookie: ${incoming.headers.cookie}
     body:
@@ -43,7 +43,7 @@ storiesResponses:
 mapResponsesData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-response-dependencies"
+    url: "[#TRAINING_DMAPPER]/dmapper/get-response-dependencies"
     body:
       response: ${getResponsesResult.response.body.hits.hits}
       stories: ${storiesResponses.response.body.response.stories}

@@ -5,7 +5,7 @@ assign_values:
 getFileLocations:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+    url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
     headers:
       cookie: ${incoming.headers.cookie}
   result: fileLocations
@@ -17,7 +17,7 @@ assignFilePath:
 checkIntentFileYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/check"
+    url: "[#TRAINING_DMAPPER]/file/check"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
   result: fileExists
@@ -35,7 +35,7 @@ assignTmpFilePath:
 checkIntentFileTmp:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/check"
+    url: "[#TRAINING_DMAPPER]/file/check"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
   result: tmpFileExists
@@ -49,7 +49,7 @@ validateTmpFileExists:
 getIntentFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/read"
+    url: "[#TRAINING_DMAPPER]/file/read"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
   result: intentFile
@@ -57,7 +57,7 @@ getIntentFile:
 convertYamlToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
     body:
       file: ${intentFile.response.body.file}
   result: intentData
@@ -65,7 +65,7 @@ convertYamlToJson:
 replaceString:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/replace"
+    url: "[#TRAINING_DMAPPER]/convert/string/replace"
     body:
       data: ${intentData.response.body.nlu[0].examples}
       search: "- "
@@ -75,7 +75,7 @@ replaceString:
 splitExamples:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/split"
+    url: "[#TRAINING_DMAPPER]/convert/string/split"
     body:
       data: ${replacedString.response.body}
       separator: "\n"
@@ -84,7 +84,7 @@ splitExamples:
 mapIntentsData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-intent-examples"
+    url: "[#TRAINING_DMAPPER]/dmapper/get-intent-examples"
     body:
       intent: ${parameters.intent}
       examples: ${splitExamples.response.body}

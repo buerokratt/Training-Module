@@ -5,7 +5,7 @@ assign_values:
 getFileLocations:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+    url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
     headers:
       cookie: ${incoming.headers.cookie}
   result: fileLocations
@@ -13,7 +13,7 @@ getFileLocations:
 getIntentFile:
   call: http.post
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/rasa/intents/get-intent-file"
+    url: "[#TRAINING_PUBLIC_RUUTER]/rasa/intents/get-intent-file"
     headers:
       cookie: ${incoming.headers.cookie}
     body:
@@ -30,7 +30,7 @@ checkIfIntentEmpty:
 replaceString:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/replace"
+    url: "[#TRAINING_DMAPPER]/convert/string/replace"
     body:
       data: ${intentFile.response.body.response.nlu[0].examples}
       search: "- "
@@ -40,7 +40,7 @@ replaceString:
 splitExamples:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/split"
+    url: "[#TRAINING_DMAPPER]/convert/string/split"
     body:
       data: ${replacedString.response.body}
       separator: "\n"
@@ -49,7 +49,7 @@ splitExamples:
 mapIntentsData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-intent-csv"
+    url: "[#TRAINING_DMAPPER]/dmapper/get-intent-csv"
     body:
       examples: ${splitExamples.response.body}
     headers:

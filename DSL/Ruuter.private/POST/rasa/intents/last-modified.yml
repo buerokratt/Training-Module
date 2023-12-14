@@ -5,7 +5,7 @@ assignParameters:
 getLastChanged:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]:[#TRAINING_RESQL_PORT]/get-intent-last-changed"
+    url: "[#TRAINING_RESQL]/get-intent-last-changed"
     body:
         intent: ${intent}
   result: lastChangedResult

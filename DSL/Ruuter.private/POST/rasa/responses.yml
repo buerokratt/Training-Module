@@ -6,7 +6,7 @@ assign_values:
 getResponsesWithNameAndText:
   call: http.post
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/responses/_search/template"
+    url: "[#TRAINING_OPENSEARCH]/responses/_search/template"
     body:
       id: "response-with-name-and-text"
       params: ${params}
@@ -16,7 +16,7 @@ getResponsesWithNameAndText:
 mapResponsesData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-responses"
+    url: "[#TRAINING_DMAPPER]/dmapper/get-responses"
     body:
       hits: ${getResponsesResult.response.body.hits.hits}
   result: responsesData
