@@ -62,7 +62,7 @@ saveDomainFile:
 updateRegexOpenSearch:
   call: http.post
   args:
-    url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/bulk/domain"
+    url: "[#TRAINING_PIPELINE]/bulk/domain"
     body:
       input: ${domainYaml.response.body.json}
   result: returnSuccess
