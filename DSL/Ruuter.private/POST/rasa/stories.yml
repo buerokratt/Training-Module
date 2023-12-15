@@ -5,7 +5,7 @@ assign_values:
 getStoriesWithName:
   call: http.post
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/stories/_search/template"
+    url: "[#TRAINING_OPENSEARCH]/stories/_search/template"
     body:
       id: "story-with-name"
       params: ${params}
@@ -14,7 +14,7 @@ getStoriesWithName:
 mapStoriesData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-story-with-name"
+    url: "[#TRAINING_DMAPPER]/dmapper/get-story-with-name"
     body:
       hits: ${getStoriesResult.response.body.hits.hits}
   result: storiesData

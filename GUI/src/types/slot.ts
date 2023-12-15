@@ -5,7 +5,7 @@ export interface Slot {
   influenceConversation: boolean;
   mappings: {
     type: 'from_text' | 'from_entity';
-    entity: string | null;
+    entity: string;
     intent: string[] | null;
     notIntent: string[] | null;
   };
