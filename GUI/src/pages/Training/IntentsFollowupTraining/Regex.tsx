@@ -1,4 +1,4 @@
-import { FC, useMemo, useState } from 'react';
+import {FC, useMemo, useState} from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
@@ -25,7 +25,8 @@ const Regex: FC = () => {
   const [filter, setFilter] = useState('');
   const [addFormVisible, setAddFormVisible] = useState(false);
   const [deletableRow, setDeletableRow] = useState<string | number | null>(null);
-  const { data: regexList } = useQuery<RegexTeaser[]>({
+  const [selectedRegex, setSelectedRegex] = useState<string | undefined>(undefined);
+  const { data: regexList, refetch } = useQuery<RegexTeaser[]>({
     queryKey: ['regexes'],
   });
   const { data: entities } = useQuery<Entity[]>({
@@ -37,6 +38,7 @@ const Regex: FC = () => {
     mutationFn: (data: { name: string }) => addRegex(data),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['regex']);
+      refetch();
       setAddFormVisible(false);
       toast.open({
         type: 'success',
@@ -55,7 +57,7 @@ const Regex: FC = () => {
   });
 
   const availableEntities = useMemo(() => entities?.filter((e) => {
-    return regexList?.some((r) => r.name !== e.name);
+    return !regexList?.some((r) => r.name === e.name);
   }).map((e) => ({ label: e.name, value: String(e.id) })), [entities, regexList]);
 
   const regexDeleteMutation = useMutation({
@@ -120,7 +122,9 @@ const Regex: FC = () => {
   ], [columnHelper, navigate, t]);
 
   const handleNewRegexSubmit = handleSubmit((data) => {
-    newRegexMutation.mutate(data);
+    if(selectedRegex) {
+      newRegexMutation.mutate({name: selectedRegex});
+    }
   });
 
   return (
@@ -145,7 +149,11 @@ const Regex: FC = () => {
                     {...field}
                     label={t('training.intents.entity')}
                     hideLabel
-                    options={availableEntities || []}
+                    onSelectionChange={(selection) => {
+                      setSelectedRegex(selection?.value);
+                    }}
+                    options={availableEntities || []
+                  }
                   />
                 )} />
               </div>

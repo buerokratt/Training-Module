@@ -1,6 +1,6 @@
 assign_values:
   assign:
-    regex: ${incoming.body}
+    regex: ${incoming.body.name}
 
 getRegexesList:
   call: http.get
@@ -14,7 +14,7 @@ validateRegexExists:
   switch:
     - condition: ${!regexes.response.body}
       next: returnRegexesError
-    - condition: ${regexes.response.body.includes(regex)}
+    - condition: ${regexes.response.body.response.data.regexes.some(reg => reg.name === regex)}
       next: returnRegexExists
   next: getFileLocations
 
@@ -31,7 +31,7 @@ mapRegexData:
   args:
     url: "[#TRAINING_DMAPPER]/dmapper/get-regex-file"
     body:
-      intent: ${regex}
+      regex: ${regex}
   result: regexFileJson
 
 convertJsonToYaml:
@@ -48,7 +48,7 @@ saveRegexFile:
   args:
     url: "[#TRAINING_DMAPPER]/file/write"
     body:
-      file_path: ${fileLocations.response.body.response.regex_location + regex + "_nlu.yml.tmp"}
+      file_path: ${fileLocations.response.body.response.regex_location + regex + "_nlu.yml"}
       content: ${regexYaml.response.body.json}
   result: fileResult
 
@@ -83,14 +83,3 @@ returnRegexesError:
   status: 409
   return: "Regex parsing error"
   next: end
-
-
-#
-#checkEntity:
-#  call: http.post
-#  args:
-#    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/checkV"
-#    body:
-#      hits: ${ovonResponse}
-#    result: fileResult
-#  next: returnSuccess

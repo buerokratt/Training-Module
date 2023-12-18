@@ -15,7 +15,7 @@ curl -X POST localhost:3010/bulk/stories/story --form input=@$MOCK/data/stories.
 
 #regexes
 for file in $MOCK/data/regex/* ; do
- curl -X POST localhost:3010/put/regexez/regex --form input=@$file
+ curl -X POST localhost:3010/put/regexes/regex --form input=@$file
 done
 
 #domain

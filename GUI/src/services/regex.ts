@@ -3,7 +3,8 @@ import ruuter_api from './ruuter-api';
 import { saveAs } from 'file-saver';
 
 export async function addRegex(regexData: { name: string }) {
-  const { data } = await api.post<{ readonly id: number; name: string }>('regex');
+  console.log(regexData);
+  const { data } = await api.post<{ regex: string }>('regex/add', regexData);
   return data;
 }
 
