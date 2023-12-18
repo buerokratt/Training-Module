@@ -11,8 +11,14 @@ intents:
   - common_teenus_ilm
   - andmekaitse_küsimused
   - service_car_rent
+  - greet
+  - mood_selected
+  - greet
+  - affirm
+  - deny
 
 entities:
+  - weather
   - asukoht
 
 slots:
@@ -29,15 +35,13 @@ slots:
     type: text
     influence_conversation: true
     mappings:
-      - type: from_entity
-        entity: asukoht
-        intent: common_teenus_ilm
-      - type: from_entity
-        entity: asukoht
-        intent: nlu_fallback
-      - type: from_entity
-        entity: asukoht
-        intent: rahvaarv
+      type: from_entity
+      entity: asukoht
+      intent:
+        - common_teenus_ilm
+        - nlu_fallback
+      not_intent:
+        - rahvaarv
 
 forms:
   custom_fallback_form:
@@ -52,7 +56,10 @@ actions:
   - action_react_to_affirm_deny_in_custom_fallback_form
   - action_react_to_affirm_deny_in_direct_to_customer_support_form
   - action_check_confidence
-
+  - utter_greet
+  - utter_good_day
+  - utter_bad_day
+  
 responses:
   utter_service_car_rent:
     - text: "#service_car_rent"
@@ -115,6 +122,25 @@ responses:
           value: null
       text: "Kahjuks ei saanud ma praegu piirkonnast aru ja ei oska ilma kohta midagi öelda. Kuidas saan abiks olla?"
     - text: "#weather; {common_teenus_ilm_asukoht};"
+  utter_common_esimene_tervitus:
+    - text: "Tere! Kuidas saan abiks olla?"
+
+  utter_greet:
+    - text: "Hello! How is your day going?"
+      buttons:
+      - title: "Good"
+        payload: "/mood_good"
+      - title: "Bad"
+        payload: "/mood_bad"
+  utter_good_day:
+    - text: "Glad to hear that you're having a good day!"
+  utter_bad_day:
+    - text: "I'm sorry to hear that. I hope things get better soon!"
+  utter_goodbye:
+    - text: "Bye"
+  utter_iamabot:
+    - text: "I am a bot, powered by Rasa."
+
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true

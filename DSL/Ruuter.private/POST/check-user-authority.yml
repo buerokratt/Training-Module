@@ -1,0 +1,36 @@
+getCookieInfo:
+  call: http.post
+  args:
+    url: "[#TRAINING_TIM]/jwt/custom-jwt-userinfo"
+    contentType: plaintext
+    headers:
+      cookie: ${incoming.headers.cookie}
+    plaintext:
+      "customJwtCookie"
+  result: res
+  next: checkCookieInfoResponse
+
+checkCookieInfoResponse:
+  switch:
+    - condition: ${200 <= res.response.statusCodeValue && res.response.statusCodeValue < 300}
+      next: checkUserAuthority
+  next: returnBadRequest
+
+checkUserAuthority:
+  switch:
+    - condition: ${res.response.body.authorities.includes("ROLE_ADMINISTRATOR") || res.response.body.authorities.includes("ROLE_ANALYST") || res.response.body.authorities.includes("ROLE_TRAINER")}
+      next: returnAuthorized
+  next: returnUnauthorized
+
+returnAuthorized:
+  return: ${res.response.body.authorities.includes(incoming.body.role)}
+  next: end
+
+returnUnauthorized:
+  return: false
+  next: end
+
+returnBadRequest:
+  status: 400
+  return: false
+  next: end

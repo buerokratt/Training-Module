@@ -4,6 +4,7 @@ import createFile from '../js/file/create.js';
 import moveFile from '../js/file/move.js';
 import copyFile from '../js/file/copy.js';
 import deleteFile from '../js/file/delete.js';
+import deleteIntentFile from '../js/file/deleteIntentFile.js';
 import readFile from '../js/file/read.js';
 import editFile from '../js/file/edit.js';
 
@@ -33,6 +34,11 @@ router.post('/delete', async (req, res) => {
   const result = await deleteFile(req.body.file_path)
   return res.status(result.error ? 400 : 200).json(result)
 })
+
+router.post('/delete-intent', async (req, res) => {
+  const result = await deleteIntentFile(req.body.file_path);
+  return res.status(result.error ? 400 : 200).json(result);
+});
 
 router.post('/read', async (req, res) => {
   const result = await readFile(req.body.file_path)

@@ -1,0 +1,15 @@
+assignParameters:
+  assign:
+    intent: ${incoming.body.intentName}
+
+getLastChanged:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/get-intent-last-changed"
+    body:
+        intent: ${intent}
+  result: lastChangedResult
+
+returnStep:
+  return: ${lastChangedResult.response.body[0].created}
+  next: end

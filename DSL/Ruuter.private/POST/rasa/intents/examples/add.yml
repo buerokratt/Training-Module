@@ -1,28 +1,15 @@
 assign_values:
   assign:
-    parameters: ${incoming.body}
-
-authenticate:
-  template: extract-token
-  requestType: post
-  headers:
-    cookie: ${incoming.headers.cookie}
-  body:
-    role: "ROLE_ADMINISTRATOR"
-  result: permission
-
-validatePermission:
-  switch:
-    - condition: ${permission}
-      next: validateArrayExampleLength
-  next: returnUnauthorized
+    intentName: ${incoming.body.intentName.replaceAll(/\s+/g, "_")}
+    intentExamples: ${incoming.body.intentExamples}
+    newExamples: ${incoming.body.newExamples}
 
 validateArrayExampleLength:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/validate/array-elements-length"
+    url: "[#TRAINING_DMAPPER]/validate/array-elements-length"
     body:
-      array: ${parameters.examples}
+      array: ${intentExamples}
       length: 500
   result: isValid
 
@@ -35,7 +22,9 @@ validateLength:
 getFileLocations:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+    url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
+    headers:
+      cookie: ${incoming.headers.cookie}
   result: fileLocations
 
 assignFilePath:
@@ -45,9 +34,9 @@ assignFilePath:
 checkIntentFileYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/check"
+    url: "[#TRAINING_DMAPPER]/file/check"
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
+      file_path: ${fileLocations.response.body.response.intents_location + intentName + file_end}
   result: fileExists
 
 validateFileExists:
@@ -63,9 +52,9 @@ assignTmpFilePath:
 checkIntentFileTmp:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/check"
+    url: "[#TRAINING_DMAPPER]/file/check"
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
+      file_path: ${fileLocations.response.body.response.intents_location + intentName + file_end}
   result: tmpFileExists
 
 validateTmpFileExists:
@@ -77,23 +66,33 @@ validateTmpFileExists:
 getIntentFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/read"
+    url: "[#TRAINING_DMAPPER]/file/read"
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
+      file_path: ${fileLocations.response.body.response.intents_location + intentName + file_end}
   result: intentFile
 
 convertYamlToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
     body:
       file: ${intentFile.response.body.file}
   result: intentData
 
+checkIfIntentEmpty:
+  switch:
+    - condition: ${intentData.response.body.nlu[0] != undefined}
+      next: replaceString
+
+assignEmptyExamples:
+  assign:
+    examplesToWriteIntoYml: []
+  next: checkIfExampleIsList
+
 replaceString:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/replace"
+    url: "[#TRAINING_DMAPPER]/convert/string/replace"
     body:
       data: ${intentData.response.body.nlu[0].examples}
       search: "- "
@@ -103,54 +102,89 @@ replaceString:
 splitExamples:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/split"
+    url: "[#TRAINING_DMAPPER]/convert/string/split"
     body:
       data: ${replacedString.response.body}
       separator: "\n"
   result: splitExamples
 
+assignExamples:
+  assign:
+    examplesToWriteIntoYml: ${splitExamples.response.body}
+
+checkIfExampleIsList:
+  switch:
+    - condition: ${Array.isArray(newExamples)}
+      next: mergeExamples
+  next: makeArrayFromExamples
+
+makeArrayFromExamples:
+  assign:
+    newExamples: ${[newExamples]}
+  next: mergeExamples
+
 mergeExamples:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/merge"
+    url: "[#TRAINING_DMAPPER]/merge"
     body:
-      array1: ${parameters.examples}
-      array2: ${splitExamples.response.body}
+      array1: ${newExamples}
+      array2: ${examplesToWriteIntoYml}
   result: mergedExamples
-
-validateMinimumExampleCount:
-  switch:
-    - condition: ${mergedExamples.response.body.length >= 10}
-      next: mapIntentsData
-  next: returnTooFewExamples
 
 mapIntentsData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-intent-file"
+    url: "[#TRAINING_DMAPPER]/dmapper/get-intent-file"
     body:
-      intent: ${parameters.intent}
+      intent: ${intentName}
       examples: ${mergedExamples.response.body}
   result: intentFileJson
 
 convertJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
     body:
       version: "3.0"
-      nlu: ${intentFileJson.response.body}
+      nlu: ${intentFileJson.response.body.data}
   result: intentYaml
 
 saveIntentFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/write"
+    url: "[#TRAINING_DMAPPER]/file/write"
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
+      file_path: ${fileLocations.response.body.response.intents_location + intentName + file_end}
       content: ${intentYaml.response.body.json}
   result: fileResult
-  next: returnSuccess
+
+removePipe:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/convert/string/replace"
+    body:
+      data: ${intentYaml.response.body.json}
+      search: "|"
+      replace: ""
+  result: pipelineIntent
+
+addNewIntentInPipeline:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]/put/intents/intent"
+    body:
+      input: ${pipelineIntent.response.body}
+  result: updateSearchResult
+
+addInDatabase:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/add-intent"
+    body:
+      intent: ${incoming.body.intentName}
+      status: "ACTIVE"
+  result: addInDatabaseResult
 
 returnSuccess:
   return: "Examples added"

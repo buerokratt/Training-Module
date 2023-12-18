@@ -9,15 +9,28 @@ Handlebars.registerHelper('eq', function(a, b) {
 });
 
 
+Handlebars.registerHelper('extractSlotKeys', function(obj) {
+    const keys = [];
+    console.log(obj)
+
+    function iterate(obj) {
+        for (const key in obj) {
+            keys.push(key)
+        }
+    }
+
+    iterate(obj);
+
+    return keys;
+});
+
 Handlebars.registerHelper('ne', function(a, b) {
     return a !== b;
 });
 
-
 Handlebars.registerHelper('valueExists', function(array, value) {
     return array.includes(value);
 })
-
 
 Handlebars.registerHelper('removeEntityFromArray', function (entities, entityToRemove) {
     const index = entities.indexOf(entityToRemove);

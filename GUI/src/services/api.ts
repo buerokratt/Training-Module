@@ -1,14 +1,7 @@
 import axios, { AxiosError } from 'axios';
 
-let URL: string;
-if (import.meta.env.REACT_APP_MODE === 'development-mock') {
-  URL = import.meta.env.BASE_URL + 'api/';
-} else {
-  URL = import.meta.env.REACT_APP_RUUTER_URL + 'rasa/';
-}
-
 const instance = axios.create({
-  baseURL: URL,
+  baseURL: import.meta.env.REACT_APP_RUUTER_URL + 'rasa/',
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
@@ -17,15 +10,31 @@ const instance = axios.create({
 });
 
 instance.interceptors.response.use(
-  (response) => {
-    return response;
+  (axiosResponse) => {
+    process.env.DEBUG_ENABLED && console.log(axiosResponse);
+    return axiosResponse;
   },
   (error: AxiosError) => {
+    process.env.DEBUG_ENABLED && console.log(error);
+    return Promise.reject(error);
+  }
+);
+
+instance.interceptors.request.use(
+  (axiosRequest) => {
+    process.env.DEBUG_ENABLED && console.log(axiosRequest);
+    return axiosRequest;
+  },
+  (error: AxiosError) => {
+    process.env.DEBUG_ENABLED && console.log(error);
     if (error.response?.status === 401) {
       //TODO: handle unauthorized requests
     }
+    if (error.response?.status === 403) {
+      //TODO: handle unauthorized requests
+    }
     return Promise.reject(error);
-  },
+  }
 );
 
 export default instance;

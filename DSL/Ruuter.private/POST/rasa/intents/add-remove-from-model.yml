@@ -1,0 +1,91 @@
+assign_values:
+  assign:
+    intent: ${incoming.body.name.replaceAll(/\s+/g, "_")}
+    inModel: ${incoming.body.inModel}
+
+getDomainFile:
+  call: http.get
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/domain-file"
+    headers:
+      cookie: ${incoming.headers.cookie}
+  result: domainData
+
+isInModel:
+  switch:
+    - condition: ${inModel}
+      next: removeFromDomainArray
+  next: mergeIntents
+
+removeFromDomainArray:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/merge/remove-array-value"
+    body:
+      array: ${domainData.response.body.response.intents}
+      value: ${intent}
+  result: updatedIntents
+  next: convertDomainJsonToYaml
+
+mergeIntents:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/merge"
+    body:
+      array1: ${[intent]}
+      array2: ${domainData.response.body.response.intents}
+  result: updatedIntents
+
+convertDomainJsonToYaml:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
+    body:
+      version: ${domainData.response.body.response.version}
+      intents: ${updatedIntents.response.body}
+      entities: ${domainData.response.body.response.entities}
+      slots: ${domainData.response.body.response.slots}
+      forms: ${domainData.response.body.response.forms}
+      actions: ${domainData.response.body.response.actions}
+      responses: ${domainData.response.body.response.responses}
+      session_config: ${domainData.response.body.response.session_config}
+  result: domainYaml
+
+updateDomainOpenSearch:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]/bulk/domain"
+    body:
+      input: ${domainYaml.response.body.json}
+  result: updateSearchResult
+
+getFileLocations:
+  call: http.get
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
+    headers:
+      cookie: ${incoming.headers.cookie}
+  result: fileLocations
+
+saveDomainFile:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file/write"
+    body:
+      file_path: ${fileLocations.response.body.response.domain_location}
+      content: ${domainYaml.response.body.json}
+  result: fileResult
+
+returnSuccessText:
+  switch:
+    - condition: ${inModel}
+      next: returnSuccessRemoved
+  next: returnSuccessAdded
+
+returnSuccessAdded:
+  return: "Intent added to model"
+  next: end
+
+returnSuccessRemoved:
+  return: "Intent removed from model"
+  next: end

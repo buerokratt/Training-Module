@@ -1,7 +1,7 @@
 {
   "responses": [
     {{#each hits}}
-      {{#if (eq this._id "responses") }}
+    {{#if (eq this._id "responses") }}
         {{#each this._source.responses}}
           {"name": {{{toJSON @key}}},
            "response": {{{toJSON this}}}

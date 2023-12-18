@@ -1,26 +1,12 @@
 assign_values:
   assign:
     params: ${incoming.body}
-
-authenticate:
-  template: extract-token
-  requestType: post
-  headers:
-    cookie: ${incoming.headers.cookie}
-  body:
-    role: "ROLE_ADMINISTRATOR"
-  result: permission
-
-validatePermission:
-  switch:
-    - condition: ${permission}
-      next: getResponsesWithNameAndText
-  next: returnUnauthorized
+  next: getResponsesWithNameAndText
 
 getResponsesWithNameAndText:
   call: http.post
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/responses/_search/template"
+    url: "[#TRAINING_OPENSEARCH]/responses/_search/template"
     body:
       id: "response-with-name-and-text"
       params: ${params}
@@ -30,7 +16,7 @@ getResponsesWithNameAndText:
 mapResponsesData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-responses"
+    url: "[#TRAINING_DMAPPER]/dmapper/get-responses"
     body:
       hits: ${getResponsesResult.response.body.hits.hits}
   result: responsesData

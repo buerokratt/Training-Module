@@ -1,0 +1,23 @@
+getResponses:
+  call: http.get
+  args:
+    url: "[#TRAINING_OPENSEARCH]/domain/_search"
+    query:
+      size: 10000
+      q: _id:responses
+      _source: responses
+  result: getResponsesResult
+
+mapResponsesData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/dmapper/get-responses-list"
+    body:
+      response: ${getResponsesResult.response.body.hits.hits}
+  result: responsesData
+  next: returnSuccess
+
+returnSuccess:
+  return: ${responsesData.response.body.data.responses}
+  wrapper: false
+  next: end

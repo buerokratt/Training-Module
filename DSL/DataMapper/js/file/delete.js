@@ -1,26 +1,30 @@
 import fs from 'fs';
-import { buildContentFilePath, isValidFilePath } from '../util/utils.js';
+import express from "express";
 
-export default async function deleteFile(file_path) {
-  if (!isValidFilePath(file_path)) {
-    return {
-      error: true,
-      message: 'File path contains illegal characters',
-    }
+const router = express.Router();
+
+router.post('/', (req, res) => {
+  const filePath = req.body.file_path;
+
+  if (!filePath) {
+    res.status(400).send('Filename is required');
+    return;
+  }
+
+  if (filePath.includes('..')) {
+    res.status(400).send('Relative paths are not allowed');
+    return;
   }
 
   try {
-    const filepath = buildContentFilePath(file_path)
-    fs.unlinkSync(filepath)
-
-    return {
-      error: false,
-      message: 'File deleted successfully',
-    }
+    fs.unlinkSync(filePath);
+    res.json(true).send();
   } catch (err) {
     return {
       error: true,
-      message: 'Unable to delete file',
+      message: 'Unable to delete file'
     }
   }
-}
+});
+
+export default router;

@@ -1,0 +1,14 @@
+getData:
+  call: reflect.mock
+  args:
+    response:
+      data:
+        - id: 1
+          form: "custom_fallback_form"
+        - id: 2
+          form: "direct_to_customer_support_form"
+  result: reflected_request
+  next: returnData
+
+returnData:
+  return: ${reflected_request.response.body.data}

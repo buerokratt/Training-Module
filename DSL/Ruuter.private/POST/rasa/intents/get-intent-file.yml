@@ -1,0 +1,78 @@
+assignParameters:
+  assign:
+    intent: ${incoming.body.intentName.replaceAll(/\s+/g, "_")}
+    returnType: ${incoming.body.returnType}
+
+getFileLocations:
+  call: http.get
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
+    headers:
+      cookie: ${incoming.headers.cookie}
+  result: fileLocations
+
+assignFilePath:
+  assign:
+    file_end: "_nlu.yml"
+
+checkIntentFileYaml:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file/check"
+    body:
+      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
+  result: fileExists
+
+validateFileExists:
+  switch:
+    - condition: ${fileExists.response.body}
+      next: getIntentFile
+  next: assignTmpFilePath
+
+assignTmpFilePath:
+  assign:
+    file_end: "_nlu.yml.tmp"
+
+checkIntentFileTmp:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file/check"
+    body:
+      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
+  result: tmpFileExists
+
+validateTmpFileExists:
+  switch:
+    - condition: ${tmpFileExists.response.body}
+      next: getIntentFile
+  next: returnIntentFileMissing
+
+getIntentFile:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file/read"
+    body:
+      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
+  result: intentFile
+
+checkReturnType:
+  switch:
+    - condition: ${returnType == "yaml"}
+      next: returnYaml
+
+convertYamlToJson:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
+    body:
+      file: ${intentFile.response.body.file}
+  result: intentData
+  next: returnJson
+
+returnYaml:
+  return: ${intentFile.response.body}
+  next: end
+
+returnJson:
+  return: ${intentData.response.body}
+  next: end

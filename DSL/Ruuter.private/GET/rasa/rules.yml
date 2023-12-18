@@ -1,13 +1,13 @@
 getRules:
   call: http.get
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/rules/_search?size=10000"
+    url: "[#TRAINING_OPENSEARCH]/rules/_search?size=10000"
   result: getRulesResult
 
 mapRulesData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-rules"
+    url: "[#TRAINING_DMAPPER]/dmapper/get-rules"
     body:
       hits: ${getRulesResult.response.body.hits.hits}
   result: rulesData

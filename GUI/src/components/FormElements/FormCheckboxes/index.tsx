@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, useId, useState } from 'react';
+import React, {ChangeEvent, forwardRef, useId, useState} from 'react';
 
 import './FormCheckboxes.scss';
 import clsx from 'clsx';
@@ -15,12 +15,23 @@ type FormCheckboxesType = {
   items: {
     label: string;
     value: string;
+    checked: boolean | undefined;
   }[];
   [rest: string]: any;
   type?: CheckboxType;
 }
 
-const FormCheckboxes: FC<FormCheckboxesType> = ({ label, name, hideLabel, onValuesChange, items, type, ...rest }) => {
+const FormCheckboxes = forwardRef<HTMLInputElement, FormCheckboxesType>((
+    {
+      label,
+      name,
+      hideLabel,
+      onValuesChange,
+      items,
+      type,
+      ...rest },
+    ref,
+) => {
   const id = useId();
   const [selectedValues, setSelectedValues] = useState<Record<string, any>>({});
 
@@ -33,12 +44,12 @@ const FormCheckboxes: FC<FormCheckboxesType> = ({ label, name, hideLabel, onValu
   };
 
   return (
-    <div className={clsx('checkboxes', type === CheckboxType.DAYS && 'checkboxes__days')} role='group' {...rest}>
+    <div className={clsx('checkboxes', type === CheckboxType.DAYS && 'checkboxes__days')}  role='group' {...rest}>
       {label && !hideLabel && <label className='checkboxes__label'>{label}</label>}
       <div className='checkboxes__wrapper'>
         {items.map((item, index) => (
           <div key={`${item.value}-${index}`} className='checkboxes__item'>
-            <input type='checkbox' name={name} id={`${id}-${item.value}`} value={item.value}
+            <input type='checkbox' name={name} ref={ref} id={`${id}-${item.value}`} checked={item.checked} value={item.value}
                    onChange={handleValuesChange} />
             <label htmlFor={`${id}-${item.value}`}>{item.label}</label>
           </div>
@@ -46,6 +57,6 @@ const FormCheckboxes: FC<FormCheckboxesType> = ({ label, name, hideLabel, onValu
       </div>
     </div>
   );
-};
+});
 
 export default FormCheckboxes;

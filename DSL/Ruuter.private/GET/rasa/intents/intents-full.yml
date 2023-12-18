@@ -1,13 +1,13 @@
 getIntents:
   call: http.get
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/intents/_search?size=10000"
+    url: "[#TRAINING_OPENSEARCH]/intents/_search?size=10000"
   result: getIntentsResult
 
 getIntentsData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-intents-with-examples"
+    url: "[#TRAINING_DMAPPER]/dmapper/get-intents-with-examples"
     body:
       hits: ${getIntentsResult.response.body.hits.hits}
   result: getIntentDataResult
@@ -15,18 +15,24 @@ getIntentsData:
 getDomainFile:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/domain-file"
+    url: "[#TRAINING_PUBLIC_RUUTER]/domain-file"
     headers:
-      testcookie: "test"
+      cookie: ${incoming.headers.cookie}
   result: getDomainDataResult
 
 getIntentsExampleCount:
   call: http.post
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/intents/_search/template"
+    url: "[#TRAINING_OPENSEARCH]/intents/_search/template"
     body:
       id: "intents-with-examples-count"
   result: getIntentCountResult
+
+checkIfIntentsExists:
+  switch:
+    - condition: ${getIntentDataResult.response.body.data.intents != null}
+      next: assignResults
+  next: returnNoIntentsFound
 
 assignResults:
   assign:
@@ -38,7 +44,7 @@ assignResults:
 mapIntentsData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-intents-full"
+    url: "[#TRAINING_DMAPPER]/dmapper/get-intents-full"
     body:
       intents: ${intents}
   result: getIntentDataResult
@@ -46,4 +52,8 @@ mapIntentsData:
 
 returnSuccess:
   return: ${getIntentDataResult.response.body}
+  next: end
+
+returnNoIntentsFound:
+  return: "Error: no intents found"
   next: end

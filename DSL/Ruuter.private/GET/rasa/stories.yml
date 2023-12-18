@@ -1,13 +1,13 @@
 getStories:
   call: http.get
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/stories/_search?size=10000"
+    url: "[#TRAINING_OPENSEARCH]/stories/_search?size=10000"
   result: getStoriesResult
 
 mapStoriesData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-stories"
+    url: "[#TRAINING_DMAPPER]/dmapper/get-stories"
     body:
       hits: ${getStoriesResult.response.body.hits.hits}
   result: storiesData

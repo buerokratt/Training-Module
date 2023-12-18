@@ -1,31 +1,35 @@
 assign_values:
   assign:
-    story: ${incoming.body.story}
+    body: ${incoming.body}
 
 getStoriesWithName:
   call: http.post
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/rasa/stories"
+    url: "[#TRAINING_PUBLIC_RUUTER]/rasa/stories"
+    headers:
+      cookie: ${incoming.headers.cookie}
     body:
-      story: ${story}
+      story: ${body.story}
   result: storiesResult
 
 validateStories:
   switch:
-    - condition: ${storiesResult.response.body.response.data.story == story}
+    - condition: ${storiesResult.response.body.response.story == body.story}
       next: getFileLocations
   next: returnStoryIsMissing
 
 getFileLocations:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+    url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
+    headers:
+      cookie: ${incoming.headers.cookie}
   result: fileLocations
 
 getStoriesFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/read"
+    url: "[#TRAINING_DMAPPER]/file/read"
     body:
       file_path: ${fileLocations.response.body.response.stories_location}
   result: storiesFile
@@ -33,7 +37,7 @@ getStoriesFile:
 convertYamlToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
     body:
       file: ${storiesFile.response.body.file}
   result: storiesData
@@ -41,16 +45,16 @@ convertYamlToJson:
 deleteStory:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/delete-story"
+    url: "[#TRAINING_DMAPPER]/dmapper/delete-story"
     body:
       stories: ${storiesData.response.body.stories}
-      story_name: ${story}
+      story_name: ${body.story}
   result: deleteStoriesData
 
 convertJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
     body:
       version: "3.0"
       stories: ${deleteStoriesData.response.body}
@@ -59,7 +63,7 @@ convertJsonToYaml:
 saveStoriesFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/write"
+    url: "[#TRAINING_DMAPPER]/file/write"
     body:
       file_path: ${fileLocations.response.body.response.stories_location}
       content: ${storiesYaml.response.body.json}
@@ -67,11 +71,9 @@ saveStoriesFile:
   next: updateOpenSearch
 
 updateOpenSearch:
-  call: http.post
+  call: http.delete
   args:
-    url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/bulk/stories/story"
-    body:
-      input: ${storiesYaml.response.body.json}
+    url: "[#TRAINING_OPENSEARCH]/stories/_doc/${storiesResult.response.body.response.id}"
   result: updateSearchResult
   next: returnSuccess
 

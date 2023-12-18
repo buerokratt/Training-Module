@@ -1,9 +1,9 @@
 getDomainFile:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/domain-file"
+    url: "[#TRAINING_PUBLIC_RUUTER]/domain-file"
     headers:
-      testcookie: "test"
+      cookie: ${incoming.headers.cookie}
   result: domainData
 
 returnSuccess:

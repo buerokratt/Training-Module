@@ -1,0 +1,52 @@
+assign_values:
+  assign:
+    slot: ${incoming.body.slot}
+
+getSlots:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]/domain/_search?pretty=true"
+    body:
+      query:
+        match:
+          _id: 'slots'
+  result: getSlotsResult
+
+assignResponse:
+  assign:
+    slotResponse: ${getSlotsResult.response.body.hits.hits}
+
+checkSlotResponse:
+  switch:
+    - condition: ${slotResponse.length > 0}
+      next: checkSlotIsPresent
+  next: returnNotFound
+
+checkSlotIsPresent:
+  switch:
+    - condition: ${Object.keys(slotResponse[0]._source.slots).includes(slot)}
+      next: mapSlotsData
+  next: returnNotFound
+
+mapSlotsData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/dmapper/get-slot-details"
+    body:
+      name: ${slot}
+      hits: ${slotResponse[0]._source.slots[slot]}
+  result: slotsData
+  next: returnSuccess
+
+returnSuccess:
+  return: ${slotsData.response.body.data}
+  wrapper: false
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
+  next: end
+
+returnNotFound:
+  return: "ERROR: slot not found"
+  next: end

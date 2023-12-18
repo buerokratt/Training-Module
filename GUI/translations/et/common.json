@@ -39,6 +39,8 @@
     "anonymous": "Anonüümne",
     "title": "Pealkiri",
     "missing": "Puudub",
+    "updatingDataHead": "Palun oota",
+    "updatingDataBody": "Andmeid uuendatakse...",
     "days": {
       "monday": "Esmaspäev",
       "tuesday": "Teisipäev",
@@ -277,5 +279,9 @@
       "requested-chat-forward-accepted": "Kasutaja nõustus suunamisega, vestlus lõpetatud",
       "requested-chat-forward-rejected": "Kasutaja keeldus suunamisest"
     }
+  },
+  "submit": {
+    "slotNameRequired": "Nimi on kohustlik",
+    "slotCantBeEmpty": "Mälukoha nimi ei saa olla tühi"
   }
 }

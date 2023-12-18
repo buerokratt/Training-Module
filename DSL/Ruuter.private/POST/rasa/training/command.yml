@@ -1,27 +1,13 @@
 extractRequestData:
   assign:
     parameters: ${incoming.body}
-
-authenticate:
-  template: extract-token
-  requestType: post
-  headers:
-    cookie: ${incoming.headers.cookie}
-  body:
-    role: "ROLE_ADMINISTRATOR"
-  result: permission
-
-validatePermission:
-  switch:
-    - condition: ${permission}
-      next: runCommand
-  next: returnUnauthorized
+  next: runCommand
 
 runCommand:
   call: http.post
   args:
     #TODO: Implement the command execution logic
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/execute-command"
+    url: "[#TRAINING_DMAPPER]/dmapper/execute-command"
     body:
       command: ${parameters.command}
   result: commandResponse

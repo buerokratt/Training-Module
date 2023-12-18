@@ -1,4 +1,4 @@
-import api from './temp-api';
+import api from './api';
 import {ResponseEdit, ResponseDataEdit} from "types/response"
 
 export async function editResponse(id: string,  responseText: string, update = true) {

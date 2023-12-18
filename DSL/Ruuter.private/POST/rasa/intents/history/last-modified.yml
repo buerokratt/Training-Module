@@ -5,7 +5,7 @@ assign_values:
 getIntentLastChanged:
   call: http.post
   args:
-    url: "[TRAINING_RESQL]:[TRAINING_RESQL_PORT]/get-intent-last-changed"
+    url: "[TRAINING_RESQL]/get-intent-last-changed"
     body:
       intent: ${params.intent}
   result: getIntentLastChangedResult
@@ -13,7 +13,7 @@ getIntentLastChanged:
 mapIntentsData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-intent-last-changed"
+    url: "[#TRAINING_DMAPPER]/dmapper/get-intent-last-changed"
     body:
       intent: ${getIntentLastChangedResult.response.body}
   result: intentsData

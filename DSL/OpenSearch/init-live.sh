@@ -49,3 +49,6 @@ curl -L -X POST "$HOST:$PORT/_scripts/regex-with-name" -H 'Content-Type: applica
 
 # examples-entities
 curl -H "Content-Type: application/x-ndjson" -X PUT "$HOST:$PORT/examples-entities" -ku "$AUTH" --data-binary "@fieldMappings/examples-entities.json"
+
+#Slots
+curl -H "Content-Type: application/x-ndjson" -X PUT "$HOST:$PORT/slots" -ku "$AUTH" --data-binary "@fieldMappings/slots.json"

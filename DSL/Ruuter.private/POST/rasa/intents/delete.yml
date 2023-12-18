@@ -1,25 +1,30 @@
 assign_values:
   assign:
     parameters: ${incoming.body}
+    intent: ${incoming.body.name.replaceAll(/\s+/g, "_")}
 
-getDomainFile:
+getIntentList:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/domain-file"
+    url: "[#TRAINING_PUBLIC_RUUTER]/rasa/intents"
     headers:
       cookie: ${incoming.headers.cookie}
-  result: domainData
+  result: intentList
 
 validateIntentExists:
   switch:
-    - condition: ${domainData.response.body.response.intents.includes(parameters.intent)}
-      next: getFileLocations
-  next: returnIntentMissing
+    - condition: ${!intentList.response.body}
+      next: returnIntentMissing
+    - condition: ${!intentList.response.body.includes(intent)}
+      next: returnIntentMissing
+  next: getFileLocations
 
 getFileLocations:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]:[#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+    url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
+    headers:
+      cookie: ${incoming.headers.cookie}
   result: fileLocations
 
 assignFilePath:
@@ -29,9 +34,9 @@ assignFilePath:
 checkIntentFileYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/check"
+    url: "[#TRAINING_DMAPPER]/file/check"
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
+      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
   result: fileExists
 
 validateFileExists:
@@ -47,9 +52,9 @@ assignTmpFilePath:
 checkIntentFileTmp:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/check"
+    url: "[#TRAINING_DMAPPER]/file/check"
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
+      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
   result: tmpFileExists
 
 validateTmpFileExists:
@@ -61,7 +66,7 @@ validateTmpFileExists:
 getRulesFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/read"
+    url: "[#TRAINING_DMAPPER]/file/read"
     body:
       file_path: ${fileLocations.response.body.response.rules_location}
   result: ruleFile
@@ -69,7 +74,7 @@ getRulesFile:
 convertRulesYamlToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
     body:
       file: ${ruleFile.response.body.file}
   result: rulesData
@@ -77,7 +82,7 @@ convertRulesYamlToJson:
 convertRulesJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
     body:
       version: "3.0"
       rules: ${rulesData.response.body.rules}
@@ -85,14 +90,14 @@ convertRulesJsonToYaml:
 
 validateRuleDependency:
   switch:
-    - condition: ${rulesYaml.response.body.json.includes("intent:" + " " + parameters.intent)}
+    - condition: ${rulesYaml.response.body.json.includes("intent:" + " " + parameters.name)}
       next: returnRuleDependency
   next: getStoriesFile
 
 getStoriesFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/read"
+    url: "[#TRAINING_DMAPPER]/file/read"
     body:
       file_path: ${fileLocations.response.body.response.stories_location}
   result: storiesFile
@@ -100,7 +105,7 @@ getStoriesFile:
 convertStoriesYamlToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
     body:
       file: ${storiesFile.response.body.file}
   result: storiesData
@@ -108,7 +113,7 @@ convertStoriesYamlToJson:
 convertStoriesJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
     body:
       version: "3.0"
       stories: ${storiesData.response.body.stories}
@@ -116,30 +121,40 @@ convertStoriesJsonToYaml:
 
 validateStoriesDependency:
   switch:
-    - condition: ${storiesYaml.response.body.json.includes("intent:" + " " + parameters.intent)}
+    - condition: ${storiesYaml.response.body.json.includes("intent:" + " " + parameters.name)}
       next: returnStoriesDependency
   next: getIntentFile
 
 getIntentFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/read"
+    url: "[#TRAINING_DMAPPER]/file/read"
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
+      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
   result: intentFile
 
 convertYamlToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
     body:
       file: ${intentFile.response.body.file}
   result: intentData
 
+checkIfIntentEmpty:
+  switch:
+    - condition: ${intentData.response.body.nlu[0] != undefined}
+      next: replaceString
+
+assignEmptyExamples:
+  assign:
+    examplesToWriteIntoYml: [ ]
+  next: mapIntentsData
+
 replaceString:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/replace"
+    url: "[#TRAINING_DMAPPER]/convert/string/replace"
     body:
       data: ${intentData.response.body.nlu[0].examples}
       search: "- "
@@ -149,25 +164,29 @@ replaceString:
 splitExamples:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/split"
+    url: "[#TRAINING_DMAPPER]/convert/string/split"
     body:
       data: ${replacedString.response.body}
       separator: "\n"
   result: splitExamples
 
+assignExamples:
+  assign:
+    examplesToWriteIntoYml: ${splitExamples.response.body}
+
 mapIntentsData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-intent-file"
+    url: "[#TRAINING_DMAPPER]/dmapper/get-intent-file"
     body:
-      intent: ${parameters.intent}
-      examples: ${splitExamples.response.body}
+      intent: ${parameters.name}
+      examples: ${examplesToWriteIntoYml}
   result: intentFileJson
 
 convertJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
     body:
       version: "3.0"
       nlu: ${intentFileJson.response.body}
@@ -176,33 +195,39 @@ convertJsonToYaml:
 saveIntentFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/write"
+    url: "[#TRAINING_DMAPPER]/file/write"
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + "removed/" + parameters.intent + file_end}
+      file_path: ${fileLocations.response.body.response.intents_location + "removed/" + intent + file_end}
       content: ${intentYaml.response.body.json}
   result: fileResult
 
-deleteOldIntentFile:
-  call: http.post
+getDomainFile:
+  call: http.get
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/delete"
-    body:
-      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
-  result: deleted
+    url: "[#TRAINING_PUBLIC_RUUTER]/domain-file"
+    headers:
+      cookie: ${incoming.headers.cookie}
+  result: domainData
 
-deleteExistingIntent:
+validateExistsInDomain:
+  switch:
+    - condition: ${domainData.response.body.response.intents.includes(intent)}
+      next: mergeIntents
+  next: deleteOldIntentFile
+
+removeFromDomainArray:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/merge/remove-array-value"
+    url: "[#TRAINING_DMAPPER]/merge/remove-array-value"
     body:
       array: ${domainData.response.body.response.intents}
-      value: ${parameters.intent}
+      value: ${intent}
   result: updatedIntents
 
 convertDomainJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
     body:
       version: ${domainData.response.body.response.version}
       intents: ${updatedIntents.response.body}
@@ -217,19 +242,34 @@ convertDomainJsonToYaml:
 saveDomainFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/write"
+    url: "[#TRAINING_DMAPPER]/file/write"
     body:
       file_path: ${fileLocations.response.body.response.domain_location}
       content: ${domainYaml.response.body.json}
   result: fileResult
-  next: returnSuccess
+
+deleteOldIntentFile:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file/delete"
+    body:
+      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
+  result: deleted
+
+deleteInPipeline:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]/delete/object/intents"
+    body:
+      id: ${intent}
+  result: updateSearchResult
 
 deleteInDatabase:
   call: http.post
   args:
-    url: "[TRAINING_RESQL]:[TRAINING_RESQL_PORT]/add-intent"
+    url: "[#TRAINING_RESQL]/add-intent"
     body:
-      intent: ${params.intent}
+      intent: ${incoming.body.name}
       status: "DELETED"
   result: getIntentLastChangedResult
 

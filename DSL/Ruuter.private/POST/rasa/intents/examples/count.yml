@@ -5,7 +5,7 @@ assign_values:
 getIntentsExampleCount:
   call: http.post
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/intents/_search/template"
+    url: "[#TRAINING_OPENSEARCH]/intents/_search/template"
     body:
       id: "intents-with-examples-count"
       params: ${params}
@@ -14,7 +14,7 @@ getIntentsExampleCount:
 mapIntentsData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-intents-with-examples-count"
+    url: "[#TRAINING_DMAPPER]/dmapper/get-intents-with-examples-count"
     body:
       buckets: ${getIntentsResult.response.body.aggregations.hot.buckets}
   result: intentsData
