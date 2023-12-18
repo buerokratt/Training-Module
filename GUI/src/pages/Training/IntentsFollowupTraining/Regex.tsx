@@ -159,7 +159,7 @@ const Regex: FC = () => {
               </div>
               <Track gap={16}>
                 <Button appearance='secondary' onClick={() => setAddFormVisible(false)}>{t('global.cancel')}</Button>
-                <Button onClick={handleNewRegexSubmit}>{t('global.save')}</Button>
+                <Button disabled={selectedRegex === undefined} onClick={handleNewRegexSubmit}>{t('global.save')}</Button>
               </Track>
             </Track>
           )}
