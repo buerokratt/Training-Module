@@ -10,12 +10,16 @@ getFileLocations:
       cookie: ${incoming.headers.cookie}
   result: fileLocations
 
+assignFilePath:
+  assign:
+    filePath: ${fileLocations.response.body.response.regex_location + parameters.regex_name  + "_nlu.yml"}
+
 getRegexFile:
   call: http.post
   args:
     url: "[#TRAINING_DMAPPER]/file/read"
     body:
-      file_path: ${fileLocations.response.body.response.regex_location}
+      file_path: ${filePath}
   result: regexFile
 
 convertYamlToJson:
@@ -126,7 +130,7 @@ saveRegexFile:
   args:
     url: "[#TRAINING_DMAPPER]/file/write"
     body:
-      file_path: ${fileLocations.response.body.response.regex_location}
+      file_path: ${filePath}
       content: ${regexYaml.response.body.json}
   result: fileResult
 

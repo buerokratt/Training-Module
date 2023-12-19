@@ -10,14 +10,57 @@ getRegexesWithName:
       id: "regex-with-name"
       params: ${params}
   result: getRegexesResult
+
+assignExamples:
+  assign:
+    examplesArray: ${getRegexesResult.response.body.hits.hits[0]._source.examples}
+
+checkType:
+  switch:
+    - condition: ${typeof examplesArray === 'string'}
+      next: removeHyphens
   next: mapRegexesData
+
+removeHyphens:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/convert/string/replace"
+    body:
+      data: ${examplesArray}
+      search: "- "
+      replace: ""
+  result: removedHyp
+
+revertHyphens:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/convert/string/replace"
+    body:
+      data: ${removedHyp.response.body}
+      search: "[]"
+      replace: "[- ]"
+  result: revertedHyp
+
+splitExamples:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/convert/string/split"
+    body:
+      data: ${revertedHyp.response.body}
+      separator: "\n"
+  result: splitExamples
+
+reassignExamples:
+  assign:
+    examplesArray: ${splitExamples.response.body}
 
 mapRegexesData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/dmapper/get-regex-with-name"
+    url: "[#TRAINING_DMAPPER]/dmapper/get-regex-details"
     body:
       hits: ${getRegexesResult.response.body.hits.hits}
+      examplesArray: ${examplesArray}
       examples: ${params.examples}
   result: regexesData
   next: returnSuccess
