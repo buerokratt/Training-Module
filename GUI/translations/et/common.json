@@ -67,7 +67,7 @@
     "intentName": "Teema nimi",
     "intents": {
       "title": "Teemad",
-      "commonIntents": "Avalikud teemad",
+      "commonIntents": "Üldised teemad",
       "searchIntentPlaceholder": "Otsi teemat",
       "addToModel": "Lisa mudelisse",
       "removeFromModel": "Eemalda mudelist",
