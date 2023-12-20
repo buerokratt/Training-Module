@@ -1,7 +1,7 @@
 getSlots:
   call: http.post
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/domain/_search?pretty=true"
+    url: "[#TRAINING_OPENSEARCH]/domain/_search?pretty=true"
     body:
       query:
         match:
@@ -11,7 +11,7 @@ getSlots:
 mapSlotsData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/extract-slot-keys"
+    url: "[#TRAINING_DMAPPER]/dmapper/extract-slot-keys"
     body:
       hits: ${getSlotsResult.response.body.hits.hits}
   result: slotsData

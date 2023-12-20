@@ -13,7 +13,7 @@ extract_request_data:
 login_user:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]:[#TRAINING_RESQL_PORT]/get-user-by-login"
+    url: "[#TRAINING_RESQL]/get-user-by-login"
     body:
       login: ${login}
       password: ${password}
@@ -29,7 +29,7 @@ check_login_result:
 get_session_length:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]:[#TRAINING_RESQL_PORT]/get-configuration"
+    url: "[#TRAINING_RESQL]/get-configuration"
     body:
       key: "session_length"
   result: session_result
@@ -44,7 +44,7 @@ check_session_length_result:
 generate_cookie:
   call: http.post
   args:
-    url: "[#TRAINING_TIM]:[#TRAINING_TIM_PORT]/jwt/custom-jwt-generate"
+    url: "[#TRAINING_TIM]/jwt/custom-jwt-generate"
     body:
       JWTName: "customJwtCookie"
       expirationInMinutes: ${session_result.response.body[0].value}

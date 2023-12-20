@@ -7,7 +7,7 @@ check_for_required_parameters:
 get_csv:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/hbs/training/get-csv"
+    url: "[#TRAINING_DMAPPER]/hbs/training/get-csv"
     headers:
       type: 'csv'
     body:

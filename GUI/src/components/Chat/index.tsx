@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { et } from 'date-fns/locale';
 import clsx from 'clsx';
-import { MdOutlineAttachFile, MdOutlineSend } from 'react-icons/all';
+import { MdOutlineAttachFile, MdOutlineSend } from 'react-icons/md';
 
 import { Button, FormInput, Icon, Track } from 'components';
 import { ReactComponent as BykLogoWhite } from 'assets/logo-white.svg';

@@ -5,7 +5,7 @@ assign_values:
 getDomainFile:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/domain-file"
+    url: "[#TRAINING_PUBLIC_RUUTER]/domain-file"
     headers:
       cookie: ${incoming.headers.cookie}
   result: domainData
@@ -19,7 +19,7 @@ validateEntities:
 replaceExistingEntity:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/merge/replace-array-element"
+    url: "[#TRAINING_DMAPPER]/merge/replace-array-element"
     body:
       element: ${parameters.entity_name}
       newValue: ${parameters.entity}
@@ -29,7 +29,7 @@ replaceExistingEntity:
 convertJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
     body:
       version: ${domainData.response.body.response.version}
       intents: ${domainData.response.body.response.intents}
@@ -44,7 +44,7 @@ convertJsonToYaml:
 getFileLocations:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+    url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
     headers:
       cookie: ${incoming.headers.cookie}
   result: fileLocations
@@ -52,7 +52,7 @@ getFileLocations:
 saveDomainFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/write"
+    url: "[#TRAINING_DMAPPER]/file/write"
     body:
       file_path: ${fileLocations.response.body.response.domain_location}
       content: ${domainYaml.response.body.json}
@@ -61,7 +61,7 @@ saveDomainFile:
 updateDomainOpenSearch:
   call: http.post
   args:
-    url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/bulk/domain"
+    url: "[#TRAINING_PIPELINE]/bulk/domain"
     body:
       input: ${domainYaml.response.body.json}
   result: updateSearchResult
@@ -75,7 +75,7 @@ switchFileType:
 getRegexFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/read"
+    url: "[#TRAINING_DMAPPER]/file/read"
     body:
       file_path: ${fileLocations.response.body.response.regex_location}
   result: intentFile
@@ -84,7 +84,7 @@ getRegexFile:
 getIntentFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/read"
+    url: "[#TRAINING_DMAPPER]/file/read"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + "_nlu.yml"}
   result: intentFile
@@ -92,7 +92,7 @@ getIntentFile:
 convertYamlToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
     body:
       file: ${intentFile.response.body.file}
   result: intentData
@@ -106,7 +106,7 @@ switchMapFileType:
 mapRegexesData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-regex-file"
+    url: "[#TRAINING_DMAPPER]/dmapper/get-regex-file"
     body:
       regex: ${parameters.entity}
       examples: ${intentData.response.body.nlu[0].examples}
@@ -116,7 +116,7 @@ mapRegexesData:
 mapIntentsData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-intent-file"
+    url: "[#TRAINING_DMAPPER]/dmapper/get-intent-file"
     body:
       intent: ${parameters.entity}
       examples: ${splitExamples.response.body}
@@ -125,7 +125,7 @@ mapIntentsData:
 convertIntentJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
     body:
       version: "3.0"
       nlu: ${intentFileJson.response.body.data}
@@ -140,7 +140,7 @@ switchSaveFileType:
 saveRegexFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/write"
+    url: "[#TRAINING_DMAPPER]/file/write"
     body:
       file_path: ${fileLocations.response.body.response.regex_location}
       content: ${intentYaml.response.body.json}
@@ -149,7 +149,7 @@ saveRegexFile:
 removePipe:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/string/replace"
+    url: "[#TRAINING_DMAPPER]/convert/string/replace"
     body:
       data: ${intentYaml.response.body.json}
       search: "|"
@@ -159,7 +159,7 @@ removePipe:
 updateRegexOpenSearch:
   call: http.post
   args:
-    url: "[#TRAINING_PIPELINE]:[#TRAINING_PIPELINE_PORT]/put/regexes/regex"
+    url: "[#TRAINING_PIPELINE]/put/regexes/regex"
     body:
       input: ${result.response.body}
   result: returnSuccess
@@ -167,7 +167,7 @@ updateRegexOpenSearch:
 saveIntentFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/write"
+    url: "[#TRAINING_DMAPPER]/file/write"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + "_nlu.yml"}
       content: ${intentYaml.response.body.json}

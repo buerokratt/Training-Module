@@ -1,13 +1,13 @@
 getEntities:
   call: http.get
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/domain/_search?size=10000"
+    url: "[#TRAINING_OPENSEARCH]/domain/_search?size=10000"
   result: getEntitiesResult
 
 mapEntitiesData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/get-entities"
+    url: "[#TRAINING_DMAPPER]/dmapper/get-entities"
     body:
       hits: ${getEntitiesResult.response.body.hits.hits}
   result: entitiesData
@@ -16,7 +16,7 @@ mapEntitiesData:
 sortEntities:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/sort-entities"
+    url: "[#TRAINING_DMAPPER]/dmapper/sort-entities"
     body:
       hits: ${entitiesData.response.body.data.entities}
   result: sortedEntities

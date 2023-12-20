@@ -3,9 +3,9 @@
     "type":"{{ hits.type}}",
     "influenceConversation": {{ eq true hits.influence_conversation }},
     "mappings": {
-        "type": "{{ hits.mappings.type }}",
-        "entity": "{{ hits.mappings.entity }}",
-        "intent": [{{#each hits.mappings.intent}}"{{ this }}"{{#unless @last}},{{/unless}}{{/each}}],
-        "notIntent": [{{#each hits.mappings.not_intent}}"{{ this }}"{{#unless @last}},{{/unless}}{{/each}}]
+        "type": "{{ hits.mappings.[0].type }}",
+        "entity": "{{ hits.mappings.[0].entity }}",
+        "intent": [{{#each hits.mappings.[0].intent}}"{{ this }}"{{#unless @last}},{{/unless}}{{/each}}],
+        "notIntent": [{{#each hits.mappings.[0].notIntent}}"{{ this }}"{{#unless @last}},{{/unless}}{{/each}}]
     }
 }

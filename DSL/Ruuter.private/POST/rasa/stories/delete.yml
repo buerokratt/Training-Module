@@ -5,7 +5,7 @@ assign_values:
 getStoriesWithName:
   call: http.post
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/rasa/story-by-name"
+    url: "[#TRAINING_PUBLIC_RUUTER]/rasa/stories"
     headers:
       cookie: ${incoming.headers.cookie}
     body:
@@ -21,7 +21,7 @@ validateStories:
 getFileLocations:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER][#TRAINING_PUBLIC_RUUTER_PORT]/return-file-locations"
+    url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
     headers:
       cookie: ${incoming.headers.cookie}
   result: fileLocations
@@ -29,7 +29,7 @@ getFileLocations:
 getStoriesFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/read"
+    url: "[#TRAINING_DMAPPER]/file/read"
     body:
       file_path: ${fileLocations.response.body.response.stories_location}
   result: storiesFile
@@ -37,7 +37,7 @@ getStoriesFile:
 convertYamlToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
     body:
       file: ${storiesFile.response.body.file}
   result: storiesData
@@ -45,7 +45,7 @@ convertYamlToJson:
 deleteStory:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/dmapper/delete-story"
+    url: "[#TRAINING_DMAPPER]/dmapper/delete-story"
     body:
       stories: ${storiesData.response.body.stories}
       story_name: ${body.story}
@@ -54,7 +54,7 @@ deleteStory:
 convertJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
     body:
       version: "3.0"
       stories: ${deleteStoriesData.response.body}
@@ -63,7 +63,7 @@ convertJsonToYaml:
 saveStoriesFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]:[#TRAINING_DMAPPER_PORT]/file/write"
+    url: "[#TRAINING_DMAPPER]/file/write"
     body:
       file_path: ${fileLocations.response.body.response.stories_location}
       content: ${storiesYaml.response.body.json}
@@ -73,7 +73,7 @@ saveStoriesFile:
 updateOpenSearch:
   call: http.delete
   args:
-    url: "[#TRAINING_OPENSEARCH]:[#TRAINING_OPENSEARCH_PORT]/stories/_doc/${storiesResult.response.body.response.id}"
+    url: "[#TRAINING_OPENSEARCH]/stories/_doc/${storiesResult.response.body.response.id}"
   result: updateSearchResult
   next: returnSuccess
 

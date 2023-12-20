@@ -277,5 +277,9 @@
       "requested-chat-forward-accepted": "Kasutaja nõustus suunamisega, vestlus lõpetatud",
       "requested-chat-forward-rejected": "Kasutaja keeldus suunamisest"
     }
+  },
+  "submit": {
+    "slotNameRequired": "Name is required",
+    "slotCantBeEmpty": "Slot name can't be empty"
   }
 }
