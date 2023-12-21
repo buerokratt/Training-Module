@@ -6,7 +6,7 @@ assign_step:
       domain_location: '/mock1/domain.yml'
       test_stories_location: '/mock1/tests/test_stories.yml'
       intents_location: '/mock1/data/nlu/'
-      regex_location: '/mock1/data/regex_nlu.yml'
+      regex_location: '/mock1/data/regex/'
       training_result_location: '/mock1/results'
       config_location: '/mock1/config.yml'
 return_value:
