@@ -32,7 +32,7 @@ export async function editRegexExample(
         newExample: string
       }})
 {
-  const { data } = await api.post<{ regex_name: string }>(`regex/update`, example_data);
+  const { data } = await api.post<{ regex_name: string }>(`regex/update-example`, example_data);
   return data;
 }
 
