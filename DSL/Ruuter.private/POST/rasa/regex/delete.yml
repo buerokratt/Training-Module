@@ -6,17 +6,37 @@ getFileLocations:
   call: http.get
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
-    headers:
-      cookie: ${incoming.headers.cookie}
+#    headers:
+#      cookie: ${incoming.headers.cookie}
   result: fileLocations
+
+assignFilePath:
+  assign:
+    filePath: ${fileLocations.response.body.response.regex_location + parameters.regex_name  + "_nlu.yml"}
 
 getRegexFile:
   call: http.post
   args:
     url: "[#TRAINING_DMAPPER]/file/read"
     body:
-      file_path: ${fileLocations.response.body.response.regex_location}
+      file_path: ${filePath}
   result: regexFile
+  next: checkEntity
+
+check:
+  switch:
+    - condition: ${regexesData.response.body.data.regex.includes(parameters.regex_name)}
+      next: replaceJsonString
+  next: checkEntity
+
+checkEntity:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/dmapper/checkV"
+    body:
+      hits: ${regexFile}
+    result: fileResult
+  next: returnSuccess
 
 convertYamlToJson:
   call: http.post

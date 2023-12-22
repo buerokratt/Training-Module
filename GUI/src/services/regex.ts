@@ -13,8 +13,8 @@ export async function editRegex(id: string | number, regexData: { name: string }
   return data;
 }
 
-export async function deleteRegex(id: string | number) {
-  const { data } = await api.delete<void>(`regex/${id}`);
+export async function deleteRegex(deleteData: { regex_name : string | number }) {
+  const { data } = await api.post<void>(`regex/delete`, deleteData);
   return data;
 }
 

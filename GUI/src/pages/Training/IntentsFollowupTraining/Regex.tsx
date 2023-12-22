@@ -61,7 +61,7 @@ const Regex: FC = () => {
   }).map((e) => ({ label: e.name, value: String(e.id) })), [entities, regexList]);
 
   const regexDeleteMutation = useMutation({
-    mutationFn: ({ id }: { id: string | number }) => deleteRegex(id),
+    mutationFn: ( deleteData : { regex_name: string | number }) => deleteRegex(deleteData),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['regex']);
       toast.open({
@@ -185,7 +185,7 @@ const Regex: FC = () => {
               <Button appearance='secondary' onClick={() => setDeletableRow(null)}>{t('global.no')}</Button>
               <Button
                 appearance='error'
-                onClick={() => regexDeleteMutation.mutate({ id: deletableRow })}
+                onClick={() => regexDeleteMutation.mutate({ regex_name: deletableRow })}
               >
                 {t('global.yes')}
               </Button>
