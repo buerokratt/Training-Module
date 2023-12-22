@@ -9,7 +9,7 @@ export async function addRegex(regexData: { name: string }) {
 }
 
 export async function editRegex(id: string | number, regexData: { name: string }) {
-  const { data } = await api.patch<{ readonly id: number; name: string }>(`regex/${id}`, regexData);
+  const { data } = await api.post<{ readonly id: number; name: string }>(`regex/${id}`, regexData);
   return data;
 }
 
@@ -32,7 +32,7 @@ export async function editRegexExample(
         newExample: string
       }})
 {
-  const { data } = await api.post<{ regex_name: string }>(`regex/update`, example_data);
+  const { data } = await api.post<{ regex_name: string }>(`regex/update-example`, example_data);
   return data;
 }
 
