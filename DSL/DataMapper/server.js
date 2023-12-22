@@ -32,6 +32,7 @@ import yamlToJson from "./js/convert/yamlToJson.js";
 import jsonToYaml from "./js/convert/jsonToYaml.js";
 import csvToJson from "./js/convert/csvToJson.js";
 import stringSplit from "./js/util/stringSplit.js";
+import stringToArray from "./js/util/stringToArray.js";
 import stringReplace from "./js/util/stringReplace.js";
 import removeRulesByIntentName from "./js/util/removeRulesByIntentName.js";
 import domainUpdateExistingResponse from "./js/util/domainUpdateExistingResponse.js";
@@ -64,6 +65,7 @@ app.use('/convert/json-to-yaml', jsonToYaml)
 app.use('/convert/csv-to-json', csvToJson)
 app.use('/convert/string/split', stringSplit)
 app.use('/convert/string/replace', stringReplace)
+app.use('/convert/string/toArray', stringToArray)
 app.use('/rules/remove-by-intent-name', removeRulesByIntentName);
 app.use('/domain/update-existing-response', domainUpdateExistingResponse)
 app.use(express.urlencoded({ extended: true }));

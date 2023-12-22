@@ -46,7 +46,7 @@ const RegexDetail: FC = () => {
     id: number;
     value: string;
   } | null>(null);
-  const { data: regex } = useQuery<Regex>(['regex',id, 'examples']);
+  const { data: regex, refetch } = useQuery<Regex>(['regex',id, 'examples']);
   const [deletableRow, setDeletableRow] = useState<string | undefined | null>(null);
   const [deletableRegex, setDeletableRegex] = useState<string | number | null>(null);
   const { data: entities } = useQuery<Entity[]>({
@@ -164,6 +164,7 @@ const RegexDetail: FC = () => {
         title: t('global.notification'),
         message: 'Example changed',
       });
+      refetch();
     },
     onError: (error: AxiosError) => {
       toast.open({
