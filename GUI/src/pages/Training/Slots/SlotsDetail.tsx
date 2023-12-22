@@ -41,6 +41,7 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
   const queryClient = useQueryClient();
   const [selectedSlotType, setSelectedSlotType] = useState<string | undefined>('from_text');
   const [selectedEntity, setSelectedEntity] = useState<string | undefined>('test');
+  const [influenceConversation, setInfluenceConversation] = useState<boolean>(false);
   const { data: slot } = useQuery<Slot>({
     queryKey: [`slots/slotById`,params.id],
     enabled: mode === 'edit' && !!params.id,
@@ -58,8 +59,9 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
   });
   useEffect(() => {
     if (slot) {
-      setSelectedSlotType(slot?.mappings?.type || 'from_text')
-      setSelectedEntity(slot?.mappings?.entity || 'test')
+      setSelectedEntity(slot.mappings.entity)
+      setInfluenceConversation(slot.influenceConversation)
+      setSelectedSlotType(slot.mappings.type)
       reset(slot);
     }
   }, [reset, slot]);
@@ -85,7 +87,7 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
   });
 
   const slotEditMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string | number, data: SlotEditDTO }) => editSlot(id, data),
+    mutationFn: (data: SlotEditDTO) => editSlot(data),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['slots']);
       navigate('/training/slots');
@@ -106,7 +108,7 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
 
   const handleSlotSave = handleSubmit((data) => {
     if (mode === 'edit' && params.id) {
-      slotEditMutation.mutate({ id: params.id, data });
+      slotEditMutation.mutate(data);
     } else {
       newSlotMutation.mutate(data);
     }
@@ -145,8 +147,10 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
           <Controller name='influenceConversation' control={control} render={({ field }) =>
             <Switch
               {...field}
-              defaultChecked={slot?.influenceConversation}
-              onCheckedChange={(e) => field.onChange(e)}
+              checked={influenceConversation}
+              onCheckedChange={(e) => {
+                setInfluenceConversation(e)
+                field.onChange(e)} }
               label={t('training.slots.influenceConversation')}
             />
           } />
@@ -162,6 +166,7 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
                   <FormSelect
                       {...field}
                       label='Entity'
+                      defaultValue={selectedEntity}
                       options={entities.map((entity) => ({ label: entity.name, value: entity.name }))}
                       onSelectionChange={(selection) => {
                         setSelectedEntity((selection?.value));
@@ -174,13 +179,11 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
               <FormCheckboxes {...register('mappings.intent')} label='Intent' items={intents.map((intent) => ({
                 label: intent.intent,
                 value: String(intent.id),
-                checked: slot?.mappings?.intent?.includes(intent.intent)
               }))} />}
             {intents &&
               <FormCheckboxes {...register('mappings.notIntent')} label='Not intent' items={intents.map((intent) => ({
                 label: intent.intent,
                 value: String(intent.id),
-                checked: slot?.mappings?.notIntent?.includes(intent?.intent)
               }))} />}
           </Track>
         </Card>

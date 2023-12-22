@@ -13,7 +13,7 @@ getDomainFile:
 
 validateSlots:
   switch:
-    - condition: ${domainData.response.body.response.slots[parameters.slot_name] != null}
+    - condition: ${domainData.response.body.response.slots[Object.keys(parameters.slot)[0]] != null}
       next: mergeSlots
   next: returnSlotIsMissing
 
@@ -57,7 +57,15 @@ saveDomainFile:
       file_path: ${fileLocations.response.body.response.domain_location}
       content: ${domainYaml.response.body.json}
   result: fileResult
-  next: returnSuccess
+  next: updateRegexOpenSearch
+
+updateRegexOpenSearch:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]/bulk/domain"
+    body:
+      input: ${domainYaml.response.body.json}
+  result: returnSuccess
 
 returnSuccess:
   return: "Slot updated"

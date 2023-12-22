@@ -4,7 +4,6 @@ ARG nginx_version=nginx:1.21.3-alpine
 FROM $node_version as image
 WORKDIR /usr/training-module
 COPY ./package*.json ./
-COPY ./exirain-header-0.0.28.tgz ./
 
 FROM image AS build
 RUN npm i --legacy-peer-deps --mode=development
