@@ -113,13 +113,14 @@ const RegexDetail: FC = () => {
   });
 
   const regexExampleAddMutation = useMutation({
-    mutationFn: (data: { example: string }) => addRegexExample(data),
+    mutationFn: (data: { regex_name: string, example: string }) => addRegexExample(data),
     onSuccess: () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
         message: 'Example added',
       });
+      refetch();
     },
     onError: (error: AxiosError) => {
       toast.open({
@@ -202,8 +203,8 @@ const RegexDetail: FC = () => {
   };
 
   const handleNewExampleSubmit = () => {
-    if (!newExampleRef.current) return;
-    regexExampleAddMutation.mutate({ example: newExampleRef.current.value });
+    if (!newExampleRef.current || !regex) return;
+    regexExampleAddMutation.mutate({ regex_name: regex.name,example: newExampleRef.current.value });
     newExampleRef.current.value = '';
     setExampleText('');
   };

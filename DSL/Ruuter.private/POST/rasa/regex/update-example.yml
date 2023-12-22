@@ -39,28 +39,12 @@ mapRegexesData:
       regex_name: ${parameters.regex_name}
   result: regexesData
 
-validateRegexExists:
-  switch:
-    - condition: ${regexesData.response.body.data.regex.includes(parameters.regex_name)}
-      next: removeQuotes
-  next: returnRegexIsMissing
-
-removeQuotes:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/convert/string/replace"
-    body:
-      data: ${regexesData.response.body.data.examples}
-      search: "&quot;"
-      replace: ""
-  result: removedQuotes
-
 updateExample:
   call: http.post
   args:
     url: "[#TRAINING_DMAPPER]/convert/string/replace"
     body:
-      data: ${removedQuotes.response.body}
+      data: ${regexesData.response.body.data.examples}
       search: ${parameters.input.example}
       replace: ${parameters.input.newExample}
   result: updatedExamples

@@ -19,7 +19,7 @@ export async function deleteRegex(id: string | number) {
 }
 
 export async function addRegexExample(regexExampleData: { example: string }) {
-  const { data } = await api.post<{ example: string }>(`regex/examples`, regexExampleData);
+  const { data } = await api.post<{ regex_name: string, example: string }>(`regex/add-example`, regexExampleData);
   return data;
 }
 
