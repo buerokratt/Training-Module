@@ -166,7 +166,7 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
                   <FormSelect
                       {...field}
                       label='Entity'
-                      defaultValue={slot?.mappings.entity || 'test'}
+                      defaultValue={selectedEntity}
                       options={entities.map((entity) => ({ label: entity.name, value: entity.name }))}
                       onSelectionChange={(selection) => {
                         setSelectedEntity((selection?.value));
