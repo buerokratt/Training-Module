@@ -1,6 +1,7 @@
 assign_values:
   assign:
     parameters: ${incoming.body}
+    responseName: ${incoming.body.response}
 
 getDomainFile:
   call: http.get
@@ -12,7 +13,7 @@ getDomainFile:
 
 validateResponse:
   switch:
-    - condition: ${domainData.response.body.response.responses[parameters.response_name] != null}
+    - condition: ${domainData.response.body.response.responses[responseName] != null}
       next: ruleResponses
   next: returnResponseIsMissing
 
@@ -23,13 +24,17 @@ ruleResponses:
     headers:
       cookie: ${incoming.headers.cookie}
     body:
-      value: ${parameters.response_name}
+      value: ${responseName}
       type: "responses"
   result: ruleResponses
 
+ruleResponsesReturn:
+  return: ${ruleResponses}
+  next: end
+
 validateRuleResponses:
   switch:
-    - condition: ${ruleResponses.response.data.rules.length == 0}
+    - condition: ${ruleResponses.response.body.response.data.rules.length == 0}
       next: storiesResponses
   next: returnResponseHasDependencyToRules
 
@@ -46,7 +51,7 @@ storiesResponses:
 
 validateStoriesResponses:
   switch:
-    - condition: ${storiesResponses.response.data.stories.length == 0}
+    - condition: ${storiesResponses.response.body.response.data.stories.length == 0}
       next: deleteKey
   next: returnResponseHasDependencyToStories
 
@@ -56,7 +61,7 @@ deleteKey:
     url: "[#TRAINING_DMAPPER]/merge/remove-key"
     body:
       object: ${domainData.response.body.response.responses}
-      key: ${parameters.response_name}
+      key: ${responseName}
   result: keyDeletedData
 
 convertJsonToYaml:

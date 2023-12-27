@@ -19,7 +19,7 @@ export async function editResponse(id: string,  responseText: string, update = t
 }
 
 
-export async function deleteResponse(id: string | number) {
-  const { data } = await api.post<void>(`responses/delete`, {response_name: id});
+export async function deleteResponse(response: {response: string}) {
+  const { data } = await api.post(`responses/delete`, response);
   return data;
 }

@@ -1,14 +1,36 @@
 assign_values:
   assign:
     params: ${incoming.body}
+    type: ${incoming.body.type}
+    value: ${incoming.body.value}
 
-getStoriesSearch:
+checkForIncomingType:
+  switch:
+    - condition: ${type == "responses"}
+      next: getStoriesSearchForResponses
+#    - condition: ${type == "forms"}
+#      next: getStoriesSearchForForms
+#    - condition: ${type == "slots"}
+#      next: getStoriesSearchForSlots
+#    - condition: ${type === undefined}
+#      next: getStoriesSearch
+
+getStoriesSearchForResponses:
   call: http.post
   args:
     url: "[#TRAINING_OPENSEARCH]/stories/_search/template"
     body:
-      id: ${"story-with-"+params.type}
-      params: ${params}
+      id: ${"story-with-" + value}
+      params:
+        actionOrActiveLoopValue: ${value}
+      source:
+        query:
+          bool:
+            should:
+              - match:
+                  steps.action: ${value}
+              - match:
+                  steps.active_loop: ${value}
   result: getStoriesResult
 
 mapStoriesData:
@@ -22,8 +44,4 @@ mapStoriesData:
 
 returnSuccess:
   return: ${storiesData.response.body}
-  next: end
-
-returnUnauthorized:
-  return: "error: unauthorized"
   next: end

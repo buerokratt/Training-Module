@@ -31,7 +31,7 @@ const Responses: FC = () => {
   });
   const [addFormVisible, setAddFormVisible] = useState(false);
   const [editableRow, setEditableRow] = useState<{ id: string; text: string; } | null>(null);
-  const [deletableRow, setDeletableRow] = useState<string | number | null>(null);
+  const [deletableRow, setDeletableRow] = useState<string | null>(null);
   const [filter, setFilter] = useState('');
   const { register, handleSubmit } = useForm<NewResponse>();
 
@@ -79,7 +79,7 @@ const Responses: FC = () => {
   });
 
   const responseDeleteMutation = useMutation({
-    mutationFn: ({ id }: { id: string | number }) => deleteResponse(id),
+    mutationFn: (data: { response: string }) => deleteResponse(data),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['responses']);
 
@@ -306,7 +306,7 @@ const Responses: FC = () => {
               <Button appearance='secondary' onClick={() => setDeletableRow(null)}>{t('global.no')}</Button>
               <Button
                 appearance='error'
-                onClick={() => responseDeleteMutation.mutate({ id: deletableRow })}
+                onClick={() => responseDeleteMutation.mutate({ response: deletableRow })}
               >
                 {t('global.yes')}
               </Button>
