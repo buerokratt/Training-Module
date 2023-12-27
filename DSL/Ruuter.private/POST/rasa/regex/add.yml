@@ -29,7 +29,7 @@ getFileLocations:
 mapRegexData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/dmapper/get-regex-file"
+    url: "[#TRAINING_DMAPPER]/dmapper/new-regex-file"
     body:
       regex: ${regex}
   result: regexFileJson
@@ -52,22 +52,12 @@ saveRegexFile:
       content: ${regexYaml.response.body.json}
   result: fileResult
 
-removePipe:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/convert/string/replace"
-    body:
-      data: ${regexYaml.response.body.json}
-      search: "|"
-      replace: ""
-  result: removedPipeline
-
 addInPipeline:
   call: http.post
   args:
     url: "[#TRAINING_PIPELINE]/put/regexes/regex"
     body:
-      input: ${removedPipeline.response.body}
+      input: ${regexYaml.response.body.json}
   result: updateSearchResult
 
 returnSuccess:
