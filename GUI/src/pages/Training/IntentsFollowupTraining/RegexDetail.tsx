@@ -52,6 +52,7 @@ const RegexDetail: FC = () => {
   const { data: entities } = useQuery<Entity[]>({
     queryKey: ['entities'],
   });
+  const [editRegexName, setEditRegexName] = useState<string>(regex?.name ?? '');
 
   const [regexList, setRegexList] = useState<{
     id: number;
@@ -75,13 +76,14 @@ const RegexDetail: FC = () => {
   }, [regex?.examples])
 
   const regexEditMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string | number, data: { name: string } }) => editRegex(id, data),
+    mutationFn: (data : {  name: string , newName: string }) => editRegex(data),
     onSuccess: () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
         message: 'New regex example added',
       });
+      refetch();
     },
     onError: (error: AxiosError) => {
       toast.open({
@@ -351,8 +353,9 @@ const RegexDetail: FC = () => {
                       label={t('training.intents.regexExampleTitle')}
                       hideLabel
                       options={entities?.map((e) => ({ label: e.name, value: e.name })) || []}
-                      defaultValue={regex.name}
+                      value={editRegexName}
                       style={{ minWidth: 400 }}
+                      onSelectionChange={(e) => setEditRegexName(e?.label || '')}
                     />
                   ) : (
                     <h3>{regex.name}</h3>
@@ -361,7 +364,7 @@ const RegexDetail: FC = () => {
                     <Button
                       appearance='text'
                       onClick={() =>
-                        regexEditMutation.mutate({ id: regex.id, data: { name: editingRegexTitle } })
+                        regexEditMutation.mutate({ newName: editRegexName, name: editingRegexTitle })
                       }
                     >
                       <Icon icon={<MdOutlineSave />} />

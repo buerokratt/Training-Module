@@ -1,13 +1,14 @@
 assign_values:
   assign:
     parameters: ${incoming.body}
+  next: checkEntity
 
 getFileLocations:
   call: http.get
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
-    headers:
-      cookie: ${incoming.headers.cookie}
+#    headers:
+#      cookie: ${incoming.headers.cookie}
   result: fileLocations
 
 assignFilePath:
@@ -165,3 +166,12 @@ returnRegexIsMissing:
 returnUnauthorized:
   return: "error: unauthorized"
   next: end
+
+checkEntity:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/dmapper/checkV"
+    body:
+      hits: ${parameters}
+    result: fileResult
+  next: returnSuccess
