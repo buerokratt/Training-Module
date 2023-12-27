@@ -63,12 +63,13 @@ const Regex: FC = () => {
   const regexDeleteMutation = useMutation({
     mutationFn: ( deleteData : { regex_name: string | number }) => deleteRegex(deleteData),
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['regex']);
+      await queryClient.invalidateQueries(['regexes']);
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Entity deleted',
+        message: 'Regex deleted',
       });
+      setTimeout(() => refetch(), 1000);
     },
     onError: (error: AxiosError) => {
       toast.open({

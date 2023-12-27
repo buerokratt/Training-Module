@@ -101,7 +101,8 @@ const RegexDetail: FC = () => {
         title: t('global.notification'),
         message: 'Regex deleted',
       });
-      refetch();
+      setTimeout(() => refetch(), 1000);
+      navigate(`/training/intents-followup-training`)
     },
     onError: (error: AxiosError) => {
       toast.open({
