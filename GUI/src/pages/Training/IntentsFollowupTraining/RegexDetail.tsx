@@ -33,6 +33,11 @@ type Regex = {
   examples: string[];
 }
 
+type RegexTeaser = {
+  readonly id: number;
+  name: string;
+}
+
 const RegexDetail: FC = () => {
   const { id } = useParams();
   let updatedExampleName = '';
@@ -52,7 +57,10 @@ const RegexDetail: FC = () => {
   const { data: entities } = useQuery<Entity[]>({
     queryKey: ['entities'],
   });
-  const [editRegexName, setEditRegexName] = useState<string>(regex?.name ?? '');
+  const { data: existingRegexes} = useQuery<RegexTeaser[]>({
+    queryKey: ['regexes'],
+  });
+  const [editRegexName, setEditRegexName] = useState<string>('');
 
   const [regexList, setRegexList] = useState<{
     id: number;
@@ -70,10 +78,15 @@ const RegexDetail: FC = () => {
     [regex],
   );
 
+  const availableEntities = useMemo(() => entities?.filter((e) => {
+    return !existingRegexes?.some((r) => r.name === e.name);
+  }).map((e) => ({ label: e.name, value: String(e.id) })), [entities, regexList]);
+
   useEffect(() => {
     const result = regex && regex.examples.map((e, index) => ({ id: index, value: e }));
     setRegexList(result ?? []);
-  }, [regex?.examples])
+    setEditRegexName((availableEntities && availableEntities.length > 0) ? availableEntities[0].label : '');
+  }, [regex?.examples, regex?.name, availableEntities, regex])
 
   const regexEditMutation = useMutation({
     mutationFn: (data : {  name: string , newName: string }) => editRegex(data),
@@ -84,6 +97,7 @@ const RegexDetail: FC = () => {
         message: 'New regex example added',
       });
       refetch();
+      navigate(`/training/regex/${editRegexName}`)
     },
     onError: (error: AxiosError) => {
       toast.open({
@@ -224,7 +238,7 @@ const RegexDetail: FC = () => {
           <FormInput
             name={`example-${props.row.original.id}`}
             label=''
-            defaultValue={editableRow.value}
+            defaultValue={editRegexName}
             hideLabel
             onChange={(e) => newExampleName(e.target.value)}
           />
@@ -352,8 +366,8 @@ const RegexDetail: FC = () => {
                       name='intentTitle'
                       label={t('training.intents.regexExampleTitle')}
                       hideLabel
-                      options={entities?.map((e) => ({ label: e.name, value: e.name })) || []}
-                      value={editRegexName}
+                      options={availableEntities || []}
+                      defaultValue={editRegexName}
                       style={{ minWidth: 400 }}
                       onSelectionChange={(e) => setEditRegexName(e?.label || '')}
                     />

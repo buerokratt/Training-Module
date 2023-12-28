@@ -66,7 +66,7 @@ returnSuccess:
 
 returnRegexExists:
   status: 409
-  return: "Intent with that name already exists"
+  return: "Regex with that name already exists"
   next: end
 
 returnRegexesError:
