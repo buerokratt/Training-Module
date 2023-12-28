@@ -20,13 +20,14 @@ getFileLocations:
   call: http.get
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
-#    headers:
-#      cookie: ${incoming.headers.cookie}
+    headers:
+      cookie: ${incoming.headers.cookie}
   result: fileLocations
 
-assignFilePath:
+assignFilePaths:
   assign:
-    filePath: ${fileLocations.response.body.response.regex_location + parameters.regex_name  + "_nlu.yml"}
+    oldPath: ${fileLocations.response.body.response.regex_location + regex.name  + "_nlu.yml"}
+    newPath: ${fileLocations.response.body.response.regex_location + regex.newName  + "_nlu.yml"}
 
 getRegexFile:
   call: http.post
