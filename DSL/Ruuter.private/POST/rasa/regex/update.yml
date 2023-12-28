@@ -78,18 +78,17 @@ updateRegexOpenSearch:
   args:
     url: "[#TRAINING_PIPELINE]/put/regexes/regex"
     body:
-      input: ${result.response.body}
+      input: ${regexYaml.response.body.json}
   result: updatedOpenSearch
-  next: returnSuccess
 
 removeOldFile:
   call: http.post
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]/rasa/regex/delete"
     body:
-      regex_name: ${regex.newName}
-      headers:
-        cookie: ${incoming.headers.cookie}
+      regex_name: ${regex.name}
+#      headers:
+#        cookie: ${incoming.headers.cookie}
   result: regexes
 
 returnSuccess:

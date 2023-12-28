@@ -32,6 +32,7 @@ mapRegexData:
     url: "[#TRAINING_DMAPPER]/dmapper/new-regex-file"
     body:
       regex: ${regex}
+      examples: ""
   result: regexFileJson
 
 convertJsonToYaml:
@@ -52,7 +53,7 @@ saveRegexFile:
       content: ${regexYaml.response.body.json}
   result: fileResult
 
-addInPipeline:
+UpdateOpensearch:
   call: http.post
   args:
     url: "[#TRAINING_PIPELINE]/put/regexes/regex"

@@ -86,7 +86,7 @@ const RegexDetail: FC = () => {
     const result = regex && regex.examples.map((e, index) => ({ id: index, value: e }));
     setRegexList(result ?? []);
     setEditRegexName((availableEntities && availableEntities.length > 0) ? availableEntities[0].label : '');
-  }, [regex?.examples, regex?.name, availableEntities, regex])
+  }, [regex?.examples, regex?.name, availableEntities?.length,regex])
 
   const regexEditMutation = useMutation({
     mutationFn: (data : {  name: string , newName: string }) => editRegex(data),
@@ -240,7 +240,7 @@ const RegexDetail: FC = () => {
           <FormInput
             name={`example-${props.row.original.id}`}
             label=''
-            defaultValue={editRegexName}
+            defaultValue={editableRow.value}
             hideLabel
             onChange={(e) => newExampleName(e.target.value)}
           />
