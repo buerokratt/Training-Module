@@ -39,31 +39,36 @@ mapRegexesData:
       regex_name: ${parameters.regex_name}
   result: regexesData
 
-updateExample:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/convert/string/replace"
-    body:
-      data: ${regexesData.response.body.data.examples}
-      search: ${parameters.input.example}
-      replace: ${parameters.input.newExample}
-  result: updatedExamples
+validateExampleExists:
+  switch:
+    - condition: ${regexesData.response.body.data.examples.includes(parameters.example)}
+      next: convertStringToArray
+  next: returnExampleMissing
 
 convertStringToArray:
   call: http.post
   args:
     url: "[#TRAINING_DMAPPER]/convert/string/toArray"
     body:
-      data: ${updatedExamples.response.body}
+      data: ${regexesData.response.body.data.examples}
   result: convertedArray
+
+removeExample:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/merge/remove-array-value"
+    body:
+      array: ${convertedArray.response.body}
+      value: ${parameters.example}
+  result: removedExample
 
 mapUpdatedRegexesData:
   call: http.post
   args:
     url: "[#TRAINING_DMAPPER]/dmapper/get-regex-examples"
     body:
-      regex: ${parameters.input.regex}
-      examples: ${convertedArray.response.body}
+      regex: ${parameters.regex_name}
+      examples: ${removedExample.response.body}
   result: mappedUpdatedExamples
 
 mergeRegexes:
@@ -105,11 +110,11 @@ updateRegexOpenSearch:
   next: returnSuccess
 
 returnSuccess:
-  return: "Regex updated"
+  return: "Example deleted."
   next: end
 
-returnRegexIsMissing:
-  return: "Can't find regex to update"
+returnExampleMissing:
+  return: "Can't find example to delete."
   status: 409
   next: end
 

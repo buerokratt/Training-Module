@@ -19,7 +19,7 @@ export async function deleteRegex(deleteData: { regex_name : string | number }) 
 }
 
 export async function addRegexExample(regexExampleData: { example: string }) {
-  const { data } = await api.post<{ example: string }>(`regex/examples`, regexExampleData);
+  const { data } = await api.post<{ regex_name: string, example: string }>(`regex/add-example`, regexExampleData);
   return data;
 }
 
@@ -36,8 +36,8 @@ export async function editRegexExample(
   return data;
 }
 
-export async function deleteRegexExample({ update_data }: {update_data: { regex_name: string | undefined, example: string | undefined }}) {
-  const { data } = await api.post<void>(`regex/delete`,update_data);
+export async function deleteRegexExample( delete_data: { regex_name: string, example: string }) {
+  const { data } = await api.post<void>(`regex/delete-example`,delete_data);
   return data;
 }
 

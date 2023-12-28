@@ -12,7 +12,6 @@ router.post('/', (req, res) => {
     } else {
         res.json([])
     }
-
 });
 
 export default router;
