@@ -46,7 +46,7 @@ const RegexDetail: FC = () => {
     id: number;
     value: string;
   } | null>(null);
-  const { data: regex } = useQuery<Regex>(['regex',id, 'examples']);
+  const { data: regex, refetch } = useQuery<Regex>(['regex',id, 'examples']);
   const [deletableRow, setDeletableRow] = useState<string | undefined | null>(null);
   const [deletableRegex, setDeletableRegex] = useState<string | number | null>(null);
   const { data: entities } = useQuery<Entity[]>({
@@ -113,13 +113,14 @@ const RegexDetail: FC = () => {
   });
 
   const regexExampleAddMutation = useMutation({
-    mutationFn: (data: { example: string }) => addRegexExample(data),
+    mutationFn: (data: { regex_name: string, example: string }) => addRegexExample(data),
     onSuccess: () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
         message: 'Example added',
       });
+      refetch();
     },
     onError: (error: AxiosError) => {
       toast.open({
@@ -132,13 +133,14 @@ const RegexDetail: FC = () => {
   });
 
   const regexExampleDeleteMutation = useMutation({
-    mutationFn: (data : { update_data : {regex_name: string | undefined, example: string | undefined }}) => deleteRegexExample(data),
+    mutationFn: (data : { regex_name: string , example: string }) => deleteRegexExample(data),
     onSuccess: () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
         message: 'Example deleted',
       });
+      refetch();
     },
     onError: (error: AxiosError) => {
       toast.open({
@@ -164,6 +166,7 @@ const RegexDetail: FC = () => {
         title: t('global.notification'),
         message: 'Example changed',
       });
+      refetch();
     },
     onError: (error: AxiosError) => {
       toast.open({
@@ -201,8 +204,8 @@ const RegexDetail: FC = () => {
   };
 
   const handleNewExampleSubmit = () => {
-    if (!newExampleRef.current) return;
-    regexExampleAddMutation.mutate({ example: newExampleRef.current.value });
+    if (!newExampleRef.current || !regex) return;
+    regexExampleAddMutation.mutate({ regex_name: regex.name,example: newExampleRef.current.value });
     newExampleRef.current.value = '';
     setExampleText('');
   };
@@ -463,7 +466,7 @@ const RegexDetail: FC = () => {
         </Dialog>
       )}
 
-      {deletableRow !== null && (
+      {deletableRow !== null && regex && (
         <Dialog
           title={t('training.intents.deleteRegexExample')}
           onClose={() => setDeletableRow(null)}
@@ -472,7 +475,7 @@ const RegexDetail: FC = () => {
               <Button appearance='secondary' onClick={() => setDeletableRow(null)}>{t('global.no')}</Button>
               <Button
                 appearance='error'
-                onClick={() => regexExampleDeleteMutation.mutate({update_data: { regex_name: regex?.name, example: deletableRow }})}
+                onClick={() => regexExampleDeleteMutation.mutate({ regex_name: regex.name, example: deletableRow || '' })}
               >
                 {t('global.yes')}
               </Button>
