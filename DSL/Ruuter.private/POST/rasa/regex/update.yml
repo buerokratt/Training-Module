@@ -87,8 +87,8 @@ removeOldFile:
     url: "[#TRAINING_PUBLIC_RUUTER]/rasa/regex/delete"
     body:
       regex_name: ${regex.name}
-#      headers:
-#        cookie: ${incoming.headers.cookie}
+      headers:
+        cookie: ${incoming.headers.cookie}
   result: regexes
 
 returnSuccess:
