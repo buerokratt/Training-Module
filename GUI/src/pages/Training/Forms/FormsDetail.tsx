@@ -31,7 +31,7 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
     queryKey: ['slots'],
   });
   const { data: intents } = useQuery<Intent[]>({
-    queryKey: ['intents'],
+    queryKey: ['intent-and-id'],
   });
 
   const { register, handleSubmit, reset } = useForm<FormCreateDTO>();
