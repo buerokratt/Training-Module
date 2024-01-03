@@ -94,13 +94,15 @@ const RegexDetail: FC = () => {
   });
 
   const regexDeleteMutation = useMutation({
-    mutationFn: ({ id }: { id: string | number }) => deleteRegex(id),
+    mutationFn: (deleteData : { regex_name: string | number }) => deleteRegex(deleteData),
     onSuccess: () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
         message: 'Regex deleted',
       });
+      setTimeout(() => refetch(), 1000);
+      navigate(`/training/intents-followup-training`)
     },
     onError: (error: AxiosError) => {
       toast.open({
@@ -455,7 +457,7 @@ const RegexDetail: FC = () => {
               <Button appearance='secondary' onClick={() => setDeletableRegex(null)}>{t('global.no')}</Button>
               <Button
                 appearance='error'
-                onClick={() => regexDeleteMutation.mutate({ id: deletableRegex })}
+                onClick={() => regexDeleteMutation.mutate({ regex_name: deletableRegex })}
               >
                 {t('global.yes')}
               </Button>

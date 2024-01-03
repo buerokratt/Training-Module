@@ -61,14 +61,15 @@ const Regex: FC = () => {
   }).map((e) => ({ label: e.name, value: String(e.id) })), [entities, regexList]);
 
   const regexDeleteMutation = useMutation({
-    mutationFn: ({ id }: { id: string | number }) => deleteRegex(id),
+    mutationFn: ( deleteData : { regex_name: string | number }) => deleteRegex(deleteData),
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['regex']);
+      await queryClient.invalidateQueries(['regexes']);
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Entity deleted',
+        message: 'Regex deleted',
       });
+      setTimeout(() => refetch(), 1000);
     },
     onError: (error: AxiosError) => {
       toast.open({
@@ -185,7 +186,7 @@ const Regex: FC = () => {
               <Button appearance='secondary' onClick={() => setDeletableRow(null)}>{t('global.no')}</Button>
               <Button
                 appearance='error'
-                onClick={() => regexDeleteMutation.mutate({ id: deletableRow })}
+                onClick={() => regexDeleteMutation.mutate({ regex_name: deletableRow })}
               >
                 {t('global.yes')}
               </Button>
