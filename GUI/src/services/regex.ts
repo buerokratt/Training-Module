@@ -8,8 +8,8 @@ export async function addRegex(regexData: { name: string }) {
   return data;
 }
 
-export async function editRegex(id: string | number, regexData: { name: string }) {
-  const { data } = await api.post<{ readonly id: number; name: string }>(`regex/${id}`, regexData);
+export async function editRegex(regexData: { name: string , newName: string}) {
+  const { data } = await api.post<{ name: string , newName: string }>(`regex/update`, regexData);
   return data;
 }
 
