@@ -1,0 +1,20 @@
+step_1:
+  call: reflect.mock
+  args:
+    response:
+        data:
+          firstName: OK
+          lastName: TESTNUMBER
+          idCode: EE30303039914
+          displayName: OK
+          JWTCreated: 1704724715000
+          login: EE30303039914
+          csaEmail: mail@mail.ee
+          authorities:
+            - ROLE_ADMINISTRATOR
+          csaTitle: OG
+          JWTExpirationTimestamp: 1704739715000
+  result: reflected_request
+
+step_2:
+  return: ${reflected_request.response.body}

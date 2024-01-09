@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios';
 
-let url = import.meta.env.REACT_APP_RUUTER_V2_PRIVATE_API_URL;
+let url = import.meta.env.REACT_APP_RUUTER_API_URL;
 if (import.meta.env.REACT_APP_LOCAL === 'true') {
   url = '/generic';
 }
