@@ -6,7 +6,18 @@ import { useForm, Controller } from 'react-hook-form';
 import { AxiosError } from 'axios';
 import { MdOutlineArrowBack } from 'react-icons/md';
 
-import { Button, Card, FormCheckboxes, FormInput, FormSelect, Switch, Track } from 'components';
+import {
+  Box,
+  Button,
+  Card,
+  Collapsible, Dialog, Drawer,
+  FormCheckbox,
+  FormCheckboxes,
+  FormInput,
+  FormSelect, HistoricalChat,
+  Switch,
+  Track
+} from 'components';
 import { Intent } from 'types/intent';
 import { Entity } from 'types/entity';
 import { useToast } from 'hooks/useToast';
@@ -188,6 +199,25 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
           </Track>
         </Card>
       )}
+      <Card>
+        <Track direction='vertical' gap={8} align='left'>
+            <FormCheckbox
+            label={t('training.forms.requiredSlots')}
+                        hideLabel
+                        name='requiredSlots'
+                        item={{ label: 'ah', value: 'fck' }}
+          />
+          <FormCheckbox
+              label={t('training.forms.requiredSlots')}
+              hideLabel
+              name='requiredSlots'
+              item={{ label: 'b', value: 'dd' }}
+          />
+          <Collapsible title={t('training.intents.title')} defaultOpen>
+
+          </Collapsible>
+        </Track>
+      </Card>
     </>
   );
 };

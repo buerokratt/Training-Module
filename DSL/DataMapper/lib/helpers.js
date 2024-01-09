@@ -24,6 +24,18 @@ Handlebars.registerHelper('extractSlotKeys', function(obj) {
     return keys;
 });
 
+Handlebars.registerHelper('getResponsesForForm', function(form, responses){
+    console.log('UH OH');
+    console.log(form);
+    console.log(responses);
+    const response = responses.find(res => res.name === form);
+    if(response) {
+        console.log('yes');
+    } else {
+        console.log('no')
+    }
+})
+
 Handlebars.registerHelper('ne', function(a, b) {
     return a !== b;
 });
