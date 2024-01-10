@@ -26,11 +26,15 @@ import RegexDetail from 'pages/Training/IntentsFollowupTraining/RegexDetail';
 import TrainAndTest from 'pages/Training/TrainAndTest';
 
 const App: FC = () => {
-  if(import.meta.env.REACT_APP_LOCAL === 'true') {
-    const { data } = useQuery<UserInfo>({
-      queryKey: ['cs-custom-jwt-userinfo', 'prod'],
-      onSuccess: (res: any) => useStore.getState().setUserInfo(res)
-    })
+  if (import.meta.env.REACT_APP_LOCAL === "true") {
+    useQuery<{
+      data: { custom_jwt_userinfo: UserInfo };
+    }>({
+      queryKey: ["userinfo", "prod"],
+      onSuccess: (res: any) => {
+        return useStore.getState().setUserInfo(res.data)
+      },
+    });
   } else {
     const { data: userInfo } = useQuery<UserInfo>({
       queryKey: [import.meta.env.REACT_APP_AUTH_PATH, 'auth'],
