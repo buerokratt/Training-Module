@@ -22,18 +22,11 @@ getForms:
 
 assignResponse:
   assign:
-    formsResponse: ${getFormsResult.response.body.hits.hits}
-  next: checkEntity
-
-checkFormResponse:
-  switch:
-    - condition: ${formsResponse.length > 0}
-      next: checkFormIsPresent
-  next: returnNotFound
+    formsResponse: ${getFormsResult.response.body.hits.hits[0]._source.forms}
 
 checkFormIsPresent:
   switch:
-    - condition: ${Object.keys(formsResponse[0]._source.forms).includes(form)}
+    - condition: ${Object.keys(formsResponse).includes(form)}
       next: mapFormsData
   next: returnNotFound
 
@@ -43,9 +36,10 @@ mapFormsData:
     url: "[#TRAINING_DMAPPER]/dmapper/get-form-details"
     body:
       name: ${form}
+      slots: ${formsResponse[form]}
       responses: ${responses.response.body}
   result: formsData
-  next: checkEntity
+  next: returnSuccess
 
 returnSuccess:
   return: ${slotsData.response.body.data}
@@ -65,6 +59,6 @@ checkEntity:
   args:
     url: "[#TRAINING_DMAPPER]/dmapper/checkV"
     body:
-      hits: ${formsResponse}
+      hits: ${Object.keys(formsResponse).includes('' + form)}
     result: fileResult
   next: returnSuccess

@@ -47,6 +47,7 @@ type DataTableProps = {
   columnVisibility?: VisibilityState,
   setColumnVisibility?: React.Dispatch<React.SetStateAction<VisibilityState>>,
   disableHead?: boolean;
+  showInput?: boolean;
   meta?: TableMeta<any>;
 }
 
@@ -96,6 +97,7 @@ const DataTable: FC<DataTableProps> = (
     columnVisibility,
     setColumnVisibility,
     disableHead,
+    showInput,
     meta,
   },
 ) => {

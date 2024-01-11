@@ -1,8 +1,8 @@
 {
     "name":"{{name}}",
-    "ignored_intents:": "affirm_deny"
+    "response": "{{ getFormResponse name responses }}",
     "required_slots:": "affirm_deny",
-    "responses": "{{ getResponsesForForm name responses }}"
+    "response_mappings": "{{ getSlotsTextForForm name  slots responses }}"
 <!--        {{#each responses}}-->
 <!--            "{{ getResponsesForForm name responses }}"-->
 <!--            {{#unless @last}},{{/unless}}-->

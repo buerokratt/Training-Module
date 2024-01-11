@@ -10,7 +10,7 @@ import { MdOutlineArrowBack } from 'react-icons/md';
 import { Button, Card, DataTable, FormCheckbox, FormInput, FormTextarea, Track } from 'components';
 import { Intent } from 'types/intent';
 import { Slot } from 'types/slot';
-import { FormCreateDTO } from 'types/form';
+import {Form, FormCreateDTO} from 'types/form';
 import { createForm, editForm } from 'services/forms';
 import { useToast } from 'hooks/useToast';
 import { RESPONSE_TEXT_LENGTH } from 'constants/config';
@@ -34,13 +34,18 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
     queryKey: ['intent-and-id'],
   });
 
-  const { register, handleSubmit, reset } = useForm<FormCreateDTO>();
+  const { register, handleSubmit, reset } = useForm<FormCreateDTO>({
+    mode: 'onChange',
+    shouldUnregister: true,
+  });
 
   useEffect(() => {
-    if (mode === 'edit') {
+    let updatedForm: Form = {ingored_intents: [], response: "", slots: [], id: 2,form_name: 'form', utter_ask: 'utter'};
+    // if (mode === 'edit') {
       // TODO: reset form to correct values
-      reset({ form: 'custom_fallback_form' });
-    }
+      // reset({ form: 'custom_fallback_form', slots: [], utter_ask: 'KEKW'});
+      reset(updatedForm);
+    // }
   }, [mode, reset]);
 
   const slotsColumnHelper = createColumnHelper<Slot>();
@@ -113,10 +118,12 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
   ], [intentsColumnHelper, t]);
 
   const handleFormSave = handleSubmit((data) => {
+    console.log('FORM DATA');
+    console.log(data);
     if (mode === 'edit' && params.id) {
-      formEditMutation.mutate({ id: params.id, data: { form: data.form } });
+      formEditMutation.mutate({ id: params.id, data: { form: data.form_name } });
     } else {
-      newFormMutation.mutate({ form: data.form });
+      newFormMutation.mutate({ form: data.form_name });
     }
   });
 
@@ -166,6 +173,7 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
               >
                 {t('training.forms.requiredSlots')}
               </h2>
+              {/*SEARCH ELEMENT FOR SLOTS*/}
               <div style={{ width: '100%', padding: 16 }}>
                 <FormInput
                   label={t('global.search')}
@@ -180,6 +188,7 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
             {slots && (
               <DataTable
                 data={slots}
+                showInput={true}
                 columns={slotsColumns}
                 disableHead
                 globalFilter={slotsFilter}
