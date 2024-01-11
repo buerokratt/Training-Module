@@ -38,13 +38,10 @@ const App: FC = () => {
   } else {
     const { data: userInfo } = useQuery<UserInfo>({
       queryKey: [import.meta.env.REACT_APP_AUTH_PATH, 'auth'],
-      onSuccess: (data: { data: { custom_jwt_userinfo: UserInfo } }) => {
-        localStorage.setItem(
-            'exp',
-            data.data.custom_jwt_userinfo.JWTExpirationTimestamp
-        );
-        return useStore.getState().setUserInfo(data.data.custom_jwt_userinfo);
-      }
+      onSuccess: (res: { response: UserInfo }) => {
+        localStorage.setItem("exp", res.response.JWTExpirationTimestamp);
+        return useStore.getState().setUserInfo(res.response);
+      },
     });
   }
 
