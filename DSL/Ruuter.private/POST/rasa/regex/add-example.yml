@@ -39,12 +39,6 @@ mapRegexesData:
       regex_name: ${parameters.regex_name}
   result: regexesData
 
-validateExampleExists:
-  switch:
-    - condition: ${regexesData.response.body.data.examples.includes(parameters.example)}
-      next: returnExampleExists
-  next: convertStringToArray
-
 convertStringToArray:
   call: http.post
   args:
@@ -53,13 +47,23 @@ convertStringToArray:
       data: ${regexesData.response.body.data.examples}
   result: convertedArray
 
+filterArrays:
+  assign:
+    examplesArray: ${parameters.examples.filter(ex => !convertedArray.response.body.includes(ex))}
+
+validateExampleExists:
+  switch:
+    - condition: ${examplesArray.length === 0}
+      next: returnExampleExists
+  next: mergeExamples
+
 mergeExamples:
   call: http.post
   args:
     url: "[#TRAINING_DMAPPER]/merge"
     body:
       array1: ${convertedArray.response.body}
-      array2: ${[parameters.example]}
+      array2: ${parameters.examples}
   result: mergedExamples
 
 mapUpdatedRegexesData:
