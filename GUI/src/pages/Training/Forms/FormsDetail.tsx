@@ -25,6 +25,7 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const params = useParams();
+  const { data: formDetails, refetch } = useQuery<Form>([`forms/formById`,params.id],);
   const [slotsFilter, setSlotsFilter] = useState('');
   const [intentsFilter, setIntentsFilter] = useState('');
   const { data: slots } = useQuery<Slot[]>({

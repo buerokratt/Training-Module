@@ -1,11 +1,5 @@
 {
     "name":"{{name}}",
     "response": "{{ getFormResponse name responses }}",
-    "required_slots:": "affirm_deny",
     "response_mappings": "{{ getSlotsTextForForm name  slots responses }}"
-<!--        {{#each responses}}-->
-<!--            "{{ getResponsesForForm name responses }}"-->
-<!--            {{#unless @last}},{{/unless}}-->
-<!--        {{/each}}-->
-<!--    ]-->
 }

@@ -26,6 +26,28 @@ Handlebars.registerHelper('extractSlotKeys', function(obj) {
 
 Handlebars.registerHelper('getFormResponse', function(form, formData, responses) {
     let result = "";
+    console.log('----------------------');
+    console.log('getFormResponse');
+    // direct_to_customer_support_form a name basically
+    console.log(form);
+    // array of resposes with key name and another key is response
+    console.log('formData');
+    console.log(formData);
+    console.log('responses.data.root.slots');
+    console.log(responses.data.root.slots);
+    console.log('responses.data.root.responses');
+    console.log(responses.data.root.responses);
+    console.log('----------------------');
+
+
+    if(responses.data.root.slots.ignored_intents) {
+        console.log('Intents found');
+    }
+    if (responses.data.root.slots.required_slots){
+        console.log('slots found')
+    }
+
+    const responseText = "utter_ask_" + form;
     if(formData.ignored_intents) {
         console.log('worked');
         const formAnswer = formData.find(fd => fd.name === 'utter_ask_' + form);
@@ -39,11 +61,17 @@ Handlebars.registerHelper('getFormResponse', function(form, formData, responses)
 })
 
 Handlebars.registerHelper('getSlotsTextForForm', function(form, slots, responses){
+    console.log('----------------------');
     console.log('getSlotsTextForForm');
+    console.log('form');
     console.log(form);
+    console.log('slots');
     console.log(slots);
+    console.log('responses');
     console.log(responses);
-    const response = responses.find(res => res.name === form);
+    console.log('----------------------');
+
+    // const response = responses.find(res => res.name === form);
     if(response) {
         console.log('yes');
     } else {
