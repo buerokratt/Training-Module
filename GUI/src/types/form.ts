@@ -1,10 +1,12 @@
 export interface Form {
   readonly id: number;
-  form_name: string;
+  name: string;
   response: string;
-  utter_ask: string;
-  slots: string[];
-  ingored_intents: string[];
+  required_slots: [{
+    slot_name: string,
+    question: string
+  }];
+  ignored_intents: string[];
 }
 
 export interface FormCreateDTO extends Omit<Form, 'id'> {
