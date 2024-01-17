@@ -1,10 +1,10 @@
 import { Node } from 'reactflow';
 
-export const generateStoryStepsFromNodes = (nodes: Node[]) => 
+export const generateStoryStepsFromNodes = (nodes: Node[]) =>
   nodes.map(({ data: { type, label, payload, checkpoint }}) => {
     switch (type) {
         case 'conditionNode':
-            return { 
+            return {
               condition: (payload.conditions || []).map((x: any) => {
                 if(x.active_loop)
                   return { active_loop: x.active_loop.label }
@@ -14,9 +14,10 @@ export const generateStoryStepsFromNodes = (nodes: Node[]) =>
               }).filter(Boolean),
             };
         case 'intentNode':
+            console.log("4 PAY SLAY :" + JSON.stringify(payload));
             return {
                 intent: label,
-                entities: (payload.entities || []).map((x: any) => ({ [x.label]: x.value })),
+                entities: (payload.entities || []).map((x: any) => ({ entity: x })),
             };
         case 'responseNode':
             return { action: label };
@@ -41,7 +42,6 @@ export const generateStoryStepsFromNodes = (nodes: Node[]) =>
   }).filter(Boolean);
 
 export const generateNodesFromStorySteps = (steps) : Node[] => steps?.map((step) => {
-    console.log(step)
     let type;
     let label;
     let payload;
@@ -63,15 +63,15 @@ export const generateNodesFromStorySteps = (steps) : Node[] => steps?.map((step)
         }),
       };
     } else if (step.intent) {
-      type = 'intentNode';
-      className = 'intent';
-      label = step.intent;
-      payload = {
-        entities: step?.entities?.map((entity) => {
-          const [entityLabel, value] = Object.entries(entity)[0];
-          return { label: entityLabel, value };
-        }),
-      };
+        type = 'intentNode';
+        className = 'intent';
+        label = step.intent;
+        payload = {
+            entities: step?.entities?.map((entity) => ({
+                label: "entity",
+                value: entity.value,
+            })),
+        };
     } else if (step.action) {
       if (step.active_loop !== undefined) {
         type = 'formNode';

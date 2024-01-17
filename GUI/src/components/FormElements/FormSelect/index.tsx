@@ -1,4 +1,4 @@
-import React, {FC, ReactNode, SelectHTMLAttributes, useEffect, useId, useState} from 'react';
+import React, { FC, ReactNode, SelectHTMLAttributes, useEffect, useId, useState, forwardRef } from 'react';
 import { useSelect } from 'downshift';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
@@ -16,13 +16,13 @@ type FormSelectProps = SelectHTMLAttributes<HTMLSelectElement> & {
         value: string;
     }[];
     onSelectionChange?: (selection: { label: string, value: string } | null) => void;
-}
+};
 
 const itemToString = (item: ({ label: string, value: string } | null)) => {
     return item ? item.value : '';
 };
 
-const FormSelect: FC<FormSelectProps> = (
+const FormSelect: FC<FormSelectProps> = forwardRef((
     {
         label,
         hideLabel,
@@ -31,16 +31,20 @@ const FormSelect: FC<FormSelectProps> = (
         placeholder,
         defaultValue,
         onSelectionChange,
+        value,
         ...rest
     },
+    ref
 ) => {
     const id = useId();
     const { t } = useTranslation();
     const defaultSelected = options.find((o) => o.value === defaultValue) || null;
     const [selectedItem, setSelectedItem] = useState<{ label: string, value: string } | null>(defaultSelected);
+
     useEffect(() => {
-        setSelectedItem(options.find((o) => o.value === defaultValue) || null);
-    }, [defaultValue, options]);
+        setSelectedItem(options.find((o) => o.value === value) || null);
+    }, [value, options]);
+
     const {
         isOpen,
         getToggleButtonProps,
@@ -67,11 +71,11 @@ const FormSelect: FC<FormSelectProps> = (
     const placeholderValue = placeholder || t('global.choose');
 
     return (
-        <div className={selectClasses} style={rest.style}>
+        <div className={selectClasses} style={rest.style} ref={ref}>
             {label && !hideLabel && <label htmlFor={id} className='select__label' {...getLabelProps()}>{label}</label>}
             <div className='select__wrapper'>
                 <div className='select__trigger' {...getToggleButtonProps()}>
-                    <p style={{overflow: 'hidden'}}>
+                    <p style={{ overflow: 'hidden' }}>
                         {selectedItem?.label ?? placeholderValue}
                     </p>
                     <Icon label='Dropdown icon' size='medium' icon={<MdArrowDropDown color='#5D6071' />} />
@@ -89,7 +93,6 @@ const FormSelect: FC<FormSelectProps> = (
             </div>
         </div>
     );
-};
-
+});
 
 export default FormSelect;
