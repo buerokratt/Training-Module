@@ -1,5 +1,17 @@
 {
     "name":"{{name}}",
-    "response": "{{ getFormResponse name responses }}",
-    "response_mappings": "{{ getSlotsTextForForm name  slots responses }}"
+    "response": "{{ details.formResponse }}",
+    "required_slots": [
+        {{#each details.requiredSlots }}
+            {
+                "slot_name": "{{ slot_name }}",
+                "question": "{{ question }}"
+            }{{#unless @last}},{{/unless}}
+        {{/each}}
+    ],
+    "ignored_intents": [
+        {{#each  details.ignoredIntents }}
+            "{{this}}"{{#unless @last}},{{/unless}}
+        {{/each}}
+    ]
 }

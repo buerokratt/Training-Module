@@ -27,8 +27,18 @@ assignResponse:
 checkFormIsPresent:
   switch:
     - condition: ${Object.keys(formsResponse).includes(form)}
-      next: mapFormsData
+      next: gatherFormDetails
   next: returnNotFound
+
+gatherFormDetails:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/forms/detailed-information"
+    body:
+      name: ${form}
+      slots: ${formsResponse[form]}
+      responses: ${responses.response.body}
+  result: formDetails
 
 mapFormsData:
   call: http.post
@@ -36,13 +46,12 @@ mapFormsData:
     url: "[#TRAINING_DMAPPER]/dmapper/get-form-details"
     body:
       name: ${form}
-      slots: ${formsResponse[form]}
-      responses: ${responses.response.body}
+      details: ${formDetails.response.body}
   result: formsData
   next: returnSuccess
 
 returnSuccess:
-  return: ${slotsData.response.body.data}
+  return: ${formsData.response.body.data}
   wrapper: false
   next: end
 
@@ -53,12 +62,3 @@ returnUnauthorized:
 returnNotFound:
   return: "ERROR: form not found"
   next: end
-
-checkEntity:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/dmapper/checkV"
-    body:
-      hits: ${Object.keys(formsResponse).includes('' + form)}
-    result: fileResult
-  next: returnSuccess
