@@ -1,7 +1,7 @@
-import { FC, useEffect, useMemo, useState } from 'react';
+import {FC, useEffect, useMemo, useRef, useState} from 'react';
 import { useTranslation } from 'react-i18next';
 import { AxiosError } from 'axios';
-import { useForm } from 'react-hook-form';
+import {Controller, useForm} from 'react-hook-form';
 import { createColumnHelper } from '@tanstack/react-table';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -14,6 +14,7 @@ import {Form, FormCreateDTO} from 'types/form';
 import { createForm, editForm } from 'services/forms';
 import { useToast } from 'hooks/useToast';
 import { RESPONSE_TEXT_LENGTH } from 'constants/config';
+import {FormCheckboxesWithInput} from "../../../components/FormElements";
 
 type FormsDetailProps = {
   mode: 'new' | 'edit';
@@ -25,6 +26,7 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const params = useParams();
+  const [selectedSlots, setSelectedSlots] = useState([]);
   const { data: formDetails, refetch } = useQuery<Form>([`forms/formById`,params.id],);
   const [slotsFilter, setSlotsFilter] = useState('');
   const [intentsFilter, setIntentsFilter] = useState('');
@@ -41,13 +43,11 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
   });
 
   useEffect(() => {
-    let updatedForm: Form = {ingored_intents: [], response: "", slots: [], id: 2,form_name: 'form', utter_ask: 'utter'};
-    // if (mode === 'edit') {
-      // TODO: reset form to correct values
-      // reset({ form: 'custom_fallback_form', slots: [], utter_ask: 'KEKW'});
-      reset(updatedForm);
-    // }
-  }, [mode, reset]);
+    if(formDetails) {
+      setFormResponse(formDetails.response);
+      setFormName(formDetails.name);
+    }
+  }, [formDetails, reset]);
 
   const slotsColumnHelper = createColumnHelper<Slot>();
   const intentsColumnHelper = createColumnHelper<Intent>();
@@ -148,13 +148,15 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
           <Track gap={8} style={{ width: '100%' }}>
             <p style={{minWidth: '170px'}}>{t('training.responses.response')}</p>
             <FormTextarea
-            {...register('form')}
+            {...register('response')}
             name='ask'
             label={t('training.responses.formName')}
             hideLabel
             minRows={1}
             maxLength={RESPONSE_TEXT_LENGTH}
             showMaxLength
+            defaultValue={formResponse}
+            onChange={(e) => setFormResponse(e.target.value)}
             />
           </Track>
         </Track>
@@ -187,14 +189,20 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
             </Track>
           }>
             {slots && (
-              <DataTable
-                data={slots}
-                showInput={true}
-                columns={slotsColumns}
-                disableHead
-                globalFilter={slotsFilter}
-                setGlobalFilter={setSlotsFilter}
-              />
+                  <FormCheckboxesWithInput
+                    {...register('required_slots')}
+                    label='Slots'
+                    globalFilter={slotsFilter}
+                    displayInput={true}
+                    setGlobalFilter={setSlotsFilter}
+                    hideLabel={true}
+                    items={slots.map((slot) => ({
+                      label: slot.name,
+                      value: String(slot.name),
+                      checked: selectedSlots.some((selectedSlot) => selectedSlot.slot_name === String(slot.name))
+                    }))}
+                    onValuesChange={handleValuesChange}
+                />
             )}
           </Card>
         </div>
@@ -228,6 +236,7 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
                 data={intents}
                 columns={intentsColumns}
                 disableHead
+                showInput={true}
                 globalFilter={intentsFilter}
                 setGlobalFilter={setIntentsFilter}
               />

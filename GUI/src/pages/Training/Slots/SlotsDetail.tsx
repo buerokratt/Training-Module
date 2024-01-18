@@ -6,18 +6,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { AxiosError } from 'axios';
 import { MdOutlineArrowBack } from 'react-icons/md';
 
-import {
-  Box,
-  Button,
-  Card,
-  Collapsible, Dialog, Drawer,
-  FormCheckbox,
-  FormCheckboxes,
-  FormInput,
-  FormSelect, HistoricalChat,
-  Switch,
-  Track
-} from 'components';
+import { Button, Card, FormCheckboxes, FormInput, FormSelect, Switch, Track } from 'components';
 import { Intent } from 'types/intent';
 import { Entity } from 'types/entity';
 import { useToast } from 'hooks/useToast';
@@ -126,99 +115,80 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
   });
 
   return (
-    <>
-      <Track gap={16}>
-        <Button appearance='icon' onClick={() => navigate('/training/slots')}>
-          <MdOutlineArrowBack />
-        </Button>
-        <h1>{t('training.slots.titleOne')}</h1>
-        <Button onClick={handleSlotSave} style={{ marginLeft: 'auto' }}>{t('global.save')}</Button>
-      </Track>
-      <Card>
-        <Track direction='vertical' align='left' gap={8}>
-          {errors.name && <span style={errorStyle}>{errors.name.message}</span>}
-          <FormInput {...register('name',{
-            required: t('submit.slotNameRequired').toString(),
-            minLength: {
-              value: 1,
-              message: t('submit.slotCantBeEmpty')
-            }})} defaultValue={params.id} label={t('training.slots.slotName')} />
-          <Controller name='mappings.type' control={control} render={({ field }) =>
-            <FormSelect
-              {...field}
-              defaultValue={slot?.mappings.type || 'from_text'}
-              label={t('training.slots.slotType')}
-              options={slotTypes}
-              onSelectionChange={(selection) => {
-                setSelectedSlotType(selection?.value);
-                field.onChange(selection?.value);
-              }}
-            />
-          } />
-          <Controller name='influenceConversation' control={control} render={({ field }) =>
-            <Switch
-              {...field}
-              checked={influenceConversation}
-              onCheckedChange={(e) => {
-                setInfluenceConversation(e)
-                field.onChange(e)} }
-              label={t('training.slots.influenceConversation')}
-            />
-          } />
+      <>
+        <Track gap={16}>
+          <Button appearance='icon' onClick={() => navigate('/training/slots')}>
+            <MdOutlineArrowBack />
+          </Button>
+          <h1>{t('training.slots.titleOne')}</h1>
+          <Button onClick={handleSlotSave} style={{ marginLeft: 'auto' }}>{t('global.save')}</Button>
         </Track>
-      </Card>
-      {selectedSlotType && (
-        <Card header={
-          <h2 className='h5'>{t('training.slots.mapping')}</h2>
-        }>
-          <Track direction='vertical' gap={8} align='left'>
-            {entities && selectedSlotType === 'from_entity' && (
-                <Controller name='mappings.entity' control={control} render={({ field }) =>
-                  <FormSelect
-                      {...field}
-                      label='Entity'
-                      defaultValue={selectedEntity}
-                      options={entities.map((entity) => ({ label: entity.name, value: entity.name }))}
-                      onSelectionChange={(selection) => {
-                        setSelectedEntity((selection?.value));
-                        field.onChange(selection?.value);
-                      }}
-                  />}
+        <Card>
+          <Track direction='vertical' align='left' gap={8}>
+            {errors.name && <span style={errorStyle}>{errors.name.message}</span>}
+            <FormInput {...register('name',{
+              required: t('submit.slotNameRequired').toString(),
+              minLength: {
+                value: 1,
+                message: t('submit.slotCantBeEmpty')
+              }})} defaultValue={params.id} label={t('training.slots.slotName')} />
+            <Controller name='mappings.type' control={control} render={({ field }) =>
+                <FormSelect
+                    {...field}
+                    defaultValue={slot?.mappings.type || 'from_text'}
+                    label={t('training.slots.slotType')}
+                    options={slotTypes}
+                    onSelectionChange={(selection) => {
+                      setSelectedSlotType(selection?.value);
+                      field.onChange(selection?.value);
+                    }}
                 />
-            )}
-            {intents &&
-              <FormCheckboxes {...register('mappings.intent')} label='Intent' items={intents.map((intent) => ({
-                label: intent.intent,
-                value: String(intent.id),
-              }))} />}
-            {intents &&
-              <FormCheckboxes {...register('mappings.notIntent')} label='Not intent' items={intents.map((intent) => ({
-                label: intent.intent,
-                value: String(intent.id),
-              }))} />}
+            } />
+            <Controller name='influenceConversation' control={control} render={({ field }) =>
+                <Switch
+                    {...field}
+                    checked={influenceConversation}
+                    onCheckedChange={(e) => {
+                      setInfluenceConversation(e)
+                      field.onChange(e)} }
+                    label={t('training.slots.influenceConversation')}
+                />
+            } />
           </Track>
         </Card>
-      )}
-      <Card>
-        <Track direction='vertical' gap={8} align='left'>
-            <FormCheckbox
-            label={t('training.forms.requiredSlots')}
-                        hideLabel
-                        name='requiredSlots'
-                        item={{ label: 'ah', value: 'fck' }}
-          />
-          <FormCheckbox
-              label={t('training.forms.requiredSlots')}
-              hideLabel
-              name='requiredSlots'
-              item={{ label: 'b', value: 'dd' }}
-          />
-          <Collapsible title={t('training.intents.title')} defaultOpen>
-
-          </Collapsible>
-        </Track>
-      </Card>
-    </>
+        {selectedSlotType && (
+            <Card header={
+              <h2 className='h5'>{t('training.slots.mapping')}</h2>
+            }>
+              <Track direction='vertical' gap={8} align='left'>
+                {entities && selectedSlotType === 'from_entity' && (
+                    <Controller name='mappings.entity' control={control} render={({ field }) =>
+                        <FormSelect
+                            {...field}
+                            label='Entity'
+                            defaultValue={selectedEntity}
+                            options={entities.map((entity) => ({ label: entity.name, value: entity.name }))}
+                            onSelectionChange={(selection) => {
+                              setSelectedEntity((selection?.value));
+                              field.onChange(selection?.value);
+                            }}
+                        />}
+                    />
+                )}
+                {intents &&
+                    <FormCheckboxes {...register('mappings.intent')} label='Intent' items={intents.map((intent) => ({
+                      label: intent.intent,
+                      value: String(intent.id),
+                    }))} />}
+                {intents &&
+                    <FormCheckboxes {...register('mappings.notIntent')} label='Not intent' items={intents.map((intent) => ({
+                      label: intent.intent,
+                      value: String(intent.id),
+                    }))} />}
+              </Track>
+            </Card>
+        )}
+      </>
   );
 };
 
