@@ -1,4 +1,4 @@
-import React, {ChangeEvent, forwardRef, useId, useState} from 'react';
+import React, {ChangeEvent, forwardRef, useEffect, useId, useState} from 'react';
 
 import './FormCheckboxesWithInput.scss';
 import clsx from 'clsx';
@@ -9,8 +9,10 @@ export enum CheckboxType {
 
 type FormCheckboxesType = {
     label: string;
+    globalFilter?: string;
     name: string;
     hideLabel?: boolean;
+    setGlobalFilter?: React.Dispatch<React.SetStateAction<string | undefined>>;
     onValuesChange?: (values: Record<string, any>) => void;
     items: {
         label: string;
@@ -24,6 +26,8 @@ type FormCheckboxesType = {
 const FormCheckboxesWithInput = forwardRef<HTMLInputElement, FormCheckboxesType>((
     {
         label,
+        globalFilter,
+        setGlobalFilter,
         name,
         hideLabel,
         onValuesChange,
@@ -34,6 +38,16 @@ const FormCheckboxesWithInput = forwardRef<HTMLInputElement, FormCheckboxesType>
 ) => {
     const id = useId();
     const [selectedValues, setSelectedValues] = useState<Record<string, any>>({});
+    const [filteredItems, setFilteredItems] = useState(items);
+
+    useEffect(() => {
+        if (setFilteredItems) {
+            const filtered = items.filter((item) =>
+                item.label.toLowerCase().includes(globalFilter?.toLowerCase() || '')
+            );
+            setFilteredItems(filtered);
+        }
+    }, [globalFilter, items]);
 
     const handleValuesChange = (e: ChangeEvent<HTMLInputElement>) => {
         setSelectedValues((prevState) => ({
@@ -47,11 +61,18 @@ const FormCheckboxesWithInput = forwardRef<HTMLInputElement, FormCheckboxesType>
         <div className={clsx('checkboxes', type === CheckboxType.DAYS && 'checkboxes__days')}  role='group' {...rest}>
             {label && !hideLabel && <label className='checkboxes__label'>{label}</label>}
             <div className='checkboxes__wrapper'>
-                {items.map((item, index) => (
+                {filteredItems.map((item, index) => (
                     <div key={`${item.value}-${index}`} className='checkboxes__item'>
-                        <input type='checkbox' name={name} ref={ref} id={`${id}-${item.value}`} checked={item.checked} value={item.value}
-                               onChange={handleValuesChange} />
-                        <label htmlFor={`${id}-${item.value}`}>{item.label}</label>
+                        <input
+                            type='checkbox'
+                            name={name}
+                            ref={ref}
+                            id={`${rest.id}-${item.value}`}
+                            checked={item.checked}
+                            value={item.value}
+                            onChange={handleValuesChange}
+                        />
+                        <label htmlFor={`${rest.id}-${item.value}`}>{item.label}</label>
                     </div>
                 ))}
             </div>
