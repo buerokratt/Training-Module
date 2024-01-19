@@ -7,9 +7,10 @@ getDomainFile:
   call: http.get
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]/domain-file"
-    headers:
-      cookie: ${incoming.headers.cookie}
+#    headers:
+#      cookie: ${incoming.headers.cookie}
   result: domainData
+  next: checkEntity
 
 validateForms:
   switch:
@@ -23,7 +24,7 @@ mergeForms:
     url: "[#TRAINING_DMAPPER]/merge/objects"
     body:
       object1: ${domainData.response.body.response.forms}
-      object2: ${parameters.form}
+      object2: ${parameters}
   result: mergedForms
 
 convertJsonToYaml:
@@ -40,13 +41,15 @@ convertJsonToYaml:
       responses: ${domainData.response.body.response.responses}
       session_config: ${domainData.response.body.response.session_config}
   result: domainYaml
+  next: checkEntity
+
 
 getFileLocations:
   call: http.get
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
-    headers:
-      cookie: ${incoming.headers.cookie}
+#    headers:
+#      cookie: ${incoming.headers.cookie}
   result: fileLocations
 
 saveDomainFile:
@@ -70,3 +73,11 @@ returnFormIsMissing:
 returnUnauthorized:
   return: "error: unauthorized"
   next: end
+
+checkEntity:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/dmapper/checkV"
+    body:
+      hits: ${domainData.response.body}
+  result: getIntentDataResult
