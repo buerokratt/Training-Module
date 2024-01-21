@@ -1,7 +1,9 @@
 assign_values:
   assign:
     parameters: ${incoming.body}
-  next: getDomainFile
+    formData:
+      required_slots: ${parameters.form.required_slots}
+      ignored_intents: ${parameters.form.ignored_intents}
 
 getDomainFile:
   call: http.get
@@ -10,22 +12,23 @@ getDomainFile:
 #    headers:
 #      cookie: ${incoming.headers.cookie}
   result: domainData
-  next: checkEntity
 
 validateForms:
   switch:
     - condition: ${domainData.response.body.response.forms[parameters.form_name] != null}
-      next: mergeForms
+      next: updateObject
   next: returnFormIsMissing
 
-mergeForms:
+updateObject:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/merge/objects"
+    url: "[#TRAINING_DMAPPER]//replace/key-value-in-obj"
     body:
-      object1: ${domainData.response.body.response.forms}
-      object2: ${parameters}
-  result: mergedForms
+      object: ${domainData.response.body.response.forms}
+      oldKey: ${parameters.form_name}
+      newKey: ${parameters.form.form}
+      newValue: ${formData}
+  result: updatedForms
 
 convertJsonToYaml:
   call: http.post
@@ -36,12 +39,11 @@ convertJsonToYaml:
       intents: ${domainData.response.body.response.intents}
       entities: ${domainData.response.body.response.entities}
       slots: ${domainData.response.body.response.slots}
-      forms: ${mergedForms.response.body}
+      forms: ${updatedForms.response.body}
       actions: ${domainData.response.body.response.actions}
       responses: ${domainData.response.body.response.responses}
       session_config: ${domainData.response.body.response.session_config}
   result: domainYaml
-  next: checkEntity
 
 
 getFileLocations:
@@ -60,7 +62,16 @@ saveDomainFile:
       file_path: ${fileLocations.response.body.response.domain_location}
       content: ${domainYaml.response.body.json}
   result: fileResult
-  next: returnSuccess
+  next: updateDomainOpenSearch
+
+#update opensearch indexes
+updateDomainOpenSearch:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]/bulk/domain"
+    body:
+      input: ${domainYaml.response.body.json}
+  result: updateSearchResult
 
 returnSuccess:
   return: "Form updated"
@@ -79,5 +90,5 @@ checkEntity:
   args:
     url: "[#TRAINING_DMAPPER]/dmapper/checkV"
     body:
-      hits: ${domainData.response.body}
+      hits: ${domainYaml.response.body}
   result: getIntentDataResult
