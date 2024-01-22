@@ -17,6 +17,7 @@ const History: FC = () => {
     pageIndex: 0,
     pageSize: 10,
   });
+
   const { data: endedChats } = useQuery<ChatType[]>({
     queryKey: ['cs-get-all-ended-chats'],
   });
