@@ -24,6 +24,11 @@ Handlebars.registerHelper('extractSlotKeys', function(obj) {
     return keys;
 });
 
+Handlebars.registerHelper('checkV', function(request){
+    console.log('CHECKING REQUEST');
+    console.log(request);
+})
+
 Handlebars.registerHelper('ne', function(a, b) {
     return a !== b;
 });

@@ -23,6 +23,7 @@ import fileDelete from "./js/file/delete.js";
 import deleteIntentFile from "./js/file/deleteIntentFile.js";
 import fileCheck from "./js/file/fileCheck.js";
 import merge from "./js/util/merge.js";
+import formDetails from "./js/forms/getFormDetailedInformation.js";
 import mergeObjects from "./js/util/mergeObjects.js";
 import mergeRemoveKey from "./js/util/mergeRemoveKey.js";
 import mergeRemoveArrayValue from "./js/util/mergeRemoveArrayValue.js";
@@ -36,6 +37,7 @@ import stringToArray from "./js/util/stringToArray.js";
 import stringReplace from "./js/util/stringReplace.js";
 import removeRulesByIntentName from "./js/util/removeRulesByIntentName.js";
 import domainUpdateExistingResponse from "./js/util/domainUpdateExistingResponse.js";
+import replaceKeyValueObj from "./js/util/updateKeyValueObj.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
@@ -55,7 +57,9 @@ app.use('/file/delete', fileDelete);
 app.use('/file/delete-intent', deleteIntentFile);
 app.use('/file/check', fileCheck);
 app.use('/merge', merge);
+app.use('/forms/detailed-information', formDetails);
 app.use('/merge/objects', mergeObjects);
+app.use('/replace/key-value-in-obj', replaceKeyValueObj);
 app.use('/merge/remove-key', mergeRemoveKey);
 app.use('/merge/remove-array-value', mergeRemoveArrayValue);
 app.use('/merge/replace-array-element', mergeReplaceArrayElement);
