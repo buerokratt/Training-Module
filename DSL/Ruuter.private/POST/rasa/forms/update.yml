@@ -2,8 +2,8 @@ assign_values:
   assign:
     parameters: ${incoming.body}
     formData:
-      required_slots: ${parameters.form.required_slots}
-      ignored_intents: ${parameters.form.ignored_intents}
+      required_slots: ${parameters.form.form.required_slots}
+      ignored_intents: ${parameters.form.form.ignored_intents}
 
 getDomainFile:
   call: http.get
@@ -22,11 +22,11 @@ validateForms:
 updateObject:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]//replace/key-value-in-obj"
+    url: "[#TRAINING_DMAPPER]/replace/key-value-in-obj"
     body:
       object: ${domainData.response.body.response.forms}
       oldKey: ${parameters.form_name}
-      newKey: ${parameters.form.form}
+      newKey: ${parameters.form.form.name}
       newValue: ${formData}
   result: updatedForms
 
@@ -50,8 +50,8 @@ getFileLocations:
   call: http.get
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
-#    headers:
-#      cookie: ${incoming.headers.cookie}
+    headers:
+      cookie: ${incoming.headers.cookie}
   result: fileLocations
 
 saveDomainFile:

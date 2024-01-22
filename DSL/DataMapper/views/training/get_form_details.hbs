@@ -1,17 +1,26 @@
 {
-    "name":"{{name}}",
-    "response": "{{ details.formResponse }}",
-    "required_slots": [
-        {{#each details.requiredSlots }}
-            {
+    "form": {
+        "name":"{{name}}",
+        "required_slots": [
+            {{#each  details.requiredSlots }}
+                "{{slot_name}}"{{#unless @last}},{{/unless}}
+            {{/each}}
+        ],
+        "ignored_intents": [
+            {{#each  details.ignoredIntents }}
+                "{{this}}"{{#unless @last}},{{/unless}}
+            {{/each}}
+        ]
+    },
+    "responses": {
+        "response": "{{ details.formResponse }}",
+        "questions": [
+            {{#each details.requiredSlots }}
+                {
                 "slot_name": "{{ slot_name }}",
                 "question": "{{ question }}"
-            }{{#unless @last}},{{/unless}}
-        {{/each}}
-    ],
-    "ignored_intents": [
-        {{#each  details.ignoredIntents }}
-            "{{this}}"{{#unless @last}},{{/unless}}
-        {{/each}}
-    ]
+                }{{#unless @last}},{{/unless}}
+            {{/each}}
+        ]
+    }
 }

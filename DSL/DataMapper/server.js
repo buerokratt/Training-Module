@@ -37,7 +37,7 @@ import stringToArray from "./js/util/stringToArray.js";
 import stringReplace from "./js/util/stringReplace.js";
 import removeRulesByIntentName from "./js/util/removeRulesByIntentName.js";
 import domainUpdateExistingResponse from "./js/util/domainUpdateExistingResponse.js";
-import replaceKeyValueObj from "./js/util/replaceKeyValueObj.js";
+import replaceKeyValueObj from "./js/util/updateKeyValueObj.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
@@ -59,7 +59,7 @@ app.use('/file/check', fileCheck);
 app.use('/merge', merge);
 app.use('/forms/detailed-information', formDetails);
 app.use('/merge/objects', mergeObjects);
-app.use('/replace/key-value-in-obj', replaceKeyValueObj());
+app.use('/replace/key-value-in-obj', replaceKeyValueObj);
 app.use('/merge/remove-key', mergeRemoveKey);
 app.use('/merge/remove-array-value', mergeRemoveArrayValue);
 app.use('/merge/replace-array-element', mergeReplaceArrayElement);
