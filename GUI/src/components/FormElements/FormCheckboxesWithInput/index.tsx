@@ -1,4 +1,4 @@
-import React, { ChangeEvent, forwardRef, useEffect, useState } from 'react';
+import React, {ChangeEvent, forwardRef, useEffect, useState} from 'react';
 import './FormCheckboxesWithInput.scss';
 import clsx from 'clsx';
 
@@ -12,6 +12,7 @@ type FormCheckboxesType = {
     name: string;
     hideLabel?: boolean;
     displayInput: boolean;
+    selectedElements: {slot_name: string, question: string}[]
     setGlobalFilter?: React.Dispatch<React.SetStateAction<string | undefined>>;
     onValuesChange?: (values: { slot_name: string; question: string }[]) => void;
     items: {
@@ -40,17 +41,24 @@ const FormCheckboxesWithInput = forwardRef<HTMLInputElement, FormCheckboxesType>
         },
         ref,
     ) => {
-        const [selectedValues, setSelectedValues] = useState<{ slot_name: string; question: string }[]>([]);
+        const [selectedValues, setSelectedValues] = useState<{ slot_name: string; question: string }[]>( selectedElements ?? []);
         const [filteredItems, setFilteredItems] = useState(items);
 
         useEffect(() => {
             if (setFilteredItems) {
                 const filtered = items.filter((item) =>
-                    item.label.toLowerCase().includes(globalFilter?.toLowerCase() || ''),
+                    item.label.toLowerCase().includes(globalFilter?.toLowerCase() ?? ''),
                 );
                 setFilteredItems(filtered);
             }
         }, [globalFilter, items]);
+
+        useEffect(() => {
+            if(selectedElements) {
+                setSelectedValues(selectedElements);
+            }
+        }, [selectedElements]);
+
 
         const handleCheckboxChange = (e: ChangeEvent<HTMLInputElement>) => {
             const { checked, value } = e.target;
@@ -65,7 +73,7 @@ const FormCheckboxesWithInput = forwardRef<HTMLInputElement, FormCheckboxesType>
 
         const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
             const { value } = e.target;
-            const slotName = e.target.getAttribute('data-slot-name') || '';
+            const slotName = e.target.getAttribute('data-slot-name') ?? '';
 
             setSelectedValues((prevState) =>
                 prevState.map((item) => (item.slot_name === slotName ? { ...item, question: value } : item)),
@@ -78,6 +86,10 @@ const FormCheckboxesWithInput = forwardRef<HTMLInputElement, FormCheckboxesType>
             }
         }, [selectedValues, onValuesChange]);
 
+        const inputClasses = clsx(
+            'input'
+        );
+
         return (
             <div className={clsx('checkboxes', type === CheckboxType.DAYS && 'checkboxes__days')} role='group' {...rest}>
                 {label && !hideLabel && <label className='checkboxes__label'>{label}</label>}
@@ -89,25 +101,24 @@ const FormCheckboxesWithInput = forwardRef<HTMLInputElement, FormCheckboxesType>
                                 name={name}
                                 ref={ref}
                                 id={`${rest.id}-${item.value}`}
-                                checked={item.checked}
+                                checked={selectedValues?.some((selectedItem) => selectedItem.slot_name === item.value)}
                                 value={item.value}
                                 onChange={handleCheckboxChange}
                             />
                             <label htmlFor={`${rest.id}-${item.value}`}>{item.label}</label>
-                            {displayInput && item.checked && (
-                                <div className='input__wrapper'>
-                                    <label>Question </label>
-                                    <input
-                                        type='text'
-                                        className={'input'}
-                                        placeholder='Enter question'
-                                        data-slot-name={item.value}
-                                        pattern={'^#([a-fA-F0-9]{3}){1,2}$'}
-                                        value={
-                                            selectedValues.find((selectedItem) => selectedItem.slot_name === item.value)?.question || ''
-                                        }
-                                        onChange={handleInputChange}
-                                    />
+                            {displayInput && selectedValues?.some((selectedItem) => selectedItem.slot_name === item.value) && (
+                                <div className={'input'} style={{width: '100%', paddingTop: '7px'}}>
+                                        <p style={{minWidth: '100px', paddingLeft: '17px'}}>utter_ask</p>
+                                        <input
+                                            type='text'
+                                            className={inputClasses}
+                                            data-slot-name={item.value}
+                                            pattern={'^#([a-fA-F0-9]{3}){1,2}$'}
+                                            value={
+                                                selectedValues.find((selectedItem) => selectedItem.slot_name === item.value)?.question || ''
+                                            }
+                                            onChange={handleInputChange}
+                                        />
                                 </div>
                             )}
                         </div>
