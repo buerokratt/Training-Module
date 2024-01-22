@@ -1,6 +1,13 @@
 assign_values:
   assign:
     parameters: ${incoming.body}
+    formData:
+      required_slots: ${parameters.form.form.required_slots}
+      ignored_intents: ${parameters.form.form.ignored_intents}
+    form:
+      parameters.form.form.name:
+        required_slots: ${parameters.form.form.required_slots}
+        ignored_intents: ${parameters.form.form.ignored_intents}
   next: getDomainFile
 
 getDomainFile:
@@ -23,7 +30,7 @@ mergeForms:
     url: "[#TRAINING_DMAPPER]/merge/objects"
     body:
       object1: ${domainData.response.body.response.forms}
-      object2: ${parameters.form}
+      object2: ${parameters.form.form.name : formData}
   result: mergedForms
 
 convertJsonToYaml:
