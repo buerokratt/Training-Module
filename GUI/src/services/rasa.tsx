@@ -14,7 +14,6 @@ export const generateStoryStepsFromNodes = (nodes: Node[]) =>
               }).filter(Boolean),
             };
         case 'intentNode':
-            console.log("4 PAY SLAY :" + JSON.stringify(payload));
             return {
                 intent: label,
                 entities: (payload.entities || []).map((x: any) => ({ entity: x })),
