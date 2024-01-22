@@ -9,8 +9,8 @@ getDomainFile:
   call: http.get
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]/domain-file"
-#    headers:
-#      cookie: ${incoming.headers.cookie}
+    headers:
+      cookie: ${incoming.headers.cookie}
   result: domainData
 
 validateForms:
@@ -84,11 +84,3 @@ returnFormIsMissing:
 returnUnauthorized:
   return: "error: unauthorized"
   next: end
-
-checkEntity:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/dmapper/checkV"
-    body:
-      hits: ${domainYaml.response.body}
-  result: getIntentDataResult
