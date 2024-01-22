@@ -33,6 +33,11 @@ type Regex = {
   examples: string[];
 }
 
+type RegexTeaser = {
+  readonly id: number;
+  name: string;
+}
+
 const RegexDetail: FC = () => {
   const { id } = useParams();
   let updatedExampleName = '';
@@ -52,6 +57,10 @@ const RegexDetail: FC = () => {
   const { data: entities } = useQuery<Entity[]>({
     queryKey: ['entities'],
   });
+  const { data: existingRegexes} = useQuery<RegexTeaser[]>({
+    queryKey: ['regexes'],
+  });
+  const [editRegexName, setEditRegexName] = useState<string>('');
 
   const [regexList, setRegexList] = useState<{
     id: number;
@@ -69,19 +78,26 @@ const RegexDetail: FC = () => {
     [regex],
   );
 
+  const availableEntities = useMemo(() => entities?.filter((e) => {
+    return !existingRegexes?.some((r) => r.name === e.name);
+  }).map((e) => ({ label: e.name, value: String(e.id) })), [entities, regexList]);
+
   useEffect(() => {
     const result = regex && regex.examples.map((e, index) => ({ id: index, value: e }));
     setRegexList(result ?? []);
-  }, [regex?.examples])
+    setEditRegexName((availableEntities && availableEntities.length > 0) ? availableEntities[0].label : '');
+  }, [regex?.examples, regex?.name, availableEntities?.length,regex])
 
   const regexEditMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string | number, data: { name: string } }) => editRegex(id, data),
+    mutationFn: (data : {  name: string , newName: string }) => editRegex(data),
     onSuccess: () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
         message: 'New regex example added',
       });
+      refetch();
+      navigate(`/training/regex/${editRegexName}`)
     },
     onError: (error: AxiosError) => {
       toast.open({
@@ -94,13 +110,15 @@ const RegexDetail: FC = () => {
   });
 
   const regexDeleteMutation = useMutation({
-    mutationFn: ({ id }: { id: string | number }) => deleteRegex(id),
+    mutationFn: (deleteData : { regex_name: string | number }) => deleteRegex(deleteData),
     onSuccess: () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
         message: 'Regex deleted',
       });
+      setTimeout(() => refetch(), 1000);
+      navigate(`/training/intents-followup-training`)
     },
     onError: (error: AxiosError) => {
       toast.open({
@@ -350,9 +368,10 @@ const RegexDetail: FC = () => {
                       name='intentTitle'
                       label={t('training.intents.regexExampleTitle')}
                       hideLabel
-                      options={entities?.map((e) => ({ label: e.name, value: e.name })) || []}
-                      defaultValue={regex.name}
+                      options={availableEntities || []}
+                      defaultValue={editRegexName}
                       style={{ minWidth: 400 }}
+                      onSelectionChange={(e) => setEditRegexName(e?.label || '')}
                     />
                   ) : (
                     <h3>{regex.name}</h3>
@@ -361,7 +380,7 @@ const RegexDetail: FC = () => {
                     <Button
                       appearance='text'
                       onClick={() =>
-                        regexEditMutation.mutate({ id: regex.id, data: { name: editingRegexTitle } })
+                        regexEditMutation.mutate({ newName: editRegexName, name: editingRegexTitle })
                       }
                     >
                       <Icon icon={<MdOutlineSave />} />
@@ -455,7 +474,7 @@ const RegexDetail: FC = () => {
               <Button appearance='secondary' onClick={() => setDeletableRegex(null)}>{t('global.no')}</Button>
               <Button
                 appearance='error'
-                onClick={() => regexDeleteMutation.mutate({ id: deletableRegex })}
+                onClick={() => regexDeleteMutation.mutate({ regex_name: deletableRegex })}
               >
                 {t('global.yes')}
               </Button>
