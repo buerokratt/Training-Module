@@ -9,17 +9,17 @@ getDomainFile:
   call: http.get
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]/domain-file"
-    headers:
-      cookie: ${incoming.headers.cookie}
+#    headers:
+#      cookie: ${incoming.headers.cookie}
   result: domainData
 
 validateForms:
   switch:
     - condition: ${domainData.response.body.response.forms[parameters.form_name] != null}
-      next: updateObject
+      next: updateFormData
   next: returnFormIsMissing
 
-updateObject:
+updateFormData:
   call: http.post
   args:
     url: "[#TRAINING_DMAPPER]/replace/key-value-in-obj"
@@ -29,6 +29,24 @@ updateObject:
       newKey: ${parameters.form.form.name}
       newValue: ${formData}
   result: updatedForms
+
+convertResponseInput:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/dmapper/get-form-responses"
+    body:
+      responses: ${parameters.form.responses}
+      form_name: ${parameters.form_name}
+  result: mappedResponses
+
+mergeResponses:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/merge/objects"
+    body:
+      object1: ${domainData.response.body.response.responses}
+      object2: ${mappedResponses.response.body.data}
+  result: mergedResponses
 
 convertJsonToYaml:
   call: http.post
@@ -41,7 +59,7 @@ convertJsonToYaml:
       slots: ${domainData.response.body.response.slots}
       forms: ${updatedForms.response.body}
       actions: ${domainData.response.body.response.actions}
-      responses: ${domainData.response.body.response.responses}
+      responses: ${mergedResponses.response.body}
       session_config: ${domainData.response.body.response.session_config}
   result: domainYaml
 
@@ -50,8 +68,8 @@ getFileLocations:
   call: http.get
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
-    headers:
-      cookie: ${incoming.headers.cookie}
+#    headers:
+#      cookie: ${incoming.headers.cookie}
   result: fileLocations
 
 saveDomainFile:

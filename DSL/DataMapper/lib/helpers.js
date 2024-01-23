@@ -67,4 +67,23 @@ Handlebars.registerHelper('getCount', function(intentTitle, intents) {
     return intentCount || 0;
 });
 
+Handlebars.registerHelper('addStringIfAbsent', function (input, addString) {
+    if(input.startsWith(addString)) {
+        return input;
+    } else {
+        return addString + input;
+    }
+})
+
+Handlebars.registerHelper('filterArrayByKey', function (array, key) {
+    return array.filter(ar => ar[key].trim() !== '');
+})
+
+Handlebars.registerHelper('notEmpty', function(value, options) {
+    if (typeof value === 'string' && value.trim() !== '') {
+        return options.fn(this);
+    }
+    return options.inverse(this);
+});
+
 export default Handlebars.helpers;
