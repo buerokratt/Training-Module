@@ -3,11 +3,8 @@ import express from 'express';
 const router = express.Router();
 router.post('/', (req, res) => {
 
-    console.log("REQUEST BODY: ", req.body)
     const steps = req.body.story.steps;
-    console.log("STEPS: ", steps);
     const isValid = validateStepsForNoConsecutiveDuplicates(steps);
-    console.log("ISVALID: ", isValid);
     res.json({ result: isValid });
 
 });
