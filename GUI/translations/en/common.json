@@ -123,7 +123,8 @@
     "stories": {
       "title": "Stories and rules",
       "stories": "Stories",
-      "rules": "Rules"
+      "rules": "Rules",
+      "entityWarning": "There are two entities with the same name in intent '{{intent}}'"
     },
     "slots": {
       "title": "Slots",

@@ -69,4 +69,8 @@ Handlebars.registerHelper('getCount', function(intentTitle, intents) {
     return intentCount || 0;
 });
 
+Handlebars.registerHelper('isType', function (type, value) {
+    return typeof value === type;
+});
+
 export default Handlebars.helpers;
