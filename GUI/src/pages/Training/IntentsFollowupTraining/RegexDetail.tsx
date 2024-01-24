@@ -131,7 +131,7 @@ const RegexDetail: FC = () => {
   });
 
   const regexExampleAddMutation = useMutation({
-    mutationFn: (data: { regex_name: string, example: string }) => addRegexExample(data),
+    mutationFn: (data: { regex_name: string, examples: string[] }) => addRegexExample(data),
     onSuccess: () => {
       toast.open({
         type: 'success',
@@ -223,7 +223,7 @@ const RegexDetail: FC = () => {
 
   const handleNewExampleSubmit = () => {
     if (!newExampleRef.current || !regex) return;
-    regexExampleAddMutation.mutate({ regex_name: regex.name,example: newExampleRef.current.value });
+    regexExampleAddMutation.mutate({ regex_name: regex.name,examples: [newExampleRef.current.value] });
     newExampleRef.current.value = '';
     setExampleText('');
   };
@@ -320,14 +320,13 @@ const RegexDetail: FC = () => {
         const fileReader = new FileReader();
         fileReader.onload = function (event) {
           const csvOutput: string = event?.target?.result as string ?? '';
-          console.log(csvOutput)
           let result = Papa.parse(csvOutput);
           const data: string[] = result.data as string[] ?? []
-          data.forEach((e: string) => {
-            regex?.examples.push(e[0]);
-          })
-          const res = regex && regex.examples.map((e, index) => ({ id: index, value: e }));
-          setRegexList(res ?? []);
+          data.splice(0,1);
+          const res = data.map((e) => (e[1]));
+          if(res.length !== 0 && regex) {
+            regexExampleAddMutation.mutate({ regex_name: regex.name,examples: res });
+          }
         };
 
         fileReader.readAsText(file);

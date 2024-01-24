@@ -18,8 +18,8 @@ export async function deleteRegex(deleteData: { regex_name : string | number }) 
   return data;
 }
 
-export async function addRegexExample(regexExampleData: { example: string }) {
-  const { data } = await api.post<{ regex_name: string, example: string }>(`regex/add-example`, regexExampleData);
+export async function addRegexExample(regexExampleData: { examples: string[] }) {
+  const { data } = await api.post<{ regex_name: string, examples: string[] }>(`regex/add-example`, regexExampleData);
   return data;
 }
 

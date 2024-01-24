@@ -53,6 +53,8 @@ services:
     volumes:
       - ./mock1:/mock1
       - ../Service-Module/DSL/mock1:/mock2
+      - ./DSL/DataMapper/views:/workspace/app/views/training
+      - ./DSL/DataMapper/views:/workspace/app/js/analytics
     ports:
       - 3000:3000
     networks:
