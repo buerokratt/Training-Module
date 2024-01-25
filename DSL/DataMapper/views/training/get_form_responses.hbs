@@ -3,6 +3,8 @@
         "{{ addStringIfAbsent form_name 'utter_' }}": "{{ form_name }}",
     {{/notEmpty}}
     {{#each (filterArrayByKey responses.questions 'question') as | question | }}
-        "{{ addStringIfAbsent question.slot_name 'utter_ask_' }}": "{{ question.question }}"{{#unless @last}},{{/unless}}
+        "{{ addStringIfAbsent question.slot_name 'utter_ask_' }}": [
+            {"text": "{{ question.question }}"}
+        ]{{#unless @last}},{{/unless}}
     {{/each}}
 }

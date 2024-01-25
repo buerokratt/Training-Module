@@ -9,8 +9,8 @@ getDomainFile:
   call: http.get
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]/domain-file"
-#    headers:
-#      cookie: ${incoming.headers.cookie}
+    headers:
+      cookie: ${incoming.headers.cookie}
   result: domainData
 
 validateForms:
@@ -68,8 +68,8 @@ getFileLocations:
   call: http.get
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
-#    headers:
-#      cookie: ${incoming.headers.cookie}
+    headers:
+      cookie: ${incoming.headers.cookie}
   result: fileLocations
 
 saveDomainFile:
@@ -82,7 +82,6 @@ saveDomainFile:
   result: fileResult
   next: updateDomainOpenSearch
 
-#update opensearch indexes
 updateDomainOpenSearch:
   call: http.post
   args:

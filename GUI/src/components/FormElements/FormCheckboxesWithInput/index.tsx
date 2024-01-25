@@ -17,6 +17,7 @@ type FormCheckboxesType = {
     onValuesChange?: (values: { slot_name: string; question: string }[]) => void;
     items: {
         label: string;
+        text: string;
         value: string;
         checked: boolean | undefined;
     }[];
@@ -115,7 +116,7 @@ const FormCheckboxesWithInput = forwardRef<HTMLInputElement, FormCheckboxesType>
                                             data-slot-name={item.value}
                                             pattern={'^#([a-fA-F0-9]{3}){1,2}$'}
                                             value={
-                                                selectedValues.find((selectedItem) => selectedItem.slot_name === item.value)?.question || ''
+                                                item.text || selectedValues.find((selectedItem) => selectedItem.slot_name === item.value)?.question || ''
                                             }
                                             onChange={handleInputChange}
                                         />

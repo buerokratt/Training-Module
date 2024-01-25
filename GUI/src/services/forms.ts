@@ -2,7 +2,7 @@ import api from './api';
 import { Form, FormCreateDTO, FormEditDTO } from 'types/form';
 
 export async function createForm(formData: FormCreateDTO) {
-  const { data } = await api.post<Form>(`forms`, formData);
+  const { data } = await api.post<Form>(`forms/add`, formData);
   return data;
 }
 

@@ -11,7 +11,6 @@ Handlebars.registerHelper('eq', function(a, b) {
 
 Handlebars.registerHelper('extractSlotKeys', function(obj) {
     const keys = [];
-    console.log(obj)
 
     function iterate(obj) {
         for (const key in obj) {
@@ -23,11 +22,6 @@ Handlebars.registerHelper('extractSlotKeys', function(obj) {
 
     return keys;
 });
-
-Handlebars.registerHelper('checkV', function(request){
-    console.log('CHECKING REQUEST');
-    console.log(request);
-})
 
 Handlebars.registerHelper('ne', function(a, b) {
     return a !== b;
@@ -73,6 +67,22 @@ Handlebars.registerHelper('addStringIfAbsent', function (input, addString) {
     } else {
         return addString + input;
     }
+})
+
+Handlebars.registerHelper('concatStringIfAbsent', function (input, addString) {
+    if(input.endsWith(addString)) {
+        return input;
+    } else {
+        return input + addString;
+    }
+})
+
+Handlebars.registerHelper('findMatchInObject', function (object, key , keyModifier) {
+    if(object) {
+        const result = object[keyModifier + key];
+        return result ? result[0].text : '';
+    }
+    return '';
 })
 
 Handlebars.registerHelper('filterArrayByKey', function (array, key) {
