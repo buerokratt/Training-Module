@@ -2,8 +2,7 @@ step_1:
   call: reflect.mock
   args:
     response:
-      data:
-        get_all_active_chats:
+      response:
           - id: '22fa5630-6f92-4d50-92ba-685c872383af'
             customerSupportId: ''
             customerSupportDisplayName: ''
@@ -64,4 +63,5 @@ step_1:
   result: reflected_request
 
 step_2:
+  wrapper: true
   return: ${reflected_request.response.body}

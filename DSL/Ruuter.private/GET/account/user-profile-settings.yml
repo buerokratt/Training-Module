@@ -1,0 +1,18 @@
+step_1:
+  call: reflect.mock
+  args:
+    response:
+      response:
+        - userId: EE30303039914
+          forwardedChatPopupNotifications: false
+          forwardedChatSoundNotifications: false
+          forwardedChatEmailNotifications: false
+          newChatPopupNotifications: false
+          newChatSoundNotifications: false
+          newChatEmailNotifications: false
+          useAutocorrect: true
+  result: reflected_request
+
+step_2:
+  wrapper: false
+  return: ${reflected_request.response.body}

@@ -1,5 +1,5 @@
 export const LOGIN_LINK = import.meta.env.REACT_APP_CUSTOMER_SERVICE_LOGIN;
-export const SSE_URL = import.meta.env.REACT_APP_RUUTER_V1_PRIVATE_API_URL;
+export const SSE_URL = import.meta.env.REACT_APP_RUUTER_API_URL;
 export const SSE_PATH = 'sse';
 export const SET_CUSTOMER_SUPPORT_ACTIVITY = 'cs-set-customer-support-activity';
 export const GET_CUSTOMER_SUPPORT_ACTIVITY = 'cs-get-customer-support-activity';

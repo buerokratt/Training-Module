@@ -8,18 +8,18 @@ export async function addRegex(regexData: { name: string }) {
   return data;
 }
 
-export async function editRegex(id: string | number, regexData: { name: string }) {
-  const { data } = await api.post<{ readonly id: number; name: string }>(`regex/${id}`, regexData);
+export async function editRegex(regexData: { name: string , newName: string}) {
+  const { data } = await api.post<{ name: string , newName: string }>(`regex/update`, regexData);
   return data;
 }
 
-export async function deleteRegex(id: string | number) {
-  const { data } = await api.delete<void>(`regex/${id}`);
+export async function deleteRegex(deleteData: { regex_name : string | number }) {
+  const { data } = await api.post<void>(`regex/delete`, deleteData);
   return data;
 }
 
-export async function addRegexExample(regexExampleData: { example: string }) {
-  const { data } = await api.post<{ regex_name: string, example: string }>(`regex/add-example`, regexExampleData);
+export async function addRegexExample(regexExampleData: { examples: string[] }) {
+  const { data } = await api.post<{ regex_name: string, examples: string[] }>(`regex/add-example`, regexExampleData);
   return data;
 }
 

@@ -1,7 +1,7 @@
 getForms:
   call: http.get
   args:
-    url: "[#TRAINING_OPENSEARCH]/forms/_search?size=10000"
+    url: "[#TRAINING_OPENSEARCH]/domain/_search?size=10000"
   result: getFormsResult
 
 mapFormsData:

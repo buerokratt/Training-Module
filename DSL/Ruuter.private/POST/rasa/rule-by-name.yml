@@ -1,0 +1,25 @@
+assign_values:
+  assign:
+    params: ${incoming.body}
+
+getRulesWithName:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]/rules/_search/template"
+    body:
+      id: "rule-with-name"
+      params: ${params}
+  result: getRulesResult
+
+mapRulesData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/dmapper/get-rule-with-name"
+    body:
+      hits: ${getRulesResult.response.body.hits.hits}
+  result: rulesData
+  next: returnSuccess
+
+returnSuccess:
+  return: ${rulesData.response.body.data}
+  next: end
