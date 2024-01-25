@@ -23,6 +23,13 @@ Handlebars.registerHelper('extractSlotKeys', function(obj) {
     return keys;
 });
 
+Handlebars.registerHelper('getObjectKeys', function(obj) {
+    console.log('OBJECT')
+    console.log(obj)
+    console.log(Object.keys(obj))
+    return Object.keys(obj);
+});
+
 Handlebars.registerHelper('ne', function(a, b) {
     return a !== b;
 });
@@ -94,6 +101,9 @@ Handlebars.registerHelper('notEmpty', function(value, options) {
         return options.fn(this);
     }
     return options.inverse(this);
+
+Handlebars.registerHelper('isType', function (type, value) {
+    return typeof value === type;
 });
 
 export default Handlebars.helpers;
