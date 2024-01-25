@@ -123,7 +123,8 @@
     "stories": {
       "title": "Kasutuslood ja reeglid",
       "stories": "Kasutuslood",
-      "rules": "Reeglid"
+      "rules": "Reeglid",
+      "entityWarning": "Kaks järjestikust olemit sama nimega ei ole lubatud"
     },
     "slots": {
       "title": "Mälukohad",

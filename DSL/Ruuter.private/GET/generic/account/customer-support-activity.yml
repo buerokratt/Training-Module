@@ -2,11 +2,12 @@ step_1:
   call: reflect.mock
   args:
     response:
-      data:
-        get_user:
-          - authorities:
-              - "ROLE_ADMINISTRATOR"
+      response:
+        - idCode: 'EE49902216518'
+          active: 'true'
+          status: 'idle'
   result: reflected_request
 
 step_2:
+  wrapper: true
   return: ${reflected_request.response.body}
