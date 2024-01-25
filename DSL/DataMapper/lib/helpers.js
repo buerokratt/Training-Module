@@ -24,6 +24,13 @@ Handlebars.registerHelper('extractSlotKeys', function(obj) {
     return keys;
 });
 
+Handlebars.registerHelper('getObjectKeys', function(obj) {
+    console.log('OBJECT')
+    console.log(obj)
+    console.log(Object.keys(obj))
+    return Object.keys(obj);
+});
+
 Handlebars.registerHelper('ne', function(a, b) {
     return a !== b;
 });
@@ -60,6 +67,10 @@ Handlebars.registerHelper('getCount', function(intentTitle, intents) {
     const intentCounts = intents.count;
     const intentCount = intentCounts?.find(intent => intent.key === intentTitle)?.examples_counts?.value;
     return intentCount || 0;
+});
+
+Handlebars.registerHelper('isType', function (type, value) {
+    return typeof value === type;
 });
 
 export default Handlebars.helpers;

@@ -1,4 +1,4 @@
-import { FC, useMemo, useState } from 'react';
+import {FC, useMemo, useState} from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
@@ -25,7 +25,8 @@ const Regex: FC = () => {
   const [filter, setFilter] = useState('');
   const [addFormVisible, setAddFormVisible] = useState(false);
   const [deletableRow, setDeletableRow] = useState<string | number | null>(null);
-  const { data: regexList } = useQuery<RegexTeaser[]>({
+  const [selectedRegex, setSelectedRegex] = useState<string | undefined>(undefined);
+  const { data: regexList, refetch } = useQuery<RegexTeaser[]>({
     queryKey: ['regexes'],
   });
   const { data: entities } = useQuery<Entity[]>({
@@ -37,6 +38,7 @@ const Regex: FC = () => {
     mutationFn: (data: { name: string }) => addRegex(data),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['regex']);
+      refetch();
       setAddFormVisible(false);
       toast.open({
         type: 'success',
@@ -55,18 +57,19 @@ const Regex: FC = () => {
   });
 
   const availableEntities = useMemo(() => entities?.filter((e) => {
-    return regexList?.some((r) => r.name !== e.name);
+    return !regexList?.some((r) => r.name === e.name);
   }).map((e) => ({ label: e.name, value: String(e.id) })), [entities, regexList]);
 
   const regexDeleteMutation = useMutation({
-    mutationFn: ({ id }: { id: string | number }) => deleteRegex(id),
+    mutationFn: ( deleteData : { regex_name: string | number }) => deleteRegex(deleteData),
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['regex']);
+      await queryClient.invalidateQueries(['regexes']);
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Entity deleted',
+        message: 'Regex deleted',
       });
+      setTimeout(() => refetch(), 1000);
     },
     onError: (error: AxiosError) => {
       toast.open({
@@ -120,7 +123,9 @@ const Regex: FC = () => {
   ], [columnHelper, navigate, t]);
 
   const handleNewRegexSubmit = handleSubmit((data) => {
-    newRegexMutation.mutate(data);
+    if(selectedRegex) {
+      newRegexMutation.mutate({name: selectedRegex});
+    }
   });
 
   return (
@@ -145,13 +150,17 @@ const Regex: FC = () => {
                     {...field}
                     label={t('training.intents.entity')}
                     hideLabel
-                    options={availableEntities || []}
+                    onSelectionChange={(selection) => {
+                      setSelectedRegex(selection?.value);
+                    }}
+                    options={availableEntities || []
+                  }
                   />
                 )} />
               </div>
               <Track gap={16}>
                 <Button appearance='secondary' onClick={() => setAddFormVisible(false)}>{t('global.cancel')}</Button>
-                <Button onClick={handleNewRegexSubmit}>{t('global.save')}</Button>
+                <Button disabled={selectedRegex === undefined} onClick={handleNewRegexSubmit}>{t('global.save')}</Button>
               </Track>
             </Track>
           )}
@@ -177,7 +186,7 @@ const Regex: FC = () => {
               <Button appearance='secondary' onClick={() => setDeletableRow(null)}>{t('global.no')}</Button>
               <Button
                 appearance='error'
-                onClick={() => regexDeleteMutation.mutate({ id: deletableRow })}
+                onClick={() => regexDeleteMutation.mutate({ regex_name: deletableRow })}
               >
                 {t('global.yes')}
               </Button>

@@ -30,11 +30,14 @@ import mergeReplaceArrayElement from "./js/util/mergeReplaceArrayElement.js";
 import validate from "./js/util/arrayElementsLength.js";
 import yamlToJson from "./js/convert/yamlToJson.js";
 import jsonToYaml from "./js/convert/jsonToYaml.js";
+import jsonToYamlStories from "./js/convert/jsonToYamlStories.js";
 import csvToJson from "./js/convert/csvToJson.js";
 import stringSplit from "./js/util/stringSplit.js";
+import stringToArray from "./js/util/stringToArray.js";
 import stringReplace from "./js/util/stringReplace.js";
 import removeRulesByIntentName from "./js/util/removeRulesByIntentName.js";
 import domainUpdateExistingResponse from "./js/util/domainUpdateExistingResponse.js";
+import validateStories from "./js/validation/validateStories.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
@@ -61,11 +64,14 @@ app.use('/merge/replace-array-element', mergeReplaceArrayElement);
 app.use('/validate/array-elements-length', validate);
 app.use('/convert/yaml-to-json', yamlToJson)
 app.use('/convert/json-to-yaml', jsonToYaml)
+app.use('/convert/json-to-yaml-stories', jsonToYamlStories)
 app.use('/convert/csv-to-json', csvToJson)
 app.use('/convert/string/split', stringSplit)
 app.use('/convert/string/replace', stringReplace)
+app.use('/convert/string/toArray', stringToArray)
 app.use('/rules/remove-by-intent-name', removeRulesByIntentName);
 app.use('/domain/update-existing-response', domainUpdateExistingResponse)
+app.use('/validate/validate-stories', validateStories)
 app.use(express.urlencoded({ extended: true }));
 
 app.use(

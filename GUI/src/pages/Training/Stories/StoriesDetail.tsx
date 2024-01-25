@@ -11,7 +11,6 @@ import ReactFlow, {
   addEdge,
   Background,
   Connection,
-  MarkerType,
   MiniMap,
   Node,
   useEdgesState,
@@ -22,7 +21,6 @@ import { AxiosError } from 'axios';
 import 'reactflow/dist/style.css';
 
 import { Box, Button, Collapsible, Dialog, FormInput, Icon, Track } from 'components';
-import { Intent } from 'types/intent';
 import { Responses } from 'types/response';
 import { Story, StoryDTO } from 'types/story';
 import { Form } from 'types/form';
@@ -97,7 +95,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     setStory(storyData ?? story);
 
     let nodes = [...initialNodes];
-    let edges: any[] = []; 
+    let edges: any[] = [];
 
     generateNodesFromStorySteps(storyData?.steps || story?.steps || [])
       .forEach((x) => {
@@ -108,7 +106,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     setNodes(nodes);
     setEdges(edges);
 
-  }, [storyData]);
+  }, [setEdges, setNodes, story, storyData]);
 
   const addStoryMutation = useMutation({
     mutationFn: (data: StoryDTO) => addStory(data),
@@ -172,7 +170,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     setDeleteId(id)
   };
 
-  const handleNodeDeleteConfimed = () => {
+  const handleNodeDeleteConfirmed = () => {
     setNodes((prevNodes) => {
       const deleteIndex = prevNodes.findIndex((n) => n.id === deleteId);
       return prevNodes.slice(0, deleteIndex);
@@ -236,7 +234,6 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     if(!isRename) {
       addOutputNode();
     }
-
     const data = {
       story: editableTitle || id || title,
       steps: generateStoryStepsFromNodes(nodes),
@@ -503,7 +500,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
               <Button appearance='secondary' onClick={() => setDeleteId('')}>{t('global.no')}</Button>
               <Button
                 appearance='error'
-                onClick={handleNodeDeleteConfimed}
+                onClick={handleNodeDeleteConfirmed}
               >
                 {t('global.yes')}
               </Button>

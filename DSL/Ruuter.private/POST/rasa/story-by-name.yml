@@ -23,7 +23,3 @@ mapStoriesData:
 returnSuccess:
   return: ${storiesData.response.body.data}
   next: end
-
-returnUnauthorized:
-  return: "error: unauthorized"
-  next: end

@@ -11,9 +11,8 @@
     "prettier": "prettier --write \"{,!(node_modules)/**/}*.{ts,tsx,js,json,css,less,scss}\""
   },
   "dependencies": {
-    "@exirain/header": "file:exirain-header-0.0.28.tgz",
-    "@buerokratt-ria/header": "^0.0.1",
-    "@buerokratt-ria/menu": "^0.0.1",
+    "@buerokratt-ria/header": "^0.1.2",
+    "@buerokratt-ria/menu": "^0.1.1",
     "@buerokratt-ria/styles": "^0.0.1",
     "@fontsource/roboto": "^4.5.8",
     "@formkit/auto-animate": "^1.0.0-beta.5",
@@ -52,7 +51,8 @@
     "regexify-string": "^1.0.19",
     "usehooks-ts": "^2.9.1",
     "zustand": "^4.3.2",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "howler": "^2.2.4"
   },
   "devDependencies": {
     "@types/file-saver": "^2.0.5",
@@ -74,7 +74,8 @@
     "vite": "^4.0.0",
     "vite-plugin-env-compatible": "^1.1.1",
     "vite-plugin-svgr": "^2.4.0",
-    "vite-tsconfig-paths": "^4.0.3"
+    "vite-tsconfig-paths": "^4.0.3",
+    "@types/howler": "^2.2.11"
   },
   "browserslist": {
     "production": [

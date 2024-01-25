@@ -1,11 +1,19 @@
-import { FC, memo, useEffect } from 'react';
+import {FC, memo, useEffect, useState} from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import { useQuery } from '@tanstack/react-query';
-import { MdOutlineDelete } from 'react-icons/md';
+import {
+  MdAlarmOn,
+  MdAppBlocking,
+  MdCheckCircleOutline,
+  MdOutlineCheck,
+  MdOutlineDelete,
+  MdWarning
+} from 'react-icons/md';
 
-import { Button, FormSelect, Icon, Track } from 'components';
+import {Button, FormSelect, Icon, Tooltip, Track} from 'components';
 import { Entity } from 'types/entity';
+import ToolTipWarning from "../../../components/ToolTipWarning";
 
 type NodeDataProps = {
   data: {
@@ -28,6 +36,7 @@ type IntentPayload = {
 type EntityPayload = (string | undefined)[] | undefined;
 
 const IntentNode: FC<NodeDataProps> = ({ data }) => {
+  const [entityWarning, setEntityWarning] = useState(false);
   const { t } = useTranslation();
   const { data: entities } = useQuery<Entity[]>({
     queryKey: ['entities'],
@@ -47,11 +56,13 @@ const IntentNode: FC<NodeDataProps> = ({ data }) => {
   useEffect(() => {
     const { unsubscribe } = watch((value) => {
       const entities = value.entities?.map(x => x?.value).filter(Boolean);
-      data.onPayloadChange(data.id, entities);
+      const hasConsecutiveDuplicates = entities?.some((entity, index) => entity === entities[index + 1]);
+      setEntityWarning(hasConsecutiveDuplicates ?? false);
+      data.onPayloadChange(data.id, { entities });
     });
     return () => unsubscribe();
-  }, [watch]);
-
+  }, [data, watch]);
+  
   return (
     <>
       {'label' in data && (<p><strong>{t('training.intent')}: {data.label}</strong></p>)}
@@ -61,20 +72,33 @@ const IntentNode: FC<NodeDataProps> = ({ data }) => {
         <Track key={item.id} style={{ width: '100%' }}>
           <div style={{ flex: 1 }}>
             <Controller
-              name={`entities.${index}.value` as const}
+              name={`entities[${index}].value` as const}
               control={control}
               render={({ field }) => (
                 <FormSelect
-                  {...field}
-                  onSelectionChange={(selection) => field.onChange(selection)}
-                  label={t('training.intents.entity')}
-                  hideLabel
-                  placeholder={t('training.intents.entity') || ''}
-                  options={entities?.map((e) => ({ label: e.name, value: String(e.id) })) || []}
+                    {...field}
+                    value={field.value}
+                    placeholder={t('training.intents.entity') || ''}
+                    onSelectionChange={(selection) => {
+                      const selectedValue = selection?.value || '';
+                      field.onChange(selectedValue);
+                    }}
+                    label={t('training.intents.entity')}
+                    hideLabel
+                    options={entities?.map((e) => ({ label: e.name, value: String(e.id) })) || []}
                 />
               )}
             />
           </div>
+          {entityWarning && (
+              <><ToolTipWarning content={t('training.stories.entityWarning')}>
+                      <span style={{display: 'flex', alignItems: 'center'}}>
+                          <Icon
+                              icon={<MdWarning
+                                  color={'rgba(255, 0, 0, 1)'}/>}/>
+                      </span>
+              </ToolTipWarning></>
+          )}
           <Button appearance='icon' onClick={() => remove(index)}>
             <Icon icon={<MdOutlineDelete fontSize={24} />} size='medium' />
           </Button>
