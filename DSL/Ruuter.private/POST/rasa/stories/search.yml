@@ -8,29 +8,68 @@ checkForIncomingType:
   switch:
     - condition: ${type == "responses"}
       next: getStoriesSearchForResponses
-#    - condition: ${type == "forms"}
-#      next: getStoriesSearchForForms
-#    - condition: ${type == "slots"}
-#      next: getStoriesSearchForSlots
-#    - condition: ${type === undefined}
-#      next: getStoriesSearch
+    - condition: ${type == "forms"}
+      next: getStoriesSearchForForms
+    - condition: ${type == "slots"}
+      next: getStoriesSearchForSlots
+
+getStoriesSearch:
+  call: http.get
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/rasa/stories"
+  result: getStoriesResult
+  next: returnNoSearchSpecified
 
 getStoriesSearchForResponses:
   call: http.post
   args:
     url: "[#TRAINING_OPENSEARCH]/stories/_search/template"
     body:
-      id: ${"story-with-" + value}
+      id: ${"story-with-" + type}
       params:
-        actionOrActiveLoopValue: ${value}
+        searchField: ${value}
       source:
         query:
           bool:
             should:
               - match:
-                  steps.action: ${value}
+                  steps.action: "{{searchField}}"
               - match:
-                  steps.active_loop: ${value}
+                  steps.active_loop: "{{searchField}}"
+  result: getStoriesResult
+  next: mapStoriesData
+
+getStoriesSearchForForms:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]/stories/_search/template"
+    body:
+      id: ${"story-with-" + type}
+      params:
+        searchField: ${value}
+      source:
+        query:
+          bool:
+            should:
+              - match:
+                  steps.action: "{{searchField}}"
+  result: getStoriesResult
+  next: mapStoriesData
+
+getStoriesSearchForSlots:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]/stories/_search/template"
+    body:
+      id: ${"story-with-" + type}
+      params:
+        searchField: ${value}
+      source:
+        query:
+          bool:
+            must:
+              - exists:
+                  field: "steps.slot_was_set.{{searchField}}"
   result: getStoriesResult
 
 mapStoriesData:
@@ -43,5 +82,9 @@ mapStoriesData:
   next: returnSuccess
 
 returnSuccess:
-  return: ${storiesData.response.body}
+  return: ${storiesData.response.body.data.stories}
+  next: end
+
+returnNoSearchSpecified:
+  return: ${getStoriesResult.response.body.response}
   next: end
