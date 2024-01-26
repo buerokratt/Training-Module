@@ -108,7 +108,6 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
 
   const handleSlotSave = handleSubmit((data) => {
     if (mode === 'edit' && params.id) {
-      console.log(params.id);
       slotEditMutation.mutate({oldName: params.id, data: data});
     } else {
       newSlotMutation.mutate(data);
