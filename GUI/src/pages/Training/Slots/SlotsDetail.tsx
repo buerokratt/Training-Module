@@ -87,7 +87,7 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
   });
 
   const slotEditMutation = useMutation({
-    mutationFn: (data: SlotEditDTO) => editSlot(data),
+    mutationFn: (formData : {oldName: string,data: SlotEditDTO}) => editSlot(formData.oldName,formData.data),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['slots']);
       navigate('/training/slots');
@@ -108,7 +108,7 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
 
   const handleSlotSave = handleSubmit((data) => {
     if (mode === 'edit' && params.id) {
-      slotEditMutation.mutate(data);
+      slotEditMutation.mutate({oldName: params.id, data: data});
     } else {
       newSlotMutation.mutate(data);
     }
