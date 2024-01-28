@@ -36,7 +36,7 @@ const Forms: FC = () => {
       toast.open({
         type: 'error',
         title: t('global.notificationError'),
-        message: error.message,
+        message: error.response?.data || error.message,
       });
     },
     onSettled: () => setDeletableForm(null),

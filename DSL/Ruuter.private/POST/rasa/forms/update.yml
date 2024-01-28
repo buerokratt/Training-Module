@@ -96,8 +96,6 @@ returnSuccess:
 
 returnFormIsMissing:
   return: "Can't find form to update"
-  next: end
-
-returnUnauthorized:
-  return: "error: unauthorized"
+  wrapper: false
+  status: 409
   next: end

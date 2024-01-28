@@ -1,13 +1,12 @@
-import React, {FC, useEffect, useMemo, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import { useTranslation } from 'react-i18next';
 import { AxiosError } from 'axios';
 import {Controller, useForm} from 'react-hook-form';
-import { createColumnHelper } from '@tanstack/react-table';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { MdOutlineArrowBack } from 'react-icons/md';
 
-import { Button, Card, FormCheckbox, FormInput, FormTextarea, Track } from 'components';
+import {Button, Card,  FormInput, FormTextarea, Track} from 'components';
 import { Intent } from 'types/intent';
 import {Slot, SlotResponse} from 'types/slot';
 import {Form, FormCreateDTO, FormEditDTO} from 'types/form';
@@ -54,9 +53,6 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
     }
   }, [formDetails, reset]);
 
-  const slotsColumnHelper = createColumnHelper<Slot>();
-  const intentsColumnHelper = createColumnHelper<Intent>();
-
   const newFormMutation = useMutation({
     mutationFn: (data: FormCreateDTO) => createForm(data),
     onSuccess: async () => {
@@ -72,7 +68,7 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
       toast.open({
         type: 'error',
         title: t('global.notificationError'),
-        message: error.message,
+        message: error.response?.data || error.message,
       });
     },
   });
@@ -92,36 +88,10 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
       toast.open({
         type: 'error',
         title: t('global.notificationError'),
-        message: error.message,
+        message: error.response?.data || error.message,
       });
     },
   });
-
-  const slotsColumns = useMemo(() => [
-    slotsColumnHelper.accessor('name', {
-      cell: (props) => (
-        <FormCheckbox
-          label={t('training.forms.requiredSlots')}
-          hideLabel
-          name='requiredSlots'
-          item={{ label: props.getValue(), value: props.getValue() }}
-        />
-      ),
-    }),
-  ], [slotsColumnHelper, t]);
-
-  const intentsColumns = useMemo(() => [
-    intentsColumnHelper.accessor('intent', {
-      cell: (props) => (
-        <FormCheckbox
-          label={t('training.forms.ignoredIntents')}
-          hideLabel
-          name='ignoredIntents'
-          item={{ label: props.getValue(), value: props.getValue() }}
-        />
-      ),
-    }),
-  ], [intentsColumnHelper, t]);
 
   const handleFormSave = handleSubmit((data) => {
     // @ts-ignore
@@ -260,8 +230,9 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
                     globalFilter={intentsFilter}
                     setGlobalFilter={setIntentsFilter}
                     hideLabel={true}
-                    items={intents.map((intent) => ({
+                    items={intents?.map((intent) => ({
                       label: intent.intent,
+                      checked: formDetails?.form.ignored_intents.some(ii => ii === intent.intent),
                       value: String(intent.intent),
                     }))}
                 />

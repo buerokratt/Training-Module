@@ -101,6 +101,7 @@ Handlebars.registerHelper('notEmpty', function(value, options) {
         return options.fn(this);
     }
     return options.inverse(this);
+})
 
 Handlebars.registerHelper('isType', function (type, value) {
     return typeof value === type;

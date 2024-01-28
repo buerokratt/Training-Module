@@ -62,6 +62,12 @@ const FormCheckboxesWithInput = forwardRef<HTMLInputElement, FormCheckboxesType>
 
 
         const handleCheckboxChange = (e: ChangeEvent<HTMLInputElement>) => {
+            items.map((element) => {
+                if(element.label === e.target.value) {
+                    return element.checked = !element.checked;
+                }
+                return element;
+            })
             const { checked, value } = e.target;
             if (checked) {
                 setSelectedValues((prevState) => [...prevState, { slot_name: value, question: '' }]);
@@ -102,7 +108,7 @@ const FormCheckboxesWithInput = forwardRef<HTMLInputElement, FormCheckboxesType>
                                 name={name}
                                 ref={ref}
                                 id={`${rest.id}-${item.value}`}
-                                checked={selectedValues?.some((selectedItem) => selectedItem.slot_name === item.value)}
+                                checked={selectedValues?.some((selectedItem) => selectedItem.slot_name === item.value) || item.checked}
                                 value={item.value}
                                 onChange={handleCheckboxChange}
                             />

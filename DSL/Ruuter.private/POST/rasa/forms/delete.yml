@@ -103,12 +103,12 @@ returnFormIsMissing:
 
 returnFormHasDependencyToRules:
   return: "Deleting a form is forbidden because it has relation to rules"
+  wrapper: false
+  status: 409
   next: end
 
 returnFormHasDependencyToStories:
   return: "Deleting a form is forbidden because it has relation to stories"
-  next: end
-
-returnUnauthorized:
-  return: "error: unauthorized"
+  wrapper: false
+  status: 409
   next: end

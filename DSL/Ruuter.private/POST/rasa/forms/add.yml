@@ -100,5 +100,6 @@ returnSuccess:
 
 returnFormExists:
   return: "Form exists"
+  wrapper: false
   status: 409
   next: end
