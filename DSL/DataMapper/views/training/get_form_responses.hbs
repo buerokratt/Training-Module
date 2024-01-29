@@ -1,7 +1,7 @@
 {
     {{#notEmpty responses.response}}
         "{{ addStringIfAbsent form_name 'utter_' }}": [
-            {"text":"{{ form_name }}"}
+            {"text":"{{ responses.response }}"}
         ],
     {{/notEmpty}}
     {{#each (filterArrayByKey responses.questions 'question') as | question | }}
