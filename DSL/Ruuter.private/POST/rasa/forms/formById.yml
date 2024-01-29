@@ -6,8 +6,8 @@ getResponses:
   call: http.get
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]/rasa/responses"
-#    headers:
-#      cookie: ${incoming.headers.cookie}
+    headers:
+      cookie: ${incoming.headers.cookie}
   result: responses
 
 getForms:

@@ -8,7 +8,7 @@ import { MdOutlineArrowBack } from 'react-icons/md';
 
 import {Button, Card,  FormInput, FormTextarea, Track} from 'components';
 import { Intent } from 'types/intent';
-import {Slot, SlotResponse} from 'types/slot';
+import { SlotResponse} from 'types/slot';
 import {Form, FormCreateDTO, FormEditDTO} from 'types/form';
 import { createForm, editForm } from 'services/forms';
 import { useToast } from 'hooks/useToast';
@@ -68,7 +68,7 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
       toast.open({
         type: 'error',
         title: t('global.notificationError'),
-        message: error.response?.data || error.message,
+        message: error.message,
       });
     },
   });
@@ -88,7 +88,7 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
       toast.open({
         type: 'error',
         title: t('global.notificationError'),
-        message: error.response?.data || error.message,
+        message: error.message,
       });
     },
   });
