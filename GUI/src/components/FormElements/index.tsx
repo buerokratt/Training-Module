@@ -7,6 +7,7 @@ import FormRadios from './FormRadios';
 import FormCheckbox from './FormCheckbox';
 import FormDatepicker from './FormDatepicker';
 import SwitchBox from './SwitchBox';
+import FormCheckboxesWithInput from "./FormCheckboxesWithInput";
 
 export {
   FormInput,
@@ -18,4 +19,5 @@ export {
   FormCheckbox,
   FormDatepicker,
   SwitchBox,
+  FormCheckboxesWithInput
 };

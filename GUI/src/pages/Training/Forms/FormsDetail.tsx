@@ -1,7 +1,7 @@
-import { FC, useEffect, useMemo, useState } from 'react';
+import {FC, useEffect, useMemo, useRef, useState} from 'react';
 import { useTranslation } from 'react-i18next';
 import { AxiosError } from 'axios';
-import { useForm } from 'react-hook-form';
+import {Controller, useForm} from 'react-hook-form';
 import { createColumnHelper } from '@tanstack/react-table';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -10,10 +10,11 @@ import { MdOutlineArrowBack } from 'react-icons/md';
 import { Button, Card, DataTable, FormCheckbox, FormInput, FormTextarea, Track } from 'components';
 import { Intent } from 'types/intent';
 import { Slot } from 'types/slot';
-import { FormCreateDTO } from 'types/form';
+import {Form, FormCreateDTO, FormEditDTO} from 'types/form';
 import { createForm, editForm } from 'services/forms';
 import { useToast } from 'hooks/useToast';
 import { RESPONSE_TEXT_LENGTH } from 'constants/config';
+import {FormCheckboxesWithInput} from "../../../components/FormElements";
 
 type FormsDetailProps = {
   mode: 'new' | 'edit';
@@ -25,23 +26,33 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const params = useParams();
+  const [selectedSlots, setSelectedSlots] = useState([]);
+  const { data: formDetails, refetch } = useQuery<Form>([`forms/formById`,params.id],);
   const [slotsFilter, setSlotsFilter] = useState('');
   const [intentsFilter, setIntentsFilter] = useState('');
+  const [formResponse, setFormResponse] = useState('');
+  const [formName, setFormName] = useState(params.id);
   const { data: slots } = useQuery<Slot[]>({
     queryKey: ['slots'],
   });
   const { data: intents } = useQuery<Intent[]>({
     queryKey: ['intent-and-id'],
   });
+  const handleValuesChange = (values: any) => {
+    setSelectedSlots(values);
+  };
 
-  const { register, handleSubmit, reset } = useForm<FormCreateDTO>();
+  const { register, formState: { errors },control, handleSubmit, reset } = useForm<FormCreateDTO>({
+    mode: 'onChange',
+    shouldUnregister: true,
+  });
 
   useEffect(() => {
-    if (mode === 'edit') {
-      // TODO: reset form to correct values
-      reset({ form: 'custom_fallback_form' });
+    if(formDetails) {
+      setFormResponse(formDetails.responses?.response);
+      setFormName(formDetails.form?.name);
     }
-  }, [mode, reset]);
+  }, [formDetails, reset]);
 
   const slotsColumnHelper = createColumnHelper<Slot>();
   const intentsColumnHelper = createColumnHelper<Intent>();
@@ -67,7 +78,7 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
   });
 
   const formEditMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string | number, data: { form: string } }) => editForm(id, data),
+    mutationFn: ({ form_name, data }: { form_name: string , data:  FormEditDTO }) => editForm(form_name, data),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['forms']);
       navigate('/training/forms');
@@ -113,10 +124,14 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
   ], [intentsColumnHelper, t]);
 
   const handleFormSave = handleSubmit((data) => {
+    console.log('FORM DATA');
+    console.log(data);
+    console.log(selectedSlots);
+    data.responses.questions = selectedSlots ?? [];
     if (mode === 'edit' && params.id) {
-      formEditMutation.mutate({ id: params.id, data: { form: data.form } });
+      formEditMutation.mutate({ form_name: params.id, data: data });
     } else {
-      newFormMutation.mutate({ form: data.form });
+      newFormMutation.mutate({ form: data.form_name });
     }
   });
 
@@ -132,21 +147,35 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
 
       <Card>
         <Track direction='vertical' gap={8} align='left'>
-        <Track gap={8} style={{ width: '100%' }}>
-            <FormInput {...register('form')} label={t('training.forms.form')}/>
-            <p style={{minWidth: '170px'}}>_form</p>
+          <Track gap={8} style={{width: '100%'}}>
+            {/* form name */}
+            <Controller name='form.name' control={control} render={({field}) =>
+                <FormInput {...field}
+                           label={t('training.forms.form')}
+                           defaultValue={formName}
+                           onChange={(e) => {
+                             setFormName(e.target.value);
+                             field.onChange(e.target.value);
+                           }}
+                />
+            }/>
+            <p style={{minWidth: '150px'}}>_form</p>
           </Track>
-          <FormInput {...register('form')} label={t('training.forms.formName')} />
+          {/* This is slot question */}
+          {/*<FormInput {...register('form')} label={t('training.forms.formName')} />*/}
           <Track gap={8} style={{ width: '100%' }}>
             <p style={{minWidth: '170px'}}>{t('training.responses.response')}</p>
+            {/* Form response input */}
             <FormTextarea
-            {...register('form')}
+            {...register('responses.response')}
             name='ask'
             label={t('training.responses.formName')}
             hideLabel
             minRows={1}
             maxLength={RESPONSE_TEXT_LENGTH}
             showMaxLength
+            defaultValue={formResponse}
+            onChange={(e) => setFormResponse(e.target.value)}
             />
           </Track>
         </Track>
@@ -166,6 +195,7 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
               >
                 {t('training.forms.requiredSlots')}
               </h2>
+              {/*SEARCH ELEMENT FOR SLOTS*/}
               <div style={{ width: '100%', padding: 16 }}>
                 <FormInput
                   label={t('global.search')}
@@ -178,13 +208,21 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
             </Track>
           }>
             {slots && (
-              <DataTable
-                data={slots}
-                columns={slotsColumns}
-                disableHead
-                globalFilter={slotsFilter}
-                setGlobalFilter={setSlotsFilter}
-              />
+                  <FormCheckboxesWithInput
+                    {...register('form.required_slots')}
+                    label='Slots'
+                    name={'form.required_slots'}
+                    globalFilter={slotsFilter}
+                    displayInput={true}
+                    selectedElements={formDetails?.responses?.questions}
+                    setGlobalFilter={setSlotsFilter}
+                    hideLabel={true}
+                    items={slots.map((slot) => ({
+                      label: slot.name,
+                      value: String(slot.name),
+                    }))}
+                    onValuesChange={handleValuesChange}
+                />
             )}
           </Card>
         </div>
@@ -214,13 +252,17 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
             </Track>
           }>
             {intents && (
-              <DataTable
-                data={intents}
-                columns={intentsColumns}
-                disableHead
-                globalFilter={intentsFilter}
-                setGlobalFilter={setIntentsFilter}
-              />
+                <FormCheckboxesWithInput
+                    {...register('form.ignored_intents')}
+                    label='Ignored intents'
+                    globalFilter={intentsFilter}
+                    setGlobalFilter={setIntentsFilter}
+                    hideLabel={true}
+                    items={intents.map((intent) => ({
+                      label: intent.intent,
+                      value: String(intent.intent),
+                    }))}
+                />
             )}
           </Card>
         </div>

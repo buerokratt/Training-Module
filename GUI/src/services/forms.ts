@@ -6,8 +6,8 @@ export async function createForm(formData: FormCreateDTO) {
   return data;
 }
 
-export async function editForm(id: string | number, formData: FormEditDTO) {
-  const { data } = await api.patch<Form>(`forms/${id}`, formData);
+export async function editForm(form_name: string , form: FormEditDTO) {
+  const { data } = await api.post<Form>(`forms/update`, {form_name,form});
   return data;
 }
 
