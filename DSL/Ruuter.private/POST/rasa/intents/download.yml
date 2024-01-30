@@ -71,8 +71,12 @@ returnSuccess:
 
 returnIntentFileMissing:
   return: "Intent file is missing"
+  wrapper: false
+  status: 409
   next: end
 
 returnIntentExamplesMissing:
   return: "Intent has no examples"
+  wrapper: false
+  status: 409
   next: end

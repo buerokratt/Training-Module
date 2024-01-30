@@ -1,7 +1,7 @@
 import { FC, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createColumnHelper } from '@tanstack/react-table';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AxiosError, HttpStatusCode } from 'axios';
 import {
   MdDeleteOutline,
@@ -26,6 +26,7 @@ type IntentExamplesTableProps = {
   entities: Entity[];
   selectedIntent: Intent;
   queryRefresh: (selectIntent: string) => void;
+  updateSelectedIntent: (intent: Intent) => void;
 };
 
 const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
@@ -33,7 +34,8 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
   onAddNewExample,
   entities,
   selectedIntent,
-  queryRefresh
+  queryRefresh,
+  updateSelectedIntent
 }) => {
   let updatedExampleTitle = '';
   const { t } = useTranslation();
@@ -41,6 +43,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
   const [refreshing, setRefreshing] = useState(false);
   const newExampleRef = useRef<HTMLTextAreaElement>(null);
   const [exampleText, setExampleText] = useState<string>('');
+  const [oldExampleText, setOldExampleText] = useState<string>('');
   const [editableRow, setEditableRow] = useState<{
     intentName: string;
     value: string;
@@ -56,6 +59,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
     value: string;
   } | null>(null);
   const columnHelper = createColumnHelper<{ id: string; value: string }>();
+  const queryClient = useQueryClient();
 
   const handleRefresh = (selectIntent: string) => {
     queryRefresh(selectIntent);
@@ -74,6 +78,21 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
   const handleEditableRow = (example: { intentName: string; value: string }) => {
     setEditableRow(example);
   };
+
+  const updateExampleOnList = (oldExample: string, newExample: string): void => {
+    const updatedIntent = selectedIntent;
+    updatedIntent.examples[updatedIntent.examples.indexOf(oldExample)] = newExample;
+    updateSelectedIntent(updatedIntent);
+  }
+
+  const deleteExampleFromList = (example: string): void => {
+    const updatedIntent = selectedIntent;
+    const examplesArray = updatedIntent.examples;
+    const index = examplesArray.findIndex(item => item === example);
+    examplesArray.splice(index, 1);
+    updatedIntent.examples = examplesArray;
+    updateSelectedIntent(updatedIntent);
+  }
 
   const exampleToIntentMutation = useMutation({
     mutationFn: ({ exampleName }: {intentName: string, exampleName: string} ) =>
@@ -106,14 +125,17 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
       intentName: string,
       oldExample: string,
       newExample: string}) => editExample(addExamplesData),
-    onMutate: () => setRefreshing(true),
+    onMutate: async () => {
+      setRefreshing(true)
+      await queryClient.invalidateQueries(['intents/intents-full']);
+    },
     onSuccess: () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
         message: 'New example added',
       });
-      handleRefresh(selectedIntent.intent);
+      updateExampleOnList(oldExampleText, exampleText);
     },
     onError: (error: AxiosError) => {
       toast.open({
@@ -138,6 +160,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
         message: 'Example deleted',
       });
       handleRefresh(selectedIntent.intent);
+      deleteExampleFromList(oldExampleText);
     },
     onError: (error: AxiosError) => {
       toast.open({
@@ -213,13 +236,16 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
             {editableRow && editableRow.intentName === props.row.original.id ? (
               <Button
                 appearance="text"
-                onClick={() =>
-                  exampleEditMutation.mutate({
-                    intentName: selectedIntent.intent,
-                    oldExample: editableRow.value,
-                    newExample: updatedExampleTitle,
-                  })
-                }
+                onClick={() => {
+                  setOldExampleText(editableRow.value);
+                  setExampleText(updatedExampleTitle.trim());
+                    exampleEditMutation.mutate({
+                      intentName: selectedIntent.intent,
+                      oldExample: editableRow.value,
+                      newExample: updatedExampleTitle.trim(),
+                    })
+                  }
+              }
               >
                 <Icon
                   label={t('global.save')}
@@ -326,11 +352,13 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
               </Button>
               <Button
                 appearance="error"
-                onClick={() =>
-                  exampleDeleteMutation.mutate({
-                    intentName: selectedIntent.intent,
-                    example: deletableRow.value })
-                }
+                onClick={() => {
+                    setOldExampleText(deletableRow.value);
+                    exampleDeleteMutation.mutate({
+                      intentName: selectedIntent.intent,
+                      example: deletableRow.value })
+                  }
+              }
               >
                 {t('global.yes')}
               </Button>
