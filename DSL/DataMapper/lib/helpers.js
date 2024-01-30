@@ -8,6 +8,9 @@ Handlebars.registerHelper('eq', function(a, b) {
     return a == b;
 });
 
+Handlebars.registerHelper('arrayIsNotEmpty', function(array) {
+    return !(!Array.isArray(array) || !array.length);
+});
 
 Handlebars.registerHelper('extractSlotKeys', function(obj) {
     const keys = [];

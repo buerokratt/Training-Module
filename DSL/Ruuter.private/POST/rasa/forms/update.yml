@@ -1,6 +1,7 @@
 assign_values:
   assign:
     parameters: ${incoming.body}
+    form: ${parameters.form}
     formData:
       required_slots: ${parameters.form.form.required_slots}
       ignored_intents: ${parameters.form.form.ignored_intents}
@@ -35,7 +36,7 @@ convertResponseInput:
   args:
     url: "[#TRAINING_DMAPPER]/dmapper/get-form-responses"
     body:
-      responses: ${parameters.form.responses}
+      responses: ${form.responses}
       form_name: ${parameters.form_name}
   result: mappedResponses
 
