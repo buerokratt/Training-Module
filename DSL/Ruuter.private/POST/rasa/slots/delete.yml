@@ -57,13 +57,13 @@ storiesSlots:
     headers:
       cookie: ${incoming.headers.cookie}
     body:
-      slot: ${slot}
+      value: ${slot}
       type: "slots"
   result: storiesSlots
 
 validateStoriesSlots:
   switch:
-    - condition: ${storiesSlots.response.body.response.data.stories.length == 0}
+    - condition: ${storiesSlots.response.body.response.length == 0}
       next: deleteKey
   next: returnSlotHasDependencyToStories
 

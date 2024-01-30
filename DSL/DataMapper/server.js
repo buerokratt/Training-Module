@@ -33,6 +33,7 @@ import yamlToJson from "./js/convert/yamlToJson.js";
 import jsonToYaml from "./js/convert/jsonToYaml.js";
 import jsonToYamlStories from "./js/convert/jsonToYamlStories.js";
 import csvToJson from "./js/convert/csvToJson.js";
+import replaceKeyValueObj from "./js/util/updateKeyValueObj.js";
 import stringSplit from "./js/util/stringSplit.js";
 import stringToArray from "./js/util/stringToArray.js";
 import stringReplace from "./js/util/stringReplace.js";
