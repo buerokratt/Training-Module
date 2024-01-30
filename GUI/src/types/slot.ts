@@ -11,7 +11,7 @@ export interface Slot {
   };
 }
 
-export interface slotResponse {
+export interface SlotResponse {
   id: string;
   name: string;
   text: string;

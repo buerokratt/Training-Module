@@ -200,7 +200,6 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
                     setGlobalFilter={setSlotsFilter}
                     hideLabel={true}
                     items={slots.map((slot) => ({
-                      text: slot.text,
                       label: slot.name,
                       value: String(slot.name),
                     }))}
