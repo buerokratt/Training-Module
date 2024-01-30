@@ -178,6 +178,7 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
               >
                 {t('training.forms.requiredSlots')}
               </h2>
+              {/*SEARCH ELEMENT FOR SLOTS*/}
               <div style={{ width: '100%', padding: 16 }}>
                 <FormInput
                   label={t('global.search')}

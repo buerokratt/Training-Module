@@ -12,6 +12,6 @@ export async function editForm(form_name: string , form: FormEditDTO) {
 }
 
 export async function deleteForm(id: string | number) {
-  const { data } = await api.delete<void>(`forms/${id}`);
+  const { data } = await api.post<void>(`forms/delete`, {form_name: id});
   return data;
 }

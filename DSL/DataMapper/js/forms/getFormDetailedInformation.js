@@ -4,7 +4,6 @@ const router = express.Router();
 
 router.post('/', (req, res) => {
     const { name, slots, responses } = req.body;
-
     const responseText = "utter_" + name;
     let result = responses.find(fd => fd.name === responseText);
     result = result ? result.response[0].text : "";

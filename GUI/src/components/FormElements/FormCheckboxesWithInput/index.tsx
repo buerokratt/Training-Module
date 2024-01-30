@@ -68,6 +68,7 @@ const FormCheckboxesWithInput = forwardRef<HTMLInputElement, FormCheckboxesType>
                 }
                 return element;
             })
+
             const { checked, value } = e.target;
             if (checked) {
                 setSelectedValues((prevState) => [...prevState, { slot_name: value, question: '' }]);

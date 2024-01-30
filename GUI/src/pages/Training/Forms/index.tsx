@@ -26,6 +26,7 @@ const Forms: FC = () => {
     mutationFn: ({ id }: { id: string | number }) => deleteForm(id),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['forms']);
+      refetch();
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -36,7 +37,7 @@ const Forms: FC = () => {
       toast.open({
         type: 'error',
         title: t('global.notificationError'),
-        message: error.message,
+        message: error.response?.data || error.message,
       });
     },
     onSettled: () => setDeletableForm(null),
