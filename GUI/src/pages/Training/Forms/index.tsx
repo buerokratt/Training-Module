@@ -18,7 +18,7 @@ const Forms: FC = () => {
   const queryClient = useQueryClient();
   const [filter, setFilter] = useState('');
   const [deletableForm, setDeletableForm] = useState<string | number | null>(null);
-  const { data: forms } = useQuery<Form[]>({
+  const { data: forms, refetch } = useQuery<Form[]>({
     queryKey: ['forms'],
   });
 
@@ -36,7 +36,7 @@ const Forms: FC = () => {
       toast.open({
         type: 'error',
         title: t('global.notificationError'),
-        message: error.response?.data || error.message,
+        message: error.message,
       });
     },
     onSettled: () => setDeletableForm(null),
@@ -84,6 +84,7 @@ const Forms: FC = () => {
       },
     }),
   ], [columnHelper, navigate, t]);
+  setTimeout(() => refetch(), 1000);
 
   if (!forms) return <>Loading...</>;
 

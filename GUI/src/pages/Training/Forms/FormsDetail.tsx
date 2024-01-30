@@ -8,7 +8,7 @@ import { MdOutlineArrowBack } from 'react-icons/md';
 
 import {Button, Card,  FormInput, FormTextarea, Track} from 'components';
 import { Intent } from 'types/intent';
-import { SlotResponse} from 'types/slot';
+import {SlotResponse} from 'types/slot';
 import {Form, FormCreateDTO, FormEditDTO} from 'types/form';
 import { createForm, editForm } from 'services/forms';
 import { useToast } from 'hooks/useToast';
@@ -41,15 +41,24 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
     setSelectedSlots(values);
   };
 
-  const { register, formState: { errors },control, handleSubmit, reset } = useForm<FormCreateDTO>({
+  const { register, formState: { errors },control, handleSubmit, reset,setValue } = useForm<FormCreateDTO>({
     mode: 'onChange',
     shouldUnregister: true,
   });
 
   useEffect(() => {
-    if(formDetails) {
+    if (formDetails) {
       setFormResponse(formDetails.responses?.response);
       setFormName(formDetails.form?.name);
+      setValue('form.name', formDetails.form?.name);
+      setValue('responses.response', formDetails.responses?.response);
+      // @ts-ignore
+      setValue('form.required_slots', formDetails.responses?.questions ?? []);
+      setValue('form.ignored_intents', formDetails.form?.ignored_intents ?? []);
+    } else {
+      setValue('responses.response', '');
+      setValue('form.required_slots', []);
+      setValue('form.ignored_intents',  []);
     }
   }, [formDetails, reset]);
 
@@ -58,6 +67,7 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
     onSuccess: async () => {
       await queryClient.invalidateQueries(['forms']);
       navigate('/training/forms');
+      refetch();
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -77,6 +87,7 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
     mutationFn: ({ form_name, data }: { form_name: string , data:  FormEditDTO }) => editForm(form_name, data),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['forms']);
+      refetch();
       navigate('/training/forms');
       toast.open({
         type: 'success',

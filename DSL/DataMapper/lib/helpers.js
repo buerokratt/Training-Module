@@ -24,9 +24,6 @@ Handlebars.registerHelper('extractSlotKeys', function(obj) {
 });
 
 Handlebars.registerHelper('getObjectKeys', function(obj) {
-    console.log('OBJECT')
-    console.log(obj)
-    console.log(Object.keys(obj))
     return Object.keys(obj);
 });
 
