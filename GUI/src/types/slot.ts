@@ -11,6 +11,12 @@ export interface Slot {
   };
 }
 
+export interface SlotResponse {
+  id: string;
+  name: string;
+  text: string;
+}
+
 export interface SlotCreateDTO extends Omit<Slot, 'id'> {
 }
 

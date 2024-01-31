@@ -8,10 +8,12 @@ Handlebars.registerHelper('eq', function(a, b) {
     return a == b;
 });
 
+Handlebars.registerHelper('arrayIsNotEmpty', function(array) {
+    return !(!Array.isArray(array) || !array.length);
+});
 
 Handlebars.registerHelper('extractSlotKeys', function(obj) {
     const keys = [];
-    console.log(obj)
 
     function iterate(obj) {
         for (const key in obj) {
@@ -25,7 +27,6 @@ Handlebars.registerHelper('extractSlotKeys', function(obj) {
 });
 
 Handlebars.registerHelper('getObjectKeys', function(obj) {
-    console.log(Object.keys(obj))
     return Object.keys(obj);
 });
 
@@ -66,6 +67,41 @@ Handlebars.registerHelper('getCount', function(intentTitle, intents) {
     const intentCount = intentCounts?.find(intent => intent.key === intentTitle)?.examples_counts?.value;
     return intentCount || 0;
 });
+
+Handlebars.registerHelper('addStringIfAbsent', function (input, addString) {
+    if(input.startsWith(addString)) {
+        return input;
+    } else {
+        return addString + input;
+    }
+})
+
+Handlebars.registerHelper('concatStringIfAbsent', function (input, addString) {
+    if(input.endsWith(addString)) {
+        return input;
+    } else {
+        return input + addString;
+    }
+})
+
+Handlebars.registerHelper('findMatchInObject', function (object, key , keyModifier) {
+    if(object) {
+        const result = object[keyModifier + key];
+        return result ? result[0].text : '';
+    }
+    return '';
+})
+
+Handlebars.registerHelper('filterArrayByKey', function (array, key) {
+    return array.filter(ar => ar[key].trim() !== '');
+})
+
+Handlebars.registerHelper('notEmpty', function(value, options) {
+    if (typeof value === 'string' && value.trim() !== '') {
+        return options.fn(this);
+    }
+    return options.inverse(this);
+})
 
 Handlebars.registerHelper('isType', function (type, value) {
     return typeof value === type;

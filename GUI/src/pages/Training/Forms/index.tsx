@@ -18,7 +18,7 @@ const Forms: FC = () => {
   const queryClient = useQueryClient();
   const [filter, setFilter] = useState('');
   const [deletableForm, setDeletableForm] = useState<string | number | null>(null);
-  const { data: forms,refetch } = useQuery<Form[]>({
+  const { data: forms, refetch } = useQuery<Form[]>({
     queryKey: ['forms'],
   });
 
@@ -85,6 +85,7 @@ const Forms: FC = () => {
       },
     }),
   ], [columnHelper, navigate, t]);
+  setTimeout(() => refetch(), 1000);
 
   if (!forms) return <>Loading...</>;
 
