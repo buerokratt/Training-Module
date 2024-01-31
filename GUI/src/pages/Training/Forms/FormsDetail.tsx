@@ -202,6 +202,7 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
                     hideLabel={true}
                     items={slots.map((slot) => ({
                       label: slot.name,
+                      text: slot.text,
                       value: String(slot.name),
                     }))}
                     onValuesChange={handleValuesChange}

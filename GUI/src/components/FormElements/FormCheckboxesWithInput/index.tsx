@@ -122,8 +122,8 @@ const FormCheckboxesWithInput = forwardRef<HTMLInputElement, FormCheckboxesType>
                                             className={inputClasses}
                                             data-slot-name={item.value}
                                             pattern={'^#([a-fA-F0-9]{3}){1,2}$'}
-                                            value={
-                                                item.text || selectedValues.find((selectedItem) => selectedItem.slot_name === item.value)?.question || ''
+                                            defaultValue = {
+                                                selectedValues.find((selectedItem) => selectedItem.slot_name === item.value)?.question || item.text || ''
                                             }
                                             onChange={handleInputChange}
                                         />
