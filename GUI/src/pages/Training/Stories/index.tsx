@@ -148,7 +148,7 @@ const Stories: FC = () => {
                 hideLabel
                 onChange={(e) => setFilter(e.target.value)}
               />
-              <Button onClick={() => navigate('/training/stories/new')}>{t('global.add')}</Button>
+              <Button onClick={() => navigate('/training/stories/new', { state: { storyTitle: filter } })}>{t('global.add')}</Button>
             </Track>
           </div>
           <div className='vertical-tabs__content'>
