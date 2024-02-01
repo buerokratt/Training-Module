@@ -50,7 +50,7 @@ mapRegexesData:
   args:
     url: "[#TRAINING_DMAPPER]/dmapper/new-regex-file"
     body:
-      examples: ${regexData.response.body.nlu[0].examples}
+      examples: ${JSON.stringify(regexData.response.body.nlu[0].examples)}
       regex: ${regex.newName}
   result: regexesData
 
@@ -97,14 +97,12 @@ returnSuccess:
 
 returnRegexIsMissing:
   return: "Can't find regex to update"
+  wrapper: false
   status: 409
-  next: end
-
-returnUnauthorized:
-  return: "error: unauthorized"
   next: end
 
 returnRegexExists:
-  status: 409
   return: "Regex with that name already exists"
+  status: 409
+  wrapper: false
   next: end

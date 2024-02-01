@@ -49,6 +49,8 @@ returnSuccess:
   return: "Regex deleted"
   next: end
 
-returnUnauthorized:
-  return: "error: unauthorized"
+returnFileNotFound:
+  return: "Not found"
+  wrapper: false
+  status: 409
   next: end
