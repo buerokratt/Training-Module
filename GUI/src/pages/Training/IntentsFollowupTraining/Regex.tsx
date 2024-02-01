@@ -69,7 +69,7 @@ const Regex: FC = () => {
         title: t('global.notification'),
         message: 'Regex deleted',
       });
-      setTimeout(() => refetch(), 1000);
+      setTimeout(() => refetch(), 800);
     },
     onError: (error: AxiosError) => {
       toast.open({
