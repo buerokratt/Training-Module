@@ -66,11 +66,13 @@ returnSuccess:
   next: end
 
 returnRegexExists:
-  status: 409
   return: "Regex with that name already exists"
+  wrapper: false
+  status: 409
   next: end
 
 returnRegexesError:
-  status: 409
   return: "Regex parsing error"
+  status: 409
+  wrapper: false
   next: end

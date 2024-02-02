@@ -115,9 +115,6 @@ returnSuccess:
 
 returnExampleMissing:
   return: "Can't find example to delete."
+  wrapper: false
   status: 409
-  next: end
-
-returnUnauthorized:
-  return: "error: unauthorized"
   next: end
