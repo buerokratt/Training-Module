@@ -78,8 +78,6 @@ returnSuccess:
 
 returnSlotIsMissing:
   return: "Can't find slot to update"
-  next: end
-
-returnUnauthorized:
-  return: "error: unauthorized"
+  wrapper: false
+  status: 409
   next: end

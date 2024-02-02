@@ -73,9 +73,6 @@ returnSuccess:
 
 returnSlotExists:
   return: "Slot exists"
+  wrapper: false
   status: 409
-  next: end
-
-returnUnauthorized:
-  return: "error: unauthorized"
   next: end

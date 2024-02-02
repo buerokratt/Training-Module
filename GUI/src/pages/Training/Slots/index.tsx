@@ -25,6 +25,7 @@ const Slots: FC = () => {
   useEffect(() => {
     refetch()
   }, [slots,refetch]);
+  setTimeout(() => refetch(), 300);
 
   const deleteSlotMutation = useMutation({
     mutationFn: ({ id }: { id: string | number }) => deleteSlot(id),
