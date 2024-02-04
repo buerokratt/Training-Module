@@ -43,10 +43,8 @@ returnSuccess:
   wrapper: false
   next: end
 
-returnUnauthorized:
-  return: "error: unauthorized"
-  next: end
-
 returnNotFound:
   return: "ERROR: slot not found"
+  wrapper: false
+  status: 409
   next: end

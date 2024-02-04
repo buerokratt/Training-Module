@@ -20,14 +20,6 @@ getDomainFile:
       cookie: ${incoming.headers.cookie}
   result: getDomainDataResult
 
-getIntentsExampleCount:
-  call: http.post
-  args:
-    url: "[#TRAINING_OPENSEARCH]/intents/_search/template"
-    body:
-      id: "intents-with-examples-count"
-  result: getIntentCountResult
-
 checkIfIntentsExists:
   switch:
     - condition: ${getIntentDataResult.response.body.data.intents != null}
@@ -39,7 +31,6 @@ assignResults:
     intents:
       intents: ${getIntentDataResult.response.body.data.intents}
       inmodel: ${getDomainDataResult.response.body.response.intents}
-      count: ${getIntentCountResult.response.body.aggregations.hot.buckets}
 
 mapIntentsData:
   call: http.post
@@ -56,4 +47,6 @@ returnSuccess:
 
 returnNoIntentsFound:
   return: "Error: no intents found"
+  wrapper: false
+  status: 409
   next: end

@@ -110,9 +110,6 @@ returnSuccess:
 
 returnRegexIsMissing:
   return: "Can't find regex to update"
+  wrapper: false
   status: 409
-  next: end
-
-returnUnauthorized:
-  return: "error: unauthorized"
   next: end

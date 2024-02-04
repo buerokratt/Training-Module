@@ -18,7 +18,7 @@ const Forms: FC = () => {
   const queryClient = useQueryClient();
   const [filter, setFilter] = useState('');
   const [deletableForm, setDeletableForm] = useState<string | number | null>(null);
-  const { data: forms } = useQuery<Form[]>({
+  const { data: forms, refetch } = useQuery<Form[]>({
     queryKey: ['forms'],
   });
 
@@ -26,6 +26,7 @@ const Forms: FC = () => {
     mutationFn: ({ id }: { id: string | number }) => deleteForm(id),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['forms']);
+      refetch();
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -36,7 +37,7 @@ const Forms: FC = () => {
       toast.open({
         type: 'error',
         title: t('global.notificationError'),
-        message: error.message,
+        message: error.response?.data || error.message,
       });
     },
     onSettled: () => setDeletableForm(null),
@@ -84,6 +85,7 @@ const Forms: FC = () => {
       },
     }),
   ], [columnHelper, navigate, t]);
+  setTimeout(() => refetch(), 1000);
 
   if (!forms) return <>Loading...</>;
 

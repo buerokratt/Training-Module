@@ -1,15 +1,14 @@
-import {FC, useEffect, useMemo, useRef, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import { useTranslation } from 'react-i18next';
 import { AxiosError } from 'axios';
 import {Controller, useForm} from 'react-hook-form';
-import { createColumnHelper } from '@tanstack/react-table';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { MdOutlineArrowBack } from 'react-icons/md';
 
-import { Button, Card, DataTable, FormCheckbox, FormInput, FormTextarea, Track } from 'components';
+import {Button, Card,  FormInput, FormTextarea, Track} from 'components';
 import { Intent } from 'types/intent';
-import { Slot } from 'types/slot';
+import {SlotResponse} from 'types/slot';
 import {Form, FormCreateDTO, FormEditDTO} from 'types/form';
 import { createForm, editForm } from 'services/forms';
 import { useToast } from 'hooks/useToast';
@@ -32,8 +31,8 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
   const [intentsFilter, setIntentsFilter] = useState('');
   const [formResponse, setFormResponse] = useState('');
   const [formName, setFormName] = useState(params.id);
-  const { data: slots } = useQuery<Slot[]>({
-    queryKey: ['slots'],
+  const { data: slots } = useQuery<SlotResponse[]>({
+    queryKey: ['slot-with-response'],
   });
   const { data: intents } = useQuery<Intent[]>({
     queryKey: ['intent-and-id'],
@@ -42,26 +41,33 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
     setSelectedSlots(values);
   };
 
-  const { register, formState: { errors },control, handleSubmit, reset } = useForm<FormCreateDTO>({
+  const { register, formState: { errors },control, handleSubmit, reset,setValue } = useForm<FormCreateDTO>({
     mode: 'onChange',
     shouldUnregister: true,
   });
 
   useEffect(() => {
-    if(formDetails) {
+    if (formDetails) {
       setFormResponse(formDetails.responses?.response);
       setFormName(formDetails.form?.name);
+      setValue('form.name', formDetails.form?.name);
+      setValue('responses.response', formDetails.responses?.response);
+      // @ts-ignore
+      setValue('form.required_slots', formDetails.responses?.questions ?? []);
+      setValue('form.ignored_intents', formDetails.form?.ignored_intents ?? []);
+    } else {
+      setValue('responses.response', '');
+      setValue('form.required_slots', []);
+      setValue('form.ignored_intents',  []);
     }
   }, [formDetails, reset]);
 
-  const slotsColumnHelper = createColumnHelper<Slot>();
-  const intentsColumnHelper = createColumnHelper<Intent>();
-
   const newFormMutation = useMutation({
-    mutationFn: (data: { form: string }) => createForm(data),
+    mutationFn: (data: FormCreateDTO) => createForm(data),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['forms']);
       navigate('/training/forms');
+      refetch();
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -81,6 +87,7 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
     mutationFn: ({ form_name, data }: { form_name: string , data:  FormEditDTO }) => editForm(form_name, data),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['forms']);
+      refetch();
       navigate('/training/forms');
       toast.open({
         type: 'success',
@@ -97,41 +104,13 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
     },
   });
 
-  const slotsColumns = useMemo(() => [
-    slotsColumnHelper.accessor('name', {
-      cell: (props) => (
-        <FormCheckbox
-          label={t('training.forms.requiredSlots')}
-          hideLabel
-          name='requiredSlots'
-          item={{ label: props.getValue(), value: props.getValue() }}
-        />
-      ),
-    }),
-  ], [slotsColumnHelper, t]);
-
-  const intentsColumns = useMemo(() => [
-    intentsColumnHelper.accessor('intent', {
-      cell: (props) => (
-        <FormCheckbox
-          label={t('training.forms.ignoredIntents')}
-          hideLabel
-          name='ignoredIntents'
-          item={{ label: props.getValue(), value: props.getValue() }}
-        />
-      ),
-    }),
-  ], [intentsColumnHelper, t]);
-
   const handleFormSave = handleSubmit((data) => {
-    console.log('FORM DATA');
-    console.log(data);
-    console.log(selectedSlots);
+    // @ts-ignore
     data.responses.questions = selectedSlots ?? [];
     if (mode === 'edit' && params.id) {
       formEditMutation.mutate({ form_name: params.id, data: data });
     } else {
-      newFormMutation.mutate({ form: data.form_name });
+      newFormMutation.mutate(data);
     }
   });
 
@@ -144,38 +123,42 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
         <h1>{t('training.forms.titleOne')}</h1>
         <Button onClick={handleFormSave} style={{ marginLeft: 'auto' }}>{t('global.save')}</Button>
       </Track>
-
       <Card>
         <Track direction='vertical' gap={8} align='left'>
           <Track gap={8} style={{width: '100%'}}>
-            {/* form name */}
-            <Controller name='form.name' control={control} render={({field}) =>
-                <FormInput {...field}
+                <FormInput {...register('form.name',{
+                  required: t('submit.slotNameRequired').toString(),
+                  minLength: {
+                    value: 1,
+                    message: t('submit.slotCantBeEmpty')
+                  }})}
                            label={t('training.forms.form')}
                            defaultValue={formName}
-                           onChange={(e) => {
-                             setFormName(e.target.value);
-                             field.onChange(e.target.value);
-                           }}
+
                 />
-            }/>
             <p style={{minWidth: '150px'}}>_form</p>
           </Track>
-          {/* This is slot question */}
-          {/*<FormInput {...register('form')} label={t('training.forms.formName')} />*/}
           <Track gap={8} style={{ width: '100%' }}>
             <p style={{minWidth: '170px'}}>{t('training.responses.response')}</p>
-            {/* Form response input */}
-            <FormTextarea
-            {...register('responses.response')}
-            name='ask'
-            label={t('training.responses.formName')}
-            hideLabel
-            minRows={1}
-            maxLength={RESPONSE_TEXT_LENGTH}
-            showMaxLength
-            defaultValue={formResponse}
-            onChange={(e) => setFormResponse(e.target.value)}
+            <Controller
+                name='responses.response'
+                control={control}
+                render={({ field }) => (
+                    <FormTextarea
+                        {...field}
+                        hideLabel
+                        minRows={1}
+                        maxLength={RESPONSE_TEXT_LENGTH}
+                        showMaxLength
+                        defaultValue={formResponse}
+                        onChange={(value) => {
+                          setFormResponse(value.target.value)
+                          field.onChange(value.target.value)
+                        }
+                    }
+                        label={t('training.value')}
+                    />
+                )}
             />
           </Track>
         </Track>
@@ -219,6 +202,7 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
                     hideLabel={true}
                     items={slots.map((slot) => ({
                       label: slot.name,
+                      text: slot.text,
                       value: String(slot.name),
                     }))}
                     onValuesChange={handleValuesChange}
@@ -258,8 +242,9 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
                     globalFilter={intentsFilter}
                     setGlobalFilter={setIntentsFilter}
                     hideLabel={true}
-                    items={intents.map((intent) => ({
+                    items={intents?.map((intent) => ({
                       label: intent.intent,
+                      checked: formDetails?.form.ignored_intents.some(ii => ii === intent.intent),
                       value: String(intent.intent),
                     }))}
                 />

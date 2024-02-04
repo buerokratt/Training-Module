@@ -41,7 +41,7 @@ const Intents: FC = () => {
     Intent | null
   >(null);
 
-  const { data: intentsFullResponse, isLoading } = useQuery({
+  const { data: intentsFullResponse, isLoading, refetch } = useQuery({
     queryKey: ['intents/intents-full'],
   });
 
@@ -94,6 +94,11 @@ const Intents: FC = () => {
     return !isNaN(date.getTime());
   }
 
+  const updateSelectedIntent = (updatedIntent: Intent) => {
+    setSelectedIntent(null);
+    setTimeout(() => setSelectedIntent(updatedIntent), 20);
+  };
+
   useEffect(() => {
     const queryIntentName = searchParams.get('intent');
     if (intents && queryIntentName) {
@@ -139,9 +144,10 @@ const Intents: FC = () => {
     mutationFn: (data: { name: string }) => deleteIntent(data),
     onMutate: () => {
       setRefreshing(true);
-      setDeletableIntent(null) },
+      setDeletableIntent(null);
+      setSelectedIntent(null);
+      setSelectedTab(null); },
     onSuccess: async () => {
-      setSelectedIntent(null)
       queryRefresh(null);
       setRefreshing(false);
       toast.open({
@@ -359,7 +365,7 @@ const Intents: FC = () => {
     addExamplesMutation.mutate({
         intentName: selectedIntent.intent,
         intentExamples: selectedIntent.examples,
-        newExamples: example
+        newExamples: example.trim()
     });
   };
 
@@ -421,7 +427,7 @@ const Intents: FC = () => {
                   hideLabel
                 />
                 <Button
-                  onClick={() => newIntentMutation.mutate({ name: filter })}
+                  onClick={() => newIntentMutation.mutate({ name: filter.trim() })}
                   disabled={!filter}
                 >
                   {t('global.add')}
@@ -588,6 +594,7 @@ const Intents: FC = () => {
                     entities={entities ?? []}
                     selectedIntent={selectedIntent}
                     queryRefresh={queryRefresh}
+                    updateSelectedIntent={updateSelectedIntent}
                   />
                 )}
               </div>

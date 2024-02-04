@@ -1,6 +1,7 @@
 assign_values:
   assign:
     parameters: ${incoming.body}
+    form: ${parameters.form}
     formData:
       required_slots: ${parameters.form.form.required_slots}
       ignored_intents: ${parameters.form.form.ignored_intents}
@@ -16,10 +17,10 @@ getDomainFile:
 validateForms:
   switch:
     - condition: ${domainData.response.body.response.forms[parameters.form_name] != null}
-      next: updateObject
+      next: updateFormData
   next: returnFormIsMissing
 
-updateObject:
+updateFormData:
   call: http.post
   args:
     url: "[#TRAINING_DMAPPER]/replace/key-value-in-obj"
@@ -29,6 +30,24 @@ updateObject:
       newKey: ${parameters.form.form.name}
       newValue: ${formData}
   result: updatedForms
+
+convertResponseInput:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/dmapper/get-form-responses"
+    body:
+      responses: ${form.responses}
+      form_name: ${parameters.form_name}
+  result: mappedResponses
+
+mergeResponses:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/replace/key-value-in-obj"
+    body:
+      object1: ${domainData.response.body.response.responses}
+      object2: ${mappedResponses.response.body.data}
+  result: mergedResponses
 
 convertJsonToYaml:
   call: http.post
@@ -41,7 +60,7 @@ convertJsonToYaml:
       slots: ${domainData.response.body.response.slots}
       forms: ${updatedForms.response.body}
       actions: ${domainData.response.body.response.actions}
-      responses: ${domainData.response.body.response.responses}
+      responses: ${mergedResponses.response.body}
       session_config: ${domainData.response.body.response.session_config}
   result: domainYaml
 
@@ -64,7 +83,6 @@ saveDomainFile:
   result: fileResult
   next: updateDomainOpenSearch
 
-#update opensearch indexes
 updateDomainOpenSearch:
   call: http.post
   args:
@@ -79,8 +97,6 @@ returnSuccess:
 
 returnFormIsMissing:
   return: "Can't find form to update"
-  next: end
-
-returnUnauthorized:
-  return: "error: unauthorized"
+  wrapper: false
+  status: 409
   next: end
