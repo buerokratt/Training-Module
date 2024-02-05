@@ -284,5 +284,12 @@
   "submit": {
     "slotNameRequired": "Nimi on kohustlik",
     "slotCantBeEmpty": "Mälukoha nimi ei saa olla tühi"
+  },
+  "axios": {
+    "error": {
+      "formRulesDependency": "Vormi kustutamine on keelatud, kuna sellel on seos reegliga.",
+      "formStoriesDependency": "Vormi kustutamine on keelatud, kuna sellel on seos kasutajalooga.",
+      "formNotFound": "Ei leia vastavat vormi kustutamiseks."
+    }
   }
 }
