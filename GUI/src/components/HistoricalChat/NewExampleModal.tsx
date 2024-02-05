@@ -23,7 +23,7 @@ type NewExampleModalProps = {
 const NewExampleModal: FC<NewExampleModalProps> = ({ message, setMessage, onSubmitExample }) => {
   const { t } = useTranslation();
   const { data: intents } = useQuery<Intent[]>({
-    queryKey: ['intents'],
+    queryKey: ['intent-and-id'],
   });
   const { register, control, handleSubmit } = useForm<NewExampleForm>({
     mode: 'onChange',
