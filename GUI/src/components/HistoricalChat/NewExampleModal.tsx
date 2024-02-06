@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import {FC, useState} from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { useForm, Controller, useWatch } from 'react-hook-form';
@@ -22,6 +22,7 @@ type NewExampleModalProps = {
 
 const NewExampleModal: FC<NewExampleModalProps> = ({ message, setMessage, onSubmitExample }) => {
   const { t } = useTranslation();
+  const [ selectedIntent, setSelectedIntent ] = useState<string>("common_teenus_ilm");
   const { data: intents } = useQuery<Intent[]>({
     queryKey: ['intent-and-id'],
   });
@@ -60,8 +61,12 @@ const NewExampleModal: FC<NewExampleModalProps> = ({ message, setMessage, onSubm
             render={({ field }) => (
               <FormSelect
                 {...field}
-                onSelectionChange={(selection) => field.onChange(selection)}
+                onSelectionChange={(selection) => {
+                  setSelectedIntent(selection?.value || '')
+                  field.onChange(selection)
+                }}
                 label={t('training.mba.intent')}
+                value={selectedIntent}
                 options={intents.map((intent) => ({ label: intent.intent, value: String(intent.id) }))}
               />
             )}
