@@ -22,7 +22,7 @@ type NewExampleModalProps = {
 
 const NewExampleModal: FC<NewExampleModalProps> = ({ message, setMessage, onSubmitExample }) => {
   const { t } = useTranslation();
-  const [ selectedIntent, setSelectedIntent ] = useState<string>("common_teenus_ilm");
+  const [ selectedIntent, setSelectedIntent ] = useState<string>('');
   const { data: intents } = useQuery<Intent[]>({
     queryKey: ['intent-and-id'],
   });

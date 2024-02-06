@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import {FC, useState} from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
@@ -15,12 +15,21 @@ type NewResponseModalProps = {
 
 const NewResponseModal: FC<NewResponseModalProps> = ({ message, setMessage, onSubmitResponse }) => {
   const { t } = useTranslation();
+  const [selectedResponse, setSelectedResponse] = useState<string>('');
   const { data: responses } = useQuery<Responses>({
     queryKey: ['responses'],
   });
   const { register, control, handleSubmit } = useForm<{ name: string; text: string; }>({
     mode: 'onChange',
   });
+
+  const mappedResponses = () => {
+    if(responses && Object.keys(responses).length === 0) {
+      return [];
+    }
+    // @ts-ignore
+    return Object.keys(responses).map((r) => ({ label: responses[r].name, value: responses[r].response[0].text }))
+  };
 
   const handleNewResponse = handleSubmit((data) => {
     onSubmitResponse(data);
@@ -48,9 +57,13 @@ const NewResponseModal: FC<NewResponseModalProps> = ({ message, setMessage, onSu
             render={({ field }) => (
               <FormSelect
                 {...field}
-                onSelectionChange={(selection) => field.onChange(selection)}
+                onSelectionChange={(selection) => {
+                  setSelectedResponse(selection?.value || '')
+                  field.onChange(selection)
+                }}
                 label={t('training.mba.intent')}
-                options={Object.keys(responses).map((r) => ({ label: r, value: responses[r].text }))}
+                value={selectedResponse}
+                options={mappedResponses()}
               />
             )}
           />
