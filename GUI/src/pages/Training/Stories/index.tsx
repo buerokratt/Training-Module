@@ -41,7 +41,7 @@ const Stories: FC = () => {
       cell: (props) => (
         <Button
           appearance='text'
-          onClick={() => navigate(`${props.row.original.id}`)}
+          onClick={() => navigate(`${props.row.original.id}`, { state: { storyTitle: filter, type: 'stories' } })}
         >
           <Icon
             label={t('global.edit')}
@@ -148,7 +148,11 @@ const Stories: FC = () => {
                 hideLabel
                 onChange={(e) => setFilter(e.target.value)}
               />
-              <Button onClick={() => navigate('/training/stories/new')}>{t('global.add')}</Button>
+              <Button onClick={() => navigate('/training/stories/new', {
+                state: { storyTitle: filter,
+                         category: "stories" } })}>
+                {t('global.add')}
+              </Button>
             </Track>
           </div>
           <div className='vertical-tabs__content'>
