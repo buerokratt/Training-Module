@@ -38,7 +38,7 @@ const HistoricalChat: FC<ChatProps> = ({ chat }) => {
   const [markedMessage, setMarkedMessage] = useState<Message | null>(null);
   const [messageGroups, setMessageGroups] = useState<GroupedMessage[]>([]);
   const { data: messages } = useQuery<Message[]>({
-    queryKey: [`cs-get-messages-by-chat-id/${chat.id}`],
+    queryKey: [`csa/messages-by-id/${chat.id}`],
   });
 
   const addExamplesMutation = useMutation({
