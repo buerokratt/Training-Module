@@ -105,17 +105,19 @@ returnSuccess:
   next: end
 
 returnFormIsMissing:
-  return: "Can't find form to delete"
+  wrapper: false
+  status: 409
+  return: "axios.error.fromNotFound"
   next: end
 
 returnFormHasDependencyToRules:
-  return: "Deleting a form is forbidden because it has relation to rules"
+  return: "axios.error.formRulesDependency"
   wrapper: false
   status: 409
   next: end
 
 returnFormHasDependencyToStories:
-  return: "Deleting a form is forbidden because it has relation to stories"
+  return: "axios.error.formStoriesDependency"
   wrapper: false
   status: 409
   next: end

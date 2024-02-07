@@ -282,5 +282,12 @@
   "submit": {
     "slotNameRequired": "Name is required",
     "slotCantBeEmpty": "Slot name can't be empty"
+  },
+  "axios": {
+    "error": {
+      "formRulesDependency": "Deleting a form is forbidden because it has relation to rules",
+      "formStoriesDependency": "Deleting a form is forbidden because it has relation to stories",
+      "formNotFound": "Can't find form to delete."
+    }
   }
 }
