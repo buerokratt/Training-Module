@@ -34,7 +34,8 @@ export async function addExample(addExampleData: { intentName: string, intentExa
 }
 
 export async function addExampleFromHistory(intentName: string, exampleData: { example: string }) {
-  const {data} = await api.post<{ intentName: string; example: string; }>(`intents/examples/add`, exampleData);
+  const request = {intentName: intentName.label, intentExamples: [], newExamples: exampleData.example};
+  const {data} = await api.post<{ intentName: string; example: string; }>(`intents/examples/add`, request);
   return data;
 }
 
