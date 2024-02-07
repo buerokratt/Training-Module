@@ -1,13 +1,29 @@
-import { FC, useMemo, useState } from 'react';
+import React, {FC, useEffect, useMemo, useState} from 'react';
 import { useTranslation } from 'react-i18next';
-import { useQuery } from '@tanstack/react-query';
+import {useMutation, useQuery} from '@tanstack/react-query';
 import { createColumnHelper, PaginationState } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { MdOutlineRemoveRedEye } from 'react-icons/md';
 
-import { Button, Card, DataTable, Drawer, FormInput, HistoricalChat, Icon, Tooltip } from 'components';
+import {
+  Button,
+  Card,
+  DataTable,
+  Drawer,
+  FormDatepicker,
+  FormInput, FormMultiselect,
+  HistoricalChat,
+  Icon,
+  Tooltip,
+  Track
+} from 'components';
 import { Chat as ChatType, CHAT_STATUS } from 'types/chat';
 import { Message } from 'types/message';
+import {Controller, useForm} from "react-hook-form";
+import apiDev from "../../../services/api-dev";
+import {useLocation} from "react-router-dom";
+import {getFromLocalStorage, setToLocalStorage} from "../../../utils/local-storage-utils";
+import { CHAT_HISTORY_PREFERENCES_KEY } from 'constants/config';
 
 const History: FC = () => {
   const { t } = useTranslation();
@@ -17,15 +33,99 @@ const History: FC = () => {
     pageIndex: 0,
     pageSize: 10,
   });
-  const { data: endedChats } = useQuery<ChatType[]>({
-    queryKey: ['csa/ended-chats'],
-  });
+  // if(import.meta.env.REACT_APP_LOCAL === 'true') {
+    const { data: endedChats } = useQuery<ChatType[]>({
+      queryKey: ['csa/ended-chats'],
+    });
+  // }
   const { data: chatMessages } = useQuery<Message[]>({
     queryKey: ['cs-get-messages-by-chat-id', selectedChat?.id],
     enabled: !!selectedChat,
   });
 
+  const preferences = getFromLocalStorage(
+      CHAT_HISTORY_PREFERENCES_KEY
+  ) as string[];
+
+  const [selectedColumns, setSelectedColumns] = useState<string[]>(
+      preferences ?? []
+  );
+
   const columnHelper = createColumnHelper<ChatType>();
+  const routerLocation = useLocation();
+  let passedChatId = new URLSearchParams(routerLocation.search).get('chat');
+
+  const [endedChatsList, setEndedChatsList] = useState<ChatType[]>([]);
+  const [filteredEndedChatsList, setFilteredEndedChatsList] = useState<
+      ChatType[]
+  >([]);
+
+  const { control, watch } = useForm<{
+    startDate: Date | string;
+    endDate: Date | string;
+  }>({
+    defaultValues: {
+      startDate: new Date(
+          new Date().getUTCFullYear(),
+          new Date().getUTCMonth(),
+          new Date().getUTCDate()
+      ),
+      endDate: new Date(
+          new Date().getUTCFullYear(),
+          new Date().getUTCMonth(),
+          new Date().getUTCDate() + 1
+      ),
+    },
+  });
+
+  const startDate = watch('startDate');
+  const endDate = watch('endDate');
+
+  useEffect(() => {
+    getAllEndedChats.mutate({
+      startDate: format(new Date(startDate), 'yyyy-MM-dd'),
+      endDate: format(new Date(endDate), 'yyyy-MM-dd'),
+    });
+  }, []);
+
+  const getAllEndedChats = useMutation({
+    mutationFn: (data: { startDate: string; endDate: string }) =>
+        apiDev.post('csa/ended-chats', {
+          startDate: data.startDate,
+          endDate: data.endDate,
+        }),
+    onSuccess: (res: any) => {
+      setEndedChatsList(res.data.response ?? []);
+      filterChatsList(res.data.response ?? []);
+    },
+  });
+
+  const getChatById = useMutation({
+    mutationFn: () =>
+        apiDev.post('chat/chat-by-id', {
+          chatId: passedChatId,
+        }),
+    onSuccess: (res: any) => {
+      setSelectedChat(res.data.response);
+    },
+  });
+
+  const filterChatsList = (chatsList: ChatType[]) => {
+    const startDate = Date.parse(
+        format(new Date(control._formValues.startDate), 'MM/dd/yyyy')
+    );
+
+    const endDate = Date.parse(
+        format(new Date(control._formValues.endDate), 'MM/dd/yyyy')
+    );
+
+    setFilteredEndedChatsList(
+        chatsList.filter((c) => {
+          const created = Date.parse(format(new Date(c.created), 'MM/dd/yyyy'));
+          return created >= startDate && created <= endDate;
+        })
+    );
+  };
 
   const endedChatsColumns = useMemo(() => [
     columnHelper.accessor('created', {
@@ -67,8 +167,34 @@ const History: FC = () => {
     //   header: 'NPS',
     // }),
     columnHelper.accessor('status', {
+      id: 'status',
       header: t('global.status') || '',
-      cell: (props) => props.getValue() === CHAT_STATUS.ENDED ? t('chat.status.ended') : '',
+      cell: (props) =>
+          props.getValue() === CHAT_STATUS.ENDED
+              ? props.row.original.lastMessageEvent != null &&
+              props.row.original.lastMessageEvent !== 'message-read'
+                  ? t(
+                      'chat.plainEvents.' + props.row.original.lastMessageEvent ??
+                      ''
+                  )
+                  : t('chat.status.ended')
+              : '',
+      sortingFn: (a, b, isAsc) => {
+        const statusA =
+            a.getValue('status') === CHAT_STATUS.ENDED
+                ? t('chat.plainEvents.' + (a.original.lastMessageEvent ?? ''))
+                : '';
+        const statusB =
+            b.getValue('status') === CHAT_STATUS.ENDED
+                ? t('chat.plainEvents.' + (b.original.lastMessageEvent ?? ''))
+                : '';
+        return (
+            statusA.localeCompare(statusB, undefined, {
+              numeric: true,
+              sensitivity: 'base',
+            }) * (isAsc ? 1 : -1)
+        );
+      },
     }),
     columnHelper.accessor('id', {
       header: 'ID',
@@ -86,6 +212,22 @@ const History: FC = () => {
       },
     }),
   ], [columnHelper, t]);
+  const visibleColumnOptions = useMemo(
+      () => [
+        { label: t('chat.history.startTime'), value: 'created' },
+        { label: t('chat.history.endTime'), value: 'ended' },
+        { label: t('chat.history.csaName'), value: 'customerSupportDisplayName' },
+        { label: t('global.name'), value: 'endUserName' },
+        { label: t('global.idCode'), value: 'endUserId' },
+        { label: t('chat.history.contact'), value: 'contactsMessage' },
+        { label: t('chat.history.comment'), value: 'comment' },
+        { label: t('chat.history.label'), value: 'labels' },
+        // { label: t('chat.history.nps'), value: 'nps' },
+        { label: t('global.status'), value: 'status' },
+        { label: 'ID', value: 'id' },
+      ],
+      [t]
+  );
 
   if (!endedChats) return <>Loading...</>;
 
@@ -94,6 +236,7 @@ const History: FC = () => {
       <h1>{t('chat.history.title')}</h1>
 
       <Card>
+        <Track gap={16}>
         <FormInput
           label={t('chat.history.searchChats')}
           hideLabel
@@ -101,6 +244,68 @@ const History: FC = () => {
           placeholder={t('chat.history.searchChats') + '...'}
           onChange={(e) => setFilter(e.target.value)}
         />
+        <Track style={{ width: '100%' }} gap={16}>
+          <Track gap={10}>
+            <p>{t('global.from')}</p>
+            <Controller
+                name="startDate"
+                control={control}
+                render={({ field }) => {
+                  return (
+                      <FormDatepicker
+                          {...field}
+                          label={''}
+                          value={field.value ?? new Date()}
+                          onChange={(v) => {
+                            field.onChange(v);
+                            getAllEndedChats.mutate({
+                              startDate: format(new Date(v), 'yyyy-MM-dd'),
+                              endDate: format(new Date(endDate), 'yyyy-MM-dd'),
+                            });
+                          }}
+                      />
+                  );
+                }}
+            />
+          </Track>
+          <Track gap={10}>
+            <p>{t('global.to')}</p>
+            <Controller
+                name="endDate"
+                control={control}
+                render={({ field }) => {
+                  return (
+                      <FormDatepicker
+                          {...field}
+                          label={''}
+                          value={field.value ?? new Date()}
+                          onChange={(v) => {
+                            field.onChange(v);
+                            getAllEndedChats.mutate({
+                              startDate: format(new Date(startDate), 'yyyy-MM-dd'),
+                              endDate: format(new Date(v), 'yyyy-MM-dd'),
+                            });
+                          }}
+                      />
+                  );
+                }}
+            />
+          </Track>
+          <FormMultiselect
+              name="visibleColumns"
+              label={t('')}
+              options={visibleColumnOptions}
+              selectedOptions={visibleColumnOptions.filter((o) =>
+                  selectedColumns.includes(o.value)
+              )}
+              onSelectionChange={(selection) => {
+                const columns = selection?.map((s) => s.value) ?? [];
+                setSelectedColumns(columns);
+                setToLocalStorage(CHAT_HISTORY_PREFERENCES_KEY, columns);
+              }}
+          />
+        </Track>
+        </Track>
       </Card>
 
       <Card>
