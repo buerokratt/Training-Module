@@ -79,7 +79,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   const category = locationState?.category || 'stories';
   const storyTitle = locationState?.storyTitle || null;
 
-  const { data: storyData, isLoading, refetch } = useQuery<Story>({
+  const { data: storyData, refetch } = useQuery<Story>({
     queryKey: ['story-by-name', storyId],
     enabled: category === 'stories' && !!storyId,
   });
@@ -136,8 +136,10 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   });
 
   const editStoryMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string | number, data: StoryDTO }) => editStory(id, data),
-    onMutate: () => setRefreshing(true),
+    mutationFn: ({ id, data }: { id: string, data: StoryDTO }) => editStory(id, data),
+    onMutate: () => {
+      setRefreshing(true)
+    },
     onSuccess: async () => {
       await queryClient.invalidateQueries(['stories']);
       toast.open({
@@ -166,7 +168,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
         title: t('global.notification'),
         message: 'Intent deleted',
       });
-      navigate(import.meta.env.BASE_URL + 'treening/treening/kasutuslood');
+      navigate(import.meta.env.BASE_URL + 'treening/treening/stories');
     },
     onError: (error: AxiosError) => {
       toast.open({
@@ -247,7 +249,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
       addOutputNode();
     }
 
-    if (!editableTitle || editableTitle === '') {
+    if ((!title || title === '') && (!editableTitle || editableTitle === '')) {
       toast.open({
         type: 'error',
         title: t('global.notificationError'),
@@ -284,7 +286,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     await refetch();
     const updatedStoryData  = refetch();
     updatedStoryData.then((storyOrRuleObject) => {
-      if (storyOrRuleObject.data.story != null && storyOrRuleObject.data.story === editableTitle) {
+      if (mode === 'new' && (storyOrRuleObject.data.story != null && storyOrRuleObject.data.story === editableTitle)) {
         setRefreshing(false);
       } else {
         setTimeout(() => {
