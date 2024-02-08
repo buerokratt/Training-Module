@@ -24,6 +24,7 @@ import apiDev from "../../../services/api-dev";
 import {useLocation} from "react-router-dom";
 import {getFromLocalStorage, setToLocalStorage} from "../../../utils/local-storage-utils";
 import { CHAT_HISTORY_PREFERENCES_KEY } from 'constants/config';
+import apigeneric from "../../../services/apigeneric";
 
 const History: FC = () => {
   const { t } = useTranslation();
@@ -32,15 +33,6 @@ const History: FC = () => {
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
-  });
-  // if(import.meta.env.REACT_APP_LOCAL === 'true') {
-    const { data: endedChats } = useQuery<ChatType[]>({
-      queryKey: ['csa/ended-chats'],
-    });
-  // }
-  const { data: chatMessages } = useQuery<Message[]>({
-    queryKey: ['cs-get-messages-by-chat-id', selectedChat?.id],
-    enabled: !!selectedChat,
   });
 
   const preferences = getFromLocalStorage(
@@ -56,6 +48,7 @@ const History: FC = () => {
   let passedChatId = new URLSearchParams(routerLocation.search).get('chat');
 
   const [endedChatsList, setEndedChatsList] = useState<ChatType[]>([]);
+  const [chatMessagesList, setchatMessagesList] = useState<Message[]>([]);
   const [filteredEndedChatsList, setFilteredEndedChatsList] = useState<
       ChatType[]
   >([]);
@@ -82,6 +75,13 @@ const History: FC = () => {
   const endDate = watch('endDate');
 
   useEffect(() => {
+      if (passedChatId != null) {
+          getChatById.mutate();
+          passedChatId = null;
+      }
+  }, [passedChatId]);
+
+  useEffect(() => {
     getAllEndedChats.mutate({
       startDate: format(new Date(startDate), 'yyyy-MM-dd'),
       endDate: format(new Date(endDate), 'yyyy-MM-dd'),
@@ -89,11 +89,16 @@ const History: FC = () => {
   }, []);
 
   const getAllEndedChats = useMutation({
-    mutationFn: (data: { startDate: string; endDate: string }) =>
-        apiDev.post('csa/ended-chats', {
-          startDate: data.startDate,
-          endDate: data.endDate,
-        }),
+    mutationFn: (data: { startDate: string; endDate: string }) => {
+        if(import.meta.env.REACT_APP_LOCAL === 'true') {
+            return apigeneric.get('csa/ended-chats');
+        }
+        return apiDev.post('csa/ended-chats', {
+            startDate: data.startDate,
+            endDate: data.endDate,
+        })
+    }
+    ,
     onSuccess: (res: any) => {
       setEndedChatsList(res.data.response ?? []);
       filterChatsList(res.data.response ?? []);
@@ -101,10 +106,12 @@ const History: FC = () => {
   });
 
   const getChatById = useMutation({
-    mutationFn: () =>
-        apiDev.post('chat/chat-by-id', {
-          chatId: passedChatId,
-        }),
+    mutationFn: () => {
+        return apiDev.post('chat/chat-by-id', {
+            chatId: passedChatId,
+        })
+    }
+        ,
     onSuccess: (res: any) => {
       setSelectedChat(res.data.response);
     },
@@ -229,7 +236,7 @@ const History: FC = () => {
       [t]
   );
 
-  if (!endedChats) return <>Loading...</>;
+  if (!filteredEndedChatsList) return <>Loading...</>;
 
   return (
     <>
@@ -310,7 +317,7 @@ const History: FC = () => {
 
       <Card>
         <DataTable
-          data={endedChats}
+          data={filteredEndedChatsList}
           sortable
           columns={endedChatsColumns}
           globalFilter={filter}
@@ -320,7 +327,7 @@ const History: FC = () => {
         />
       </Card>
 
-      {selectedChat && chatMessages && (
+      {selectedChat && chatMessagesList && (
         <Drawer
           title={selectedChat.endUserFirstName !== '' && selectedChat.endUserLastName !== ''
             ? `${selectedChat.endUserFirstName} ${selectedChat.endUserLastName}`
