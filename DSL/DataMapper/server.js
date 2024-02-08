@@ -39,6 +39,7 @@ import stringReplace from "./js/util/stringReplace.js";
 import removeRulesByIntentName from "./js/util/removeRulesByIntentName.js";
 import domainUpdateExistingResponse from "./js/util/domainUpdateExistingResponse.js";
 import replaceKeyValueObj from "./js/util/updateKeyValueObj.js";
+import objectListContainsId from "./js/util/objectListContainsId.js";
 import validateStories from "./js/validation/validateStories.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -75,6 +76,7 @@ app.use('/convert/string/replace', stringReplace)
 app.use('/convert/string/toArray', stringToArray)
 app.use('/rules/remove-by-intent-name', removeRulesByIntentName);
 app.use('/domain/update-existing-response', domainUpdateExistingResponse)
+app.use('/util/objectListContainsId', objectListContainsId)
 app.use('/validate/validate-stories', validateStories)
 app.use(express.urlencoded({ extended: true }));
 

@@ -3,21 +3,40 @@ assign_values:
     id: ${incoming.body.id}
     storyData: ${incoming.body.data}
 
-getStoriesWithName:
+validateStoriesForDuplicates:
   call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/validate/validate-stories"
+    body:
+      story: ${storyData}
+  result: validateStoriesResult
+
+validateStoriesCheck:
+  switch:
+      - condition: ${validateStoriesResult.response.body.result == true}
+        next: returnDuplicateIntentOrEntity
+  next: returnStoryIsMissing
+
+getStoriesWithName:
+  call: http.get
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]/rasa/stories"
     headers:
       cookie: ${incoming.headers.cookie}
-    body:
-      story: ${id}
   result: storiesResult
+
+checkIfStoryExists:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/util/objectListContainsId"
+    body:
+      id: ${storyData.story}
+      list: ${storiesResult.response.body.response}
+  result: storiesCheckResult
 
 validateStories:
   switch:
-    - condition: ${storiesResult.response.body.response.story != id}
-      next: returnStoryIsMissing
-    - condition: ${storyData.story != id && storiesResult.response.body.response.story == storyData.story}
+    - condition: ${storiesCheckResult.response.body.result == false}
       next: returnStoryExists
   next: getFileLocations
 
@@ -67,7 +86,7 @@ mergeStories:
 convertJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml-stories"
     body:
       version: "3.0"
       stories: ${mergedStories.response.body}
@@ -83,18 +102,19 @@ saveStoriesFile:
   result: fileResult
 
 deleteOldOpenSearchEntry:
-  call: http.delete
-  args:
-    url: "[#TRAINING_OPENSEARCH]/stories/_doc/${storiesResult.response.body.response.id}"
-  result: updateSearchResult
-
-addNewOpenSearchEntry:
   call: http.post
   args:
-    url: "[#TRAINING_OPENSEARCH]/stories/_doc"
+    url: "[#TRAINING_PIPELINE]/delete/object/stories"
     body:
-      story: ${storyData.story}
-      steps: ${storyData.steps}
+      id: ${id}
+  result: deleteSearchResult
+
+updateOpenSearch:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]/bulk/stories/story"
+    body:
+      input: ${storiesYaml.response.body.json}
   result: updateSearchResult
   next: returnSuccess
 
@@ -110,3 +130,9 @@ returnStoryExists:
   return: "Story exists"
   status: 409
   next: end
+
+returnDuplicateIntentOrEntity:
+  return: "Story may not have duplicate consecutive intents or entities"
+  status: 406
+  next: end
+

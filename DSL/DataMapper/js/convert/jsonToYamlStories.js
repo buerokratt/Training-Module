@@ -14,7 +14,7 @@ router.post('/', multer().array('file'), async (req, res) => {
                     case !!step.intent:
                         formattedStep.intent = step.intent;
                         break;
-                    case !!step.entities:
+                    case !!step.entities && step.entities.length > 0:
                         formattedStep.entities = step.entities;
                         break;
                     case !!step.action:
@@ -34,7 +34,16 @@ router.post('/', multer().array('file'), async (req, res) => {
         })).filter(entry => entry.steps.length > 0),
     };
 
-    const yamlString = yaml.stringify(result);
+    const yamlString = yaml.stringify(result, {
+        customTags: [
+            {
+                tag: 'tag:yaml.org,2002:seq',
+                format: 'flow',
+                test: (value) => value && value.length === 0,
+                resolve: () => ''
+            }
+        ]
+    });
 
     res.json({ "json": yamlString });
 });
