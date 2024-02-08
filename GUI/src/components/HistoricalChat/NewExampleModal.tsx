@@ -22,6 +22,7 @@ type NewExampleModalProps = {
 
 const NewExampleModal: FC<NewExampleModalProps> = ({ message, setMessage, onSubmitExample }) => {
   const { t } = useTranslation();
+  const [isNewIntent, setIsNewIntent] = useState<boolean>(false)
   const [ selectedIntent, setSelectedIntent ] = useState<string>('');
   const { data: intents } = useQuery<Intent[]>({
     queryKey: ['intent-and-id'],
@@ -54,8 +55,9 @@ const NewExampleModal: FC<NewExampleModalProps> = ({ message, setMessage, onSubm
     >
       <Track direction='vertical' gap={16} align='left'>
         <FormInput {...register('example')} label={t('training.intents.example')} defaultValue={message.content} />
-        {intents && (
+        {intents && !isNewIntent && (
           <Controller
+              disabled={true}
             name='intent'
             control={control}
             render={({ field }) => (
@@ -81,7 +83,10 @@ const NewExampleModal: FC<NewExampleModalProps> = ({ message, setMessage, onSubm
               label={t('training.newIntent')}
               onLabel={t('global.yes') || ''}
               offLabel={t('global.no') || ''}
-              onCheckedChange={(checked) => field.onChange(checked)}
+              onCheckedChange={(checked) => {
+                setIsNewIntent(checked)
+                field.onChange(checked)
+              }}
             />
           )}
         />
