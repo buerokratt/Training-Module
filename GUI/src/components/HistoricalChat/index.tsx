@@ -67,9 +67,10 @@ const HistoricalChat: FC<ChatProps> = ({ chat }) => {
 
   const addResponseMutation = useMutation({
     mutationFn: (data: NewResponse) => {
+      const validName = validateName(data.name);
       const newResponseData = {
         ...data,
-        name: 'utter_' + data.name,
+        name: 'utter_' + validName,
       };
       return editResponse(newResponseData.name, newResponseData.text, false);
     },
@@ -89,6 +90,13 @@ const HistoricalChat: FC<ChatProps> = ({ chat }) => {
     },
     onSettled: () => setMarkedMessage(null),
   });
+
+  const validateName = (name: string) => {
+    if(name && name.trim().length !== 0) {
+      return name.trim().replace(/\s/g, "_");
+    }
+    return "";
+  }
 
   const endUserFullName = chat.endUserFirstName !== '' && chat.endUserLastName !== ''
     ? `${chat.endUserFirstName} ${chat.endUserLastName}` : t('global.anonymous');

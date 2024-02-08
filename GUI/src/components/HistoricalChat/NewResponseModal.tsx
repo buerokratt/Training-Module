@@ -1,11 +1,9 @@
-import {FC, useState} from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { useQuery } from '@tanstack/react-query';
+import React, { FC } from 'react';
+import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import { Button, Dialog, FormInput, FormSelect, Track } from 'components';
+import { Button, Dialog, FormInput, Track } from 'components';
 import { Message } from 'types/message';
-import { Responses } from 'types/response';
 
 type NewResponseModalProps = {
   message: Message;
@@ -15,21 +13,9 @@ type NewResponseModalProps = {
 
 const NewResponseModal: FC<NewResponseModalProps> = ({ message, setMessage, onSubmitResponse }) => {
   const { t } = useTranslation();
-  const [selectedResponse, setSelectedResponse] = useState<string>('');
-  const { data: responses } = useQuery<Responses>({
-    queryKey: ['responses'],
-  });
   const { register, control, handleSubmit } = useForm<{ name: string; text: string; }>({
     mode: 'onChange',
   });
-
-  const mappedResponses = () => {
-    if(responses && Object.keys(responses).length === 0) {
-      return [];
-    }
-    // @ts-ignore
-    return Object.keys(responses).map((r) => ({ label: responses[r].name, value: responses[r].response[0].text }))
-  };
 
   const handleNewResponse = handleSubmit((data) => {
     onSubmitResponse(data);
@@ -49,25 +35,18 @@ const NewResponseModal: FC<NewResponseModalProps> = ({ message, setMessage, onSu
       }
     >
       <Track direction='vertical' gap={16} align='left'>
-        <FormInput {...register('name')} label={t('training.responses.title')} defaultValue={message.content} />
-        {responses && (
-          <Controller
-            name='text'
-            control={control}
-            render={({ field }) => (
-              <FormSelect
-                {...field}
-                onSelectionChange={(selection) => {
-                  setSelectedResponse(selection?.value || '')
-                  field.onChange(selection)
-                }}
-                label={t('training.mba.intent')}
-                value={selectedResponse}
-                options={mappedResponses()}
-              />
-            )}
-          />
-        )}
+        <FormInput {...register('name',{
+          required: t('submit.slotNameRequired').toString(),
+          minLength: {
+            value: 1,
+            message: 'Name cant be empty'
+          }})} label={'utter_'} />
+        <FormInput {...register('text',{
+          required: t('submit.slotNameRequired').toString(),
+          minLength: {
+            value: 1,
+            message: 'Text cant be empty'
+          }})} label={t('training.responses.response')} defaultValue={message.content} />
       </Track>
     </Dialog>
   );
