@@ -1,6 +1,6 @@
 validateInputLength:
   switch:
-    - condition: ${incoming.body.name.length > 2}
+    - condition: ${incoming.body.intentName.length > 2}
       next: assign_values
   next: returnTooShortError
 
@@ -15,7 +15,7 @@ addIntent:
     headers:
       cookie: ${incoming.headers.cookie}
     body:
-      intentName: ${intentName}
+      name: ${intentName}
   result: newIntent
 
 addIntentExample:

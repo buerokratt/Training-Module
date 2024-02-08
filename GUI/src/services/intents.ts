@@ -8,6 +8,11 @@ export async function addIntent(newIntentData: { name: string }) {
   return data;
 }
 
+export async function addIntentWithExample(newIntentExample: { intentName: string,newExamples: string }) {
+  const { data } = await api.post('/intents/add-with-example', newIntentExample);
+  return data;
+}
+
 export async function editIntent(editIntentData: {oldName: string, newName: string}) {
   const { data } = await api.post(`intents/update`, editIntentData);
   return data;
@@ -34,7 +39,7 @@ export async function addExample(addExampleData: { intentName: string, intentExa
 }
 
 export async function addExampleFromHistory(intentName: string, exampleData: { example: string }) {
-  const request = {intentName: intentName.label, intentExamples: [], newExamples: exampleData.example};
+  const request = { intentName: intentName, intentExamples: [], newExamples: exampleData.example };
   const {data} = await api.post<{ intentName: string; example: string; }>(`intents/examples/add`, request);
   return data;
 }
