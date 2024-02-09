@@ -15,9 +15,12 @@ import ChatEvent from './ChatEvent';
 import NewExampleModal from './NewExampleModal';
 import NewResponseModal from './NewResponseModal';
 import './HistoricalChat.scss';
+import apigeneric from "../../services/apigeneric";
+import apiDev from "../../services/api-dev";
 
 type ChatProps = {
   chat: ChatType;
+  trigger: boolean;
 }
 
 type GroupedMessage = {
@@ -31,15 +34,36 @@ type NewResponse = {
   text: string;
 }
 
-const HistoricalChat: FC<ChatProps> = ({ chat }) => {
+const HistoricalChat: FC<ChatProps> = ({ chat, trigger }) => {
   const { t } = useTranslation();
   const toast = useToast();
   const chatRef = useRef<HTMLDivElement>(null);
   const [markedMessage, setMarkedMessage] = useState<Message | null>(null);
   const [messageGroups, setMessageGroups] = useState<GroupedMessage[]>([]);
-  const { data: messages } = useQuery<Message[]>({
-    queryKey: [`csa/messages-by-id/${chat.id}`],
-  });
+  const [messagesList, setMessagesList] = useState<Message[]>([]);
+  // const { data: messages } = useQuery<Message[]>({
+  //   queryKey: [`csa/messages-by-id/${chat.id}`],
+  // });
+
+  // if(import.meta.env.REACT_APP_LOCAL === 'true') {
+  //   return apigeneric.get(`csa/messages-by-id/${chat.id}`);
+  // }
+
+  useEffect(() => {
+    getMessages();
+  }, [trigger]);
+
+  const getMessages = async () => {
+    if(import.meta.env.REACT_APP_LOCAL === 'true') {
+      const { data: res } = await apigeneric.get(`csa/messages-by-id/${chat.id}`);
+      setMessagesList(res.response);
+    } else {
+      const { data: res } = await apiDev.post('csa/messages-by-id', {
+        chatId: chat.id,
+      });
+      setMessagesList(res.response);
+    }
+  };
 
   const addExamplesMutation = useMutation({
     mutationFn: (data: {
@@ -107,9 +131,9 @@ const HistoricalChat: FC<ChatProps> = ({ chat }) => {
     ? `${chat.endUserFirstName} ${chat.endUserLastName}` : t('global.anonymous');
 
   useEffect(() => {
-    if (!messages) return;
+    if (!messagesList) return;
     let groupedMessages: GroupedMessage[] = [];
-    messages.forEach((message) => {
+    messagesList.forEach((message) => {
       const lastGroup = groupedMessages[groupedMessages.length - 1];
       if (lastGroup?.type === message.authorRole) {
         if (!message.event || message.event === 'greeting') {
@@ -142,7 +166,7 @@ const HistoricalChat: FC<ChatProps> = ({ chat }) => {
       }
     });
     setMessageGroups(groupedMessages);
-  }, [messages, endUserFullName]);
+  }, [messagesList, endUserFullName]);
 
   useEffect(() => {
     if (!chatRef.current || !messageGroups) return;

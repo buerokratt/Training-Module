@@ -22,7 +22,7 @@ getData:
           forwardedToName: ''
           receivedFrom: ''
           labels:
-          comment:
+          comment: 'c1'
           lastMessage: Suunan teid klienditeenindajale. Varuge natukene kannatust.
           lastMessageEvent: accepted
           contactsMessage:
@@ -46,7 +46,7 @@ getData:
           forwardedToName: ''
           receivedFrom: ''
           labels:
-          comment:
+          comment: 'c2'
           lastMessage: test
           lastMessageEvent: accepted
           contactsMessage:

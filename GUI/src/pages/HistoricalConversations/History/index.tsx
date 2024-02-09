@@ -1,6 +1,6 @@
 import React, {FC, useEffect, useMemo, useState} from 'react';
 import { useTranslation } from 'react-i18next';
-import {useMutation, useQuery} from '@tanstack/react-query';
+import {useMutation} from '@tanstack/react-query';
 import { createColumnHelper, PaginationState } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { MdOutlineRemoveRedEye } from 'react-icons/md';
@@ -17,7 +17,7 @@ import {
   Tooltip,
   Track
 } from 'components';
-import { Chat as ChatType, CHAT_STATUS } from 'types/chat';
+import {Chat as ChatType, CHAT_EVENTS, CHAT_STATUS} from 'types/chat';
 import { Message } from 'types/message';
 import {Controller, useForm} from "react-hook-form";
 import apiDev from "../../../services/api-dev";
@@ -25,9 +25,14 @@ import {useLocation} from "react-router-dom";
 import {getFromLocalStorage, setToLocalStorage} from "../../../utils/local-storage-utils";
 import { CHAT_HISTORY_PREFERENCES_KEY } from 'constants/config';
 import apigeneric from "../../../services/apigeneric";
+import chat from "../../../components/Chat";
+import useStore from "../../../store/store";
+import {useToast} from "../../../hooks/useToast";
+import {AxiosError} from "axios";
 
 const History: FC = () => {
   const { t } = useTranslation();
+  const toast = useToast();
   const [filter, setFilter] = useState('');
   const [selectedChat, setSelectedChat] = useState<ChatType | null>(null);
   const [pagination, setPagination] = useState<PaginationState>({
@@ -47,7 +52,12 @@ const History: FC = () => {
   const routerLocation = useLocation();
   let passedChatId = new URLSearchParams(routerLocation.search).get('chat');
 
+  const userInfo = useStore((state) => state.userInfo);
+    const [statusChangeModal, setStatusChangeModal] = useState<string | null>(
+        null
+    );
   const [endedChatsList, setEndedChatsList] = useState<ChatType[]>([]);
+  const [messagesTrigger, setMessagesTrigger] = useState(false);
   const [chatMessagesList, setchatMessagesList] = useState<Message[]>([]);
   const [filteredEndedChatsList, setFilteredEndedChatsList] = useState<
       ChatType[]
@@ -236,6 +246,58 @@ const History: FC = () => {
       [t]
   );
 
+    const chatStatusChangeMutation = useMutation({
+        mutationFn: async (data: { chatId: string | number; event: string }) => {
+            const changeableTo = [
+                CHAT_EVENTS.CLIENT_LEFT_WITH_ACCEPTED.toUpperCase(),
+                CHAT_EVENTS.CLIENT_LEFT_WITH_NO_RESOLUTION.toUpperCase(),
+                CHAT_EVENTS.ACCEPTED.toUpperCase(),
+                CHAT_EVENTS.ANSWERED.toUpperCase(),
+                CHAT_EVENTS.CLIENT_LEFT_FOR_UNKNOWN_REASONS.toUpperCase(),
+                CHAT_EVENTS.CLIENT_LEFT.toUpperCase(),
+                CHAT_EVENTS.HATE_SPEECH.toUpperCase(),
+                CHAT_EVENTS.OTHER.toUpperCase(),
+                CHAT_EVENTS.TERMINATED.toUpperCase(),
+                CHAT_EVENTS.RESPONSE_SENT_TO_CLIENT_EMAIL.toUpperCase(),
+            ];
+            const isChangeable = changeableTo.includes(data.event);
+
+            if (selectedChat?.lastMessageEvent === data.event.toLowerCase()) return;
+
+            if (!isChangeable) return;
+
+            await apiDev.post('chat/status', {
+                chatId: selectedChat!.id,
+                event: data.event.toUpperCase(),
+                authorTimestamp: new Date().toISOString(),
+                authorFirstName: userInfo!.firstName,
+                authorId: userInfo!.idCode,
+                authorRole: userInfo!.authorities,
+            });
+        },
+        onSuccess: () => {
+            setMessagesTrigger(!messagesTrigger);
+            getAllEndedChats.mutate({
+                startDate: format(new Date(startDate), 'yyyy-MM-dd'),
+                endDate: format(new Date(endDate), 'yyyy-MM-dd'),
+            });
+            toast.open({
+                type: 'success',
+                title: t('global.notification'),
+                message: t('toast.success.chatStatusChanged'),
+            });
+            setStatusChangeModal(null);
+        },
+        onError: (error: AxiosError) => {
+            toast.open({
+                type: 'error',
+                title: t('global.notificationError'),
+                message: error.message,
+            });
+        },
+        onSettled: () => setStatusChangeModal(null),
+    });
+
   if (!filteredEndedChatsList) return <>Loading...</>;
 
   return (
@@ -334,7 +396,7 @@ const History: FC = () => {
             : t('global.anonymous')}
           onClose={() => setSelectedChat(null)}
         >
-          <HistoricalChat chat={selectedChat} />
+          <HistoricalChat chat={selectedChat} trigger={messagesTrigger} />
         </Drawer>
       )}
     </>
