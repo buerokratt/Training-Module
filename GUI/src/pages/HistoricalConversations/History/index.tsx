@@ -169,12 +169,20 @@ const History: FC = () => {
         : t('global.no'),
     }),
     columnHelper.accessor('comment', {
-      header: t('chat.history.comment') || '',
-      cell: (props) => (
-        <Tooltip content={props.getValue()}>
-          <span>{props.getValue()?.slice(0, 30) + '...'}</span>
-        </Tooltip>
-      ),
+        id: 'comment',
+        header: t('chat.history.comment') || '',
+        cell: (props) =>
+            !props.getValue() ? (
+                <></>
+            ) : (
+                <Tooltip content={props.getValue()}>
+            <span>
+              {props.getValue() === undefined
+                  ? ''
+                  : props.getValue()?.slice(0, 30) + '...'}
+            </span>
+                </Tooltip>
+            ),
     }),
     columnHelper.accessor('labels', {
       header: t('chat.history.label') || '',
