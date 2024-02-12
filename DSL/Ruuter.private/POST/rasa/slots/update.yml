@@ -1,6 +1,9 @@
 assign_values:
   assign:
     parameters: ${incoming.body}
+    oldKey: ${parameters.oldName}
+    newKey: ${Object.keys(parameters.slot.slot)[0]}
+    newValue: ${parameters.slot.slot[newKey]}
   next: getDomainFile
 
 getDomainFile:
@@ -13,18 +16,20 @@ getDomainFile:
 
 validateSlots:
   switch:
-    - condition: ${domainData.response.body.response.slots[Object.keys(parameters.slot)[0]] != null}
+    - condition: ${domainData.response.body.response.slots[oldKey] != null}
       next: mergeSlots
   next: returnSlotIsMissing
 
 mergeSlots:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/merge/objects"
+    url: "[#TRAINING_DMAPPER]/replace/key-value-in-obj"
     body:
-      object1: ${domainData.response.body.response.slots}
-      object2: ${parameters.slot}
-  result: mergedSlots
+      object: ${domainData.response.body.response.slots}
+      oldKey: ${oldKey}
+      newKey: ${newKey}
+      newValue: ${newValue}
+  result: updatedSlots
 
 convertJsonToYaml:
   call: http.post
@@ -34,7 +39,7 @@ convertJsonToYaml:
       version: ${domainData.response.body.response.version}
       intents: ${domainData.response.body.response.intents}
       entities: ${domainData.response.body.response.entities}
-      slots: ${mergedSlots.response.body}
+      slots: ${updatedSlots.response.body}
       forms: ${domainData.response.body.response.forms}
       actions: ${domainData.response.body.response.actions}
       responses: ${domainData.response.body.response.responses}
@@ -73,8 +78,6 @@ returnSuccess:
 
 returnSlotIsMissing:
   return: "Can't find slot to update"
-  next: end
-
-returnUnauthorized:
-  return: "error: unauthorized"
+  wrapper: false
+  status: 409
   next: end

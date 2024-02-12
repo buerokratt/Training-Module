@@ -279,28 +279,36 @@ returnSuccess:
 
 returnTooShortError:
   return: "Intent name is too short"
+  wrapper: false
+  status: 409
   next: end
 
 returnIntentExists:
   return: "Intent with that name already exists"
+  wrapper: false
+  status: 409
   next: end
 
 returnIntentMissing:
   return: "Intent to update is missing"
+  wrapper: false
+  status: 409
   next: end
 
 returnIntentFileMissing:
   return: "Intent file to update is missing"
+  wrapper: false
+  status: 409
   next: end
 
 returnRuleDependency:
   return: "Intent has dependency with rules"
+  wrapper: false
+  status: 409
   next: end
 
 returnStoriesDependency:
   return: "Intent has dependency with stories"
-  next: end
-
-returnUnauthorized:
-  return: "error: unauthorized"
+  wrapper: false
+  status: 409
   next: end

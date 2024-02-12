@@ -25,9 +25,10 @@ This repo will primarily contain
   
 Ready to go: **docker-compose up -d**
 
-### Use external components.
+### Use external components(Header/Main Navigation).
 
-Currently Header and Main Navigation used as external components, they are defined as dependency in package.json
+Currently, Header and Main Navigation used as external components, they are defined as dependency in package.json
+
 ```  
  "@buerokrat-ria/header": "^0.0.1"
  "@buerokrat-ria/menu": "^0.0.1"

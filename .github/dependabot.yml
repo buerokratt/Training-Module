@@ -8,4 +8,7 @@ updates:
     allow:
       - dependency-name: "@buerokratt-ria/header"
       - dependency-name: "@buerokratt-ria/styles"
-    open-pull-requests-limit: 3
+      - dependency-name: "@buerokratt-ria/menu"
+    open-pull-requests-limit: 10
+    target-branch: "dev"
+    versioning-strategy: "increase"

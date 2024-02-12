@@ -1,7 +1,7 @@
 getStories:
   call: http.get
   args:
-    url: "[#TRAINING_OPENSEARCH]/stories/_search?size=10000"
+    url: "[#TRAINING_OPENSEARCH]/stories/_search?size=1000"
   result: getStoriesResult
 
 mapStoriesData:
@@ -15,8 +15,4 @@ mapStoriesData:
 
 returnSuccess:
   return: ${storiesData.response.body.data.stories}
-  next: end
-
-returnUnauthorized:
-  return: "error: unauthorized"
   next: end

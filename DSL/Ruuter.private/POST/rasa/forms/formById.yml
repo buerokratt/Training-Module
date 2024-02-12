@@ -1,0 +1,62 @@
+assign_values:
+  assign:
+    form: ${incoming.body.form}
+
+getResponses:
+  call: http.get
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/rasa/responses"
+    headers:
+      cookie: ${incoming.headers.cookie}
+  result: responses
+
+getForms:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]/domain/_search?pretty=true"
+    body:
+      query:
+        match:
+          _id: 'forms'
+  result: getFormsResult
+
+assignResponse:
+  assign:
+    formsResponse: ${getFormsResult.response.body.hits.hits[0]._source.forms}
+
+checkFormIsPresent:
+  switch:
+    - condition: ${Object.keys(formsResponse).includes(form)}
+      next: gatherFormDetails
+  next: returnNotFound
+
+gatherFormDetails:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/forms/detailed-information"
+    body:
+      name: ${form}
+      slots: ${formsResponse[form]}
+      responses: ${responses.response.body}
+  result: formDetails
+
+mapFormsData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/dmapper/get-form-details"
+    body:
+      name: ${form}
+      details: ${formDetails.response.body}
+  result: formsData
+  next: returnSuccess
+
+returnSuccess:
+  return: ${formsData.response.body.data}
+  wrapper: false
+  next: end
+
+returnNotFound:
+  return: "ERROR: form not found"
+  wrapper: false
+  status: 409
+  next: end

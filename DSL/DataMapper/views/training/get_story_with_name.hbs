@@ -5,7 +5,20 @@
     "steps": [
         {{#each hits.0._source.steps as |step|}}
             {{#each step}}
-                {"{{@key}}": "{{this}}"}{{#unless @last}},{{/unless}}
+                {{#if (eq @key "entities")}}
+                    {"{{@key}}": [
+                    {{#each this}}
+                        {{#with this as |entity|}}
+                            {{#each entity}}
+                                {"{{@key}}": "{{this}}"}{{#unless @last}},{{/unless}}
+                            {{/each}}
+                        {{/with}}
+                        {{#unless @last}},{{/unless}}
+                    {{/each}}
+                    ]}{{#unless @last}},{{/unless}}
+                {{else}}
+                    {"{{@key}}": "{{this}}"}{{#unless @last}},{{/unless}}
+                {{/if}}
             {{/each}}
             {{#unless @last}},{{/unless}}
         {{/each}}

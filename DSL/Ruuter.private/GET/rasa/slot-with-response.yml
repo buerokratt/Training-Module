@@ -1,0 +1,38 @@
+getSlots:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]/domain/_search?pretty=true"
+    body:
+      query:
+        match:
+          _id: 'slots'
+  result: getSlotsResult
+
+getResponses:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]/domain/_search?pretty=true"
+    body:
+      query:
+        match:
+          _id: 'responses'
+  result: getResponsesResult
+
+mapSlotsData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/dmapper/get-slots-with-response"
+    body:
+      slots: ${getSlotsResult.response.body.hits.hits}
+      responses: ${getResponsesResult.response.body.hits.hits[0]._source.responses}
+  result: slotsData
+  next: returnSuccess
+
+returnSuccess:
+  return: ${slotsData.response.body.data.slots}
+  wrapper: false
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
+  next: end

@@ -11,18 +11,16 @@ import ReactFlow, {
   addEdge,
   Background,
   Connection,
-  MarkerType,
   MiniMap,
   Node,
   useEdgesState,
   useNodesState,
 } from 'reactflow';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import 'reactflow/dist/style.css';
 
 import { Box, Button, Collapsible, Dialog, FormInput, Icon, Track } from 'components';
-import { Intent } from 'types/intent';
 import { Responses } from 'types/response';
 import { Story, StoryDTO } from 'types/story';
 import { Form } from 'types/form';
@@ -34,6 +32,7 @@ import useDocumentEscapeListener from '../../../hooks/useDocumentEscapeListener'
 import { generateStoryStepsFromNodes, generateNodesFromStorySteps } from 'services/rasa';
 import { GRID_UNIT, generateNewEdge, generateNewNode } from 'services/nodes';
 import './StoriesDetail.scss';
+import LoadingDialog from "../../../components/LoadingDialog";
 
 
 const nodeTypes = {
@@ -59,24 +58,30 @@ const initialNodes: Node[] = [
 
 const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   const { t } = useTranslation();
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>()
+  const [storyId, setStoryId] = useState<string | undefined>(id);
   const navigate = useNavigate();
   const toast = useToast();
   const queryClient = useQueryClient();
+  const locationState = useLocation();
   const [deleteConfirmation, setDeleteConfirmation] = useState(false);
   const [restartConfirmation, setRestartConfirmation] = useState(false);
   const [deleteId, setDeleteId] = useState('');
   const [editableTitle, setEditableTitle] = useState<string | null>(null);
   const [story, setStory] = useState<Story | undefined | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
   const onConnect = useCallback((params: Connection) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
 
-  const { data: storyData } = useQuery<Story>({
-    queryKey: ['story-by-name', id],
-    enabled: !!id,
+  const category = locationState?.category || 'stories';
+  const storyTitle = locationState?.storyTitle || null;
+
+  const { data: storyData, refetch } = useQuery<Story>({
+    queryKey: ['story-by-name', storyId],
+    enabled: category === 'stories' && !!storyId,
   });
   const { data: intents } = useQuery<string[]>({
     queryKey: ['intents'],
@@ -97,7 +102,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     setStory(storyData ?? story);
 
     let nodes = [...initialNodes];
-    let edges: any[] = []; 
+    let edges: any[] = [];
 
     generateNodesFromStorySteps(storyData?.steps || story?.steps || [])
       .forEach((x) => {
@@ -108,10 +113,11 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     setNodes(nodes);
     setEdges(edges);
 
-  }, [storyData]);
+  }, [setEdges, setNodes, story, storyData]);
 
   const addStoryMutation = useMutation({
     mutationFn: (data: StoryDTO) => addStory(data),
+    onMutate: () => setRefreshing(true),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['stories']);
       toast.open({
@@ -130,7 +136,10 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   });
 
   const editStoryMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string | number, data: StoryDTO }) => editStory(id, data),
+    mutationFn: ({ id, data }: { id: string, data: StoryDTO }) => editStory(id, data),
+    onMutate: () => {
+      setRefreshing(true)
+    },
     onSuccess: async () => {
       await queryClient.invalidateQueries(['stories']);
       toast.open({
@@ -146,10 +155,12 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
         message: error.message,
       });
     },
+    onSettled: () => setRefreshing(false),
   });
 
   const deleteStoryMutation = useMutation({
     mutationFn: ({ id }: { id: string | number }) => deleteStory(id),
+    onMutate: () => setRefreshing(true),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['stories']);
       toast.open({
@@ -157,7 +168,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
         title: t('global.notification'),
         message: 'Intent deleted',
       });
-      navigate(import.meta.env.BASE_URL + 'treening/treening/kasutuslood');
+      navigate(import.meta.env.BASE_URL + 'treening/treening/stories');
     },
     onError: (error: AxiosError) => {
       toast.open({
@@ -166,13 +177,14 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
         message: error.message,
       });
     },
+    onSettled: () => setRefreshing(false),
   });
 
   const handleNodeDelete = (id: string) => {
     setDeleteId(id)
   };
 
-  const handleNodeDeleteConfimed = () => {
+  const handleNodeDeleteConfirmed = () => {
     setNodes((prevNodes) => {
       const deleteIndex = prevNodes.findIndex((n) => n.id === deleteId);
       return prevNodes.slice(0, deleteIndex);
@@ -231,29 +243,57 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
 
   const title = story?.story || t('global.title');
 
-  const handleGraphSave = () => {
+  const handleGraphSave = async () => {
     const isRename = editableTitle && editableTitle !== id;
     if(!isRename) {
       addOutputNode();
+    }
+
+    if ((!title || title === '') && (!editableTitle || editableTitle === '')) {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: 'Title cannot be empty',
+      });
+      return;
     }
 
     const data = {
       story: editableTitle || id || title,
       steps: generateStoryStepsFromNodes(nodes),
     };
-    
+
+    setRefreshing(true);
     if (mode === 'new') {
       addStoryMutation.mutate(data);
     }
     if (mode === 'edit' && id) {
       editStoryMutation.mutate({id, data});
     }
+    await handleMutationLoadingAfterPopulateTable(data);
 
-    if(isRename){
+    if (isRename) {
       navigate(`/training/stories/${editableTitle}`, { replace: true });
       setEditableTitle(null);
       setStory({ steps: story?.steps, story: editableTitle });
     }
+  };
+
+  const handleMutationLoadingAfterPopulateTable = async (data) => {
+    if (storyId === undefined) {
+      setStoryId(editableTitle);
+    }
+    await refetch();
+    const updatedStoryData  = refetch();
+    updatedStoryData.then((storyOrRuleObject) => {
+      if (mode === 'new' && (storyOrRuleObject.data.story != null && storyOrRuleObject.data.story === editableTitle)) {
+        setRefreshing(false);
+      } else {
+        setTimeout(() => {
+          handleMutationLoadingAfterPopulateTable(data);
+        }, 1000);
+      }
+    });
   };
 
   const handleGraphReset = () => {
@@ -427,40 +467,46 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
         </Track>
       </div>
 
+      {refreshing && (
+          <LoadingDialog title={t('global.updatingDataHead')} >
+            <p>{t('global.updatingDataBody')}</p>
+          </LoadingDialog>
+      )}
+
       <div className='graph'>
         <div className='graph__header'>
           <Track gap={16}>
-            {editableTitle ? (
-              <FormInput
-                label='Story title'
-                name='storyTitle'
-                value={editableTitle}
-                onChange={(e) =>
-                  setEditableTitle(e.target.value)
-                }
-                hideLabel
-              />
+            {editableTitle !== null ? (
+                <FormInput
+                    label='Story title'
+                    name='storyTitle'
+                    value={editableTitle}
+                    onChange={(e) =>
+                        setEditableTitle(e.target.value)
+                    }
+                    hideLabel
+                />
             ) : (
-              <h2 className='h3'>{title}</h2>
+                <h2 className='h3'>{title}</h2>
             )}
-            {editableTitle ? (
-              <Button
-                appearance='text'
-                onClick={handleGraphSave}
-              >
-                <Icon icon={<MdOutlineSave />} />
-                {t('global.save')}
-              </Button>
+            {editableTitle !== null ? (
+                <Button
+                    appearance='text'
+                    onClick={handleGraphSave}
+                >
+                  <Icon icon={<MdOutlineSave />} />
+                  {t('global.save')}
+                </Button>
             ) : (
-              <Button
-                appearance='text'
-                onClick={() =>
-                  setEditableTitle(title)
-                }
-              >
-                <Icon icon={<MdOutlineModeEditOutline />} />
-                {t('global.edit')}
-              </Button>
+                <Button
+                    appearance='text'
+                    onClick={() =>
+                        setEditableTitle(title)
+                    }
+                >
+                  <Icon icon={<MdOutlineModeEditOutline />} />
+                  {t('global.edit')}
+                </Button>
             )}
           </Track>
         </div>
@@ -503,7 +549,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
               <Button appearance='secondary' onClick={() => setDeleteId('')}>{t('global.no')}</Button>
               <Button
                 appearance='error'
-                onClick={handleNodeDeleteConfimed}
+                onClick={handleNodeDeleteConfirmed}
               >
                 {t('global.yes')}
               </Button>

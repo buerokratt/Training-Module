@@ -11,14 +11,18 @@ checkForIncomingType:
       next: getRulesSearchForForms
     - condition: ${type == "slots"}
       next: getRulesSearchForSlots
+    - condition: ${type === undefined}
+      next: getRulesSearch
 
 getRulesSearch:
   call: http.post
   args:
     url: "[#TRAINING_OPENSEARCH]/rules/_search/template"
     body:
-      id: ${"rule-with-"+type}
-  result: getRulesResult
+      source:
+        query:
+          match_all: {}
+  result: mapRulesData
 
 getRulesSearchForResponses:
   call: http.post

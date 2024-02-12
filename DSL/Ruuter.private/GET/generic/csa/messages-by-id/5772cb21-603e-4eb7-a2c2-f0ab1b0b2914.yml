@@ -1,0 +1,138 @@
+getData:
+  call: reflect.mock
+  args:
+    response:
+      data:
+        - id: e3dde3c0-2b0e-4222-b684-7708df441897
+          chatId: 5772cb21-603e-4eb7-a2c2-f0ab1b0b2914
+          content: tere
+          buttons:
+          event: greeting
+          authorId: ''
+          authorTimestamp: '2024-02-01T08:10:35.957+00:00'
+          authorFirstName: ''
+          authorLastName: ''
+          authorRole: buerokratt
+          forwardedByUser: ''
+          forwardedFromCsa: ''
+          forwardedToCsa: ''
+          rating:
+          created: '2024-02-01T08:10:35.960+00:00'
+          updated: '2024-02-01T08:10:35.966+00:00'
+        - id: 020e267d-3068-42d1-ac49-32c2aac5d7e3
+          chatId: 5772cb21-603e-4eb7-a2c2-f0ab1b0b2914
+          content: tere
+          buttons:
+          event: ''
+          authorId: ''
+          authorTimestamp: '2024-02-01T08:10:35.672+00:00'
+          authorFirstName: ''
+          authorLastName: ''
+          authorRole: end-user
+          forwardedByUser: ''
+          forwardedFromCsa: ''
+          forwardedToCsa: ''
+          rating:
+          created: '2024-02-01T08:10:36.066+00:00'
+          updated: '2024-02-01T08:10:36.074+00:00'
+        - id: 5b10ead6-d643-a155-9bf9-6abbeaa72ff3
+          chatId: 5772cb21-603e-4eb7-a2c2-f0ab1b0b2914
+          content: Kuidas saan abiks olla?
+          buttons: "[]"
+          event:
+          authorId: chatbot
+          authorTimestamp: '2024-02-01T08:10:36.741+00:00'
+          authorFirstName: ''
+          authorLastName: ''
+          authorRole: buerokratt
+          forwardedByUser:
+          forwardedFromCsa:
+          forwardedToCsa:
+          rating:
+          created: '2024-02-01T08:10:36.741+00:00'
+          updated: '2024-02-01T08:10:36.741+00:00'
+        - id: 98df2bc4-3790-43a8-9e45-cd2ea63a4198
+          chatId: 5772cb21-603e-4eb7-a2c2-f0ab1b0b2914
+          content: teenindaja
+          buttons:
+          event: ''
+          authorId: ''
+          authorTimestamp: '2024-02-01T08:10:37.802+00:00'
+          authorFirstName: ''
+          authorLastName: ''
+          authorRole: end-user
+          forwardedByUser: ''
+          forwardedFromCsa: ''
+          forwardedToCsa: ''
+          rating:
+          created: '2024-02-01T08:10:37.969+00:00'
+          updated: '2024-02-01T08:10:37.978+00:00'
+        - id: 0f285648-0d81-2b0c-afde-018b4046f035
+          chatId: 5772cb21-603e-4eb7-a2c2-f0ab1b0b2914
+          content: Suunan teid klienditeenindajale. Varuge natukene kannatust.
+          buttons: "[]"
+          event:
+          authorId: chatbot
+          authorTimestamp: '2024-02-01T08:10:38.260+00:00'
+          authorFirstName: ''
+          authorLastName: ''
+          authorRole: buerokratt
+          forwardedByUser:
+          forwardedFromCsa:
+          forwardedToCsa:
+          rating:
+          created: '2024-02-01T08:10:38.260+00:00'
+          updated: '2024-02-01T08:10:38.260+00:00'
+        - id: 83fc7bf6-4fef-4b30-8a91-fe2808fe84f2
+          chatId: 5772cb21-603e-4eb7-a2c2-f0ab1b0b2914
+          content: ''
+          buttons:
+          event: contact-information-rejected
+          authorId: EE30303039914
+          authorTimestamp: '2024-02-01T08:11:10.293+00:00'
+          authorFirstName: ''
+          authorLastName: ''
+          authorRole: end-user
+          forwardedByUser: ''
+          forwardedFromCsa: ''
+          forwardedToCsa: ''
+          rating:
+          created: '2024-02-01T08:10:47.242+00:00'
+          updated: '2024-02-01T08:11:10.401+00:00'
+        - id: '01587188-da2a-4bf5-88a6-46a041078a29'
+          chatId: 5772cb21-603e-4eb7-a2c2-f0ab1b0b2914
+          content: message-read
+          buttons:
+          event: message-read
+          authorId: ''
+          authorTimestamp: '2024-02-01T08:10:48.424+00:00'
+          authorFirstName: ''
+          authorLastName: ''
+          authorRole: end-user
+          forwardedByUser: ''
+          forwardedFromCsa: ''
+          forwardedToCsa: ''
+          rating:
+          created: '2024-02-01T08:10:48.558+00:00'
+          updated: '2024-02-01T08:10:48.565+00:00'
+        - id: 93be401f-49d7-4ac3-add2-90bf1c40b774
+          chatId: 5772cb21-603e-4eb7-a2c2-f0ab1b0b2914
+          content: ''
+          buttons:
+          event: ACCEPTED
+          authorId: ''
+          authorTimestamp: '2024-02-02T08:15:58.125+00:00'
+          authorFirstName: ''
+          authorLastName: ''
+          authorRole: backoffice-user
+          forwardedByUser: ''
+          forwardedFromCsa: ''
+          forwardedToCsa: ''
+          rating:
+          created: '2024-02-02T08:15:58.378+00:00'
+          updated: '2024-02-02T08:15:58.386+00:00'
+  result: reflected_request
+  next: returnData
+
+returnData:
+  return: ${reflected_request.response.body.data}

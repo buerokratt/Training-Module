@@ -23,7 +23,3 @@ mapFormsSlotsData:
 returnSuccess:
   return: ${formsData.response.body}
   next: end
-
-returnUnauthorized:
-  return: "error: unauthorized"
-  next: end

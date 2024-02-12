@@ -1,12 +1,11 @@
 import { FC, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import useStore from '../../store/store';
-import {
-    MainNavigation
-} from '@exirain/header/src';
-import { Header } from "@buerokratt-ria/header/src"
+import { MainNavigation } from '@buerokratt-ria/menu';
+import { Header } from "@buerokratt-ria/header"
 import './Layout.scss';
 import {useQuery} from "@tanstack/react-query";
+import {useToast} from "../../hooks/useToast";
 
 const Layout: FC = () => {   const CACHE_NAME = 'mainmenu-cache';
 
@@ -38,6 +37,7 @@ const Layout: FC = () => {   const CACHE_NAME = 'mainmenu-cache';
             <MainNavigation serviceId={import.meta.env.REACT_APP_SERVICE_ID.split(',')} items={MainMenuItems}/>
             <div className="layout__wrapper">
                 <Header
+                    toastContext={useToast()}
                     user={useStore.getState().userInfo}
                 />
                 <main className="layout__main">

@@ -18,6 +18,7 @@ intents:
   - deny
 
 entities:
+  - weather
   - asukoht
 
 slots:
@@ -44,6 +45,8 @@ slots:
 
 forms:
   custom_fallback_form:
+    ignored_intents:
+      - common_eitamine
     required_slots:
       - affirm_deny
   direct_to_customer_support_form:
@@ -60,6 +63,14 @@ actions:
   - utter_bad_day
   
 responses:
+#  Final response
+  utter_custom_fallback_form:
+    - text: "rain"
+
+#Question per slot
+  utter_ask_affirm_deny:
+    - text: "Where you want to go?"
+
   utter_service_car_rent:
     - text: "#service_car_rent"
 

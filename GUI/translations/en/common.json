@@ -123,7 +123,8 @@
     "stories": {
       "title": "Stories and rules",
       "stories": "Stories",
-      "rules": "Rules"
+      "rules": "Rules",
+      "entityWarning": "There are two entities with the same name in intent '{{intent}}'"
     },
     "slots": {
       "title": "Slots",
@@ -250,6 +251,43 @@
       "nps": "NPS",
       "forwarded": "Forwarded"
     },
+    "plainEvents": {
+      "answered": "Answered",
+      "terminated": "Unspecified",
+      "sent_to_csa_email": "Chat sent to CSA email",
+      "client-left": "Client left",
+      "client_left_with_accepted": "Client left with accepted response",
+      "client_left_with_no_resolution": "Client left with no resolution",
+      "client_left_for_unknown_reasons": "Client left for unknown reason",
+      "accepted": "Accepted response",
+      "hate_speech": "Hate speech",
+      "other": "Other reasons",
+      "response_sent_to_client_email": "Response was sent to client email",
+      "greeting": "Greetings",
+      "requested-authentication": "Requested authentication",
+      "authentication_successful": "Authentication successful",
+      "authentication_failed": "Authentication failed",
+      "ask-permission": "Asked permission",
+      "ask-permission-accepted": "Permission accepted",
+      "ask-permission-rejected": "Permission rejected",
+      "ask-permission-ignored": "Permission ignored",
+      "rating": "Rating",
+      "contact-information": "Requested contact information",
+      "contact-information-rejected": "Contact information rejected",
+      "contact-information-fulfilled": "Contact information fulfilled",
+      "requested-chat-forward": "Requested chat forward",
+      "requested-chat-forward-accepted": "Requested chat forward accepted",
+      "requested-chat-forward-rejected": "Requested chat forward rejected",
+      "inactive-chat-ended": "Ended cue to inactivity",
+      "contact-information-skipped": "Contact Information Skipped",
+      "unavailable-contact-information-fulfilled": "Contact information provided",
+      "unavailable_organization": "Organization Unavailable",
+      "unavailable_csas": "CSA's Unavailable",
+      "unavailable_holiday": "Holiday",
+      "message-read": "Read",
+      "user-reached": "User contacted",
+      "user-not-reached": "User could not be reached"
+    },
     "status": {
       "active": "Active",
       "ended": "Ended"
@@ -281,5 +319,12 @@
   "submit": {
     "slotNameRequired": "Name is required",
     "slotCantBeEmpty": "Slot name can't be empty"
+  },
+  "axios": {
+    "error": {
+      "formRulesDependency": "Deleting a form is forbidden because it has relation to rules",
+      "formStoriesDependency": "Deleting a form is forbidden because it has relation to stories",
+      "formNotFound": "Can't find form to delete."
+    }
   }
 }

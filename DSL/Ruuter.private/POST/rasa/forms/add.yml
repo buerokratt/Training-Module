@@ -1,7 +1,9 @@
 assign_values:
   assign:
     parameters: ${incoming.body}
-  next: getDomainFile
+    formData:
+      required_slots: ${parameters.form.required_slots}
+      ignored_intents: ${parameters.form.ignored_intents}
 
 getDomainFile:
   call: http.get
@@ -14,8 +16,16 @@ getDomainFile:
 validateForms:
   switch:
     - condition: ${domainData.response.body.response.forms[parameters.form_name] == null}
-      next: mergeForms
+      next: mapForm
   next: returnFormExists
+
+mapForm:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/dmapper/get-form"
+    body:
+      form: ${parameters.form}
+  result: mappedForm
 
 mergeForms:
   call: http.post
@@ -23,8 +33,26 @@ mergeForms:
     url: "[#TRAINING_DMAPPER]/merge/objects"
     body:
       object1: ${domainData.response.body.response.forms}
-      object2: ${parameters.form}
+      object2: ${mappedForm.response.body.data}
   result: mergedForms
+
+convertResponseInput:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/dmapper/get-form-responses"
+    body:
+      responses: ${parameters.responses}
+      form_name: ${parameters.form.name}
+  result: mappedResponses
+
+mergeResponses:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/merge/objects"
+    body:
+      object1: ${domainData.response.body.response.responses}
+      object2: ${mappedResponses.response.body.data}
+  result: mergedResponses
 
 convertJsonToYaml:
   call: http.post
@@ -37,7 +65,7 @@ convertJsonToYaml:
       slots: ${domainData.response.body.response.slots}
       forms: ${mergedForms.response.body}
       actions: ${domainData.response.body.response.actions}
-      responses: ${domainData.response.body.response.responses}
+      responses: ${mergedResponses.response.body}
       session_config: ${domainData.response.body.response.session_config}
   result: domainYaml
 
@@ -57,7 +85,14 @@ saveDomainFile:
       file_path: ${fileLocations.response.body.response.domain_location}
       content: ${domainYaml.response.body.json}
   result: fileResult
-  next: returnSuccess
+
+updateDomainOpenSearch:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]/bulk/domain"
+    body:
+      input: ${domainYaml.response.body.json}
+  result: updateSearchResult
 
 returnSuccess:
   return: "Form added"
@@ -65,9 +100,6 @@ returnSuccess:
 
 returnFormExists:
   return: "Form exists"
+  wrapper: false
   status: 409
-  next: end
-
-returnUnauthorized:
-  return: "error: unauthorized"
   next: end

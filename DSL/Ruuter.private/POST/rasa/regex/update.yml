@@ -1,6 +1,20 @@
 assign_values:
   assign:
-    parameters: ${incoming.body}
+    regex: ${incoming.body}
+
+getRegexesList:
+  call: http.get
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/rasa/regexes"
+    headers:
+      cookie: ${incoming.headers.cookie}
+  result: regexes
+
+validateNewRegexNotExists:
+  switch:
+    - condition: ${regexes.response.body.response.data.regexes.some(reg => reg.name === regex.newName)}
+      next: returnRegexExists
+  next: getFileLocations
 
 getFileLocations:
   call: http.get
@@ -10,12 +24,17 @@ getFileLocations:
       cookie: ${incoming.headers.cookie}
   result: fileLocations
 
+assignFilePaths:
+  assign:
+    oldPath: ${fileLocations.response.body.response.regex_location + regex.name  + "_nlu.yml"}
+    newPath: ${fileLocations.response.body.response.regex_location + regex.newName  + "_nlu.yml"}
+
 getRegexFile:
   call: http.post
   args:
     url: "[#TRAINING_DMAPPER]/file/read"
     body:
-      file_path: ${fileLocations.response.body.response.regex_location}
+      file_path: ${oldPath}
   result: regexFile
 
 convertYamlToJson:
@@ -29,87 +48,11 @@ convertYamlToJson:
 mapRegexesData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/dmapper/get-regex-with-regex"
+    url: "[#TRAINING_DMAPPER]/dmapper/new-regex-file"
     body:
-      regexes: ${regexData.response.body.nlu}
-      regex_name: ${parameters.regex_name}
+      examples: ${JSON.stringify(regexData.response.body.nlu[0].examples)}
+      regex: ${regex.newName}
   result: regexesData
-
-validateRegexExists:
-  switch:
-    - condition: ${regexesData.response.body.data.regex.includes(parameters.regex_name)}
-      next: removeQuotes
-  next: returnRegexIsMissing
-
-removeQuotes:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/convert/string/replace"
-    body:
-      data: ${regexesData.response.body.data.examples}
-      search: "&quot;"
-      replace: ""
-  result: removedQuotes
-
-updateExample:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/convert/string/replace"
-    body:
-      data: ${removedQuotes.response.body}
-      search: ${parameters.input.example}
-      replace: ${parameters.input.newExample}
-  result: updatedExamples
-  next: removeHyphens
-
-removeHyphens:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/convert/string/replace"
-    body:
-      data: ${updatedExamples.response.body}
-      search: "- "
-      replace: ""
-  result: removedHyp
-
-revertHyphens:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/convert/string/replace"
-    body:
-      data: ${removedHyp.response.body}
-      search: "[]"
-      replace: "[- ]"
-  result: revertedHyp
-  next: splitExamples
-
-splitExamples:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/convert/string/split"
-    body:
-      data: ${revertedHyp.response.body}
-      separator: "\n"
-  result: splitExamples
-
-mapUpdatedRegexesData:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/dmapper/get-regex-examples"
-    body:
-      regex: ${parameters.input.regex}
-      examples: ${splitExamples.response.body}
-  result: mappedUpdatedExamples
-
-mergeRegexes:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/merge"
-    body:
-      array1: ${regexData.response.body.nlu}
-      array2: ${mappedUpdatedExamples.response.body.data}
-      iteratee: "regex"
-  result: mergedRegexes
 
 convertJsonToYaml:
   call: http.post
@@ -117,7 +60,7 @@ convertJsonToYaml:
     url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
     body:
       version: "3.0"
-      nlu: ${mergedRegexes.response.body}
+      nlu: ${regexesData.response.body.data}
   result: regexYaml
   next: saveRegexFile
 
@@ -126,28 +69,27 @@ saveRegexFile:
   args:
     url: "[#TRAINING_DMAPPER]/file/write"
     body:
-      file_path: ${fileLocations.response.body.response.regex_location}
+      file_path: ${newPath}
       content: ${regexYaml.response.body.json}
   result: fileResult
-
-removePipe:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/convert/string/replace"
-    body:
-      data: ${regexYaml.response.body.json}
-      search: "|"
-      replace: ""
-  result: result
 
 updateRegexOpenSearch:
   call: http.post
   args:
     url: "[#TRAINING_PIPELINE]/put/regexes/regex"
     body:
-      input: ${result.response.body}
+      input: ${regexYaml.response.body.json}
   result: updatedOpenSearch
-  next: returnSuccess
+
+removeOldFile:
+  call: http.post
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/rasa/regex/delete"
+    body:
+      regex_name: ${regex.name}
+    headers:
+      cookie: ${incoming.headers.cookie}
+  result: regexes
 
 returnSuccess:
   return: "Regex updated"
@@ -155,9 +97,12 @@ returnSuccess:
 
 returnRegexIsMissing:
   return: "Can't find regex to update"
+  wrapper: false
   status: 409
   next: end
 
-returnUnauthorized:
-  return: "error: unauthorized"
+returnRegexExists:
+  return: "Regex with that name already exists"
+  status: 409
+  wrapper: false
   next: end

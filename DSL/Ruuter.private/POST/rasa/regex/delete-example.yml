@@ -1,0 +1,120 @@
+assign_values:
+  assign:
+    parameters: ${incoming.body}
+
+getFileLocations:
+  call: http.get
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
+    headers:
+      cookie: ${incoming.headers.cookie}
+  result: fileLocations
+
+assignFilePath:
+  assign:
+    filePath: ${fileLocations.response.body.response.regex_location + parameters.regex_name  + "_nlu.yml"}
+
+getRegexFile:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file/read"
+    body:
+      file_path: ${filePath}
+  result: regexFile
+
+convertYamlToJson:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
+    body:
+      file: ${regexFile.response.body.file}
+  result: regexData
+
+mapRegexesData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/dmapper/get-regex-with-regex"
+    body:
+      regexes: ${regexData.response.body.nlu}
+      regex_name: ${parameters.regex_name}
+  result: regexesData
+
+validateExampleExists:
+  switch:
+    - condition: ${regexesData.response.body.data.examples.includes(parameters.example)}
+      next: convertStringToArray
+  next: returnExampleMissing
+
+convertStringToArray:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/convert/string/toArray"
+    body:
+      data: ${regexesData.response.body.data.examples}
+  result: convertedArray
+
+removeExample:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/merge/remove-array-value"
+    body:
+      array: ${convertedArray.response.body}
+      value: ${parameters.example}
+  result: removedExample
+
+mapUpdatedRegexesData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/dmapper/get-regex-examples"
+    body:
+      regex: ${parameters.regex_name}
+      examples: ${removedExample.response.body}
+  result: mappedUpdatedExamples
+
+mergeRegexes:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/merge"
+    body:
+      array1: ${regexData.response.body.nlu}
+      array2: ${mappedUpdatedExamples.response.body.data}
+      iteratee: "regex"
+  result: mergedRegexes
+
+convertJsonToYaml:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
+    body:
+      version: "3.0"
+      nlu: ${mergedRegexes.response.body}
+  result: regexYaml
+  next: saveRegexFile
+
+saveRegexFile:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file/write"
+    body:
+      file_path: ${filePath}
+      content: ${regexYaml.response.body.json}
+  result: fileResult
+
+updateRegexOpenSearch:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]/put/regexes/regex"
+    body:
+      input: ${regexYaml.response.body.json}
+  result: updatedOpenSearch
+  next: returnSuccess
+
+returnSuccess:
+  return: "Example deleted."
+  next: end
+
+returnExampleMissing:
+  return: "Can't find example to delete."
+  wrapper: false
+  status: 409
+  next: end

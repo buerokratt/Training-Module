@@ -1,7 +1,6 @@
 assign_values:
   assign:
     parameters: ${incoming.body}
-  next: getDomainFile
 
 getDomainFile:
   call: http.get
@@ -30,7 +29,7 @@ ruleForms:
 
 validateRuleForms:
   switch:
-    - condition: ${ruleForms.response.body.response.rules.length == 0}
+    - condition: ${ruleForms.response.body.response.data.rules.length == 0}
       next: storiesForms
   next: returnFormHasDependencyToRules
 
@@ -41,13 +40,13 @@ storiesForms:
     headers:
       cookie: ${incoming.headers.cookie}
     body:
-      form: ${parameters.form_name}
+      value: ${parameters.form_name}
       type: "forms"
   result: storiesForms
 
 validateStoriesSlots:
   switch:
-    - condition: ${storiesForms.response.body.response.stories.length == 0}
+    - condition: ${storiesForms.response.body.response.length == 0}
       next: deleteKey
   next: returnFormHasDependencyToStories
 
@@ -91,6 +90,14 @@ saveDomainFile:
       file_path: ${fileLocations.response.body.response.domain_location}
       content: ${domainYaml.response.body.json}
   result: fileResult
+
+updateOpenSearch:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]/bulk/domain"
+    body:
+      input: ${domainYaml.response.body.json}
+  result: updateSearchResult
   next: returnSuccess
 
 returnSuccess:
@@ -98,17 +105,19 @@ returnSuccess:
   next: end
 
 returnFormIsMissing:
-  return: "Can't find form to delete"
+  wrapper: false
+  status: 409
+  return: "axios.error.fromNotFound"
   next: end
 
 returnFormHasDependencyToRules:
-  return: "Deleting a form is forbidden because it has relation to rules"
+  return: "axios.error.formRulesDependency"
+  wrapper: false
+  status: 409
   next: end
 
 returnFormHasDependencyToStories:
-  return: "Deleting a form is forbidden because it has relation to stories"
-  next: end
-
-returnUnauthorized:
-  return: "error: unauthorized"
+  return: "axios.error.formStoriesDependency"
+  wrapper: false
+  status: 409
   next: end

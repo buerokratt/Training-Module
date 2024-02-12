@@ -57,13 +57,13 @@ storiesSlots:
     headers:
       cookie: ${incoming.headers.cookie}
     body:
-      slot: ${slot}
+      value: ${slot}
       type: "slots"
   result: storiesSlots
 
 validateStoriesSlots:
   switch:
-    - condition: ${storiesSlots.response.body.response.data.stories.length == 0}
+    - condition: ${storiesSlots.response.body.response.length == 0}
       next: deleteKey
   next: returnSlotHasDependencyToStories
 
@@ -123,20 +123,24 @@ returnSuccess:
 
 returnSlotIsMissing:
   return: "Can't find slot to delete"
+  wrapper: false
+  status: 409
   next: end
 
 returnSlotHasDependencyToForms:
   return: "Deleting a slot is forbidden because it has relation to forms"
+  wrapper: false
+  status: 409
   next: end
 
 returnSlotHasDependencyToRules:
   return: "Deleting a slot is forbidden because it has relation to rules"
+  wrapper: false
+  status: 409
   next: end
 
 returnSlotHasDependencyToStories:
   return: "Deleting a slot is forbidden because it has relation to stories"
-  next: end
-
-returnUnauthorized:
-  return: "error: unauthorized"
+  wrapper: false
+  status: 409
   next: end

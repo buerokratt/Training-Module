@@ -53,6 +53,7 @@
   }
 
   &__body {
+    overflow: visible;
     max-height: calc(90vh - 70px);
   }
 

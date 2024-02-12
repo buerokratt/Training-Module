@@ -14,7 +14,9 @@ curl -X POST localhost:3010/bulk/rules/rule --form input=@$MOCK/data/rules.yml
 curl -X POST localhost:3010/bulk/stories/story --form input=@$MOCK/data/stories.yml
 
 #regexes
-curl -X POST localhost:3010/put/regexes/regex --form input=@$MOCK/data/regex_nlu.yml
+for file in $MOCK/data/regex/* ; do
+ curl -X POST localhost:3010/put/regexes/regex --form input=@$file
+done
 
 #domain
 curl -v -X POST localhost:3010/bulk/domain --form input=@$MOCK/domain.yml

@@ -1,20 +1,33 @@
 assign_values:
   assign:
     body: ${incoming.body}
-
-getStoriesWithName:
-  call: http.post
-  args:
-    url: "[#TRAINING_PUBLIC_RUUTER]/rasa/stories"
-    headers:
-      cookie: ${incoming.headers.cookie}
-    body:
-      story: ${body.story}
-  result: storiesResult
+    bodyStringify: ${JSON.stringify(incoming.body)}
 
 validateStories:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/validate/validate-stories"
+    body:
+      story: ${body}
+  result: validateStoriesResult
+
+validateStoriesCheck:
   switch:
-    - condition: ${storiesResult.response.body.response.data.story != body.story}
+    - condition: ${validateStoriesResult.response.body.result == true}
+      next: getStoryNames
+  next: returnDuplicateIntentOrEntity
+
+getStoryNames:
+  call: http.get
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/rasa/story-names"
+    headers:
+      cookie: ${incoming.headers.cookie}
+  result: storiesResult
+
+validateStoryName:
+  switch:
+    - condition: ${!storiesResult.response.body.response.data.names.includes(body.story)}
       next: getFileLocations
   next: returnStoryExists
 
@@ -55,7 +68,7 @@ mergeStories:
 convertJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml-stories"
     body:
       version: "3.0"
       stories: ${mergedStories.response.body}
@@ -86,4 +99,9 @@ returnSuccess:
 returnStoryExists:
   return: "Story exists"
   status: 409
+  next: end
+
+returnDuplicateIntentOrEntity:
+  return: "Story may not have duplicate consecutive intents or entities"
+  status: 406
   next: end

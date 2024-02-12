@@ -1,0 +1,78 @@
+assign_values:
+  assign:
+    regex: ${incoming.body.name}
+
+getRegexesList:
+  call: http.get
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/rasa/regexes"
+    headers:
+      cookie: ${incoming.headers.cookie}
+  result: regexes
+
+validateRegexExists:
+  switch:
+    - condition: ${!regexes.response.body}
+      next: returnRegexesError
+    - condition: ${regexes.response.body.response.data.regexes.some(reg => reg.name === regex)}
+      next: returnRegexExists
+  next: getFileLocations
+
+getFileLocations:
+  call: http.get
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
+    headers:
+      cookie: ${incoming.headers.cookie}
+  result: fileLocations
+
+mapRegexData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/dmapper/new-regex-file"
+    body:
+      regex: ${regex}
+      examples: ""
+  result: regexFileJson
+
+convertJsonToYaml:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
+    body:
+      version: "3.0"
+      nlu: ${regexFileJson.response.body.data}
+  result: regexYaml
+
+saveRegexFile:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file/write"
+    body:
+      file_path: ${fileLocations.response.body.response.regex_location + regex + "_nlu.yml"}
+      content: ${regexYaml.response.body.json}
+  result: fileResult
+
+UpdateOpensearch:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]/put/regexes/regex"
+    body:
+      input: ${regexYaml.response.body.json}
+  result: updateSearchResult
+
+returnSuccess:
+  return: "Regex created"
+  next: end
+
+returnRegexExists:
+  return: "Regex with that name already exists"
+  wrapper: false
+  status: 409
+  next: end
+
+returnRegexesError:
+  return: "Regex parsing error"
+  status: 409
+  wrapper: false
+  next: end

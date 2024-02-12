@@ -23,6 +23,7 @@ import fileDelete from "./js/file/delete.js";
 import deleteIntentFile from "./js/file/deleteIntentFile.js";
 import fileCheck from "./js/file/fileCheck.js";
 import merge from "./js/util/merge.js";
+import formDetails from "./js/forms/getFormDetailedInformation.js";
 import mergeObjects from "./js/util/mergeObjects.js";
 import mergeRemoveKey from "./js/util/mergeRemoveKey.js";
 import mergeRemoveArrayValue from "./js/util/mergeRemoveArrayValue.js";
@@ -30,11 +31,16 @@ import mergeReplaceArrayElement from "./js/util/mergeReplaceArrayElement.js";
 import validate from "./js/util/arrayElementsLength.js";
 import yamlToJson from "./js/convert/yamlToJson.js";
 import jsonToYaml from "./js/convert/jsonToYaml.js";
+import jsonToYamlStories from "./js/convert/jsonToYamlStories.js";
 import csvToJson from "./js/convert/csvToJson.js";
 import stringSplit from "./js/util/stringSplit.js";
+import stringToArray from "./js/util/stringToArray.js";
 import stringReplace from "./js/util/stringReplace.js";
 import removeRulesByIntentName from "./js/util/removeRulesByIntentName.js";
 import domainUpdateExistingResponse from "./js/util/domainUpdateExistingResponse.js";
+import replaceKeyValueObj from "./js/util/updateKeyValueObj.js";
+import objectListContainsId from "./js/util/objectListContainsId.js";
+import validateStories from "./js/validation/validateStories.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
@@ -54,18 +60,24 @@ app.use('/file/delete', fileDelete);
 app.use('/file/delete-intent', deleteIntentFile);
 app.use('/file/check', fileCheck);
 app.use('/merge', merge);
+app.use('/forms/detailed-information', formDetails);
 app.use('/merge/objects', mergeObjects);
+app.use('/replace/key-value-in-obj', replaceKeyValueObj);
 app.use('/merge/remove-key', mergeRemoveKey);
 app.use('/merge/remove-array-value', mergeRemoveArrayValue);
 app.use('/merge/replace-array-element', mergeReplaceArrayElement);
 app.use('/validate/array-elements-length', validate);
 app.use('/convert/yaml-to-json', yamlToJson)
 app.use('/convert/json-to-yaml', jsonToYaml)
+app.use('/convert/json-to-yaml-stories', jsonToYamlStories)
 app.use('/convert/csv-to-json', csvToJson)
 app.use('/convert/string/split', stringSplit)
 app.use('/convert/string/replace', stringReplace)
+app.use('/convert/string/toArray', stringToArray)
 app.use('/rules/remove-by-intent-name', removeRulesByIntentName);
 app.use('/domain/update-existing-response', domainUpdateExistingResponse)
+app.use('/util/objectListContainsId', objectListContainsId)
+app.use('/validate/validate-stories', validateStories)
 app.use(express.urlencoded({ extended: true }));
 
 app.use(
