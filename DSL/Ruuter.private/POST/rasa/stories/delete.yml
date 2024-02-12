@@ -70,12 +70,13 @@ saveStoriesFile:
   result: fileResult
   next: updateOpenSearch
 
-updateOpenSearch:
-  call: http.delete
+deleteOpenSearchEntry:
+  call: http.post
   args:
-    url: "[#TRAINING_OPENSEARCH]/stories/_doc/${storiesResult.response.body.response.id}"
-  result: updateSearchResult
-  next: returnSuccess
+    url: "[#TRAINING_PIPELINE]/delete/object/stories"
+    body:
+      id: ${body.story}
+  result: deleteSearchResult
 
 returnSuccess:
   return: "Story deleted"
