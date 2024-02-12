@@ -1,0 +1,10 @@
+[
+    {{#each appeals}}
+        {
+            "id": "{{ this }}",
+            "appeal": "{{ this }}",
+            "intent": "{{ this }}"
+        }
+    {{#unless @last}},{{/unless}}
+    {{/each}}
+]

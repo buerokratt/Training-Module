@@ -1,0 +1,19 @@
+getDomainFile:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file/read"
+    body:
+      file_path: ${fileLocations.response.body.response.appeals}
+  result: domainFile
+
+convertYamlToJson:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
+    body:
+      file: ${domainFile.response.body.file}
+  result: appealsData
+
+returnSuccess:
+  return: ${appealsData.response.body}
+  next: end

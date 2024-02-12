@@ -1,0 +1,74 @@
+#getAppeals:
+#  call: http.get
+#  args:
+#    url: "[#TRAINING_OPENSEARCH]/domain/_search?size=10000"
+#  result: getEntitiesResult
+#
+#mapEntitiesData:
+#  call: http.post
+#  args:
+#    url: "[#TRAINING_DMAPPER]/dmapper/get-entities"
+#    body:
+#      hits: ${getEntitiesResult.response.body.hits.hits}
+#  result: entitiesData
+#  next: sortEntities
+#
+#sortEntities:
+#  call: http.post
+#  args:
+#    url: "[#TRAINING_DMAPPER]/dmapper/sort-entities"
+#    body:
+#      hits: ${entitiesData.response.body.data.entities}
+#  result: sortedEntities
+#  next: returnSuccess
+#
+#returnSuccess:
+#  return: ${sortedEntities.response.body.data.entities}
+#  next: end
+#
+#returnUnauthorized:
+#  return: "error: unauthorized"
+#  next: end
+getFileLocations:
+  call: http.get
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
+#    headers:
+#      cookie: ${incoming.headers.cookie}
+  result: fileLocations
+
+getDomainFile:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file/read"
+    body:
+      file_path: ${fileLocations.response.body.response.appeals}
+  result: domainFile
+
+convertYamlToJson:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
+    body:
+      file: ${domainFile.response.body.file}
+  result: appealsData
+
+mapEntitiesData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/dmapper/get-appeals"
+    body:
+      appeals: ${appealsData.response.body}
+  result: mappedAppeals
+
+returnSuccess:
+  return: ${mappedAppeals.response.body.data}
+  next: end
+
+checkEntity:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/dmapper/checkV"
+    body:
+      hits: ${mappedAppeals.response.body.data}
+  result: fileLocations
