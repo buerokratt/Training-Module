@@ -1,4 +1,4 @@
-import { FC, useMemo, useState } from 'react';
+import {FC, useEffect, useMemo, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import * as Tabs from '@radix-ui/react-tabs';
@@ -30,16 +30,29 @@ const Stories: FC = () => {
     id: r.id,
     rule: r.id
   })) : [], [rulesResponse]);
-  const stories = useMemo(() => storiesResponse ? storiesResponse.response.map((r, i) => ({
-    id: r.id,
-    rule: r.id
-  })) : [], [storiesResponse]);
+  const [stories, setStories] = useState<Story[]>([]);
   const storiesColumnHelper = createColumnHelper<Story>();
   const rulesColumnHelper = createColumnHelper<Rule>();
   const toast = useToast();
   const [deleteConfirmation, setDeleteConfirmation] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [deleteId, setDeleteId] = useState<string>('');
+
+  useEffect(() => {
+    if (storiesResponse) {
+      setStories(storiesResponse.response.map((r, i) => ({
+        id: r.id,
+        rule: r.id
+      })));
+    } else {
+      setStories([]);
+    }
+  }, [storiesResponse]);
+
+  const handleDelete = (id: string) => {
+    setDeleteConfirmation(true);
+    setDeleteId(id);
+  };
 
   const storiesColumns = useMemo(() => [
     storiesColumnHelper.accessor('id', {
@@ -67,7 +80,9 @@ const Stories: FC = () => {
     storiesColumnHelper.display({
       header: '',
       cell: (props) => (
-        <Button appearance='text'>
+        <Button appearance='text'
+                onClick={() => handleDelete(props.row.original.id)}
+        >
           <Icon
             label={t('global.delete')}
             icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />}
@@ -108,15 +123,13 @@ const Stories: FC = () => {
     rulesColumnHelper.display({
       header: '',
       cell: (props) => (
-        <Button appearance='text'
-                onClick={() => {
-                  setDeleteConfirmation(true);
-                  setDeleteId(props.row.original.id);
-                }
-        }>
+        <Button
+            appearance='text'
+            onClick={() => handleDelete(props.row.original.id)}
+        >
           <Icon
-            label={t('global.delete')}
-            icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />}
+              label={t('global.delete')}
+              icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />}
           />
           {t('global.delete')}
         </Button>
@@ -140,9 +153,10 @@ const Stories: FC = () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Intent deleted',
+        message: 'Story deleted',
       });
-      navigate(import.meta.env.BASE_URL + 'treening/treening/stories');
+      setStories(stories.filter(story => story.id !== deleteId));
+      navigate(import.meta.env.BASE_URL + 'stories');
     },
     onError: (error: AxiosError) => {
       toast.open({
@@ -151,7 +165,9 @@ const Stories: FC = () => {
         message: error.message,
       });
     },
-    onSettled: () => setRefreshing(false),
+    onSettled: () => {
+      setRefreshing(false)
+    },
   });
 
   return (
@@ -237,7 +253,11 @@ const Stories: FC = () => {
                   <Button appearance='secondary' onClick={() => setDeleteConfirmation(false)}>{t('global.no')}</Button>
                   <Button
                       appearance='error'
-                      onClick={() => deleteStoryMutation.mutate({ id: deleteId })}
+                      onClick={() => {
+                        deleteStoryMutation.mutate({ id: deleteId });
+                        setDeleteConfirmation(false);
+                      }
+                    }
                   >
                     {t('global.yes')}
                   </Button>

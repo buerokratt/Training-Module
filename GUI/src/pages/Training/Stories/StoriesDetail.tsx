@@ -63,7 +63,6 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   const navigate = useNavigate();
   const toast = useToast();
   const queryClient = useQueryClient();
-  const locationState = useLocation();
   const [deleteConfirmation, setDeleteConfirmation] = useState(false);
   const [restartConfirmation, setRestartConfirmation] = useState(false);
   const [deleteId, setDeleteId] = useState('');
@@ -73,15 +72,11 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-
   const onConnect = useCallback((params: Connection) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
-
-  const category = locationState?.category || 'stories';
-  const storyTitle = locationState?.storyTitle || null;
 
   const { data: storyData, refetch } = useQuery<Story>({
     queryKey: ['story-by-name', storyId],
-    enabled: category === 'stories' && !!storyId,
+    enabled: !!storyId,
   });
   const { data: intents } = useQuery<string[]>({
     queryKey: ['intents'],
@@ -166,7 +161,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Intent deleted',
+        message: 'Story deleted',
       });
       navigate(import.meta.env.BASE_URL + 'treening/treening/stories');
     },
