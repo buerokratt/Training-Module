@@ -13,5 +13,6 @@ mapAppealsData:
   result: mappedAppeals
 
 returnSuccess:
+  wrapper: false
   return: ${mappedAppeals.response.body.data}
   next: end

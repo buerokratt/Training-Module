@@ -1,1 +1,1 @@
-select * from exiled.rain r;
+select * from appeals a;
