@@ -1,0 +1,222 @@
+getData:
+  call: reflect.mock
+  args:
+    response:
+      data:
+        - id: bf5a9e3c-d06f-4535-b82b-2837bec8efe9
+          chatId: 1a856dbb-b82a-46ff-945f-e8d3a0f9dfe3
+          content: tere
+          buttons:
+          event: greeting
+          authorId: ''
+          authorTimestamp: '2024-02-01T08:39:22.089+00:00'
+          authorFirstName: ''
+          authorLastName: ''
+          authorRole: buerokratt
+          forwardedByUser: ''
+          forwardedFromCsa: ''
+          forwardedToCsa: ''
+          rating:
+          created: '2024-02-01T08:39:22.094+00:00'
+          updated: '2024-02-01T08:39:22.102+00:00'
+        - id: 3ac9eed9-52fe-4aed-8559-6da98a866daa
+          chatId: 1a856dbb-b82a-46ff-945f-e8d3a0f9dfe3
+          content: kes%20oled
+          buttons:
+          event: ''
+          authorId: ''
+          authorTimestamp: '2024-02-01T08:39:21.797+00:00'
+          authorFirstName: ''
+          authorLastName: ''
+          authorRole: end-user
+          forwardedByUser: ''
+          forwardedFromCsa: ''
+          forwardedToCsa: ''
+          rating:
+          created: '2024-02-01T08:39:22.135+00:00'
+          updated: '2024-02-01T08:39:22.147+00:00'
+        - id: 75e829fa-34e1-b5eb-9159-1c26f2a15329
+          chatId: 1a856dbb-b82a-46ff-945f-e8d3a0f9dfe3
+          content: Olen Bürokratt, tehisintellektil põhinev virtuaalne abiline. Kõige paremini
+            oskan vastata kui küsida täpseid, lühidaid küsimusi. Kuidas saan abiks olla?
+          buttons: "[]"
+          event:
+          authorId: chatbot
+          authorTimestamp: '2024-02-01T08:39:22.389+00:00'
+          authorFirstName: ''
+          authorLastName: ''
+          authorRole: buerokratt
+          forwardedByUser:
+          forwardedFromCsa:
+          forwardedToCsa:
+          rating:
+          created: '2024-02-01T08:39:22.389+00:00'
+          updated: '2024-02-01T08:39:22.389+00:00'
+        - id: bcbd3cee-8ce7-4991-9189-2a7dee2dae0d
+          chatId: 1a856dbb-b82a-46ff-945f-e8d3a0f9dfe3
+          content: mida%20oskad
+          buttons:
+          event: ''
+          authorId: ''
+          authorTimestamp: '2024-02-01T08:39:26.853+00:00'
+          authorFirstName: ''
+          authorLastName: ''
+          authorRole: end-user
+          forwardedByUser: ''
+          forwardedFromCsa: ''
+          forwardedToCsa: ''
+          rating:
+          created: '2024-02-01T08:39:26.985+00:00'
+          updated: '2024-02-01T08:39:26.992+00:00'
+        - id: fde54419-fbae-f4ac-c441-c723591a0181
+          chatId: 1a856dbb-b82a-46ff-945f-e8d3a0f9dfe3
+          content: Olen Bürokratt, tehisintellektil põhinev virtuaalne abiline. Oskan hetkel
+            vastata lihtsamatele pöördumistele. Mida rohkem minuga suheldakse, seda paremini
+            oskan tulevikus vastata.
+          buttons: "[]"
+          event:
+          authorId: chatbot
+          authorTimestamp: '2024-02-01T08:39:27.102+00:00'
+          authorFirstName: ''
+          authorLastName: ''
+          authorRole: buerokratt
+          forwardedByUser:
+          forwardedFromCsa:
+          forwardedToCsa:
+          rating:
+          created: '2024-02-01T08:39:27.102+00:00'
+          updated: '2024-02-01T08:39:27.102+00:00'
+        - id: f4a3e50e-c2c5-4838-8a58-089e92d5086d
+          chatId: 1a856dbb-b82a-46ff-945f-e8d3a0f9dfe3
+          content: kui%20vana%20oled
+          buttons:
+          event: ''
+          authorId: ''
+          authorTimestamp: '2024-02-01T08:39:38.867+00:00'
+          authorFirstName: ''
+          authorLastName: ''
+          authorRole: end-user
+          forwardedByUser: ''
+          forwardedFromCsa: ''
+          forwardedToCsa: ''
+          rating:
+          created: '2024-02-01T08:39:38.983+00:00'
+          updated: '2024-02-01T08:39:38.990+00:00'
+        - id: 2af9c9ae-f51b-2b97-92a7-36691edc99ca
+          chatId: 1a856dbb-b82a-46ff-945f-e8d3a0f9dfe3
+          content: Bürokrati kontseptsioon avaldati 2020. aasta veebruaris Majandus- ja Kommunikatsiooniministeeriumi
+            poolt.
+          buttons: "[]"
+          event:
+          authorId: chatbot
+          authorTimestamp: '2024-02-01T08:39:39.164+00:00'
+          authorFirstName: ''
+          authorLastName: ''
+          authorRole: buerokratt
+          forwardedByUser:
+          forwardedFromCsa:
+          forwardedToCsa:
+          rating:
+          created: '2024-02-01T08:39:39.164+00:00'
+          updated: '2024-02-01T08:39:39.164+00:00'
+        - id: 8f7ce7ac-815d-4237-987a-3dc7d23affa7
+          chatId: 1a856dbb-b82a-46ff-945f-e8d3a0f9dfe3
+          content: suuna
+          buttons:
+          event: ''
+          authorId: ''
+          authorTimestamp: '2024-02-01T08:39:50.926+00:00'
+          authorFirstName: ''
+          authorLastName: ''
+          authorRole: end-user
+          forwardedByUser: ''
+          forwardedFromCsa: ''
+          forwardedToCsa: ''
+          rating:
+          created: '2024-02-01T08:39:51.028+00:00'
+          updated: '2024-02-01T08:39:51.035+00:00'
+        - id: 861aae87-d9af-ec3e-3fda-992bb605adf8
+          chatId: 1a856dbb-b82a-46ff-945f-e8d3a0f9dfe3
+          content: Suunan teid klienditeenindajale. Varuge natukene kannatust.
+          buttons: "[]"
+          event:
+          authorId: chatbot
+          authorTimestamp: '2024-02-01T08:39:51.239+00:00'
+          authorFirstName: ''
+          authorLastName: ''
+          authorRole: buerokratt
+          forwardedByUser:
+          forwardedFromCsa:
+          forwardedToCsa:
+          rating:
+          created: '2024-02-01T08:39:51.239+00:00'
+          updated: '2024-02-01T08:39:51.239+00:00'
+        - id: 6dfd1a8e-2828-4579-8343-611e309607f8
+          chatId: 1a856dbb-b82a-46ff-945f-e8d3a0f9dfe3
+          content: test
+          buttons:
+          event: ''
+          authorId: EE30303039816
+          authorTimestamp: '2024-02-01T08:40:01.771+00:00'
+          authorFirstName: Janina
+          authorLastName: ''
+          authorRole: backoffice-user
+          forwardedByUser: ''
+          forwardedFromCsa: ''
+          forwardedToCsa: ''
+          rating:
+          created: '2024-02-01T08:40:01.878+00:00'
+          updated: '2024-02-01T08:40:01.886+00:00'
+        - id: 9fc7c51b-350a-4a6a-b5d0-2c8861976cd6
+          chatId: 1a856dbb-b82a-46ff-945f-e8d3a0f9dfe3
+          content: message-read
+          buttons:
+          event: message-read
+          authorId: ''
+          authorTimestamp: '2024-02-01T08:40:02.780+00:00'
+          authorFirstName: ''
+          authorLastName: ''
+          authorRole: end-user
+          forwardedByUser: ''
+          forwardedFromCsa: ''
+          forwardedToCsa: ''
+          rating:
+          created: '2024-02-01T08:40:02.876+00:00'
+          updated: '2024-02-01T08:40:02.885+00:00'
+        - id: 5cf369dd-1d8f-4650-9b2b-227fd1e03015
+          chatId: 1a856dbb-b82a-46ff-945f-e8d3a0f9dfe3
+          content: ''
+          buttons:
+          event: redirected
+          authorId: ''
+          authorTimestamp: '2024-02-02T08:16:47.880+00:00'
+          authorFirstName: ''
+          authorLastName: ''
+          authorRole: buerokratt
+          forwardedByUser: OK
+          forwardedFromCsa: OK
+          forwardedToCsa: OK
+          rating:
+          created: '2024-02-02T08:16:47.881+00:00'
+          updated: '2024-02-02T08:16:47.889+00:00'
+        - id: 0eca2521-ec97-498f-9567-4a5c9e1e5c2b
+          chatId: 1a856dbb-b82a-46ff-945f-e8d3a0f9dfe3
+          content: ''
+          buttons:
+          event: ACCEPTED
+          authorId: ''
+          authorTimestamp: '2024-02-02T08:17:11.826+00:00'
+          authorFirstName: ''
+          authorLastName: ''
+          authorRole: backoffice-user
+          forwardedByUser: ''
+          forwardedFromCsa: ''
+          forwardedToCsa: ''
+          rating:
+          created: '2024-02-02T08:17:11.981+00:00'
+          updated: '2024-02-02T08:17:11.988+00:00'
+  result: reflected_request
+  next: returnData
+
+returnData:
+  return: ${reflected_request.response.body.data}

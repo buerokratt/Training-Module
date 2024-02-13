@@ -1,0 +1,35 @@
+validateInputLength:
+  switch:
+    - condition: ${incoming.body.intentName.length > 2}
+      next: assign_values
+  next: returnTooShortError
+
+assign_values:
+  assign:
+    intent: ${incoming.body.name.replaceAll(/\s+/g, "_")}
+
+addIntent:
+  call: http.post
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/rasa/intents/add"
+    headers:
+      cookie: ${incoming.headers.cookie}
+    body:
+      name: ${intentName}
+  result: newIntent
+
+addIntentExample:
+  call: http.post
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/rasa/intents/examples/add"
+    headers:
+      cookie: ${incoming.headers.cookie}
+    body:
+      intentExamples: []
+      newExamples: ${example}
+      intentName: ${intentName}
+  result: newExample
+
+returnSuccess:
+  return: "Intent created"
+  next: end

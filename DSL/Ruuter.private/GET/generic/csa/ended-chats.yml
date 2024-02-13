@@ -1,0 +1,58 @@
+getData:
+  call: reflect.mock
+  args:
+    response:
+      data:
+        - id: 5772cb21-603e-4eb7-a2c2-f0ab1b0b2914
+          customerSupportId: EE30303039914
+          customerSupportDisplayName: OK
+          csaTitle: OG
+          endUserId: ''
+          endUserFirstName: ''
+          endUserLastName: ''
+          endUserEmail: sdaijsia@dsd.ij
+          endUserPhone: '2323234'
+          endUserOs: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML,
+            like Gecko) Chrome/120.0.0.0 Safari/537.36
+          endUserUrl: https://dev.buerokratt.ee/?q=1
+          status: ENDED
+          created: '2024-02-01T08:10:35.960+00:00'
+          updated: '2024-02-02T08:15:58.426+00:00'
+          ended: '2024-02-02T08:15:58.407+00:00'
+          forwardedToName: ''
+          receivedFrom: ''
+          labels:
+          comment: 'c1'
+          lastMessage: Suunan teid klienditeenindajale. Varuge natukene kannatust.
+          lastMessageEvent: accepted
+          contactsMessage:
+          lastMessageTimestamp: '2024-02-02T08:15:58.386+00:00'
+        - id: 1a856dbb-b82a-46ff-945f-e8d3a0f9dfe3
+          customerSupportId: EE30303039914
+          customerSupportDisplayName: OK
+          csaTitle: OG
+          endUserId: ''
+          endUserFirstName: ''
+          endUserLastName: ''
+          endUserEmail: ''
+          endUserPhone: ''
+          endUserOs: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
+            like Gecko) Chrome/121.0.0.0 Safari/537.36
+          endUserUrl: https://dev.buerokratt.ee/
+          status: ENDED
+          created: '2024-02-01T08:39:22.094+00:00'
+          updated: '2024-02-02T08:17:12.021+00:00'
+          ended: '2024-02-02T08:17:12.005+00:00'
+          forwardedToName: ''
+          receivedFrom: ''
+          labels:
+          comment: 'c2'
+          lastMessage: test
+          lastMessageEvent: accepted
+          contactsMessage:
+          lastMessageTimestamp: '2024-02-02T08:17:11.988+00:00'
+  result: reflected_request
+  next: returnData
+
+returnData:
+  return: ${reflected_request.response.body.data}
