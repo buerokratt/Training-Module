@@ -87,6 +87,8 @@ validateExample:
   switch:
     - condition: ${!splitExamples.response.body.includes(oldExample)}
       next: returnExampleIsMissing
+    - condition: ${splitExamples.response.body.includes(newExample)}
+      next: returnExampleExists
     - condition: ${newExample.length >= 500}
       next: returnExampleTooLong
   next: replaceExistingExample
@@ -162,6 +164,12 @@ returnSuccess:
 
 returnExampleTooLong:
   return: "Example is too long"
+  status: 409
+  next: end
+
+returnExampleExists:
+  return: "Example with this name already exists"
+  status: 409
   next: end
 
 returnExampleIsMissing:
@@ -171,8 +179,5 @@ returnExampleIsMissing:
 
 returnIntentFileMissing:
   return: "Intent file to update is missing"
-  next: end
-
-returnUnauthorized:
-  return: "error: unauthorized"
+  status: 409
   next: end
