@@ -41,13 +41,6 @@ const HistoricalChat: FC<ChatProps> = ({ chat, trigger }) => {
   const [markedMessage, setMarkedMessage] = useState<Message | null>(null);
   const [messageGroups, setMessageGroups] = useState<GroupedMessage[]>([]);
   const [messagesList, setMessagesList] = useState<Message[]>([]);
-  // const { data: messages } = useQuery<Message[]>({
-  //   queryKey: [`csa/messages-by-id/${chat.id}`],
-  // });
-
-  // if(import.meta.env.REACT_APP_LOCAL === 'true') {
-  //   return apigeneric.get(`csa/messages-by-id/${chat.id}`);
-  // }
 
   useEffect(() => {
     getMessages();
