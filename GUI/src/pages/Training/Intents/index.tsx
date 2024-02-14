@@ -150,7 +150,7 @@ const Intents: FC = () => {
     onSuccess: async () => {
       queryRefresh(null);
       setRefreshing(false);
-      setTimeout(() => refetch(), 700);
+      setTimeout(() => refetch(), 800);
       toast.open({
         type: 'success',
         title: t('global.notification'),
