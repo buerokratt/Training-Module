@@ -37,6 +37,9 @@ const NewExampleModal: FC<NewExampleModalProps> = ({ message, setMessage, onSubm
   });
 
   const handleNewExample = handleSubmit((data) => {
+    if(!isNewIntent) {
+      data.intentName = selectedIntent;
+    }
     onSubmitExample(data);
   });
 
