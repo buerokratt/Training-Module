@@ -6,7 +6,8 @@ validateInputLength:
 
 assign_values:
   assign:
-    intent: ${incoming.body.name.replaceAll(/\s+/g, "_")}
+    newAppeal: ${incoming.body.updatedAppeal}
+    oldAppeal: ${incoming.body.appeal}
 
 validateIntentExists:
   switch:
@@ -19,7 +20,7 @@ validateIntentExists:
 addInDatabase:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/add-appeal"
+    url: "[#TRAINING_RESQL]/update-appeal"
     body:
       intent: ${incoming.body.name}
       status: "ACTIVE"
@@ -46,6 +47,3 @@ returnIntentsError:
   wrapper: false
   return: "Intents parsing error"
   next: end
-
-
-checkEntity:

@@ -19,7 +19,7 @@ validateIntentExists:
 addInDatabase:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/add-appeal"
+    url: "[#TRAINING_RESQL]/delete-appeal"
     body:
       intent: ${incoming.body.name}
       status: "ACTIVE"
@@ -46,6 +46,3 @@ returnIntentsError:
   wrapper: false
   return: "Intents parsing error"
   next: end
-
-
-checkEntity:
