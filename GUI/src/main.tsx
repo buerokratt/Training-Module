@@ -71,9 +71,16 @@ const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
     const { data } = await apiInstance.post(queryKey[0] as string, request)
     return data;
   }
-  if(queryKey.includes('story-by-name')) {
+  if (queryKey.includes('story-by-name')) {
     const request = {
       "story": queryKey[1]
+    };
+    const { data } = await apiInstance.post(queryKey[0] as string, request)
+    return data.response;
+  }
+  if (queryKey.includes('rule-by-name')) {
+    const request = {
+      "rule": queryKey[1]
     };
     const { data } = await apiInstance.post(queryKey[0] as string, request)
     return data.response;
