@@ -6,7 +6,8 @@ validateInputLength:
 
 assign_values:
   assign:
-    intent: ${incoming.body.name.replaceAll(/\s+/g, "_")}
+    intent: ${incoming.body.intentName.replaceAll(/\s+/g, "_")}
+    example: ${incoming.body.newExamples}
 
 addIntent:
   call: http.post
@@ -15,7 +16,7 @@ addIntent:
     headers:
       cookie: ${incoming.headers.cookie}
     body:
-      name: ${intentName}
+      name: ${intent}
   result: newIntent
 
 addIntentExample:
@@ -27,7 +28,7 @@ addIntentExample:
     body:
       intentExamples: []
       newExamples: ${example}
-      intentName: ${intentName}
+      intentName: ${intent}
   result: newExample
 
 returnSuccess:
