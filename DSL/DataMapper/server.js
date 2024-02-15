@@ -40,7 +40,7 @@ import removeRulesByIntentName from "./js/util/removeRulesByIntentName.js";
 import domainUpdateExistingResponse from "./js/util/domainUpdateExistingResponse.js";
 import replaceKeyValueObj from "./js/util/updateKeyValueObj.js";
 import objectListContainsId from "./js/util/objectListContainsId.js";
-import validateStories from "./js/validation/validateStories.js";
+import validateStoriesRules from "./js/validation/validateStoriesRules.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
@@ -77,7 +77,7 @@ app.use('/convert/string/toArray', stringToArray)
 app.use('/rules/remove-by-intent-name', removeRulesByIntentName);
 app.use('/domain/update-existing-response', domainUpdateExistingResponse)
 app.use('/util/objectListContainsId', objectListContainsId)
-app.use('/validate/validate-stories', validateStories)
+app.use('/validate/validate-stories-rules', validateStoriesRules)
 app.use(express.urlencoded({ extended: true }));
 
 app.use(

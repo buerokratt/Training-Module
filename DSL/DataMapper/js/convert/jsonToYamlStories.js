@@ -1,38 +1,76 @@
 import express from 'express';
 import multer from 'multer';
-import yaml, { stringify } from 'yaml';
+import yaml from 'yaml';
+
 const router = express.Router();
 
 router.post('/', multer().array('file'), async (req, res) => {
-    const result = {
-        version: '3.0',
-        stories: (req.body.stories || []).map(entry => ({
-            story: entry.story,
-            steps: entry.steps.map(step => {
-                const formattedStep = {};
-                switch (true) {
-                    case !!step.intent:
-                        formattedStep.intent = step.intent;
-                        break;
-                    case !!step.entities && step.entities.length > 0:
-                        formattedStep.entities = step.entities;
-                        break;
-                    case !!step.action:
-                        formattedStep.action = step.action;
-                        break;
-                    case !!step.checkpoint:
-                        formattedStep.checkpoint = step.checkpoint;
-                        break;
-                    case !!step.slot_was_set && step.slot_was_set.length > 0:
-                        formattedStep.slot_was_set = step.slot_was_set;
-                        break;
-                    default:
-                        break;
-                }
-                return formattedStep;
-            }).filter(step => Object.keys(step).length > 0),
-        })).filter(entry => entry.steps.length > 0),
-    };
+    let result;
+    const { stories, rules } = req.body;
+
+    if (stories) {
+        result = {
+            version: '3.0',
+            stories: stories.map(entry => ({
+                story: entry.story,
+                steps: entry.steps.map(step => {
+                    const formattedStep = {};
+                    switch (true) {
+                        case !!step.intent:
+                            formattedStep.intent = step.intent;
+                            break;
+                        case !!step.entities && step.entities.length > 0:
+                            formattedStep.entities = step.entities;
+                            break;
+                        case !!step.action:
+                            formattedStep.action = step.action;
+                            break;
+                        case !!step.checkpoint:
+                            formattedStep.checkpoint = step.checkpoint;
+                            break;
+                        case !!step.slot_was_set && step.slot_was_set.length > 0:
+                            formattedStep.slot_was_set = step.slot_was_set;
+                            break;
+                        default:
+                            break;
+                    }
+                    return formattedStep;
+                }).filter(step => Object.keys(step).length > 0),
+            })).filter(entry => entry.steps.length > 0),
+        };
+    } else if (rules) {
+        result = {
+            version: '3.0',
+            rules: rules.map(entry => ({
+                rule: entry.rule,
+                steps: entry.steps.map(step => {
+                    const formattedStep = {};
+                    switch (true) {
+                        case !!step.intent:
+                            formattedStep.intent = step.intent;
+                            break;
+                        case !!step.entities && step.entities.length > 0:
+                            formattedStep.entities = step.entities;
+                            break;
+                        case !!step.action:
+                            formattedStep.action = step.action;
+                            break;
+                        case !!step.checkpoint:
+                            formattedStep.checkpoint = step.checkpoint;
+                            break;
+                        case !!step.slot_was_set && step.slot_was_set.length > 0:
+                            formattedStep.slot_was_set = step.slot_was_set;
+                            break;
+                        default:
+                            break;
+                    }
+                    return formattedStep;
+                }).filter(step => Object.keys(step).length > 0),
+            })).filter(entry => entry.steps.length > 0),
+        };
+    } else {
+        return res.status(400).json({ error: 'Invalid request body' });
+    }
 
     const yamlString = yaml.stringify(result, {
         customTags: [

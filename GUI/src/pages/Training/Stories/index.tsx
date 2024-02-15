@@ -9,7 +9,7 @@ import { MdDeleteOutline, MdOutlineModeEditOutline } from 'react-icons/md';
 import {Button, DataTable, Dialog, FormInput, Icon, Track} from 'components';
 import {Rule, Rules} from 'types/rule';
 import {Stories as StoriesType, Story} from 'types/story';
-import {deleteStory} from "../../../services/stories";
+import {deleteStoryOrRule} from "../../../services/stories";
 import {AxiosError} from "axios";
 import LoadingDialog from "../../../components/LoadingDialog";
 import { useToast } from 'hooks/useToast';
@@ -26,11 +26,8 @@ const Stories: FC = () => {
   });
   const [selectedTab, setSelectedTab] = useState<string>('stories');
   const [filter, setFilter] = useState('');
-  const rules = useMemo(() => rulesResponse ? rulesResponse.response.map((r, i) => ({
-    id: r.id,
-    rule: r.id
-  })) : [], [rulesResponse]);
   const [stories, setStories] = useState<Story[]>([]);
+  const [rules, setRules] = useState<Rules[]>([]);
   const storiesColumnHelper = createColumnHelper<Story>();
   const rulesColumnHelper = createColumnHelper<Rule>();
   const toast = useToast();
@@ -39,15 +36,21 @@ const Stories: FC = () => {
   const [deleteId, setDeleteId] = useState<string>('');
 
   useEffect(() => {
-    if (storiesResponse) {
+    if (selectedTab === 'stories' && storiesResponse) {
       setStories(storiesResponse.response.map((r, i) => ({
+        id: r.id,
+        story: r.id
+      })));
+    } else if (selectedTab === 'rules' && rulesResponse) {
+      setRules(rulesResponse.response.map((r, i) => ({
         id: r.id,
         rule: r.id
       })));
     } else {
       setStories([]);
+      setRules([]);
     }
-  }, [storiesResponse]);
+  }, [rulesResponse, selectedTab, storiesResponse]);
 
   const handleDelete = (id: string) => {
     setDeleteConfirmation(true);
@@ -106,7 +109,7 @@ const Stories: FC = () => {
       cell: (props) => (
         <Button
           appearance='text'
-          onClick={() => navigate(`reeglid/${props.row.original.id}`)}
+          onClick={() => navigate(`rules/${props.row.original.id}`)}
         >
           <Icon
             label={t('global.edit')}
@@ -147,7 +150,7 @@ const Stories: FC = () => {
   };
 
   const deleteStoryMutation = useMutation({
-    mutationFn: ({ id }: { id: string }) => deleteStory(id),
+    mutationFn: ({ id, category }: { id: string, category: string }) => deleteStoryOrRule(id, category),
     onMutate: () => setRefreshing(true),
     onSuccess: async () => {
       toast.open({
@@ -155,7 +158,11 @@ const Stories: FC = () => {
         title: t('global.notification'),
         message: 'Story deleted',
       });
-      setStories(stories.filter(story => story.id !== deleteId));
+      if (selectedTab === 'stories') {
+        setStories(stories.filter(story => story.id !== deleteId));
+      } else {
+        setRules(rules.filter(rule => rule.id !== deleteId));
+      }
       navigate(import.meta.env.BASE_URL + 'stories');
     },
     onError: (error: AxiosError) => {
@@ -228,7 +235,11 @@ const Stories: FC = () => {
                 hideLabel
                 onChange={(e) => setFilter(e.target.value)}
               />
-              <Button>{t('global.add')}</Button>
+              <Button onClick={() => navigate('/training/rules/new', {
+                state: { title: filter,
+                  category: "rules" } })}>
+                {t('global.add')}
+              </Button>
             </Track>
           </div>
           <div className='vertical-tabs__content'>
@@ -254,7 +265,7 @@ const Stories: FC = () => {
                   <Button
                       appearance='error'
                       onClick={() => {
-                        deleteStoryMutation.mutate({ id: deleteId });
+                        deleteStoryMutation.mutate({ id: deleteId, category: selectedTab });
                         setDeleteConfirmation(false);
                       }
                     }

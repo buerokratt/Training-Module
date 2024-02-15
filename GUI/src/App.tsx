@@ -58,6 +58,9 @@ const App: FC = () => {
         <Route path='/training/stories' element={<Stories />} />
         <Route path='/training/stories/new' element={<StoriesDetail mode='new' />} />
         <Route path='/training/stories/:id' element={<StoriesDetail mode='edit' />} />
+        <Route path='/training/rules/new' element={<StoriesDetail mode='new' />} />
+        <Route path='/training/stories/rules/:id' element={<StoriesDetail mode='edit' />} />
+        <Route path='/training/:id' element={<StoriesDetail mode='edit' />} />
         <Route path='/training/slots' element={<Slots />} />
         <Route path='/training/slots/new' element={<SlotsDetail mode='new' />} />
         <Route path='/training/slots/:id' element={<SlotsDetail mode='edit' />} />

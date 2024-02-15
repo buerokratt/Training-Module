@@ -58,7 +58,6 @@ convertJsonToYaml:
     headers:
       content-type: "application/json"
     body:
-      version: "3.0"
       stories: ${deleteStoriesData.response.body.data}
   result: storiesYaml
 

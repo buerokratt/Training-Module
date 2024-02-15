@@ -54,10 +54,11 @@ deleteRule:
 convertJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml-stories"
+    headers:
+      content-type: "application/json"
     body:
-      version: "3.0"
-      rules: ${deleteRulesData.response.body}
+      rules: ${deleteRulesData.response.body.data}
   result: rulesYaml
 
 saveRulesFile:
@@ -68,16 +69,15 @@ saveRulesFile:
       file_path: ${fileLocations.response.body.response.rules_location}
       content: ${rulesYaml.response.body.json}
   result: fileResult
-  next: updateOpenSearch
+  next: deleteOpenSearchEntry
 
-updateOpenSearch:
+deleteOpenSearchEntry:
   call: http.post
   args:
-    url: "[#TRAINING_PIPELINE]/bulk/rules/rule"
+    url: "[#TRAINING_PIPELINE]/delete/object/rules"
     body:
-      input: ${rulesYaml.response.body.json}
-  result: updateSearchResult
-  next: returnSuccess
+      id: ${rule}
+  result: deleteSearchResult
 
 returnSuccess:
   return: "Rule deleted"

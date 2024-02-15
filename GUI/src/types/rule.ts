@@ -8,3 +8,6 @@ export interface Rule {
 export interface Rules {
   response: Rule[];
 }
+
+export interface RuleDTO extends Omit<Rule, 'id'> {
+}
