@@ -2,11 +2,9 @@ import express from 'express';
 
 const router = express.Router();
 router.post('/', (req, res) => {
-
-    const steps = req.body.story.steps;
+    const steps = req.category === 'rules' ? req.body.rules.steps : req.body.stories.steps;
     const isValid = validateStepsForNoConsecutiveDuplicates(steps);
     res.json({ result: isValid });
-
 });
 
 function validateStepsForNoConsecutiveDuplicates(steps) {
