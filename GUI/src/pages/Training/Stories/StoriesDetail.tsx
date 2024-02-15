@@ -26,13 +26,14 @@ import { Story, StoryDTO } from 'types/story';
 import { Form } from 'types/form';
 import { Slot } from 'types/slot';
 import { useToast } from 'hooks/useToast';
-import { addStory, deleteStory, editStory } from 'services/stories';
+import { addStoryOrRule, deleteStoryOrRule, editStoryOrRule } from 'services/stories';
 import CustomNode from './CustomNode';
 import useDocumentEscapeListener from '../../../hooks/useDocumentEscapeListener';
 import { generateStoryStepsFromNodes, generateNodesFromStorySteps } from 'services/rasa';
 import { GRID_UNIT, generateNewEdge, generateNewNode } from 'services/nodes';
 import './StoriesDetail.scss';
 import LoadingDialog from "../../../components/LoadingDialog";
+import {Rule, RuleDTO} from "../../../types/rule";
 
 
 const nodeTypes = {
@@ -60,6 +61,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   const { t } = useTranslation();
   const { id } = useParams<{ id: string }>()
   const [storyId, setStoryId] = useState<string | undefined>(id);
+  const [ruleId, setRuleId] = useState<string | undefined>(id);
   const navigate = useNavigate();
   const toast = useToast();
   const queryClient = useQueryClient();
@@ -68,16 +70,23 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   const [deleteId, setDeleteId] = useState('');
   const [editableTitle, setEditableTitle] = useState<string | null>(null);
   const [story, setStory] = useState<Story | undefined | null>(null);
+  const [rule, setRule] = useState<Rule | undefined | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [category, setCategory] = useState<string>('stories');
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const onConnect = useCallback((params: Connection) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
 
-  const { data: storyData, refetch } = useQuery<Story>({
+  const { data: storyData, refetch: refetchStory } = useQuery<Story>({
     queryKey: ['story-by-name', storyId],
     enabled: !!storyId,
   });
+  const { data: ruleData, refetch: refetchRule } = useQuery<Rule>({
+    queryKey: ['rule-by-name', ruleId],
+    enabled: !!ruleId,
+  });
+
   const { data: intents } = useQuery<string[]>({
     queryKey: ['intents'],
   });
@@ -94,12 +103,16 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   useDocumentEscapeListener(() => setEditableTitle(null));
 
   useEffect(() => {
-    setStory(storyData ?? story);
+    if (category === 'rules') {
+      setRule(ruleData ?? rule);
+    } else {
+      setStory(storyData ?? story);
+    }
 
     let nodes = [...initialNodes];
     let edges: any[] = [];
 
-    generateNodesFromStorySteps(storyData?.steps || story?.steps || [])
+    generateNodesFromStorySteps(storyData?.steps || story?.steps || ruleData?.steps || rule?.steps || [])
       .forEach((x) => {
         edges.push(generateNewEdge(nodes, edges));
         nodes.push(generateNewNode({...x, nodes, handleNodeDelete, handleNodePayloadChange,}));
@@ -108,10 +121,10 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     setNodes(nodes);
     setEdges(edges);
 
-  }, [setEdges, setNodes, story, storyData]);
+  }, [category, rule, ruleData, setEdges, setNodes, story, storyData]);
 
   const addStoryMutation = useMutation({
-    mutationFn: (data: StoryDTO) => addStory(data),
+    mutationFn: ({data, category}:{data: StoryDTO, category: string}) => addStoryOrRule(data, category),
     onMutate: () => setRefreshing(true),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['stories']);
@@ -131,16 +144,14 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   });
 
   const editStoryMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string, data: StoryDTO }) => editStory(id, data),
-    onMutate: () => {
-      setRefreshing(true)
-    },
+    mutationFn: ({ id, data, category }: { id: string, data: StoryDTO | RuleDTO, category: string }) => editStoryOrRule(id, data, category),
+    onMutate: () => setRefreshing(true),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['stories']);
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Story added',
+        message: 'Story updated',
       });
     },
     onError: (error: AxiosError) => {
@@ -154,7 +165,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   });
 
   const deleteStoryMutation = useMutation({
-    mutationFn: ({ id }: { id: string | number }) => deleteStory(id),
+    mutationFn: ({ id }: { id: string | number }) => deleteStoryOrRule(id),
     onMutate: () => setRefreshing(true),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['stories']);
@@ -260,7 +271,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
 
     setRefreshing(true);
     if (mode === 'new') {
-      addStoryMutation.mutate(data);
+      addStoryMutation.mutate(data, category);
     }
     if (mode === 'edit' && id) {
       editStoryMutation.mutate({id, data});
@@ -275,13 +286,22 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   };
 
   const handleMutationLoadingAfterPopulateTable = async (data) => {
-    if (storyId === undefined) {
-      setStoryId(editableTitle);
+    let updatedData;
+
+    if (storyId === undefined || ruleId === undefined) {
+      if (category === 'rules') {
+        setRuleId(editableTitle);
+        await refetchRule();
+        updatedData = refetchRule();
+      } else {
+        setStoryId(editableTitle);
+        await refetchStory();
+        updatedData = refetchStory();
+      }
     }
-    await refetch();
-    const updatedStoryData  = refetch();
-    updatedStoryData.then((storyOrRuleObject) => {
-      if (mode === 'new' && (storyOrRuleObject.data.story != null && storyOrRuleObject.data.story === editableTitle)) {
+
+    updatedData.then((storyOrRuleObject) => {
+      if (mode === 'new' && (storyOrRuleObject.data != null && (storyOrRuleObject.data.story === editableTitle || storyOrRuleObject.data.rule === editableTitle))) {
         setRefreshing(false);
       } else {
         setTimeout(() => {
