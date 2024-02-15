@@ -68,7 +68,7 @@ const HistoricalChat: FC<ChatProps> = ({ chat, trigger }) => {
       if(data.newIntent) {
         return addIntentWithExample({ intentName: data.intentName || '',newExamples:  data.example });
       }
-      return addExampleFromHistory(data.intent, { example: data.example });
+      return addExampleFromHistory(data.intentName || '', { example: data.example });
     },
     onSuccess: async () => {
       toast.open({
