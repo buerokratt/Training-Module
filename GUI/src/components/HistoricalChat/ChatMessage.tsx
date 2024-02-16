@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { format } from 'date-fns';
 
 import { Message } from 'types/message';
