@@ -16,7 +16,7 @@ import ReactFlow, {
   useEdgesState,
   useNodesState,
 } from 'reactflow';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import 'reactflow/dist/style.css';
 
@@ -26,12 +26,14 @@ import { Story, StoryDTO } from 'types/story';
 import { Form } from 'types/form';
 import { Slot } from 'types/slot';
 import { useToast } from 'hooks/useToast';
-import { addStory, deleteStory, editStory } from 'services/stories';
+import { addStoryOrRule, deleteStoryOrRule, editStoryOrRule } from 'services/stories';
 import CustomNode from './CustomNode';
 import useDocumentEscapeListener from '../../../hooks/useDocumentEscapeListener';
 import { generateStoryStepsFromNodes, generateNodesFromStorySteps } from 'services/rasa';
 import { GRID_UNIT, generateNewEdge, generateNewNode } from 'services/nodes';
 import './StoriesDetail.scss';
+import LoadingDialog from "../../../components/LoadingDialog";
+import {Rule, RuleDTO} from "../../../types/rule";
 
 
 const nodeTypes = {
@@ -57,7 +59,9 @@ const initialNodes: Node[] = [
 
 const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   const { t } = useTranslation();
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>()
+  const [storyId, setStoryId] = useState<string | undefined>(id);
+  const [ruleId, setRuleId] = useState<string | undefined>(id);
   const navigate = useNavigate();
   const toast = useToast();
   const queryClient = useQueryClient();
@@ -66,16 +70,23 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   const [deleteId, setDeleteId] = useState('');
   const [editableTitle, setEditableTitle] = useState<string | null>(null);
   const [story, setStory] = useState<Story | undefined | null>(null);
+  const [rule, setRule] = useState<Rule | undefined | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
+  const [category, setCategory] = useState<string>('stories');
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-
   const onConnect = useCallback((params: Connection) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
 
-  const { data: storyData } = useQuery<Story>({
-    queryKey: ['story-by-name', id],
-    enabled: !!id,
+  const { data: storyData, refetch: refetchStory } = useQuery<Story>({
+    queryKey: ['story-by-name', storyId],
+    enabled: !!storyId,
   });
+  const { data: ruleData, refetch: refetchRule } = useQuery<Rule>({
+    queryKey: ['rule-by-name', ruleId],
+    enabled: !!ruleId,
+  });
+
   const { data: intents } = useQuery<string[]>({
     queryKey: ['intents'],
   });
@@ -92,12 +103,16 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   useDocumentEscapeListener(() => setEditableTitle(null));
 
   useEffect(() => {
-    setStory(storyData ?? story);
+    if (category === 'rules') {
+      setRule(ruleData ?? rule);
+    } else {
+      setStory(storyData ?? story);
+    }
 
     let nodes = [...initialNodes];
     let edges: any[] = [];
 
-    generateNodesFromStorySteps(storyData?.steps || story?.steps || [])
+    generateNodesFromStorySteps(storyData?.steps || story?.steps || ruleData?.steps || rule?.steps || [])
       .forEach((x) => {
         edges.push(generateNewEdge(nodes, edges));
         nodes.push(generateNewNode({...x, nodes, handleNodeDelete, handleNodePayloadChange,}));
@@ -106,10 +121,11 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     setNodes(nodes);
     setEdges(edges);
 
-  }, [setEdges, setNodes, story, storyData]);
+  }, [category, rule, ruleData, setEdges, setNodes, story, storyData]);
 
   const addStoryMutation = useMutation({
-    mutationFn: (data: StoryDTO) => addStory(data),
+    mutationFn: ({data, category}:{data: StoryDTO, category: string}) => addStoryOrRule(data, category),
+    onMutate: () => setRefreshing(true),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['stories']);
       toast.open({
@@ -128,13 +144,14 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   });
 
   const editStoryMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string | number, data: StoryDTO }) => editStory(id, data),
+    mutationFn: ({ id, data, category }: { id: string, data: StoryDTO | RuleDTO, category: string }) => editStoryOrRule(id, data, category),
+    onMutate: () => setRefreshing(true),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['stories']);
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Story added',
+        message: 'Story updated',
       });
     },
     onError: (error: AxiosError) => {
@@ -144,18 +161,20 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
         message: error.message,
       });
     },
+    onSettled: () => setRefreshing(false),
   });
 
   const deleteStoryMutation = useMutation({
-    mutationFn: ({ id }: { id: string | number }) => deleteStory(id),
+    mutationFn: ({ id }: { id: string | number }) => deleteStoryOrRule(id),
+    onMutate: () => setRefreshing(true),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['stories']);
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Intent deleted',
+        message: 'Story deleted',
       });
-      navigate(import.meta.env.BASE_URL + 'treening/treening/kasutuslood');
+      navigate(import.meta.env.BASE_URL + 'treening/treening/stories');
     },
     onError: (error: AxiosError) => {
       toast.open({
@@ -164,6 +183,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
         message: error.message,
       });
     },
+    onSettled: () => setRefreshing(false),
   });
 
   const handleNodeDelete = (id: string) => {
@@ -229,28 +249,66 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
 
   const title = story?.story || t('global.title');
 
-  const handleGraphSave = () => {
+  const handleGraphSave = async () => {
     const isRename = editableTitle && editableTitle !== id;
     if(!isRename) {
       addOutputNode();
     }
+
+    if ((!title || title === '') && (!editableTitle || editableTitle === '')) {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: 'Title cannot be empty',
+      });
+      return;
+    }
+
     const data = {
       story: editableTitle || id || title,
       steps: generateStoryStepsFromNodes(nodes),
     };
-    
+
+    setRefreshing(true);
     if (mode === 'new') {
-      addStoryMutation.mutate(data);
+      addStoryMutation.mutate(data, category);
     }
     if (mode === 'edit' && id) {
       editStoryMutation.mutate({id, data});
     }
+    await handleMutationLoadingAfterPopulateTable(data);
 
-    if(isRename){
+    if (isRename) {
       navigate(`/training/stories/${editableTitle}`, { replace: true });
       setEditableTitle(null);
       setStory({ steps: story?.steps, story: editableTitle });
     }
+  };
+
+  const handleMutationLoadingAfterPopulateTable = async (data) => {
+    let updatedData;
+
+    if (storyId === undefined || ruleId === undefined) {
+      if (category === 'rules') {
+        setRuleId(editableTitle);
+        await refetchRule();
+        updatedData = refetchRule();
+      } else {
+        setStoryId(editableTitle);
+        await refetchStory();
+        updatedData = refetchStory();
+      }
+    }
+
+    updatedData.then((storyOrRuleObject) => {
+      if (mode === 'new' && (storyOrRuleObject.data != null && (storyOrRuleObject.data.story === editableTitle || storyOrRuleObject.data.rule === editableTitle))) {
+        setRefreshing(false);
+      } else {
+        setTimeout(() => {
+          handleMutationLoadingAfterPopulateTable(data);
+        }, 1000);
+      }
+    });
   };
 
   const handleGraphReset = () => {
@@ -424,40 +482,46 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
         </Track>
       </div>
 
+      {refreshing && (
+          <LoadingDialog title={t('global.updatingDataHead')} >
+            <p>{t('global.updatingDataBody')}</p>
+          </LoadingDialog>
+      )}
+
       <div className='graph'>
         <div className='graph__header'>
           <Track gap={16}>
-            {editableTitle ? (
-              <FormInput
-                label='Story title'
-                name='storyTitle'
-                value={editableTitle}
-                onChange={(e) =>
-                  setEditableTitle(e.target.value)
-                }
-                hideLabel
-              />
+            {editableTitle !== null ? (
+                <FormInput
+                    label='Story title'
+                    name='storyTitle'
+                    value={editableTitle}
+                    onChange={(e) =>
+                        setEditableTitle(e.target.value)
+                    }
+                    hideLabel
+                />
             ) : (
-              <h2 className='h3'>{title}</h2>
+                <h2 className='h3'>{title}</h2>
             )}
-            {editableTitle ? (
-              <Button
-                appearance='text'
-                onClick={handleGraphSave}
-              >
-                <Icon icon={<MdOutlineSave />} />
-                {t('global.save')}
-              </Button>
+            {editableTitle !== null ? (
+                <Button
+                    appearance='text'
+                    onClick={handleGraphSave}
+                >
+                  <Icon icon={<MdOutlineSave />} />
+                  {t('global.save')}
+                </Button>
             ) : (
-              <Button
-                appearance='text'
-                onClick={() =>
-                  setEditableTitle(title)
-                }
-              >
-                <Icon icon={<MdOutlineModeEditOutline />} />
-                {t('global.edit')}
-              </Button>
+                <Button
+                    appearance='text'
+                    onClick={() =>
+                        setEditableTitle(title)
+                    }
+                >
+                  <Icon icon={<MdOutlineModeEditOutline />} />
+                  {t('global.edit')}
+                </Button>
             )}
           </Track>
         </div>

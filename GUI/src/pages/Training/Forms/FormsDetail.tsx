@@ -53,14 +53,17 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
       setValue('form.name', formDetails.form?.name);
       setValue('responses.response', formDetails.responses?.response);
       // @ts-ignore
-      setValue('form.required_slots', formDetails.responses?.questions ?? []);
+      setValue('form.required_slots', formDetails.form?.required_slots ?? []);
       setValue('form.ignored_intents', formDetails.form?.ignored_intents ?? []);
+      reset(formDetails)
     } else {
       setValue('responses.response', '');
       setValue('form.required_slots', []);
       setValue('form.ignored_intents',  []);
     }
   }, [formDetails, reset]);
+
+  setTimeout(() => refetch(), 200);
 
   const newFormMutation = useMutation({
     mutationFn: (data: FormCreateDTO) => createForm(data),

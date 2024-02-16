@@ -37,11 +37,18 @@ const Forms: FC = () => {
       toast.open({
         type: 'error',
         title: t('global.notificationError'),
-        message: error.response?.data || error.message,
+        message: getErrorMessage(error),
       });
     },
     onSettled: () => setDeletableForm(null),
   });
+
+  const getErrorMessage = (error: AxiosError) => {
+    if(error.response && error.response.status === 409 && error.response.data) {
+      return t(error.response.data);
+    }
+    return error.message;
+  };
 
   const columnHelper = createColumnHelper<Form>();
 

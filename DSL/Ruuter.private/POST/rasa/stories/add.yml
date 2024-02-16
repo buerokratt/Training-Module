@@ -65,10 +65,6 @@ mergeStories:
       iteratee: "story"
   result: mergedStories
 
-#checkMerged:
-#  return: ${mergedStories.response.body}
-#  next: end
-
 convertJsonToYaml:
   call: http.post
   args:

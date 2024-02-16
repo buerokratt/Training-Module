@@ -1,6 +1,6 @@
 assign_values:
   assign:
-    body: ${incoming.body}
+    story: ${incoming.body.story}
 
 getStoriesWithName:
   call: http.post
@@ -9,12 +9,12 @@ getStoriesWithName:
     headers:
       cookie: ${incoming.headers.cookie}
     body:
-      story: ${body.story}
+      story: ${story}
   result: storiesResult
 
 validateStories:
   switch:
-    - condition: ${storiesResult.response.body.response.story == body.story}
+    - condition: ${storiesResult.response.body.response.data.story == story}
       next: getFileLocations
   next: returnStoryIsMissing
 
@@ -48,16 +48,17 @@ deleteStory:
     url: "[#TRAINING_DMAPPER]/dmapper/delete-story"
     body:
       stories: ${storiesData.response.body.stories}
-      story_name: ${body.story}
+      story_name: ${story}
   result: deleteStoriesData
 
 convertJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml-stories"
+    headers:
+      content-type: "application/json"
     body:
-      version: "3.0"
-      stories: ${deleteStoriesData.response.body}
+      stories: ${deleteStoriesData.response.body.data}
   result: storiesYaml
 
 saveStoriesFile:
@@ -68,14 +69,14 @@ saveStoriesFile:
       file_path: ${fileLocations.response.body.response.stories_location}
       content: ${storiesYaml.response.body.json}
   result: fileResult
-  next: updateOpenSearch
 
-updateOpenSearch:
-  call: http.delete
+deleteOpenSearchEntry:
+  call: http.post
   args:
-    url: "[#TRAINING_OPENSEARCH]/stories/_doc/${storiesResult.response.body.response.id}"
-  result: updateSearchResult
-  next: returnSuccess
+    url: "[#TRAINING_PIPELINE]/delete/object/stories"
+    body:
+      id: ${story}
+  result: deleteSearchResult
 
 returnSuccess:
   return: "Story deleted"

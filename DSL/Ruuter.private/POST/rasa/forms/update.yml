@@ -43,7 +43,7 @@ convertResponseInput:
 mergeResponses:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/replace/key-value-in-obj"
+    url: "[#TRAINING_DMAPPER]/merge/objects"
     body:
       object1: ${domainData.response.body.response.responses}
       object2: ${mappedResponses.response.body.data}
