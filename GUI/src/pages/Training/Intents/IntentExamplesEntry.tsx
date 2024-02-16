@@ -15,9 +15,13 @@ type IntentExamplesEntryProps = {
   value: string;
   entities: Entity[];
   onEntityAdd?: (example: string) => void;
-}
+};
 
-const IntentExamplesEntry: FC<IntentExamplesEntryProps> = ({ value, entities, onEntityAdd }) => {
+const IntentExamplesEntry: FC<IntentExamplesEntryProps> = ({
+  value,
+  entities,
+  onEntityAdd,
+}) => {
   const { t } = useTranslation();
   const toast = useToast();
   const [ref, setRef] = useState<HTMLElement | null>(null);
@@ -54,44 +58,66 @@ const IntentExamplesEntry: FC<IntentExamplesEntryProps> = ({ value, entities, on
     console.log(data);
   });
 
-  const parsedEntry = useMemo(() => regexifyString({
-    pattern: /\[(.+?)\]\((.+?)\)/gmu,
-    decorator: (match, index, result) => (
-      <Tooltip content={
-        <Track direction='vertical' gap={4} align='left' style={{ padding: 8 }}>
-          <h4>{result?.[1]}</h4>
-          <FormSelect
-            label={t('training.intents.entity')}
-            hideLabel
-            name='entity'
-            defaultValue={entities.find((e) => e.name === result?.[2])?.id + ''}
-            options={entities.map((e) => ({ label: e.name, value: e.id + '' }))}
-          />
-          <Track gap={4}>
-            <Button
-              appearance='error'
-              onClick={() => entityDeleteMutation.mutate({ id: value })}
-            >
-              {t('global.delete')}
-            </Button>
-            <Button>{t('global.save')}</Button>
-          </Track>
-        </Track>
-      }>
-        <span className='entity'>{result?.[1]}<span>{result?.[2]}</span></span>
-      </Tooltip>
-    ),
-    input: value,
-  }), [entities, entityDeleteMutation, t, value]);
+  const parsedEntry = useMemo(
+    () =>
+      regexifyString({
+        pattern: /\[(.+?)\]\((.+?)\)/gmu,
+        decorator: (match, index, result) => (
+          <Tooltip
+            content={
+              <Track
+                direction="vertical"
+                gap={4}
+                align="left"
+                style={{ padding: 8 }}
+              >
+                <h4>{result?.[1]}</h4>
+                <FormSelect
+                  label={t('training.intents.entity')}
+                  hideLabel
+                  name="entity"
+                  defaultValue={
+                    entities.find((e) => e.name === result?.[2])?.id + ''
+                  }
+                  options={entities.map((e) => ({
+                    label: e.name,
+                    value: e.id + '',
+                  }))}
+                />
+                <Track gap={4}>
+                  <Button
+                    appearance="error"
+                    onClick={() => entityDeleteMutation.mutate({ id: value })}
+                  >
+                    {t('global.delete')}
+                  </Button>
+                  <Button>{t('global.save')}</Button>
+                </Track>
+              </Track>
+            }
+          >
+            <span className="entity">
+              {result?.[1]}
+              <span>{result?.[2]}</span>
+            </span>
+          </Tooltip>
+        ),
+        input: value,
+      }),
+    [entities, entityDeleteMutation, t, value]
+  );
 
   return (
     <>
       <p ref={(el) => el !== null && setRef(el)}>
-        {parsedEntry.map((e, index) => <Fragment key={`${e.toString()}-${index}`}>{e}</Fragment>)}
+        {parsedEntry.map((e, index) => (
+          <Fragment key={`${e.toString()}-${index}`}>{e}</Fragment>
+        ))}
       </p>
       {ref && (
-        <Popover target={ref} render={
-          ({ clientRect, isCollapsed, textContent }) => {
+        <Popover
+          target={ref}
+          render={({ clientRect, isCollapsed, textContent }) => {
             if (!clientRect || isCollapsed) return null;
 
             const popoverStyles = {
@@ -119,9 +145,9 @@ const IntentExamplesEntry: FC<IntentExamplesEntryProps> = ({ value, entities, on
             return (
               <div style={popoverStyles}>
                 <Track
-                  direction='vertical'
+                  direction="vertical"
                   gap={4}
-                  align='stretch'
+                  align="stretch"
                   style={{ padding: 16 }}
                 >
                   <h4>{textContent}</h4>
@@ -129,17 +155,20 @@ const IntentExamplesEntry: FC<IntentExamplesEntryProps> = ({ value, entities, on
                     {...register('entity')}
                     label={t('training.intents.entity')}
                     hideLabel
-                    options={entities.map((e) => ({ label: e.name, value: e.id + '' }))}
+                    options={entities.map((e) => ({
+                      label: e.name,
+                      value: e.id + '',
+                    }))}
                   />
-                  <Track gap={4} justify='end'>
+                  <Track gap={4} justify="end">
                     <Button onClick={handleEntityAdd}>{t('global.add')}</Button>
                   </Track>
                 </Track>
                 <span style={arrowStyles}></span>
               </div>
             );
-          }
-        } />
+          }}
+        />
       )}
     </>
   );

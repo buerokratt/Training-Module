@@ -11,20 +11,33 @@ import {
   MdOutlineSave,
 } from 'react-icons/md';
 
-import {Button, Dialog, FormInput, Icon, Tooltip, Track} from 'components';
+import {
+  Button,
+  Dialog,
+  FormInput,
+  FormSelect,
+  Icon,
+  Modal,
+  Tooltip,
+  Track,
+} from 'components';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import { useToast } from 'hooks/useToast';
 import { Intent } from 'types/intent';
 import { Entity } from 'types/entity';
 import {
   addExample,
-  addIntent, addRemoveIntentModel,
-  deleteIntent, downloadExamples,
-  editIntent, getLastModified,
-  turnIntentIntoService, uploadExamples,
+  addIntent,
+  addRemoveIntentModel,
+  deleteIntent,
+  downloadExamples,
+  editIntent,
+  getLastModified,
+  turnIntentIntoService,
+  uploadExamples,
 } from 'services/intents';
 import IntentExamplesTable from './IntentExamplesTable';
-import LoadingDialog from "../../../components/LoadingDialog";
+import LoadingDialog from '../../../components/LoadingDialog';
 
 const Intents: FC = () => {
   const { t } = useTranslation();
@@ -33,15 +46,23 @@ const Intents: FC = () => {
   const [searchParams] = useSearchParams();
   const [filter, setFilter] = useState('');
   const [refreshing, setRefreshing] = useState(false);
-  const [editingIntentTitle, setEditingIntentTitle] = useState<string | null>(null);
+  const [editingIntentTitle, setEditingIntentTitle] = useState<string | null>(
+    null
+  );
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
   const [selectedIntent, setSelectedIntent] = useState<Intent | null>(null);
   const [deletableIntent, setDeletableIntent] = useState<Intent | null>(null);
-  const [turnIntentToServiceIntent, setTurnIntentToServiceIntent] = useState<
-    Intent | null
-  >(null);
+  const [turnIntentToServiceIntent, setTurnIntentToServiceIntent] =
+    useState<Intent | null>(null);
+  const [serviceConnected, setServiceConnected] = useState(false);
+  const [connectServiceModalOpen, setConnectServiceModalOpen] = useState(false);
+  const [connectedService, setConnectedService] = useState('');
 
-  const { data: intentsFullResponse, isLoading, refetch } = useQuery({
+  const {
+    data: intentsFullResponse,
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: ['intents/intents-full'],
   });
 
@@ -63,7 +84,7 @@ const Intents: FC = () => {
         inModel: intent.inmodel,
         modifiedAt: '',
         examplesCount: countExamples,
-        examples: intent.examples
+        examples: intent.examples,
       };
       intents.push(newIntent);
     });
@@ -77,17 +98,22 @@ const Intents: FC = () => {
     }
   };
 
-  const queryRefresh = useCallback(function queryRefresh(selectIntent: string | null) {
-    setSelectedIntent(null);
-    queryClient.fetchQuery(["intents/intents-full"]).then(() => {
-      setRefreshing(false);
-      if (intents.length > 0) {
-        setSelectedIntent(() => {
-          return intents.find((intent) => intent.intent === selectIntent) || null;
-        });
-      }
-    });
-  }, [intents, queryClient]);
+  const queryRefresh = useCallback(
+    function queryRefresh(selectIntent: string | null) {
+      setSelectedIntent(null);
+      queryClient.fetchQuery(['intents/intents-full']).then(() => {
+        setRefreshing(false);
+        if (intents.length > 0) {
+          setSelectedIntent(() => {
+            return (
+              intents.find((intent) => intent.intent === selectIntent) || null
+            );
+          });
+        }
+      });
+    },
+    [intents, queryClient]
+  );
 
   function isValidDate(dateString: string | number | Date) {
     const date = new Date(dateString);
@@ -102,7 +128,9 @@ const Intents: FC = () => {
   useEffect(() => {
     const queryIntentName = searchParams.get('intent');
     if (intents && queryIntentName) {
-      const queryIntent = intents.find((intent) => intent.intent === queryIntentName);
+      const queryIntent = intents.find(
+        (intent) => intent.intent === queryIntentName
+      );
       if (queryIntent) {
         setSelectedIntent(queryIntent);
         setSelectedTab(queryIntentName);
@@ -111,9 +139,14 @@ const Intents: FC = () => {
   }, [intents, searchParams]);
 
   const addExamplesMutation = useMutation({
-    mutationFn: (addExamplesData: { intentName: string, intentExamples: string[], newExamples: string }) =>
-        addExample(addExamplesData),
-    onMutate: () => { setRefreshing(true) },
+    mutationFn: (addExamplesData: {
+      intentName: string;
+      intentExamples: string[];
+      newExamples: string;
+    }) => addExample(addExamplesData),
+    onMutate: () => {
+      setRefreshing(true);
+    },
     onSuccess: async () => {
       await queryClient.invalidateQueries(['intents/intents-full']);
       await queryClient.refetchQueries(['intents/intents-full']);
@@ -137,7 +170,7 @@ const Intents: FC = () => {
     },
     onSettled: () => {
       queryRefresh(selectedIntent?.intent || '');
-    }
+    },
   });
 
   const deleteIntentMutation = useMutation({
@@ -146,7 +179,8 @@ const Intents: FC = () => {
       setRefreshing(true);
       setDeletableIntent(null);
       setSelectedIntent(null);
-      setSelectedTab(null); },
+      setSelectedTab(null);
+    },
     onSuccess: async () => {
       queryRefresh(null);
       setRefreshing(false);
@@ -164,9 +198,11 @@ const Intents: FC = () => {
       });
     },
     onSettled: () => {
-      intents = intents.filter(intent => intent.intent !== selectedIntent?.intent);
+      intents = intents.filter(
+        (intent) => intent.intent !== selectedIntent?.intent
+      );
       setRefreshing(false);
-    }
+    },
   });
 
   const intentModifiedMutation = useMutation({
@@ -174,7 +210,8 @@ const Intents: FC = () => {
   });
 
   const turnIntentIntoServiceMutation = useMutation({
-    mutationFn: ({ intent }: { intent: Intent }) => turnIntentIntoService(intent),
+    mutationFn: ({ intent }: { intent: Intent }) =>
+      turnIntentIntoService(intent),
     onSuccess: async (_, { intent }) => {
       await queryClient.invalidateQueries(['intents']);
       toast.open({
@@ -201,37 +238,38 @@ const Intents: FC = () => {
   }, [intents, filter]);
 
   const handleTabsValueChange = useCallback(
-      (value: string) => {
-        setEditingIntentTitle(null);
-        setSelectedIntent(null);
-        if (!intents) return;
-        const selectedIntent = intents.find((intent) => intent.intent === value);
-        if (selectedIntent) {
-          queryRefresh(selectedIntent.intent || '');
-          intentModifiedMutation.mutate(
-              { intentName: selectedIntent.intent },
-              {
-                onSuccess: (data) => {
-                  selectedIntent.modifiedAt = data.response;
-                  setSelectedIntent(selectedIntent);
-                  setSelectedTab(selectedIntent.intent);
-                },
-                onError: (error) => {
-                  selectedIntent.modifiedAt = "";
-                  setSelectedIntent(selectedIntent);
-                  setSelectedTab(selectedIntent.intent);
-                }
-              }
-          );
-        }
-      },
-      [intentModifiedMutation, intents, queryRefresh]
+    (value: string) => {
+      setEditingIntentTitle(null);
+      setSelectedIntent(null);
+      if (!intents) return;
+      const selectedIntent = intents.find((intent) => intent.intent === value);
+      if (selectedIntent) {
+        queryRefresh(selectedIntent.intent || '');
+        intentModifiedMutation.mutate(
+          { intentName: selectedIntent.intent },
+          {
+            onSuccess: (data) => {
+              selectedIntent.modifiedAt = data.response;
+              setSelectedIntent(selectedIntent);
+              setSelectedTab(selectedIntent.intent);
+            },
+            onError: (error) => {
+              selectedIntent.modifiedAt = '';
+              setSelectedIntent(selectedIntent);
+              setSelectedTab(selectedIntent.intent);
+            },
+          }
+        );
+      }
+    },
+    [intentModifiedMutation, intents, queryRefresh]
   );
-
 
   const newIntentMutation = useMutation({
     mutationFn: (data: { name: string }) => addIntent(data),
-    onMutate: () => { setRefreshing(true) },
+    onMutate: () => {
+      setRefreshing(true);
+    },
     onSuccess: async () => {
       queryRefresh(filter);
       toast.open({
@@ -255,8 +293,10 @@ const Intents: FC = () => {
 
   const intentEditMutation = useMutation({
     mutationFn: (editIntentData: { oldName: string; newName: string }) =>
-        editIntent(editIntentData),
-    onMutate: () => { setRefreshing(true); },
+      editIntent(editIntentData),
+    onMutate: () => {
+      setRefreshing(true);
+    },
     onSuccess: async () => {
       queryRefresh(editingIntentTitle);
       toast.open({
@@ -280,7 +320,7 @@ const Intents: FC = () => {
 
   const intentModelMutation = useMutation({
     mutationFn: (intentModelData: { name: string; inModel: boolean }) =>
-        addRemoveIntentModel(intentModelData),
+      addRemoveIntentModel(intentModelData),
     onMutate: () => {
       setRefreshing(true);
     },
@@ -315,7 +355,7 @@ const Intents: FC = () => {
 
   const intentDownloadMutation = useMutation({
     mutationFn: (intentModelData: { intentName: string }) =>
-        downloadExamples(intentModelData),
+      downloadExamples(intentModelData),
     onSuccess: (data) => {
       // @ts-ignore
       const blob = new Blob([data], { type: 'text/csv' });
@@ -342,8 +382,13 @@ const Intents: FC = () => {
   });
 
   const intentUploadMutation = useMutation({
-    mutationFn: ({ intentName, formData }: { intentName: string, formData: File }) =>
-        uploadExamples(intentName, formData),
+    mutationFn: ({
+      intentName,
+      formData,
+    }: {
+      intentName: string;
+      formData: File;
+    }) => uploadExamples(intentName, formData),
     onSuccess: () => {
       toast.open({
         type: 'success',
@@ -363,9 +408,9 @@ const Intents: FC = () => {
   const handleNewExample = (example: string) => {
     if (!selectedIntent) return;
     addExamplesMutation.mutate({
-        intentName: selectedIntent.intent,
-        intentExamples: selectedIntent.examples,
-        newExamples: example.trim()
+      intentName: selectedIntent.intent,
+      intentExamples: selectedIntent.examples,
+      newExamples: example.trim(),
     });
   };
 
@@ -387,15 +432,18 @@ const Intents: FC = () => {
       try {
         await intentUploadMutation.mutateAsync({
           intentName: selectedIntent?.id || '',
-          formData: file
+          formData: file,
         });
-      } catch (error) {
-      }
+      } catch (error) {}
     });
 
     input.click();
   };
 
+  const onModalClose = () => {
+    setConnectServiceModalOpen(false);
+    setConnectedService('');
+  };
 
   if (isLoading) return <>Loading...</>;
 
@@ -427,7 +475,9 @@ const Intents: FC = () => {
                   hideLabel
                 />
                 <Button
-                  onClick={() => newIntentMutation.mutate({ name: filter.trim() })}
+                  onClick={() =>
+                    newIntentMutation.mutate({ name: filter.trim() })
+                  }
                   disabled={!filter}
                 >
                   {t('global.add')}
@@ -521,16 +571,33 @@ const Intents: FC = () => {
                     </Track>
                     <p style={{ color: '#4D4F5D' }}>
                       {t('global.modifiedAt')}:
-                      {isValidDate(selectedIntent.modifiedAt) ? (
-                          ` ${format(new Date(selectedIntent.modifiedAt), 'dd.MM.yyyy')}`
-                      ) : (
-                          ` ${t('global.missing')}`
-                      )}
+                      {isValidDate(selectedIntent.modifiedAt)
+                        ? ` ${format(
+                            new Date(selectedIntent.modifiedAt),
+                            'dd.MM.yyyy'
+                          )}`
+                        : ` ${t('global.missing')}`}
                     </p>
-
-
                   </Track>
                   <Track justify="end" gap={8} isMultiline={true}>
+                    {serviceConnected ? (
+                      <Button appearance="secondary" onClick={() => {}}>
+                        {t('training.intents.connectedToService')}
+                      </Button>
+                    ) : (
+                      <Tooltip
+                        content={t('training.intents.mustBeConnectedToService')}
+                      >
+                        <span style={{ display: 'flex', alignItems: 'center' }}>
+                          <Button
+                            appearance="secondary"
+                            onClick={() => setConnectServiceModalOpen(true)}
+                          >
+                            {t('training.intents.connectToService')}
+                          </Button>
+                        </span>
+                      </Tooltip>
+                    )}
                     <Button
                       appearance="secondary"
                       onClick={() =>
@@ -541,9 +608,7 @@ const Intents: FC = () => {
                     </Button>
                     <Button
                       appearance="secondary"
-                      onClick={() =>
-                        handleIntentExamplesUpload()
-                      }
+                      onClick={() => handleIntentExamplesUpload()}
                     >
                       {t('training.intents.upload')}
                     </Button>
@@ -551,7 +616,7 @@ const Intents: FC = () => {
                       appearance="secondary"
                       onClick={() =>
                         intentDownloadMutation.mutate({
-                          intentName: selectedIntent.intent
+                          intentName: selectedIntent.intent,
                         })
                       }
                     >
@@ -570,12 +635,16 @@ const Intents: FC = () => {
                         {t('training.intents.removeFromModel')}
                       </Button>
                     ) : (
-                        <Button onClick={() =>
-                            intentModelMutation.mutate({
-                              name: selectedIntent.intent,
-                              inModel: false
-                            })
-                        }>{t('training.intents.addToModel')}</Button>
+                      <Button
+                        onClick={() =>
+                          intentModelMutation.mutate({
+                            name: selectedIntent.intent,
+                            inModel: false,
+                          })
+                        }
+                      >
+                        {t('training.intents.addToModel')}
+                      </Button>
                     )}
                     <Button
                       appearance="error"
@@ -589,7 +658,7 @@ const Intents: FC = () => {
               <div className="vertical-tabs__content">
                 {getExampleArrayForIntentId(selectedIntent) && (
                   <IntentExamplesTable
-                    examples={getExampleArrayForIntentId(selectedIntent) }
+                    examples={getExampleArrayForIntentId(selectedIntent)}
                     onAddNewExample={handleNewExample}
                     entities={entities ?? []}
                     selectedIntent={selectedIntent}
@@ -618,7 +687,7 @@ const Intents: FC = () => {
               <Button
                 appearance="error"
                 onClick={() =>
-                  deleteIntentMutation.mutate({name: deletableIntent.intent })
+                  deleteIntentMutation.mutate({ name: deletableIntent.intent })
                 }
               >
                 {t('global.yes')}
@@ -658,10 +727,46 @@ const Intents: FC = () => {
         </Dialog>
       )}
       {refreshing && (
-         <LoadingDialog title={t('global.updatingDataHead')} >
-              <p>{t('global.updatingDataBody')}</p>
-         </LoadingDialog>
+        <LoadingDialog title={t('global.updatingDataHead')}>
+          <p>{t('global.updatingDataBody')}</p>
+        </LoadingDialog>
       )}
+      <Modal
+        open={connectServiceModalOpen}
+        onClose={() => setConnectServiceModalOpen(false)}
+        title={
+          !Boolean(connectedService.length)
+            ? t('training.intents.connectToService')
+            : 'Kas soovid muuta staatuseks "kohal”?'
+        }
+        footer={
+          Boolean(connectedService.length) && (
+            <>
+              <Button appearance="secondary" onClick={onModalClose}>
+                Tühista
+              </Button>
+              <Button>Jah</Button>
+            </>
+          )
+        }
+      >
+        {!Boolean(connectedService.length) ? (
+          <FormSelect
+            value={connectedService}
+            onSelectionChange={(e) => setConnectedService(e?.value || '')}
+            name="connect_service"
+            options={[
+              { label: 'Service 1', value: 'service1' },
+              { label: 'Service 2', value: 'service2' },
+              { label: 'Service 3', value: 'service3' },
+              { label: 'Service 4', value: 'service4' },
+            ]}
+            label={t('training.intents.connectToService')}
+          />
+        ) : (
+          `Service to connect: ${connectedService}`
+        )}
+      </Modal>
     </>
   );
 };
