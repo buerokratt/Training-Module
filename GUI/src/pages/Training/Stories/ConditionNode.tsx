@@ -6,6 +6,7 @@ import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { Button, FormInput, FormSelect, Icon, Track } from 'components';
 import { Form } from 'types/form';
 import { MdOutlineDelete } from 'react-icons/md';
+import {Slot} from "../../../types/slot";
 
 type NodeDataProps = {
   data: {
@@ -30,6 +31,9 @@ const ConditionNode: FC<NodeDataProps> = ({ data }) => {
   const { t } = useTranslation();
   const { data: forms } = useQuery<Form[]>({
     queryKey: ['forms'],
+  });
+  const { data: slots } = useQuery<Slot[]>({
+    queryKey: ['slot-and-id'],
   });
   const { control, watch } = useForm<Conditions>({
     defaultValues: {
@@ -103,9 +107,13 @@ const ConditionNode: FC<NodeDataProps> = ({ data }) => {
                     render={({ field }) => (
                       <FormSelect
                         {...field}
-                        onSelectionChange={(selection) =>
-                          field.onChange(selection)
+                        onSelectionChange={(selection) => {
+                          field.onChange(selection);
+                          console.log(field)
+                          console.log(fields)
+                          }
                         }
+                        value={field.value.label}
                         label="slot"
                         options={
                           forms?.map((f) => ({
