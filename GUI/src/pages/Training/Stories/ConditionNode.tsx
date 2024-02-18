@@ -33,7 +33,7 @@ const ConditionNode: FC<NodeDataProps> = ({ data }) => {
     queryKey: ['forms'],
   });
   const { data: slots } = useQuery<Slot[]>({
-    queryKey: ['slot-and-id'],
+    queryKey: ['slots'],
   });
   const { control, watch } = useForm<Conditions>({
     defaultValues: {
@@ -68,9 +68,11 @@ const ConditionNode: FC<NodeDataProps> = ({ data }) => {
                   render={({ field }) => (
                     <FormSelect
                       {...field}
-                      onSelectionChange={(selection) =>
+                      onSelectionChange={(selection) => {
                         field.onChange(selection)
                       }
+                    }
+                      value={field.value?.label ?? null}
                       label="active_loop"
                       placeholder={t('training.forms.title') || ''}
                       options={
@@ -102,27 +104,22 @@ const ConditionNode: FC<NodeDataProps> = ({ data }) => {
               <Track key={item.id} style={{ width: '100%' }}>
                 <div style={{ flex: 1 }}>
                   <Controller
-                    name={`conditions.${index}.slot` as const}
-                    control={control}
-                    render={({ field }) => (
-                      <FormSelect
-                        {...field}
-                        onSelectionChange={(selection) => {
-                          field.onChange(selection);
-                          console.log(field)
-                          console.log(fields)
-                          }
-                        }
-                        value={field.value.label}
-                        label="slot"
-                        options={
-                          forms?.map((f) => ({
-                            label: f.form,
-                            value: String(f.id),
-                          })) || []
-                        }
-                      />
-                    )}
+                      name={`conditions.${index}.slot` as const}
+                      control={control}
+                      render={({ field }) => (
+                          <FormSelect
+                              {...field}
+                              onSelectionChange={(selection) => {
+                                field.onChange(selection);
+                              }}
+                              value={field.value?.label ?? null}
+                              label="slot"
+                              options={Array.from(new Set(slots || [])).map((f) => ({
+                                label: f.id,
+                                value: String(f.id),
+                              }))}
+                          />
+                      )}
                   />
                 </div>
                 <Button appearance="icon" onClick={() => remove(index)}>
