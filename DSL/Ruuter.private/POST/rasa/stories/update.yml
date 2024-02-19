@@ -124,6 +124,7 @@ returnSuccess:
 
 returnStoryIsMissing:
   return: "Can't find story to update"
+  status: 409
   next: end
 
 returnStoryExists:
