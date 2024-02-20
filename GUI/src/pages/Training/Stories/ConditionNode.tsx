@@ -35,7 +35,7 @@ const ConditionNode: FC<NodeDataProps> = ({ data }) => {
   const { data: slots } = useQuery<Slot[]>({
     queryKey: ['slots'],
   });
-  const { control, watch } = useForm<Conditions>({
+  const { control, watch, reset} = useForm<Conditions>({
     defaultValues: {
       conditions: [{ active_loop: '' }, { slot: '', value: 'null' }],
     },
