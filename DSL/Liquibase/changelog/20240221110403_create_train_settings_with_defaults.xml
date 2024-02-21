@@ -25,7 +25,7 @@
 
         <insert tableName="train-settings">
             <column name="folds" valueNumeric="8"/>
-            <column name="scheduled" valueBoolean="false"/>
+            <column name="scheduled" valueBoolean="true"/>
             <column name="from" valueComputed="CURRENT_TIMESTAMP"/>
             <column name="daysOfWeek" value="1,2,3"/>
         </insert>
