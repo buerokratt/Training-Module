@@ -28,6 +28,8 @@
     "@tanstack/match-sorter-utils": "^8.7.2",
     "@tanstack/react-query": "^4.20.4",
     "@tanstack/react-table": "^8.7.4",
+    "linkify-react": "^4.1.1",
+    "linkifyjs": "^4.1.1",
     "axios": "^1.2.1",
     "buffer": "^6.0.3",
     "clsx": "^1.2.1",
