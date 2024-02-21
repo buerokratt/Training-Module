@@ -5,7 +5,7 @@
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
 
     <changeSet id="20240221110403" author="DV">
-        <createTable tableName="training-settings">
+        <createTable tableName="train-settings">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -15,12 +15,19 @@
             <column name="scheduled" type="boolean">
                 <constraints nullable="false"/>
             </column>
-            <column name="daysOfWeek" type="varchar(10)">
+            <column name="daysOfWeek" type="varchar(15)">
                 <constraints nullable="true"/>
             </column>
             <column name="from" type="timestamp with time zone">
                 <constraints nullable="true"/>
             </column>
         </createTable>
+
+        <insert tableName="train-settings">
+            <column name="folds" valueNumeric="8"/>
+            <column name="scheduled" valueBoolean="false"/>
+            <column name="from" valueComputed="CURRENT_TIMESTAMP"/>
+            <column name="daysOfWeek" value="1,2,3"/>
+        </insert>
     </changeSet>
 </databaseChangeLog>

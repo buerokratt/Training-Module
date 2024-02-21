@@ -1,0 +1,11 @@
+getFromDatabase:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/get-train-settings"
+    body:
+      intent: ${incoming.body.intentName}
+  result: addInDatabaseResult
+
+returnSuccess:
+  return: ${domainData.response.body}
+  next: end

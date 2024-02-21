@@ -1,0 +1,22 @@
+assignValues:
+  assign:
+    daysOfWeek: ${incoming.body.daysOfWeek}
+    from: ${incoming.body.from}
+    folds: ${incoming.body.folds}
+    scheduled: ${incoming.body.scheduled}
+
+addInDatabase:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/update-train-settings"
+    body:
+      daysOfWeek: ${daysOfWeek}
+      from: ${from}
+      folds: ${folds}
+      scheduled: ${scheduled}
+  result: dbResult
+
+returnSuccess:
+  return: ${dbResult.response.body}
+  wrapper: false
+  next: end
