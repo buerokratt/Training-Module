@@ -48,7 +48,7 @@ deleteRule:
   args:
     url: "[#TRAINING_DMAPPER]/dmapper/delete-rule"
     body:
-      rules: ${rulesData.response.body.rules}
+      rules: ${rulesData.response.body}
       rule_name: ${body.id}
   result: deleteRulesData
 
@@ -57,7 +57,7 @@ mergeRules:
   args:
     url: "[#TRAINING_DMAPPER]/merge"
     body:
-      array1: ${deleteRulesData.response.body.data}
+      array1: ${deleteRulesData.response.body.data[1]}
       array2: ${[ruleData]}
       iteratee: "rule"
   result: mergedRules
@@ -66,8 +66,9 @@ convertJsonToYaml:
   call: http.post
   args:
     url: "[#TRAINING_DMAPPER]/convert/json-to-yaml-stories"
+    headers:
+      content-type: "application/json"
     body:
-      version: "3.0"
       rules: ${mergedRules.response.body}
   result: rulesYaml
 

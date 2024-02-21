@@ -19,7 +19,7 @@ router.post('/', multer().array('file'), async (req, res) => {
                         case !!step.intent:
                             formattedStep.intent = step.intent;
                             break;
-                        case !!step.entities && step.entities.length > 0:
+                        case !!step.entities:
                             formattedStep.entities = step.entities;
                             break;
                         case !!step.action:
@@ -49,7 +49,7 @@ router.post('/', multer().array('file'), async (req, res) => {
                         case !!step.intent:
                             formattedStep.intent = step.intent;
                             break;
-                        case !!step.entities && step.entities.length > 0:
+                        case !!step.entities:
                             formattedStep.entities = step.entities;
                             break;
                         case !!step.action:

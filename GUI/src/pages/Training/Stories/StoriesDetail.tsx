@@ -307,7 +307,8 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     }
 
     updatedData.then((storyOrRuleObject) => {
-      if (mode === 'new' && (storyOrRuleObject.data != null && (storyOrRuleObject.data.story === editableTitle || storyOrRuleObject.data.rule === editableTitle))) {
+      if (mode === 'new' && (storyOrRuleObject.data != null && (storyOrRuleObject.data.story === editableTitle ||
+                                                                storyOrRuleObject.data.rule === editableTitle))) {
         setRefreshing(false);
       } else {
         setTimeout(() => {
