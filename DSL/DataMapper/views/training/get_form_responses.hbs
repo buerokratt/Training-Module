@@ -1,7 +1,7 @@
 {
     {{#notEmpty responses.response}}
         "{{ concatStringIfAbsent (addStringIfAbsent form_name 'utter_') '_form' }}": [
-            { "text": "{{ responses.response }}" }
+            { "text": "{{{ responses.response }}}" }
         ]
         {{#if (arrayIsNotEmpty (filterArrayByKey responses.questions 'question')) }}
             ,
@@ -9,7 +9,7 @@
     {{/notEmpty}}
     {{#each (filterArrayByKey responses.questions 'question') as | question | }}
         "{{ addStringIfAbsent question.slot_name 'utter_ask_' }}": [
-            {"text": "{{ question.question }}"}
+            {"text": "{{{ question.question }}}"}
         ]{{#unless @last}},{{/unless}}
     {{/each}}
 }
