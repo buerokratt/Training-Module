@@ -5,7 +5,7 @@ assign_values:
 validateRules:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/validate/validate-stories"
+    url: "[#TRAINING_DMAPPER]/validate/validate-stories-rules"
     body:
       story: ${body}
       category: "rules"
@@ -13,12 +13,12 @@ validateRules:
 
 validateRulesCheck:
   switch:
-    - condition: ${validateStoriesResult.response.body.result == true}
+    - condition: ${validateRulesResult.response.body.result == true}
       next: getRuleNames
   next: returnDuplicateIntentOrEntity
 
 getRuleNames:
-  call: http.post
+  call: http.get
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]/rasa/rule-names"
     headers:
@@ -60,7 +60,7 @@ mergeRules:
   args:
     url: "[#TRAINING_DMAPPER]/merge"
     body:
-      array1: ${rulesData.response.body.id}
+      array1: ${rulesData.response.body.rules}
       array2: ${[body]}
       iteratee: "rule"
   result: mergedRules
@@ -68,9 +68,10 @@ mergeRules:
 convertJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml-stories"
+    headers:
+      content-type: "application/json"
     body:
-      version: "3.0"
       rules: ${mergedRules.response.body}
   result: rulesYaml
 
