@@ -2,21 +2,34 @@ assign_values:
   assign:
     body: ${incoming.body}
 
-getRuleWithName:
+validateRules:
   call: http.post
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]/rasa/rules"
+    url: "[#TRAINING_DMAPPER]/validate/validate-stories"
+    body:
+      story: ${body}
+      category: "rules"
+  result: validateRulesResult
+
+validateRulesCheck:
+  switch:
+    - condition: ${validateStoriesResult.response.body.result == true}
+      next: getRuleNames
+  next: returnDuplicateIntentOrEntity
+
+getRuleNames:
+  call: http.post
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/rasa/rule-names"
     headers:
       cookie: ${incoming.headers.cookie}
-    body:
-      rule: ${body.rule}
   result: ruleResult
 
-validateRules:
+validateRuleName:
   switch:
-    - condition: ${ruleResult.response.body.response.data.rule != body.rule}
+    - condition: ${!ruleResult.response.body.response.data.names.includes(body.id)}
       next: getFileLocations
-  next: returnRuleExists
+  next: returnStoryExists
 
 getFileLocations:
   call: http.get
@@ -47,7 +60,7 @@ mergeRules:
   args:
     url: "[#TRAINING_DMAPPER]/merge"
     body:
-      array1: ${rulesData.response.body.rules}
+      array1: ${rulesData.response.body.id}
       array2: ${[body]}
       iteratee: "rule"
   result: mergedRules
@@ -87,4 +100,9 @@ returnSuccess:
 returnRuleExists:
   return: "Rule exists"
   status: 409
+  next: end
+
+returnDuplicateIntentOrEntity:
+  return: "Rule may not have duplicate consecutive intents or entities"
+  status: 406
   next: end

@@ -1,7 +1,6 @@
 assign_values:
   assign:
     body: ${incoming.body}
-    bodyStringify: ${JSON.stringify(incoming.body)}
 
 validateStories:
   call: http.post
@@ -9,6 +8,7 @@ validateStories:
     url: "[#TRAINING_DMAPPER]/validate/validate-stories"
     body:
       story: ${body}
+      category: "stories"
   result: validateStoriesResult
 
 validateStoriesCheck:

@@ -109,7 +109,7 @@ const Stories: FC = () => {
       cell: (props) => (
         <Button
           appearance='text'
-          onClick={() => navigate(`rules/${props.row.original.id}`)}
+          onClick={() => navigate(`rules/${props.row.original.id}`, { state: { category: 'rules' } })}
         >
           <Icon
             label={t('global.edit')}
