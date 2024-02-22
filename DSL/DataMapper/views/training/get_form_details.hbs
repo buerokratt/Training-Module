@@ -17,8 +17,8 @@
         "questions": [
             {{#each details.requiredSlots }}
                 {
-                "slot_name": "{{ slot_name }}",
-                "question": "{{ question }}"
+                "slot_name": "{{{ slot_name }}}",
+                "question": "{{{ question }}}"
                 }{{#unless @last}},{{/unless}}
             {{/each}}
         ]

@@ -4,8 +4,8 @@
         {{#if (eq this._id "entities") }}
             {{#each this._source.entities}}
                 {
-                  "id": "{{ this }}",
-                  "name": "{{ this }}"
+                  "id": "{{{ this }}}",
+                  "name": "{{{ this }}}"
                 }
                 {{#unless @last}},{{/unless}}
             {{/each}}

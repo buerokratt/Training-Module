@@ -5,7 +5,7 @@
     "title": "{{_source.intent}}",
     "examples": [
     {{#each _source.examples}}
-        "{{this}}"{{#unless @last}},{{/unless}}
+        "{{{ this }}}"{{#unless @last}},{{/unless}}
     {{/each}}
     ]
     }{{#unless @last}},{{/unless}}
