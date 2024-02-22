@@ -141,6 +141,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
         message: error.message,
       });
     },
+    onSettled: () => setRefreshing(false),
   });
 
   const editStoryMutation = useMutation({
