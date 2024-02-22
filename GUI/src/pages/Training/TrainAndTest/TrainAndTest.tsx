@@ -1,14 +1,13 @@
-import {Box, Button, Card, FormInput, FormSelect, Switch} from 'components';
+import {Button, Card, FormInput, Switch} from 'components';
 import {t} from 'i18next';
 import styles from './TrainAndTest.module.scss';
-import FormDaySelect, {DaysSelect} from 'components/FormElements/FormDaySelect/FormDaySelect';
-import {AiOutlineExclamationCircle} from 'react-icons/ai';
+import FormDaySelect, {DAYS, DaysSelect} from 'components/FormElements/FormDaySelect/FormDaySelect';
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import {TrainConfigData, TrainConfigDataEditDTO} from "../../../types/trainSettings";
+import {TrainConfigDataDTO, TrainConfigDataEditDTO} from "../../../types/trainSettings";
 import {Controller, useForm} from "react-hook-form";
 import {AxiosError} from "axios";
 import {useToast} from "../../../hooks/useToast";
-import {updateTrainSettings} from "../../../services/train-settings";
+import {convertFromDaySelect, convertToDaySelect, updateTrainSettings} from "../../../services/train-settings";
 import React, {useEffect, useState} from "react";
 
 type Props = {};
@@ -16,32 +15,33 @@ type Props = {};
 const TrainAndTest = (props: Props) => {
     const toast = useToast();
     const queryClient = useQueryClient();
-    const {data: configData, refetch} = useQuery<TrainConfigData>({
+    const {data: configData, refetch} = useQuery<TrainConfigDataDTO>({
         queryKey: ['training/train-settings'],
     });
     const [folds, setFolds] = useState<string>('0');
     const [scheduled, setScheduled] = useState<boolean>(false);
     const [date, setDate] = useState<string>(new Date().toISOString().split('T')[0]);
-    const [time, setTime] = useState<string>('12:00:00');
-    const [days, setDays] = useState<DaysSelect[]>([]);
+    const [time, setTime] = useState<string>('17:00:00');
+    const [days, setDays] = useState<DaysSelect[]>(DAYS);
 
-    const {register, control, handleSubmit, reset} = useForm<TrainConfigDataEditDTO>({
+    const {register, control, handleSubmit, reset} = useForm<TrainConfigDataDTO>({
         mode: 'onChange',
         shouldUnregister: true,
     });
 
     useEffect(() => {
         if (configData) {
-            console.log(String(configData[0].folds));
-            console.log(configData[0])
-            setFolds(String(configData[0].folds));
-            setScheduled(configData[0].scheduled)
-            reset(configData[0]);
+            setFolds(String(configData.folds));
+            setDays(convertToDaySelect(configData.daysofweek || '', days))
+            setScheduled(configData.scheduled)
+            setDate(configData.fromdate.split('T')[0])
+            setTime(configData.fromdate.split("T")[1].split(".")[0])
+            reset(configData);
         }
     }, [reset, configData]);
 
     const trainSettingsEditMutation = useMutation({
-        mutationFn: (request: TrainConfigDataEditDTO) => updateTrainSettings(request),
+        mutationFn: (request: TrainConfigDataDTO) => updateTrainSettings(request),
         onSuccess: async () => {
             await queryClient.invalidateQueries(['training/train-settings']);
             refetch();
@@ -61,8 +61,9 @@ const TrainAndTest = (props: Props) => {
     });
 
     const handleTrainSettingsSave = handleSubmit((data) => {
-        console.log(data)
-        // trainSettingsEditMutation.mutate(data);
+        data.fromdate = new Date(`${date}T${time}.000Z`).toISOString();
+        data.daysofweek = convertFromDaySelect(days);
+        trainSettingsEditMutation.mutate(data);
     });
 
     return (
@@ -164,8 +165,10 @@ const TrainAndTest = (props: Props) => {
                                 <Controller name='days' control={control} render={({ field }) =>
                                     <FormDaySelect
                                         {...field}
+                                        value={days}
                                         onCheckedChange={(days) => {
                                             setDays(days);
+                                            console.log(days)
                                             field.onChange(days);
                                         }}
                                     />

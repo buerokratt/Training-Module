@@ -1,3 +1,1 @@
-SELECT * from "train-settings" ts
-ORDER BY ts.id
-LIMIT 1;
+SELECT * FROM "train-settings" WHERE id=(SELECT max(id) FROM "train-settings");

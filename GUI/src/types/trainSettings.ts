@@ -8,5 +8,12 @@ export interface TrainConfigData {
     time: string | null;
 }
 
+export interface TrainConfigDataDTO {
+    folds: number;
+    scheduled: boolean;
+    fromdate: string;
+    daysofweek: string;
+}
+
 export interface TrainConfigDataEditDTO extends Omit<TrainConfigData, 'id'> {
 }

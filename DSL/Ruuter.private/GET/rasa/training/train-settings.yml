@@ -1,22 +1,21 @@
-assignValues:
-  assign:
-    daysOfWeek: ${incoming.body.daysOfWeek}
-    from: ${incoming.body.from}
-    folds: ${incoming.body.folds}
-    scheduled: ${incoming.body.scheduled}
-
-addInDatabase:
+getFromDatabase:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/update-train-settings"
-    body:
-      daysOfWeek: ${daysOfWeek}
-      from: ${from}
-      folds: ${folds}
-      scheduled: ${scheduled}
+    url: "[#TRAINING_RESQL]/get-train-settings"
   result: dbResult
 
+validateDbRecords:
+  switch:
+    - condition: ${dbResult.response.body.length !== 0}
+      next: returnSuccess
+  next: returnError
+
 returnSuccess:
-  return: ${dbResult.response.body}
+  return: ${dbResult.response.body[0]}
   wrapper: false
+  next: end
+
+returnError:
+  return: "Can't find train settings record."
+  status: 409
   next: end

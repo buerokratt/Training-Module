@@ -15,10 +15,10 @@
             <column name="scheduled" type="boolean">
                 <constraints nullable="false"/>
             </column>
-            <column name="daysOfWeek" type="varchar(15)">
+            <column name="daysofweek" type="varchar(15)">
                 <constraints nullable="true"/>
             </column>
-            <column name="from" type="timestamp with time zone">
+            <column name="fromdate" type="timestamp with time zone">
                 <constraints nullable="true"/>
             </column>
         </createTable>
@@ -26,8 +26,8 @@
         <insert tableName="train-settings">
             <column name="folds" valueNumeric="8"/>
             <column name="scheduled" valueBoolean="true"/>
-            <column name="from" valueComputed="CURRENT_TIMESTAMP"/>
-            <column name="daysOfWeek" value="1,2,3"/>
+            <column name="fromdate" valueComputed="CURRENT_TIMESTAMP"/>
+            <column name="daysofweek" value="1,2,3"/>
         </insert>
     </changeSet>
 </databaseChangeLog>

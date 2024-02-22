@@ -1,11 +1,22 @@
-getFromDatabase:
+assignValues:
+  assign:
+    daysofweek: ${incoming.body.daysofweek}
+    fromdate: ${incoming.body.fromdate}
+    folds: ${incoming.body.folds}
+    scheduled: ${incoming.body.scheduled}
+
+updateInDatabase:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/get-train-settings"
+    url: "[#TRAINING_RESQL]/add-train-settings"
     body:
-      intent: ${incoming.body.intentName}
-  result: addInDatabaseResult
+      daysofweek: ${daysofweek}
+      fromdate: ${fromdate}
+      folds: ${folds}
+      scheduled: ${scheduled}
+  result: dbResult
 
 returnSuccess:
-  return: ${domainData.response.body}
+  return: 'Updated Successfully.'
+  wrapper: false
   next: end
