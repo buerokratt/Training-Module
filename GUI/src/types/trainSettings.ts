@@ -9,10 +9,18 @@ export interface TrainConfigData {
 }
 
 export interface TrainConfigDataDTO {
-    folds: number;
+    rasaFolds: number;
     scheduled: boolean;
-    fromdate: string;
-    daysofweek: string;
+    fromDate: string;
+    daysOfWeek: string;
+    modifierId: string;
+    modifierName: string;
+}
+
+export interface TrainedDataDTO {
+    modelType: string;
+    state: string;
+    trainedDate: string;
 }
 
 export interface TrainConfigDataEditDTO extends Omit<TrainConfigData, 'id'> {

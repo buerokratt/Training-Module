@@ -1,5 +1,6 @@
 import { ChangeEvent, FC, useState } from 'react';
 import styles from './FormDaySelect.module.scss';
+import {useTranslation} from "react-i18next";
 
 export type DaysSelect = {
   checked: boolean;
@@ -13,17 +14,18 @@ type Props = {
 };
 
 export const DAYS = [
-  { id: '1', checked: true, name: 'Esmaspäev' },
-  { id: '2', checked: false, name: 'Teisipäev' },
-  { id: '3', checked: false, name: 'Kolmapäev' },
-  { id: '4', checked: false, name: 'Neljapäev' },
-  { id: '5', checked: false, name: 'Reede' },
-  { id: '6', checked: false, name: 'Laupäev' },
-  { id: '7', checked: false, name: 'Pühapäev' },
+  { id: '1', checked: true, name: 'global.days.monday' },
+  { id: '2', checked: false, name: 'global.days.tuesday' },
+  { id: '3', checked: false, name: 'global.days.wednesday' },
+  { id: '4', checked: false, name: 'global.days.thursday' },
+  { id: '5', checked: false, name: 'global.days.friday' },
+  { id: '6', checked: false, name: 'global.days.saturday' },
+  { id: '7', checked: false, name: 'global.days.sunday' },
 ];
 
 const FormDaySelect: FC<Props> = ({ onCheckedChange, value }) => {
   const [data, setData] = useState<DaysSelect[]>(value || DAYS);
+  const { t } = useTranslation();
 
   const updateFieldChanged =
     (i: number) => (e: ChangeEvent<HTMLInputElement>) => {
@@ -41,12 +43,12 @@ const FormDaySelect: FC<Props> = ({ onCheckedChange, value }) => {
           <div key={i} className={styles.inputs}>
             <input
               type="checkbox"
-              name={day.name}
+              name={t(day.name).toString()}
               defaultChecked={day.checked}
               onChange={updateFieldChanged(i)}
               id={`${index}`}
             />
-            <label htmlFor={`${index}`}>{day.name.slice(0, 1)}</label>
+            <label htmlFor={`${index}`}>{t(day.name).slice(0, 1)}</label>
           </div>
         );
       })}

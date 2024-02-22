@@ -1,1 +1,1 @@
-SELECT * FROM "train-settings" WHERE id=(SELECT max(id) FROM "train-settings");
+SELECT * FROM train_settings WHERE id=(SELECT max(id) FROM train_settings);

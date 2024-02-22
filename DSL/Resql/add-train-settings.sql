@@ -1,2 +1,2 @@
-INSERT INTO "train-settings" (folds, scheduled, daysOfWeek, fromDate)
-VALUES (:folds, :scheduled, :daysofweek, TO_TIMESTAMP(:fromdate,'YYYY-MM-DD"T"HH24:MI:SS'));
+INSERT INTO train_settings (rasa_folds, scheduled, days_of_week, from_date, last_modified, modifier_id, modifier_name)
+VALUES (:rasa_folds, :scheduled, :days_of_week, TO_TIMESTAMP(:from_date,'YYYY-MM-DD"T"HH24:MI:SS'), CURRENT_TIMESTAMP , :modifier_id, :modifier_name);

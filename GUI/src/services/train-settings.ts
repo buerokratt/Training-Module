@@ -3,7 +3,7 @@ import api from "./api";
 import {DaysSelect} from "../components/FormElements/FormDaySelect/FormDaySelect";
 
 export async function updateTrainSettings(request: TrainConfigDataDTO) {
-    const { data } = await api.post<TrainConfigDataDTO>(`training/train-settings`, request);
+    const { data } = await api.post<TrainConfigDataDTO>(`training/settings`, request);
     return data;
 }
 
