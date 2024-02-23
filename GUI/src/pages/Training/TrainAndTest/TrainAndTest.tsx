@@ -27,7 +27,8 @@ const TrainAndTest = () => {
     const [time, setTime] = useState<string>('17:00:00');
     const [days, setDays] = useState<DaysSelect[]>(DAYS);
     const [llmFailed, setLlmFailed] = useState<boolean>(false);
-    const [lastTrained, setLastTrained] = useState<string>(new Date().toISOString().split('T')[0]);
+    const [lastTrainedDay, setLastTrainedDay] = useState<string>(new Date().toISOString().split('T')[0]);
+    const [lastTrainedTime, setLastTrainedTime] = useState<string>(new Date().toISOString().split("T")[1].split(".")[0]);
     const userInfo = useStore((state) => state.userInfo);
 
     const {control, handleSubmit, reset} = useForm<TrainConfigDataDTO>({
@@ -44,13 +45,13 @@ const TrainAndTest = () => {
             setTime(settingsData.fromDate.split("T")[1].split(".")[0]);
             reset(settingsData);
         }
-    }, [reset, settingsData]);
+    }, [days, reset, settingsData]);
 
     useEffect(() => {
-        console.log(t('global.days.monday'))
         if(trainedData) {
             setLlmFailed(trainedData.state === 'FAIL');
-            setLastTrained(trainedData.trainedDate);
+            setLastTrainedTime(trainedData.trainedDate.split("T")[1].split(".")[0]);
+            setLastTrainedDay(formatDate(trainedData.trainedDate.split('T')[0]));
         }
     }, [trainedData]);
 
@@ -92,8 +93,8 @@ const TrainAndTest = () => {
                 <h1>{t('training.trainNew.title')}</h1>
                 <p className={styles.top__date}>
                     {t('training.trainNew.lastTrained', {
-                        date: formatDate(lastTrained.split('T')[0]),
-                        time: trainedData?.trainedDate.split("T")[1].split(".")[0],
+                        date: lastTrainedDay,
+                        time: lastTrainedTime,
                     })}
                 </p>
                 <Button appearance="primary">{t('training.trainNew.trainNow')}</Button>
@@ -111,8 +112,8 @@ const TrainAndTest = () => {
                 <AiOutlineExclamationCircle/>
                 <p className={styles.warning}>
                     {t('training.trainNew.warning', {
-                        date: formatDate(lastTrained.split('T')[0]),
-                        time: trainedData?.trainedDate.split("T")[1].split(".")[0],
+                        date: lastTrainedDay,
+                        time: lastTrainedTime,
                     })}
                 </p>
             </Box>)}
