@@ -6,7 +6,6 @@ assignValues:
     scheduled: ${incoming.body.scheduled}
     modifierId: ${incoming.body.modifierId}
     modifierName: ${incoming.body.modifierName}
-#  next: checkEntity
 
 updateInDatabase:
   call: http.post
@@ -25,11 +24,3 @@ returnSuccess:
   return: 'Updated Successfully.'
   wrapper: false
   next: end
-
-checkEntity:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/dmapper/checkV"
-    body:
-      hits: ${incoming.body}
-  result: fileResult
