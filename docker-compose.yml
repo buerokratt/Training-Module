@@ -28,7 +28,7 @@ services:
       - bykstack
 
   resql:
-    container_name: resql
+    container_name: byk-resql
     image: resql
     depends_on:
       - database
