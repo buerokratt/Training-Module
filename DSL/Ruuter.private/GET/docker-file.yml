@@ -1,0 +1,34 @@
+assign_location:
+  assign:
+#    location: '/mock1/config/domain.yml'
+#    location: '/mock1/config/docker-compose.yml'
+    location: '/mock1/docker-compose.yml'
+
+getDockerFile:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file/read"
+    body:
+      file_path: ${location}
+  result: configFile
+
+convertYamlToJson:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
+    body:
+      file: ${configFile.response.body.file}
+  result: configData
+#  next: checkEntity
+
+returnSuccess:
+  return: ${configData.response.body}
+  next: end
+
+checkEntity:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/dmapper/checkV"
+    body:
+      hits: ${configData.response.body.services['test-bot-cv'].command}
+  result: fileResult

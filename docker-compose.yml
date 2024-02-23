@@ -113,6 +113,18 @@ services:
     networks:
       - bykstack
 
+  cron-manager:
+    container_name: cron-manager
+    image: cron_manager
+    volumes:
+      - ./DSL/CronManager:/DSL
+    environment:
+      - server.port=9010
+    ports:
+      - 9010:8080
+    networks:
+      - bykstack
+
 volumes:
   opensearch-data:
 networks:
