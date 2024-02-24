@@ -1,0 +1,25 @@
+saveFile:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file/write"
+    body:
+      file_path: ${incoming.body.location}
+      content: ${incoming.body.yaml}
+  result: fileResult
+
+check-if-cron-is-changed:
+  switch:
+    - condition: ${incoming.body.location.includes('CronManager')}
+      next: refreshCronManagerIfChanged
+  next: return_result
+
+refreshCronManagerIfChanged:
+  call: http.post
+  args:
+    url: "[#CRON_MANAGER]/reload/CronManager"
+  result: cronResult
+
+return_result:
+  reloadDsl: true
+  return: "Saved Successfully"
+  next: end
