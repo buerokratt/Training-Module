@@ -13,10 +13,10 @@ function validateStepsForNoConsecutiveDuplicates(steps) {
         const previousStep = steps[i - 1];
 
         if (currentStep.entities && previousStep.entities && areConsecutive(currentStep, previousStep)) {
-            const currentEntities = currentStep.entities.map(entity => entity.entity);
-            const previousEntities = previousStep.entities.map(entity => entity.entity);
+            const currententities = currentstep.entities.map(entity => entity.entity);
+            const previousentities = previousstep.entities.map(entity => entity.entity);
 
-            if (hasCommonElement(currentEntities, previousEntities)) {
+            if (hascommonelement(currententities, previousentities)) {
                 return false;
             }
         }

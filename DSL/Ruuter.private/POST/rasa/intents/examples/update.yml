@@ -64,34 +64,24 @@ convertYamlToJson:
       file: ${intentFile.response.body.file}
   result: intentData
 
-replaceString:
+convertStringToArray:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/string/replace"
+    url: "[#TRAINING_DMAPPER]/convert/string/toArray"
     body:
       data: ${intentData.response.body.nlu[0].examples}
-      search: "- "
-      replace: ""
-  result: replacedString
-
-splitExamples:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/convert/string/split"
-    body:
-      data: ${replacedString.response.body}
-      separator: "\n"
-  result: splitExamples
+  result: convertedArray
 
 validateExample:
   switch:
-    - condition: ${!splitExamples.response.body.includes(oldExample)}
+    - condition: ${!convertedArray.response.body.includes(oldExample)}
       next: returnExampleIsMissing
-    - condition: ${splitExamples.response.body.includes(newExample)}
+    - condition: ${convertedArray.response.body.includes(newExample)}
       next: returnExampleExists
     - condition: ${newExample.length >= 500}
       next: returnExampleTooLong
   next: replaceExistingExample
+
 replaceExistingExample:
   call: http.post
   args:
@@ -99,7 +89,7 @@ replaceExistingExample:
     body:
       element: ${oldExample}
       newValue: ${newExample}
-      array: ${splitExamples.response.body}
+      array: ${convertedArray.response.body}
   result: replacedExamples
 
 mapIntentsData:
