@@ -1,0 +1,21 @@
+getFromDatabase:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/get-train-settings"
+  result: dbResult
+
+validateDbRecords:
+  switch:
+    - condition: ${dbResult.response.body.length !== 0}
+      next: returnSuccess
+  next: returnError
+
+returnSuccess:
+  return: ${dbResult.response.body[0]}
+  wrapper: false
+  next: end
+
+returnError:
+  return: "Can't find train settings record."
+  status: 409
+  next: end

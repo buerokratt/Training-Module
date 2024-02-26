@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+
+    <changeSet id="20240221110403" author="DV">
+        <createTable tableName="train_settings">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="rasa_folds" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="scheduled" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="days_of_week" type="varchar(15)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="from_date" type="timestamp with time zone">
+                <constraints nullable="true"/>
+            </column>
+            <column name="last_modified" type="timestamp with time zone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modifier_id" type="varchar(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modifier_name" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <insert tableName="train_settings">
+            <column name="rasa_folds" valueNumeric="8"/>
+            <column name="scheduled" valueBoolean="true"/>
+            <column name="from_date" valueComputed="CURRENT_TIMESTAMP"/>
+            <column name="days_of_week" value="1"/>
+            <column name="last_modified" valueComputed="CURRENT_TIMESTAMP"/>
+            <column name="modifier_id" value="111111111"/>
+            <column name="modifier_name" value="Vassili M"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
