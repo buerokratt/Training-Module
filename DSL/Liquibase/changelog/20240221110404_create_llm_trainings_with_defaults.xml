@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+
+    <changeSet id="20240221110404" author="DV">
+        <createTable tableName="llm_trainings">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="model_type" type="varchar(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="state" type="varchar(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="trained_date" type="timestamp with time zone">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <insert tableName="llm_trainings">
+            <column name="model_type" value="RASA"/>
+            <column name="state" value="FAIL"/>
+            <column name="trained_date" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

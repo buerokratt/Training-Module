@@ -1,0 +1,21 @@
+getFromDatabase:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/get-llm-trainings"
+  result: dbResult
+
+validateDbRecords:
+  switch:
+    - condition: ${dbResult.response.body.length !== 0}
+      next: returnSuccess
+  next: returnError
+
+returnSuccess:
+  return: ${dbResult.response.body[0]}
+  wrapper: false
+  next: end
+
+returnError:
+  return: "Can't find trained model record."
+  status: 409
+  next: end
