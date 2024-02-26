@@ -141,6 +141,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
         message: error.message,
       });
     },
+    onSettled: () => setRefreshing(false),
   });
 
   const editStoryMutation = useMutation({
@@ -277,7 +278,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
 
     setRefreshing(true);
     if (mode === 'new') {
-      addStoryMutation.mutate(data, category);
+      addStoryMutation.mutate({ data, category }); // Pass category here
     }
     if (mode === 'edit' && id) {
       editStoryMutation.mutate({id, data, category});
