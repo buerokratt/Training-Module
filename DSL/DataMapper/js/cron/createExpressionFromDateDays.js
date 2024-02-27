@@ -5,12 +5,16 @@ const router = express.Router();
 router.post('/', (req, res) => {
     const { date, days } = req.body;
 
-    const startFrom = date.split('T')[0];
+    const startFrom = Date.parse(date);
     const time = date.split("T")[1].split(".")[0]
     const cronTime = time.split(":").reverse().join(' ');
-    const result = `${cronTime} ? * ${days} *`;
+    const expression = `${cronTime} ? * ${days} *`;
+    const result = {
+        expression: expression,
+        startDate: startFrom
+    }
 
-    res.json(result.toString());
+    res.json(result);
 });
 
 export default router;

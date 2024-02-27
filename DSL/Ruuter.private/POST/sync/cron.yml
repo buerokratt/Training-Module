@@ -60,10 +60,11 @@ createCronJson:
   args:
     url: "[#TRAINING_DMAPPER]/dmapper/get-cron-file"
     body:
-      cronExpression: ${cronExpression.response.body}
+      cronExpression: ${cronExpression.response.body.expression}
       type: "http"
       method: "GET"
-      url: "[#TRAINING_BOT]"
+      url: "[#TRAINING_BOT]/train"
+      startDate: ${cronExpression.response.body.startDate}
   result: cronJson
 
 convertJsonToYaml:
@@ -82,6 +83,12 @@ saveCronFile:
       file_path: ${cronFileLocation}
       content: ${cronYaml.response.body.json}
   result: fileResult
+
+refreshCronManager:
+  call: http.post
+  args:
+    url: "[#CRON_MANAGER]/reload/CronManager"
+  result: cronResult
   next: returnSuccess
 
 returnSuccess:
@@ -91,11 +98,3 @@ returnSuccess:
 returnError:
   return: "Could not get data from DB."
   next: end
-
-checkEntity:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/dmapper/checkV"
-    body:
-      hits: ${cronExpression.response.body}
-  result: fileResult
