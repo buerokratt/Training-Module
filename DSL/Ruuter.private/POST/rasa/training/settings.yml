@@ -6,7 +6,6 @@ assignValues:
     scheduled: ${incoming.body.scheduled}
     modifierId: ${incoming.body.modifierId}
     modifierName: ${incoming.body.modifierName}
-#  next: checkEntity
 
 updateInDatabase:
   call: http.post
@@ -21,15 +20,23 @@ updateInDatabase:
       modifier_name: ${modifierName}
   result: dbResult
 
+syncDockerCompose:
+  call: http.post
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/sync/docker"
+    headers:
+      cookie: ${incoming.headers.cookie}
+  result: updatedDocker
+
+syncCronTask:
+  call: http.post
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/sync/cron"
+    headers:
+      cookie: ${incoming.headers.cookie}
+  result: updatedCron
+
 returnSuccess:
   return: 'Updated Successfully.'
   wrapper: false
   next: end
-
-checkEntity:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/dmapper/checkV"
-    body:
-      hits: ${incoming.body}
-  result: fileResult

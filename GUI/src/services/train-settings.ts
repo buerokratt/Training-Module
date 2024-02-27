@@ -19,6 +19,6 @@ export const convertToDaySelect = (input: string, days: DaysSelect[]) => {
 
 export const convertFromDaySelect = (days: DaysSelect[]) => {
     return days.filter(day => day.checked)
-        .map(day => day.id)
+        .map(day => String(parseInt(day.id) + 1))
         .join(',');
 }
