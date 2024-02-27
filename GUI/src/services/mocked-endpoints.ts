@@ -6,7 +6,7 @@ export const mockedEndpoints : string[] = [
     // 'slots', 
     'results',
     'results/1',
-    'models',
+    // 'models',
     'selected-model',
     'test-stories',
     'intents-report',
