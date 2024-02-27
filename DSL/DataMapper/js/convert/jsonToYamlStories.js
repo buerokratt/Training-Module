@@ -18,18 +18,18 @@ router.post('/', multer().array('file'), async (req, res) => {
                     switch (true) {
                         case !!step.intent:
                             formattedStep.intent = step.intent;
-                            break;
-                        case !!step.entities:
-                            formattedStep.entities = step.entities;
+                            if (step.entities && step.entities.length > 0) {
+                                formattedStep.entities = step.entities;
+                            }
                             break;
                         case !!step.action:
                             formattedStep.action = step.action;
                             break;
-                        case !!step.checkpoint:
-                            formattedStep.checkpoint = step.checkpoint;
-                            break;
-                        case !!step.slot_was_set && step.slot_was_set.length > 0:
+                        case !!step.slot_was_set && Object.keys(step.slot_was_set).length > 0:
                             formattedStep.slot_was_set = step.slot_was_set;
+                            break;
+                        case !!step.condition && step.condition.length > 0:
+                            formattedStep.condition = step.condition;
                             break;
                         default:
                             break;
@@ -48,18 +48,18 @@ router.post('/', multer().array('file'), async (req, res) => {
                     switch (true) {
                         case !!step.intent:
                             formattedStep.intent = step.intent;
-                            break;
-                        case !!step.entities:
-                            formattedStep.entities = step.entities;
+                            if (step.entities && step.entities.length > 0) {
+                                formattedStep.entities = step.entities;
+                            }
                             break;
                         case !!step.action:
                             formattedStep.action = step.action;
                             break;
-                        case !!step.checkpoint:
-                            formattedStep.checkpoint = step.checkpoint;
-                            break;
-                        case !!step.slot_was_set && step.slot_was_set.length > 0:
+                        case !!step.slot_was_set && Object.keys(step.slot_was_set).length > 0:
                             formattedStep.slot_was_set = step.slot_was_set;
+                            break;
+                        case !!step.condition && step.condition.length > 0:
+                            formattedStep.condition = step.condition;
                             break;
                         default:
                             break;
