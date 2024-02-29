@@ -20,7 +20,7 @@ const Models: FC = () => {
   const [modelConfirmation, setModelConfirmation] = useState<string | number | null>(null);
   const [deletableModel, setDeletableModel] = useState<string | number | null>(null);
   const { data: models } = useQuery<Model[]>({
-    queryKey: ['models', 'prod'],
+    queryKey: ['models'],
   });
 
   const activateModelMutation = useMutation({
@@ -211,9 +211,9 @@ const Models: FC = () => {
 function getModelStatusColor(status: ModelStateType): string {
   switch (status) {
     case 'DEPLOYED': return '#385';
-    case 'TRAINED': return '#FB0';
-    case 'FAILED': return '#D22';
-    case 'REMOVED': return '#AAA';
+    case 'Trained': return '#FB0';
+    case 'Failed': return '#D22';
+    case 'Removed': return '#AAA';
     default: return '#000';
   }
 }
