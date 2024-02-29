@@ -24,7 +24,7 @@ const itemToString = (item: ({ label: string, value: string } | null)) => {
     return item ? item.value : '';
 };
 
-const FormSelect: FC<FormSelectProps> = forwardRef((
+const FormSelect: FC<FormSelectProps> = forwardRef<HTMLDivElement, FormSelectProps>((
     {
         label,
         hideLabel,
