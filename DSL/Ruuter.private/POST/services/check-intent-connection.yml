@@ -1,0 +1,15 @@
+extract_request_data:
+  assign:
+    serviceId: ${incoming.body.serviceId}
+
+check_for_intent_connection:
+  call: http.post
+  args:
+    url: '[#TRAINING_SERVICE_RESQL]/get-service-trigger'
+    body:
+      serviceId: ${serviceId}
+  result: res
+
+return_result:
+  status: 200
+  return: ${res.response.body[0]}
