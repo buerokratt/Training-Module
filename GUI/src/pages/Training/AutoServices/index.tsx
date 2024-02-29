@@ -22,6 +22,18 @@ const AutoServicesPage: React.FC = () => {
     loadIntentsList();
   }, []);
 
+  const respondToConnectionRequest = (status: boolean, request: Trigger) => {
+    useServiceStore
+      .getState()
+      .respondToConnectionRequest(
+        () => loadConnectionRequests(),
+        t('connectionRequests.approvedConnection'),
+        t('connectionRequests.declinedConnection'),
+        status,
+        request
+      );
+  };
+
   const appRequestColumnHelper = createColumnHelper<Trigger>();
   const appRequestColumns = useMemo(
     () => [
@@ -41,17 +53,46 @@ const AutoServicesPage: React.FC = () => {
           </span>
         ),
       }),
-      appRequestColumnHelper.accessor('status', {
-        header: 'Unlink service',
-        cell: (props) => {
-          const status = props.getValue();
-          return (
-            <Icon
-              icon={status === 'active' ? 'check' : 'close'}
-              color={status === 'active' ? 'success' : 'error'}
-              onClick={() => deleteService(props.row.original.id.toString())}
-            />
-          );
+      appRequestColumnHelper.display({
+        header: '',
+        cell: (props) => (
+          <Icon
+            icon={
+              <AiFillCheckCircle
+                fontSize={22}
+                color="rgba(34,139,34, 1)"
+                onClick={() =>
+                  respondToConnectionRequest(true, props.row.original)
+                }
+              />
+            }
+            size="medium"
+          />
+        ),
+        id: 'approve',
+        meta: {
+          size: '1%',
+        },
+      }),
+      appRequestColumnHelper.display({
+        header: '',
+        cell: (props) => (
+          <Icon
+            icon={
+              <AiFillCloseCircle
+                fontSize={22}
+                color="rgba(210, 4, 45, 1)"
+                onClick={() =>
+                  respondToConnectionRequest(false, props.row.original)
+                }
+              />
+            }
+            size="medium"
+          />
+        ),
+        id: 'reject',
+        meta: {
+          size: '1%',
         },
       }),
       appRequestColumnHelper.display({
