@@ -24,7 +24,7 @@ const ModelsDetail: FC = () => {
     queryKey: ['models'],
   });
   const activeModel = useMemo(() => {
-    return models?.find((model) => model.active === true)
+    return models?.find((model) => model.state === 'DEPLOYED')
   }, [models])
 
   if (!resultsData) return <>Loading...</>;

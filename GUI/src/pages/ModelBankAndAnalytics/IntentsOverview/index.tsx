@@ -133,7 +133,7 @@ const IntentsOverview: FC = () => {
               hideLabel
               name='model'
               options={models.map((model) => ({ label: model.name, value: String(model.id) }))}
-              defaultValue={models.find((model) => model.active)?.id + ''}
+              defaultValue={models.find((model) => model.state === 'DEPLOYED')?.id + ''}
             />
           )}
           <Button>{t('global.choose')}</Button>
