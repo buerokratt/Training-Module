@@ -132,6 +132,7 @@ const IntentsOverview: FC = () => {
               label={t('training.mba.modelInUse')}
               hideLabel
               name='model'
+              fitContent
               options={models.map((model) => ({ label: model.name, value: String(model.id) }))}
               defaultValue={models.find((model) => model.state === 'DEPLOYED')?.id + ''}
             />
