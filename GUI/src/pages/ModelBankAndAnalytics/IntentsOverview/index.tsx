@@ -1,4 +1,4 @@
-import { FC, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
@@ -14,13 +14,37 @@ import { Model } from 'types/model';
 const IntentsOverview: FC = () => {
   const { t } = useTranslation();
   const [filter, setFilter] = useState('');
-  const { data: intentsReport } = useQuery<IntentsReport>({
-    queryKey: ['intents-report'],
-  });
+  const [selectedModelId, setSelectedModelId] = useState(0);
+  
   const { data: models } = useQuery<Model[]>({
     queryKey: ['models'],
   });
 
+  const { data: intentsReport, refetch: refetchIntentsReport } = useQuery<IntentsReport>({
+    queryKey: ['intents-report', selectedModelId],
+    enabled: false,
+  });
+
+  useEffect(() => {
+    if(!models) return;
+    let deployed = models.find((model) => model.state === 'DEPLOYED');
+    if(!deployed)
+      deployed = models.find((model) => model.state === 'TRAINED');
+    if(!deployed)
+      deployed = models?.[0];
+    setSelectedModelId(deployed?.id || 0);
+  }, [models])
+  
+  const modelsOptions = useMemo(() => {
+    if(!models) return [];
+    return models.map((model) => ({ label: model.name, value: String(model.id) }));
+  }, [models])
+
+  useEffect(() => {
+    if(!selectedModelId) return;
+    refetchIntentsReport();
+  }, [selectedModelId])
+  
   const formattedIntentsReport = useMemo(
     () => intentsReport
       ? Object.keys(intentsReport).map((intent) => ({ intent, ...intentsReport[intent] }))
@@ -132,8 +156,10 @@ const IntentsOverview: FC = () => {
               label={t('training.mba.modelInUse')}
               hideLabel
               name='model'
-              options={models.map((model) => ({ label: model.name, value: String(model.id) }))}
-              defaultValue={models.find((model) => model.state === 'DEPLOYED')?.id + ''}
+              fitContent
+              options={modelsOptions}
+              value={String(selectedModelId)}
+              onSelectionChange={(model) => setSelectedModelId(Number(model?.value))}
             />
           )}
           <Button>{t('global.choose')}</Button>

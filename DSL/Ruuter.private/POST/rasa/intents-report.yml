@@ -1,4 +1,18 @@
-getData:
+extract_request_data:
+  assign:
+    id: ${incoming.body.id}
+
+check_id:
+  switch:
+    - condition: ${id == 1}
+      next: mock_data_1
+    - condition: ${id == 2}
+      next: mock_data_2
+    - condition: ${id == 3}
+      next: mock_data_3
+  next: mock_data_4
+
+mock_data_1:
   call: reflect.mock
   args:
     response:
@@ -151,9 +165,86 @@ getData:
           confused_with:
             common_roppused: 3
             common_eitamine: 2
-
   result: reflected_request
   next: returnData
 
+mock_data_2:
+  call: reflect.mock
+  args:
+    response:
+      data:
+        common_roppused:
+          precision: 0.8765432098765432
+          recall: 0.8987341772151899
+          f1-score: 0.8875
+          support: 79
+          confused_with:
+            common_kinnitamine: 7
+            common_hüvasti_jätmine: 1
+        common_kuidas_läheb:
+          precision: 1
+          recall: 0.75
+          f1-score: 0.8571428571428571
+          support: 16
+          confused_with:
+            common_mida_teha_oskad: 2
+            common_teenus_ilm: 1
+        common_mida_teha_oskad:
+          precision: 0.7159090909090909
+          recall: 0.984375
+          f1-score: 0.8289473684210527
+          support: 64
+          confused_with:
+            common_abi_küsimine: 1
+        common_klienditeenindajale_suunamine:
+          precision: 0.8235294117647058
+          recall: 0.9655172413793104
+          f1-score: 0.888888888888889
+          support: 29
+          confused_with:
+            common_abi_küsimine: 1
+        common_eitamine:
+          precision: 0.8596491228070176
+          recall: 0.8166666666666667
+          f1-score: 0.8376068376068376
+          support: 60
+          confused_with:
+            common_roppused: 3
+            common_mida_teha_oskad: 2
+  result: reflected_request
+  next: returnData
+
+mock_data_3:
+  call: reflect.mock
+  args:
+    response:
+      data:
+  result: reflected_request
+  next: returnData
+
+mock_data_4:
+  call: reflect.mock
+  args:
+    response:
+      data:
+        common_kelle_loodud:
+          precision: 0.8235294117647058
+          recall: 0.8
+          f1-score: 0.8115942028985507
+          support: 35
+          confused_with:
+            common_kompliment_botile: 2
+            common_mida_teha_oskad: 2
+        common_kui_vana_oled:
+          precision: 0.8571428571428571
+          recall: 0.75
+          f1-score: 0.7999999999999999
+          support: 16
+          confused_with:
+            common_mida_teha_oskad: 2
+            common_kompliment_botile: 1
+  result: reflected_request
+  next: returnData
+  
 returnData:
   return: ${reflected_request.response.body.data}

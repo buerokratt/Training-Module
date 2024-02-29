@@ -55,6 +55,12 @@
     }
   }
 
+  &__trigger-fit-content {
+    width: unset;
+    max-width: fit-content;
+    min-width: 230px;
+  }
+
   &__menu {
     display: none;
     position: absolute;

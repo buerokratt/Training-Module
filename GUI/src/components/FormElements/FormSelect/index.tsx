@@ -11,6 +11,8 @@ type FormSelectProps = SelectHTMLAttributes<HTMLSelectElement> & {
     label: ReactNode;
     name: string;
     hideLabel?: boolean;
+    placeholder?: string;
+    fitContent?: boolean;
     options: {
         label: string;
         value: string;
@@ -22,7 +24,7 @@ const itemToString = (item: ({ label: string, value: string } | null)) => {
     return item ? item.value : '';
 };
 
-const FormSelect: FC<FormSelectProps> = forwardRef((
+const FormSelect: FC<FormSelectProps> = forwardRef<HTMLDivElement, FormSelectProps>((
     {
         label,
         hideLabel,
@@ -32,6 +34,7 @@ const FormSelect: FC<FormSelectProps> = forwardRef((
         defaultValue,
         onSelectionChange,
         value,
+        fitContent,
         ...rest
     },
     ref
@@ -68,13 +71,18 @@ const FormSelect: FC<FormSelectProps> = forwardRef((
         disabled && 'select--disabled',
     );
 
+    const triggerClasses = clsx(
+        'select__trigger',
+        fitContent && 'select__trigger-fit-content',
+    );
+
     const placeholderValue = placeholder || t('global.choose');
 
     return (
         <div className={selectClasses} style={rest.style} ref={ref}>
             {label && !hideLabel && <label htmlFor={id} className='select__label' {...getLabelProps()}>{label}</label>}
             <div className='select__wrapper'>
-                <div className='select__trigger' {...getToggleButtonProps()}>
+                <div className={triggerClasses} {...getToggleButtonProps()}>
                     <p style={{ overflow: 'hidden' }}>
                         {selectedItem?.label ?? placeholderValue}
                     </p>

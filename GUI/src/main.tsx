@@ -85,6 +85,13 @@ const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
     const { data } = await apiInstance.post(queryKey[0] as string, request)
     return data.response;
   }
+  if(queryKey.includes('intents-report')) {
+    const request = {
+      id: queryKey[1],
+    };
+    const { data } = await apiInstance.post(queryKey[0] as string, request);
+    return data.response;
+  }
 
   const { data } = await apiInstance.get(queryKey[0] as string);
   if (queryKey.includes('entities')) {
