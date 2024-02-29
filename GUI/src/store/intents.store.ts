@@ -4,6 +4,7 @@ import {
   changeIntentConnection,
   getAvailableIntents,
   respondToConnectionRequest,
+  getConnectionRequests,
 } from 'services/services';
 import useToastStore from './toast.store';
 import { Trigger } from 'types/trigger';

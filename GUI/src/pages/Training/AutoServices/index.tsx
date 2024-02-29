@@ -30,10 +30,6 @@ const AutoServicesPage: React.FC = () => {
 
   useEffect(() => {
     loadIntentsList();
-  }, []);
-
-  useEffect(() => {
-    loadConnectionRequests();
     loadConnectionRequests();
   }, []);
 
@@ -121,7 +117,9 @@ const AutoServicesPage: React.FC = () => {
     [appRequestColumnHelper, t]
   );
 
-  if (!intents) return <label>Loading ...</label>;
+  console.log(intents, triggers);
+
+  if (!triggers) return <label>Loading ...</label>;
 
   return (
     <>
