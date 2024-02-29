@@ -77,6 +77,7 @@ services:
       context: ./DSL/DataMapper
     volumes:
       - ./mock1:/mock1
+      - ./DSL/CronManager:/DSL/CronManager
       - ../Service-Module/DSL/mock1:/mock2
       - ./DSL/DataMapper/views:/workspace/app/views/training
       - ./DSL/DataMapper/views:/workspace/app/js/analytics
@@ -135,6 +136,18 @@ services:
       - OPENSEARCH_PROTOCOL=http
     ports:
       - 3010:3010
+    networks:
+      - bykstack
+
+  cron-manager:
+    container_name: cron-manager
+    image: cron_manager
+    volumes:
+      - ./DSL/CronManager:/DSL
+    environment:
+      - server.port=9010
+    ports:
+      - 9010:9010
     networks:
       - bykstack
 

@@ -41,6 +41,9 @@ import domainUpdateExistingResponse from "./js/util/domainUpdateExistingResponse
 import replaceKeyValueObj from "./js/util/updateKeyValueObj.js";
 import objectListContainsId from "./js/util/objectListContainsId.js";
 import validateStoriesRules from "./js/validation/validateStoriesRules.js";
+import replaceNextElementInArray from "./js/util/replaceNextElementInArray.js";
+import updateParametersByKey from "./js/docker/updateParametersByKey.js";
+import createExpressionFromDateDays from "./js/cron/createExpressionFromDateDays.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
@@ -75,6 +78,9 @@ app.use('/convert/string/split', stringSplit)
 app.use('/convert/string/replace', stringReplace)
 app.use('/convert/string/toArray', stringToArray)
 app.use('/rules/remove-by-intent-name', removeRulesByIntentName);
+app.use('/array/replace-next-element', replaceNextElementInArray);
+app.use('/docker/update-parameter-by-key', updateParametersByKey);
+app.use('/cron/generate-expression-date-days', createExpressionFromDateDays);
 app.use('/domain/update-existing-response', domainUpdateExistingResponse)
 app.use('/util/objectListContainsId', objectListContainsId)
 app.use('/validate/validate-stories-rules', validateStoriesRules)

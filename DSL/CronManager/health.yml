@@ -1,0 +1,5 @@
+get_health:
+  trigger: "0 22 8 * * ?"
+  type: http
+  method: GET
+  url: http://localhost:8080/healthz

@@ -1,0 +1,90 @@
+getFromDatabase:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/get-train-settings"
+  result: dbResult
+
+validateDbRecords:
+  switch:
+    - condition: ${dbResult.response.body.length !== 0}
+      next: assignValues
+  next: returnError
+
+assignValues:
+  assign:
+    rasaFolds: ${dbResult.response.body[0].rasaFolds}
+
+getDockerFile:
+  call: http.get
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/docker-file"
+    headers:
+      cookie: ${incoming.headers.cookie}
+  result: dockerData
+
+validateEntryExists:
+  switch:
+    - condition: ${dockerData.response.body.services['test-bot-cv'].command.includes('--folds')}
+      next: updateEntry
+  next: returnIncorrectDocker
+
+updateEntry:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/array/replace-next-element"
+    body:
+      array: ${dockerData.response.body.services['test-bot-cv'].command}
+      element: '--folds'
+      newInput: ${rasaFolds}
+  result: updatedArray
+  next: updateDockerCompose
+
+updateDockerCompose:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/docker/update-parameter-by-key"
+    body:
+      object: ${dockerData.response.body}
+      serviceName: 'test-bot-cv'
+      paramName: 'command'
+      newValue: ${updatedArray.response.body.array}
+  result: updatedDocker
+
+convertJsonToYaml:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
+    body:
+      version: ${updatedDocker.response.body.version}
+      services: ${updatedDocker.response.body.services}
+  result: dockerYaml
+
+getFileLocations:
+  call: http.get
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
+    headers:
+      cookie: ${incoming.headers.cookie}
+  result: fileLocations
+
+saveDockerFile:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file/write"
+    body:
+      file_path: ${fileLocations.response.body.response.docker_location}
+      content: ${dockerYaml.response.body.json}
+  result: fileResult
+  next: returnSuccess
+
+returnSuccess:
+  return: "Docker updated."
+  next: end
+
+returnIncorrectDocker:
+  return: "Docker structure is incorrect."
+  next: end
+
+returnError:
+  return: "Could not get data from DB."
+  next: end
