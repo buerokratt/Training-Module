@@ -20,4 +20,5 @@ export const getAvailableIntents = (): string =>
 export const changeIntentConnection = (): string =>
   `${baseUrl}/services/check-intent-connection`;
 
-export const deleteService = (): string => `${baseUrl}/services/delete`;
+export const deleteService = (id: string): string =>
+  `${baseUrl}/services/delete`;

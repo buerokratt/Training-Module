@@ -6,6 +6,7 @@ import { Card, DataTable, Icon } from 'components';
 import { Trigger } from 'types/trigger';
 import { Intent } from 'types/intent';
 import useIntentStore from 'store/intents.store';
+import { deleteService } from 'services/services';
 
 const AutoServicesPage: React.FC = () => {
   const { t } = useTranslation();
@@ -39,6 +40,19 @@ const AutoServicesPage: React.FC = () => {
             {format(new Date(props.getValue()), 'dd-MM-yyyy HH:mm:ss')}
           </span>
         ),
+      }),
+      appRequestColumnHelper.accessor('status', {
+        header: 'Unlink service',
+        cell: (props) => {
+          const status = props.getValue();
+          return (
+            <Icon
+              icon={status === 'active' ? 'check' : 'close'}
+              color={status === 'active' ? 'success' : 'error'}
+              onClick={() => deleteService(props.row.original.id.toString())}
+            />
+          );
+        },
       }),
       appRequestColumnHelper.display({
         header: '',
