@@ -133,17 +133,15 @@ const Responses: FC = () => {
 
   const columnHelper = createColumnHelper<typeof formattedResponses[0]>();
 
-  const getRules = (responseId: String)  => {
-    // @ts-ignore
-    return dependencies && true && dependencies.response.isArray ? dependencies.response.find(d => d.name === responseId)
-        .rules.map((name,i) => <p key={i}>{name}</p>) : null;
-  }
+  const getRules = (responseId: string) => {
+    const dependency = dependencies && dependencies.response.find(d => d.name === responseId);
+    return dependency ? dependency.rules.map((name, i) => <p key={i}>{name}</p>) : null;
+  };
 
-  const getStories = (responseId: String)  => {
-    // @ts-ignore
-    return dependencies && true && dependencies.response.isArray ? dependencies.response.find(d => d.name === responseId)
-        .stories.map((name,i) => <p key={i}>{name}</p>) : null;
-  }
+  const getStories = (responseId: string) => {
+    const dependency = dependencies && dependencies.response.find(d => d.name === responseId);
+    return dependency ? dependency.stories.map((name, i) => <p key={i}>{name}</p>) : null;
+  };
 
   const responsesColumns = useMemo(() => [
     columnHelper.accessor('response', {
