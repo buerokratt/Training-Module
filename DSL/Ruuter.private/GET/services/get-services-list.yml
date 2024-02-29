@@ -1,0 +1,15 @@
+getServices:
+  call: http.get
+  args:
+    url: '[#TRAINING_SERVICE_RESQL]/services/get-services'
+    headers:
+      cookie: ${incoming.headers.cookie}
+  result: getServicesDataResult
+
+returnSuccess:
+  return: ${getServicesDataResult.response.body}
+  next: end
+
+returnNoServicesFound:
+  return: 'Error: no servixes found'
+  next: end
