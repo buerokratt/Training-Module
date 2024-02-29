@@ -22,3 +22,6 @@ export const changeIntentConnection = (): string =>
 
 export const deleteService = (id: string): string =>
   `${baseUrl}/services/delete`;
+
+export const respondToConnectionRequest = (): string =>
+  `${baseUrl}/services/respond-to-connection-request`;
