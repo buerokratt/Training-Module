@@ -20,8 +20,9 @@ const IntentsOverview: FC = () => {
     queryKey: ['models'],
   });
 
-  const { data: intentsReport, refetch } = useQuery<IntentsReport>({
-    queryKey: ['intents-report'],
+  const { data: intentsReport, refetch: refetchIntentsReport } = useQuery<IntentsReport>({
+    queryKey: ['intents-report', selectedModelId],
+    enabled: false,
   });
 
   useEffect(() => {
@@ -39,6 +40,11 @@ const IntentsOverview: FC = () => {
     return models.map((model) => ({ label: model.name, value: String(model.id) }));
   }, [models])
 
+  useEffect(() => {
+    if(!selectedModelId) return;
+    refetchIntentsReport();
+  }, [selectedModelId])
+  
   const formattedIntentsReport = useMemo(
     () => intentsReport
       ? Object.keys(intentsReport).map((intent) => ({ intent, ...intentsReport[intent] }))
@@ -139,7 +145,6 @@ const IntentsOverview: FC = () => {
     }),
   ], [columnHelper, t]);
 
-
   return (
     <>
       <h1>{t('training.mba.intentsOverview')}</h1>
@@ -154,7 +159,7 @@ const IntentsOverview: FC = () => {
               fitContent
               options={modelsOptions}
               value={String(selectedModelId)}
-              onChange={(model) => setSelectedModelId(Number(model.target.value))}
+              onSelectionChange={(model) => setSelectedModelId(Number(model?.value))}
             />
           )}
           <Button>{t('global.choose')}</Button>
