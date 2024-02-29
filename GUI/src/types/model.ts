@@ -5,7 +5,7 @@ export interface Model {
   state: ModelStateType;
 }
 
-export type ModelStateType = 'DEPLOYED' | 'TRAINED' | 'FAILED' | 'REMOVED';
+export type ModelStateType = 'DEPLOYED' | 'Trained' | 'Failed' | 'Removed';
 
 export interface UpdateModelDTO extends Omit<Model, 'id' | 'lastTrained'> {
 }

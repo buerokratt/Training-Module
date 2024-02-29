@@ -6,8 +6,6 @@ import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {TrainConfigDataDTO, TrainedDataDTO} from "../../../types/trainSettings";
 import {Controller, useForm} from "react-hook-form";
 import {AxiosError} from "axios";
-import {Methods, request} from '../../../utils/axios-client';
-import { stringify } from 'yaml';
 import {useToast} from "../../../hooks/useToast";
 import {convertFromDaySelect, convertToDaySelect, updateTrainSettings} from "../../../services/train-settings";
 import React, {useEffect, useState} from "react";
@@ -51,7 +49,7 @@ const TrainAndTest = () => {
 
     useEffect(() => {
         if(trainedData) {
-            setLlmFailed(trainedData.state === 'FAIL');
+            setLlmFailed(trainedData.state === 'Failed');
             setLastTrainedTime(trainedData.trainedDate.split("T")[1].split(".")[0]);
             setLastTrainedDay(formatDate(trainedData.trainedDate.split('T')[0]));
         }

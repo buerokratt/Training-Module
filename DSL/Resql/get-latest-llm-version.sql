@@ -1,1 +1,4 @@
-SELECT CONCAT(MAX(SPLIT_PART(version_number, '.', 1)::int), '.', MAX(SPLIT_PART(version_number, '.', 2)::int)) AS latest_version FROM llm_trainings;
+SELECT version_number
+FROM   llm_trainings
+ORDER  BY string_to_array(version_number, '_')::int[] DESC
+LIMIT 1;
