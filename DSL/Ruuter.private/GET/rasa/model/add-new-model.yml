@@ -6,18 +6,28 @@ getDockerFile:
 
 assignDefaultValues:
   assign:
-    version: '1.0'
+    version: '1_0'
     name: 'rasa_'
     modelPath: '/mock1/bot-training/models/'
-    mockEnd: 'rasa_1.1/intent_report.json'
+    mockEnd: 'rasa_1_1/intent_report.json'
     reportPath: '/mock1/bot-training/results/'
     modelExtension: '.tar.gz'
     reportEnding: '/intent_report.json'
-    state: 'TRAINED'
+    state: 'Trained'
     modelType: 'RASA'
+    test_report: {}
     imageVersion: ${dockerData.response.body.services['train-bot'].image}
 
-getLatestVersion:
+getTrainedVersion:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/docker/bot-trained-version"
+    body:
+      object: ${dockerData.response.body}
+      name: ${name}
+  result: trainedVersion
+
+getLatestVersionFromDb:
   call: http.post
   args:
     url: "[#TRAINING_RESQL]/get-latest-llm-version"
@@ -25,7 +35,7 @@ getLatestVersion:
 
 validateVersion:
   switch:
-    - condition: ${dbResult.response.body[0].latestVersion !== null}
+    - condition: ${dbResult.response.body.length > 0}
       next: increaseVersion
   next: checkModelCreated
 
@@ -34,7 +44,7 @@ increaseVersion:
   args:
     url: "[#TRAINING_DMAPPER]/util/increase-double-digit-version"
     body:
-      version: ${dbResult.response.body[0].latestVersion}
+      version: ${dbResult.response.body[0].versionNumber}
   result: updatedVersion
 
 reAssignVersion:
@@ -46,7 +56,7 @@ checkModelCreated:
   args:
     url: "[#TRAINING_DMAPPER]/file/check"
     body:
-      file_path: ${modelPath + name + version + modelExtension}
+      file_path: ${modelPath + name + trainedVersion.response.body + modelExtension}
   result: modelCreated
 
 decideState:
@@ -57,18 +67,17 @@ decideState:
 
 reAssignState:
   assign:
-    state: 'FAIL'
+    state: 'Failed'
+  next: updateInDatabase
 
 getIntentsReport:
   call: http.post
   args:
     url: "[#TRAINING_DMAPPER]/file/read"
     body:
-#      file_path: ${reportPath + name + version + reportEnding}
-      file_path: ${reportPath + mockEnd}
+      file_path: ${reportPath + name + trainedVersion.response.body + reportEnding}
   result: intentReport
 
-#check if this is needed
 convertYamlToJson:
   call: http.post
   args:
@@ -76,7 +85,6 @@ convertYamlToJson:
     body:
       file: ${intentReport.response.body.file}
   result: reportData
-#  next: checkEntity
 
 reAssignReport:
   assign:
@@ -90,10 +98,10 @@ updateInDatabase:
     body:
       model_type: ${modelType}
       state: ${state}
-      file_name: ${name + version + modelExtension}
-      version_number: ${version}
+      file_name: ${name + trainedVersion.response.body + modelExtension}
+      version_number: ${trainedVersion.response.body}
       image_version: ${imageVersion}
-      test_report: ${reportData.response.body}
+      test_report: ${test_report}
   result: dbResult
 
 updateDockerCompose:
@@ -142,5 +150,5 @@ checkEntity:
   args:
     url: "[#TRAINING_DMAPPER]/dmapper/checkV"
     body:
-      hits: ${reportData.response.body}
+      hits: ${trainedVersion.response.body}
   result: fileResult
