@@ -20,7 +20,7 @@ const Models: FC = () => {
   const [modelConfirmation, setModelConfirmation] = useState<string | number | null>(null);
   const [deletableModel, setDeletableModel] = useState<string | number | null>(null);
   const { data: models } = useQuery<Model[]>({
-    queryKey: ['models', 'prod'],
+    queryKey: ['models'],
   });
 
   const activateModelMutation = useMutation({
