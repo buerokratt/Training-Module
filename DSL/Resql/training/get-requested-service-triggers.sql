@@ -7,4 +7,4 @@ SELECT intent,
  GROUP BY intent,
           service
  HAVING MAX(status) = 'pending'
- AND max("author_role") != 'service_manager';
+ AND max("author_role") != 'trainer';

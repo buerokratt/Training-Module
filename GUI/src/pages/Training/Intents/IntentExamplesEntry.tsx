@@ -54,9 +54,7 @@ const IntentExamplesEntry: FC<IntentExamplesEntryProps> = ({
     // TODO: Add endpoint for mocking entity edit
   };
 
-  const handleEntityAdd = handleSubmit((data) => {
-    console.log(data);
-  });
+  const handleEntityAdd = handleSubmit((data) => {});
 
   const parsedEntry = useMemo(
     () =>

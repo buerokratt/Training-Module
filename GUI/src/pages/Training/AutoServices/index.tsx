@@ -117,8 +117,6 @@ const AutoServicesPage: React.FC = () => {
     [appRequestColumnHelper, t]
   );
 
-  console.log(intents, triggers);
-
   if (!triggers) return <label>Loading ...</label>;
 
   return (
