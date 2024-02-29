@@ -1,6 +1,10 @@
 import { create } from 'zustand';
 import axios from 'axios';
-import { changeIntentConnection, getAvailableIntents } from 'services/services';
+import {
+  changeIntentConnection,
+  getAvailableIntents,
+  respondToConnectionRequest,
+} from 'services/services';
 import useToastStore from './toast.store';
 import { Trigger } from 'types/trigger';
 import { Intent } from 'types/intent';
@@ -36,9 +40,50 @@ interface IntentStoreState {
   ) => Promise<void>;
   selectedService: Service | undefined;
   setSelectedService: (service: Service) => void;
+  respondToConnectionRequest: (
+    onEnd: () => void,
+    successMessage: string,
+    errorMessage: string,
+    status: boolean,
+    request: Trigger
+  ) => Promise<void>;
+  loadRequestsList: (
+    onEnd: (requests: Trigger[]) => void,
+    errorMessage: string
+  ) => Promise<void>;
 }
 
 const useIntentsListStore = create<IntentStoreState>((set, get, store) => ({
+  respondToConnectionRequest: async (
+    onEnd,
+    successMessage,
+    errorMessage,
+    status,
+    request
+  ) => {
+    try {
+      await axios.post(respondToConnectionRequest(), {
+        serviceId: request.service,
+        serviceName: request.serviceName,
+        intent: request.intent,
+        authorRole: request.authorRole,
+        status: status === true ? 'approved' : 'declined',
+      });
+      useToastStore.getState().success({ title: successMessage });
+    } catch (_) {
+      useToastStore.getState().error({ title: errorMessage });
+    }
+    onEnd();
+  },
+  loadRequestsList: async (onEnd, errorMessage) => {
+    try {
+      const requests = await axios.get(getConnectionRequests());
+      onEnd(requests.data.response);
+    } catch (_) {
+      onEnd([]);
+      useToastStore.getState().error({ title: errorMessage });
+    }
+  },
   selectedService: undefined,
   setSelectedService: (service: Service) => {
     set({

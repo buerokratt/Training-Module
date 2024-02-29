@@ -25,3 +25,6 @@ export const deleteService = (id: string): string =>
 
 export const respondToConnectionRequest = (): string =>
   `${baseUrl}/services/respond-to-connection-request`;
+
+export const getConnectionRequests = (): string =>
+  `${baseUrl}/services/connection-requests`;

@@ -6,11 +6,12 @@ import { Card, DataTable, Icon } from 'components';
 import { Trigger } from 'types/trigger';
 import { Intent } from 'types/intent';
 import useIntentStore from 'store/intents.store';
-import { deleteService } from 'services/services';
+import { AiFillCheckCircle, AiFillCloseCircle } from 'react-icons/ai';
 
 const AutoServicesPage: React.FC = () => {
   const { t } = useTranslation();
   const [intents, setIntents] = useState<Intent[] | undefined>(undefined);
+  const [triggers, setTriggers] = useState<Trigger[] | undefined>(undefined);
 
   const loadIntentsList = () => {
     useIntentStore
@@ -18,12 +19,26 @@ const AutoServicesPage: React.FC = () => {
       .loadAvailableIntentsList((requests) => setIntents(requests), t('error'));
   };
 
+  const loadConnectionRequests = () => {
+    useIntentStore
+      .getState()
+      .loadRequestsList(
+        (requests: Trigger[]) => setTriggers(requests),
+        t('connectionRequests.toast.failed.requests')
+      );
+  };
+
   useEffect(() => {
     loadIntentsList();
   }, []);
 
+  useEffect(() => {
+    loadConnectionRequests();
+    loadConnectionRequests();
+  }, []);
+
   const respondToConnectionRequest = (status: boolean, request: Trigger) => {
-    useServiceStore
+    useIntentStore
       .getState()
       .respondToConnectionRequest(
         () => loadConnectionRequests(),
@@ -112,7 +127,7 @@ const AutoServicesPage: React.FC = () => {
     <>
       <h1>Connected intents list</h1>
       <Card>
-        <DataTable data={intents} columns={appRequestColumns} sortable />
+        <DataTable data={triggers} columns={appRequestColumns} sortable />
       </Card>
     </>
   );
