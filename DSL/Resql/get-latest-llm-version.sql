@@ -1,0 +1,1 @@
+SELECT CONCAT(MAX(SPLIT_PART(version_number, '.', 1)::int), '.', MAX(SPLIT_PART(version_number, '.', 2)::int)) AS latest_version FROM llm_trainings;

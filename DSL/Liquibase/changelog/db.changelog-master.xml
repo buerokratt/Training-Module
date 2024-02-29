@@ -7,5 +7,6 @@
     <include file="classpath:db/changelog/20230914110401_create_intents.xml" />
     <include file="classpath:db/changelog/20240221110403_create_train_settings_with_defaults.xml" />
     <include file="classpath:db/changelog/20240221110404_create_llm_trainings_with_defaults.xml" />
+    <include file="classpath:db/changelog/20240227110405_llm_trainings_add_columns.xml" />
 
 </databaseChangeLog>
