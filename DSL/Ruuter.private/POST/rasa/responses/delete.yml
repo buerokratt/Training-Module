@@ -28,15 +28,11 @@ ruleResponses:
       type: "responses"
   result: ruleResponses
 
-ruleResponsesReturn:
-  return: ${ruleResponses}
-  next: end
-
 validateRuleResponses:
   switch:
-    - condition: ${ruleResponses.response.body.response.data.rules.length == 0}
-      next: storiesResponses
-  next: returnResponseHasDependencyToRules
+    - condition: ${ruleResponses.response.body.response != undefined && ruleResponses.response.body.response.length > 0}
+      next: returnResponseHasDependencyToRules
+  next: storiesResponses
 
 storiesResponses:
   call: http.post
@@ -45,15 +41,15 @@ storiesResponses:
     headers:
       cookie: ${incoming.headers.cookie}
     body:
-      search: ${parameters.response_name}
+      value: ${responseName}
       type: "responses"
   result: storiesResponses
 
 validateStoriesResponses:
   switch:
-    - condition: ${storiesResponses.response.body.response.data.stories.length == 0}
-      next: deleteKey
-  next: returnResponseHasDependencyToStories
+    - condition: ${storiesResponses.response.body.response != undefined && storiesResponses.response.body.response.length > 0}
+      next: returnResponseHasDependencyToStories
+  next: deleteKey
 
 deleteKey:
   call: http.post
@@ -112,12 +108,15 @@ returnSuccess:
 
 returnResponseIsMissing:
   return: "Can't find response to delete"
+  status: 409
   next: end
 
 returnResponseHasDependencyToRules:
   return: "Deleting a response is forbidden because it has relation to rules"
+  status: 409
   next: end
 
 returnResponseHasDependencyToStories:
   return: "Deleting a response is forbidden because it has relation to stories"
+  status: 409
   next: end
