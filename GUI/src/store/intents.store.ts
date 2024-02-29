@@ -5,6 +5,7 @@ import {
   getAvailableIntents,
   respondToConnectionRequest,
   getConnectionRequests,
+  getServicesList,
 } from 'services/services';
 import useToastStore from './toast.store';
 import { Trigger } from 'types/trigger';
@@ -17,7 +18,7 @@ enum ServiceState {
   Ready = 'ready',
 }
 
-interface Service {
+export interface Service {
   readonly id: number;
   readonly name: string;
   usedCount: number;
@@ -31,6 +32,7 @@ interface Service {
 }
 
 interface IntentStoreState {
+  services: Service[];
   checkServiceIntentConnection: (
     onConnected: (response: Trigger) => void,
     onNotConnected: () => void
@@ -52,9 +54,11 @@ interface IntentStoreState {
     onEnd: (requests: Trigger[]) => void,
     errorMessage: string
   ) => Promise<void>;
+  loadServicesList: () => Promise<void>;
 }
 
 const useIntentsListStore = create<IntentStoreState>((set, get, store) => ({
+  services: [],
   respondToConnectionRequest: async (
     onEnd,
     successMessage,
@@ -84,6 +88,26 @@ const useIntentsListStore = create<IntentStoreState>((set, get, store) => ({
       onEnd([]);
       useToastStore.getState().error({ title: errorMessage });
     }
+  },
+  loadServicesList: async () => {
+    const result = await axios.get(getServicesList());
+    const services = result.data.response.map(
+      (item: any) =>
+        ({
+          id: item.id,
+          name: item.name,
+          description: item.description,
+          state: item.state,
+          type: item.type,
+          isCommon: item.iscommon,
+          serviceId: item.serviceId,
+          usedCount: 0,
+        } as Service)
+    );
+
+    set({
+      services,
+    });
   },
   selectedService: undefined,
   setSelectedService: (service: Service) => {

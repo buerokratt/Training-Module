@@ -38,6 +38,7 @@ import {
 } from 'services/intents';
 import IntentExamplesTable from './IntentExamplesTable';
 import LoadingDialog from '../../../components/LoadingDialog';
+import useIntentsListStore, { Service } from '../../../store/intents.store';
 
 const Intents: FC = () => {
   const { t } = useTranslation();
@@ -229,6 +230,15 @@ const Intents: FC = () => {
       });
     },
   });
+
+  const servicesList = useIntentsListStore((state) => state.services).map(
+    (service) => {
+      return {
+        label: service.name,
+        value: service,
+      };
+    }
+  );
 
   useDocumentEscapeListener(() => setEditingIntentTitle(null));
 
@@ -745,7 +755,15 @@ const Intents: FC = () => {
               <Button appearance="secondary" onClick={onModalClose}>
                 Tühista
               </Button>
-              <Button>Jah</Button>
+              <Button
+                onClick={() =>
+                  useIntentsListStore
+                    .getState()
+                    .setSelectedService(connectedService as unknown as Service)
+                }
+              >
+                Jah
+              </Button>
             </>
           )
         }
@@ -755,12 +773,7 @@ const Intents: FC = () => {
             value={connectedService}
             onSelectionChange={(e) => setConnectedService(e?.value || '')}
             name="connect_service"
-            options={[
-              { label: 'Service 1', value: 'service1' },
-              { label: 'Service 2', value: 'service2' },
-              { label: 'Service 3', value: 'service3' },
-              { label: 'Service 4', value: 'service4' },
-            ]}
+            options={servicesList as any}
             label={t('training.intents.connectToService')}
           />
         ) : (

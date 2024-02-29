@@ -5,7 +5,7 @@ import { format } from 'date-fns';
 import { Card, DataTable, Icon } from 'components';
 import { Trigger } from 'types/trigger';
 import { Intent } from 'types/intent';
-import useIntentStore from 'store/intents.store';
+import useIntentsListStore from 'store/intents.store';
 import { AiFillCheckCircle, AiFillCloseCircle } from 'react-icons/ai';
 
 const AutoServicesPage: React.FC = () => {
@@ -14,13 +14,13 @@ const AutoServicesPage: React.FC = () => {
   const [triggers, setTriggers] = useState<Trigger[] | undefined>(undefined);
 
   const loadIntentsList = () => {
-    useIntentStore
+    useIntentsListStore
       .getState()
       .loadAvailableIntentsList((requests) => setIntents(requests), t('error'));
   };
 
   const loadConnectionRequests = () => {
-    useIntentStore
+    useIntentsListStore
       .getState()
       .loadRequestsList(
         (requests: Trigger[]) => setTriggers(requests),
@@ -34,7 +34,7 @@ const AutoServicesPage: React.FC = () => {
   }, []);
 
   const respondToConnectionRequest = (status: boolean, request: Trigger) => {
-    useIntentStore
+    useIntentsListStore
       .getState()
       .respondToConnectionRequest(
         () => loadConnectionRequests(),

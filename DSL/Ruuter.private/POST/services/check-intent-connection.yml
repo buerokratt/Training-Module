@@ -5,7 +5,7 @@ extract_request_data:
 check_for_intent_connection:
   call: http.post
   args:
-    url: '[#TRAINING_SERVICE_RESQL]/get-service-trigger'
+    url: '[#TRAINING_SERVICE_RESQL]/training/get-service-trigger'
     body:
       serviceId: ${serviceId}
   result: res

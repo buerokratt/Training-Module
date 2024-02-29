@@ -1,7 +1,7 @@
 getServices:
   call: http.get
   args:
-    url: '[#TRAINING_SERVICE_RESQL]/services/get-services'
+    url: '[#TRAINING_SERVICE_RESQL]/get-services'
     headers:
       cookie: ${incoming.headers.cookie}
   result: getServicesDataResult

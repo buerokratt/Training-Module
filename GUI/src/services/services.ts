@@ -1,11 +1,6 @@
 import api from './api';
 const baseUrl = import.meta.env.REACT_APP_API_URL;
 
-export async function getServicesList() {
-  const { data } = await api.get(`services/get-services-list`);
-  return data;
-}
-
 export async function setServiceTrigger(intentData: {
   intentName: string;
   serviceId: string;
@@ -28,3 +23,5 @@ export const respondToConnectionRequest = (): string =>
 
 export const getConnectionRequests = (): string =>
   `${baseUrl}/services/connection-requests`;
+
+export const getServicesList = () => `${baseUrl}/services`;

@@ -1,0 +1,135 @@
+check_for_required_parameters:
+  switch:
+    - condition: ${incoming.body.id == null || incoming.body.type == null}
+      next: return_incorrect_request
+  next: extract_request_data
+
+extract_request_data:
+  assign:
+    id: ${incoming.body.id}
+    ruuter_type: ${incoming.body.type.toUpperCase()}
+  next: get_status_name
+
+get_status_name:
+  call: http.post
+  args:
+    url: '[#SERVICE_RESQL]/get-service-name-by-id'
+    body:
+      id: ${id}
+  result: name_res
+  next: get_current_status
+
+get_current_status:
+  call: http.post
+  args:
+    url: '[#SERVICE_RESQL]/status'
+    body:
+      id: ${id}
+  result: status_res
+  next: check_status
+
+check_status:
+  switch:
+    - condition: ${status_res.response.body[0].currentState === 'active'}
+      next: return_cannot_delete_active_service
+  next: assign_old_path
+
+assign_old_path:
+  assign:
+    old_file_status_path: ${status_res.response.body[0].currentState}
+  next: delete_service
+
+delete_service:
+  call: http.post
+  args:
+    url: '[#SERVICE_RESQL]/delete-service'
+    body:
+      id: ${id}
+  result: res
+  next: check_service_file_exists
+
+check_service_file_exists:
+  call: http.post
+  args:
+    url: '[#SERVICE_NODE]/file/check'
+    body:
+      file_path: '/Ruuter/${ruuter_type}/services/${old_file_status_path}/${name_res.response.body[0].name}.tmp'
+  result: service_file_exists
+  next: validate_service_file_exists
+
+validate_service_file_exists:
+  switch:
+    - condition: ${!!service_file_exists.response.body}
+      next: delete_deactivated_service
+  next: delete_endpoints
+
+delete_deactivated_service:
+  call: http.post
+  args:
+    url: '[#SERVICE_NODE]/file/delete'
+    body:
+      path: '/Ruuter/${ruuter_type}/services/${old_file_status_path}/${name_res.response.body[0].name}.tmp'
+  result: results
+  next: check_result
+
+check_result:
+  switch:
+    - condition: ${200 <= results.response.statusCodeValue && results.response.statusCodeValue < 300}
+      next: delete_endpoints
+  next: return_bad_request
+
+delete_endpoints:
+  call: http.post
+  args:
+    url: '[#SERVICE_RUUTER]/services/delete-endpoints'
+    body:
+      name: ${name_res.response.body[0].name}
+  result: delete_endpoints_res
+  next: check_for_intent_connection
+
+check_for_intent_connection:
+  call: http.post
+  args:
+    url: '[#SERVICE_TRAINING_RESQL]/get-service-trigger'
+    body:
+      serviceId: ${id}
+  result: connection_res
+  next: check_is_connected_to_intents_or_has_requests
+
+check_is_connected_to_intents_or_has_requests:
+  switch:
+    - condition: ${connection_res.response.body.length > 0}
+      next: delete_intent_connection
+  next: return_ok
+
+delete_intent_connection:
+  call: http.post
+  args:
+    url: '[#SERVICE_TRAINING_RESQL]/add-service-trigger'
+    body:
+      serviceId: ${id}
+      intent: ${connection_res.response.body[0].intent}
+      status: 'deleted'
+      authorRole: ${connection_res.response.body[0].authorRole}
+      serviceName: ${connection_res.response.body[0].serviceName}
+  result: return_ok
+
+return_ok:
+  status: 200
+  return: 'Service Deleted Successfully'
+  next: end
+
+return_bad_request:
+  status: 400
+  return: ${results.response.body.message}
+  next: end
+
+return_incorrect_request:
+  status: 400
+  return: 'Required parameter(s) missing'
+  next: end
+
+return_cannot_delete_active_service:
+  status: 400
+  return: 'Cannot delete active service'
+  next: end
