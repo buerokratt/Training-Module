@@ -8,7 +8,7 @@ import { AxiosError } from 'axios';
 import { MdOutlineSettingsInputAntenna } from 'react-icons/md';
 
 import { Button, Card, DataTable, Dialog, Icon, Track } from 'components';
-import { Model, UpdateModelDTO } from 'types/model';
+import { Model, ModelStateType, UpdateModelDTO } from 'types/model';
 import { activateModel, deleteModel } from 'services/models';
 import { useToast } from 'hooks/useToast';
 
@@ -20,7 +20,7 @@ const Models: FC = () => {
   const [modelConfirmation, setModelConfirmation] = useState<string | number | null>(null);
   const [deletableModel, setDeletableModel] = useState<string | number | null>(null);
   const { data: models } = useQuery<Model[]>({
-    queryKey: ['models'],
+    queryKey: ['models', 'prod'],
   });
 
   const activateModelMutation = useMutation({
@@ -89,19 +89,40 @@ const Models: FC = () => {
           ? format(new Date(props.getValue()), 'dd.MM.yyyy HH:ii')
           : null,
     }),
-    columnHelper.accessor('active', {
+    columnHelper.accessor('state', {
+      header: t('training.mba.state') || '',
+      cell: (props) => renderState(props.getValue()),
+    }),
+    columnHelper.accessor('state', {
       header: t('training.mba.live') || '',
-      cell: (props) => props.getValue() ? (
-        <Track gap={8} style={{ whiteSpace: 'nowrap', color: '#308653' }}>
-          <Icon icon={<MdOutlineSettingsInputAntenna fontSize={24} />} size='medium' />
-          <p>{t('training.mba.modelInUse')}</p>
-        </Track>
-      ) : null,
-      meta: {
-        size: '1%',
-      },
+      cell: (props) => renderDeployedIcon(props.getValue()),
+      meta: { size: '1%' },
     }),
   ], [columnHelper, t]);
+
+  const renderState = (value: ModelStateType) => {
+    if(!value) {
+      return null;
+    }
+    return (
+      <span style={{ color: getModelStatusColor(value) }}>
+        {value}
+      </span>
+    )
+  }
+
+  const renderDeployedIcon = (value: ModelStateType) => {
+    if(value !== 'DEPLOYED') {
+      return null;
+    }
+
+    return (
+      <Track gap={8} style={{ whiteSpace: 'nowrap', color: '#308653' }}>
+        <Icon icon={<MdOutlineSettingsInputAntenna fontSize={24} />} size='medium' />
+        <p>{t('training.mba.modelInUse')}</p>
+      </Track>
+    );
+  }
 
   return (
     <>
@@ -116,7 +137,7 @@ const Models: FC = () => {
             <Button appearance='secondary'>{t('training.mba.viewIntentsPrecision')}</Button>
             <Button appearance='error'
                     onClick={() => setDeletableModel(selectedModel.id)}>{t('global.delete')}</Button>
-            {selectedModel.active ? (
+            {selectedModel.state === 'DEPLOYED' ? (
               <Track gap={8} style={{ whiteSpace: 'nowrap', color: '#308653' }}>
                 <Icon icon={<MdOutlineSettingsInputAntenna fontSize={24} />} size='medium' />
                 <p>{t('training.mba.modelInUse')}</p>
@@ -172,7 +193,7 @@ const Models: FC = () => {
                 appearance='error'
                 onClick={() => activateModelMutation.mutate({
                   id: modelConfirmation,
-                  data: { name: selectedModel.name, active: true },
+                  data: { name: selectedModel.name, state: 'DEPLOYED' },
                 })}
               >
                 {t('global.yes')}
@@ -186,5 +207,15 @@ const Models: FC = () => {
     </>
   );
 };
+
+function getModelStatusColor(status: ModelStateType): string {
+  switch (status) {
+    case 'DEPLOYED': return '#385';
+    case 'TRAINED': return '#FB0';
+    case 'FAILED': return '#D22';
+    case 'REMOVED': return '#AAA';
+    default: return '#000';
+  }
+}
 
 export default Models;

@@ -6,15 +6,28 @@ getData:
         - id: 1
           name: "20220322-155051-potential-proton.tar.gz"
           lastTrained: "2023-10-26T10:23:41.619Z"
-          active: true
+          state: "DEPLOYED"
         - id: 2
-          name: "20220322-155051-potential-proton.tar.gz"
-          lastTrained: "2023-10-26T10:23:41.619Z"
-          active: false
+          name: "121212-155051-potential-proton.tar.gz"
+          lastTrained: "2023-10-27T10:23:41.619Z"
+          state: "FAILED"
         - id: 3
-          name: "20220322-155051-potential-proton.tar.gz"
-          lastTrained: "2023-10-26T10:23:41.619Z"
-          active: false
+          name: "2-potential-proton.tar.gz"
+          lastTrained: "2023-10-28T10:23:41.619Z"
+          state: "TRAINED"
+        - id: 4
+          name: "20220322.tar.gz"
+          lastTrained: "2023-10-29T10:23:41.619Z"
+          state: "REMOVED"
+        - id: 5
+          name: "proton.tar.gz"
+          lastTrained: "2023-11-26T10:23:41.619Z"
+          state: "TRAINED"
+        - id: 6
+          name: "2022tial-proton.tar.gz"
+          lastTrained: "2023-12-26T10:23:41.619Z"
+          state: "REMOVED"
+          
   result: reflected_request
   next: returnData
 

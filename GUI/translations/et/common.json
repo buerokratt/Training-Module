@@ -184,6 +184,7 @@
       "activateModel": "Võta mudel kasutusele",
       "allModels": "Kõik mudelid",
       "lastTrained": "Mudeli treenimise aeg",
+      "state": "Olek",
       "live": "Live",
       "compareResults": "Võrdle tulemusi",
       "deleteModel": "Kustuta mudel",
