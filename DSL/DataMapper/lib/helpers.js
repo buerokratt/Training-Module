@@ -8,6 +8,10 @@ Handlebars.registerHelper('eq', function(a, b) {
     return a == b;
 });
 
+Handlebars.registerHelper('modelIsActive', function(state) {
+    return state.toUpperCase() === 'DEPLOYED';
+});
+
 Handlebars.registerHelper('arrayIsNotEmpty', function(array) {
     return !(!Array.isArray(array) || !array.length);
 });

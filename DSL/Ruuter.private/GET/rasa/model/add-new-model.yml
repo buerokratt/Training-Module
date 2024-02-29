@@ -1,0 +1,146 @@
+getDockerFile:
+  call: http.get
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/docker-file"
+  result: dockerData
+
+assignDefaultValues:
+  assign:
+    version: '1.0'
+    name: 'rasa_'
+    modelPath: '/mock1/bot-training/models/'
+    mockEnd: 'rasa_1.1/intent_report.json'
+    reportPath: '/mock1/bot-training/results/'
+    modelExtension: '.tar.gz'
+    reportEnding: '/intent_report.json'
+    state: 'TRAINED'
+    modelType: 'RASA'
+    imageVersion: ${dockerData.response.body.services['train-bot'].image}
+
+getLatestVersion:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/get-latest-llm-version"
+  result: dbResult
+
+validateVersion:
+  switch:
+    - condition: ${dbResult.response.body[0].latestVersion !== null}
+      next: increaseVersion
+  next: checkModelCreated
+
+increaseVersion:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/util/increase-double-digit-version"
+    body:
+      version: ${dbResult.response.body[0].latestVersion}
+  result: updatedVersion
+
+reAssignVersion:
+  assign:
+    version: ${updatedVersion.response.body}
+
+checkModelCreated:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file/check"
+    body:
+      file_path: ${modelPath + name + version + modelExtension}
+  result: modelCreated
+
+decideState:
+  switch:
+    - condition: ${modelCreated.response.body}
+      next: getIntentsReport
+  next: reAssignState
+
+reAssignState:
+  assign:
+    state: 'FAIL'
+
+getIntentsReport:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file/read"
+    body:
+#      file_path: ${reportPath + name + version + reportEnding}
+      file_path: ${reportPath + mockEnd}
+  result: intentReport
+
+#check if this is needed
+convertYamlToJson:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
+    body:
+      file: ${intentReport.response.body.file}
+  result: reportData
+#  next: checkEntity
+
+reAssignReport:
+  assign:
+    testReport: ${reportData.response.body}
+  next: updateInDatabase
+
+updateInDatabase:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/add-llm-trainings"
+    body:
+      model_type: ${modelType}
+      state: ${state}
+      file_name: ${name + version + modelExtension}
+      version_number: ${version}
+      image_version: ${imageVersion}
+      test_report: ${reportData.response.body}
+  result: dbResult
+
+updateDockerCompose:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/docker/update-version-for-bot"
+    body:
+      object: ${dockerData.response.body}
+      servicesArray: ['train-bot','test-bot','test-bot-cv']
+      newVersion: ${name + version}
+  result: updatedDocker
+
+convertJsonToYaml:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
+    body:
+      version: ${updatedDocker.response.body.version}
+      services: ${updatedDocker.response.body.services}
+      networks: ${updatedDocker.response.body.networks}
+  result: dockerYaml
+
+getFileLocations:
+  call: http.get
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
+  result: fileLocations
+
+saveDockerFile:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file/write"
+    body:
+      file_path: ${fileLocations.response.body.response.docker_location}
+      content: ${dockerYaml.response.body.json}
+  result: fileResult
+  next: returnSuccess
+
+returnSuccess:
+  return: 'New model added Successfully.'
+  wrapper: false
+  next: end
+
+checkEntity:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/dmapper/checkV"
+    body:
+      hits: ${reportData.response.body}
+  result: fileResult

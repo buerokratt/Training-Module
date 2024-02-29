@@ -1,0 +1,25 @@
+assignDefaultVersion:
+  assign:
+    version: '1.0'
+
+getVersionFromDatabase:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/get-latest-llm-version"
+  result: dbResult
+
+validateVersion:
+  switch:
+    - condition: ${dbResult.response.body.latestVersion !== null}
+      next: returnSuccess
+  next: returnError
+
+returnSuccess:
+  return: ${dbResult.response.body.latestVersion}
+  wrapper: false
+  next: end
+
+returnDefaultVersion:
+  return: ${version}
+  wrapper: false
+  next: end
