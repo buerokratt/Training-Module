@@ -11,6 +11,7 @@ import { Button, Card, DataTable, Dialog, Icon, Track } from 'components';
 import { Model, ModelStateType, UpdateModelDTO } from 'types/model';
 import { activateModel, deleteModel } from 'services/models';
 import { useToast } from 'hooks/useToast';
+import { DATETIME_FORMAT } from 'utils/datetime-fromat';
 
 const Models: FC = () => {
   const { t } = useTranslation();
@@ -86,7 +87,7 @@ const Models: FC = () => {
       header: t('training.mba.lastTrained') || '',
       cell: (props) =>
         props.getValue()
-          ? format(new Date(props.getValue()), 'dd.MM.yyyy HH:ii')
+          ? format(new Date(props.getValue()), DATETIME_FORMAT)
           : null,
     }),
     columnHelper.accessor('state', {
