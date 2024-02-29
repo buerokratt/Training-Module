@@ -1,4 +1,4 @@
-version: '3.9'
+version: "3.9"
 services:
   ruuter:
     container_name: byk-private-ruuter
@@ -12,6 +12,21 @@ services:
       - 8080:8080
     networks:
       - bykstack
+
+  database:
+    container_name: database
+    image: postgres:14.1
+    environment:
+      - POSTGRES_USER=byk
+      - POSTGRES_PASSWORD=01234
+      - POSTGRES_DB=training_db
+    ports:
+      - 5433:5432
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    networks:
+      - bykstack
+
   resql:
     container_name: resql
     image: resql
@@ -101,7 +116,8 @@ services:
       context: ./DSL/DataMapper
     volumes:
       - ./mock1:/mock1
-      - ../service-module/DSL/mock1:/mock2
+      - ./DSL/CronManager:/DSL/CronManager
+      - ../Service-Module/DSL/mock1:/mock2
       - ./DSL/DataMapper/views:/workspace/app/views/training
       - ./DSL/DataMapper/views:/workspace/app/js/analytics
     ports:
@@ -160,6 +176,18 @@ services:
       - OPENSEARCH_PROTOCOL=http
     ports:
       - 3010:3010
+    networks:
+      - bykstack
+
+  cron-manager:
+    container_name: cron-manager
+    image: cron_manager
+    volumes:
+      - ./DSL/CronManager:/DSL
+    environment:
+      - server.port=9010
+    ports:
+      - 9010:9010
     networks:
       - bykstack
 

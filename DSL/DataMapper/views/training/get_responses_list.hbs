@@ -7,12 +7,12 @@
     {{#each _source.responses}}
         {
         "name": "{{@key}}",
-        "text": {{#if this.[0].condition}}"{{this.[1].text}}"{{else}}"{{this.[0].text}}"{{/if}}{{#if this.[0].buttons}},
+        "text": {{#if this.[0].condition}}"{{{this.[1].text}}}"{{else}}"{{{this.[0].text}}}"{{/if}}{{#if this.[0].buttons}},
             "buttons": [
             {{#each this.[0].buttons}}
                 {
                 "title": "{{title}}",
-                "payload": "{{payload}}"
+                "payload": "{{{payload}}}"
                 }{{#unless @last}},{{/unless}}
             {{/each}}
             ]
@@ -23,11 +23,11 @@
                 {
                 "type": "{{type}}",
                 "name": "{{name}}",
-                "value":  {{#if value}}"{{value}}"{{else}}null{{/if}}
+                "value":  {{#if value}}"{{{value}}}"{{else}}null{{/if}}
                 }{{#unless @last}},{{/unless}}
             {{/each}}
             ],
-            "conditionText": "{{this.[0].text}}"
+            "conditionText": "{{{this.[0].text}}}"
         {{/if}}
         }{{#unless @last}},{{/unless}}
     {{/each}}

@@ -1,0 +1,18 @@
+getRules:
+  call: http.get
+  args:
+    url: "[#TRAINING_OPENSEARCH]/rules/_search?size=1000"
+  result: getRulesResult
+
+mapRulesData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/dmapper/get-rule-names"
+    body:
+      hits: ${getRulesResult.response.body.hits.hits}
+  result: rulesData
+  next: returnSuccess
+
+returnSuccess:
+  return: ${rulesData.response.body}
+  next: end

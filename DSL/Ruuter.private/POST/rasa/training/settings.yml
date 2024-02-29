@@ -1,0 +1,42 @@
+assignValues:
+  assign:
+    daysOfWeek: ${incoming.body.daysOfWeek}
+    fromDate: ${incoming.body.fromDate}
+    rasaFolds: ${incoming.body.rasaFolds}
+    scheduled: ${incoming.body.scheduled}
+    modifierId: ${incoming.body.modifierId}
+    modifierName: ${incoming.body.modifierName}
+
+updateInDatabase:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/add-train-settings"
+    body:
+      days_of_week: ${daysOfWeek}
+      from_date: ${fromDate}
+      rasa_folds: ${rasaFolds}
+      scheduled: ${scheduled}
+      modifier_id: ${modifierId}
+      modifier_name: ${modifierName}
+  result: dbResult
+
+syncDockerCompose:
+  call: http.post
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/sync/docker"
+    headers:
+      cookie: ${incoming.headers.cookie}
+  result: updatedDocker
+
+syncCronTask:
+  call: http.post
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/sync/cron"
+    headers:
+      cookie: ${incoming.headers.cookie}
+  result: updatedCron
+
+returnSuccess:
+  return: 'Updated Successfully.'
+  wrapper: false
+  next: end

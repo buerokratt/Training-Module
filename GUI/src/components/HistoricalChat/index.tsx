@@ -41,13 +41,6 @@ const HistoricalChat: FC<ChatProps> = ({ chat, trigger }) => {
   const [markedMessage, setMarkedMessage] = useState<Message | null>(null);
   const [messageGroups, setMessageGroups] = useState<GroupedMessage[]>([]);
   const [messagesList, setMessagesList] = useState<Message[]>([]);
-  // const { data: messages } = useQuery<Message[]>({
-  //   queryKey: [`csa/messages-by-id/${chat.id}`],
-  // });
-
-  // if(import.meta.env.REACT_APP_LOCAL === 'true') {
-  //   return apigeneric.get(`csa/messages-by-id/${chat.id}`);
-  // }
 
   useEffect(() => {
     getMessages();
@@ -73,9 +66,9 @@ const HistoricalChat: FC<ChatProps> = ({ chat, trigger }) => {
       intentName?: string;
     }) => {
       if(data.newIntent) {
-        return addIntentWithExample({ intentName: data.intentName || '',newExamples:  data.example });
+        return addIntentWithExample({ intentName: data.intentName ?? '',newExamples:  data.example });
       }
-      return addExampleFromHistory(data.intent, { example: data.example });
+      return addExampleFromHistory(data.intentName ?? '', { example: data.example });
     },
     onSuccess: async () => {
       toast.open({

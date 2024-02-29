@@ -4,7 +4,7 @@
         "name": "{{hits.0._source.regex}}",
         "examples": [
         {{#each examplesArray }}
-            "{{this}}"{{#unless @last}},{{/unless}}
+            "{{{this}}}"{{#unless @last}},{{/unless}}
         {{/each}}
         ],
         "id": "{{hits.0._source.regex}}"

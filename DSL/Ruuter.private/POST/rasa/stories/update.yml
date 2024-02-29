@@ -6,38 +6,31 @@ assign_values:
 validateStoriesForDuplicates:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/validate/validate-stories"
+    url: "[#TRAINING_DMAPPER]/validate/validate-stories-rules"
     body:
       story: ${storyData}
   result: validateStoriesResult
 
 validateStoriesCheck:
   switch:
-      - condition: ${validateStoriesResult.response.body.result == true}
-        next: returnDuplicateIntentOrEntity
-  next: returnStoryIsMissing
+    - condition: ${validateStoriesResult.response.body.result == false}
+      next: returnDuplicateIntentOrEntity
+  next: getStoriesWithName
 
 getStoriesWithName:
-  call: http.get
+  call: http.post
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]/rasa/stories"
     headers:
       cookie: ${incoming.headers.cookie}
+    body:
+      story: ${id}
   result: storiesResult
 
-checkIfStoryExists:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/util/objectListContainsId"
-    body:
-      id: ${storyData.story}
-      list: ${storiesResult.response.body.response}
-  result: storiesCheckResult
-
-validateStories:
+validateStoryExists:
   switch:
-    - condition: ${storiesCheckResult.response.body.result == false}
-      next: returnStoryExists
+    - condition: ${storiesResult.response.body.response.data.id == id}
+      next: returnStoryIsMissing
   next: getFileLocations
 
 getFileLocations:
@@ -69,7 +62,7 @@ deleteStory:
   args:
     url: "[#TRAINING_DMAPPER]/dmapper/delete-story"
     body:
-      stories: ${storiesData.response.body.stories}
+      stories: ${storiesData.response.body}
       story_name: ${id}
   result: deleteStoriesData
 
@@ -78,7 +71,7 @@ mergeStories:
   args:
     url: "[#TRAINING_DMAPPER]/merge"
     body:
-      array1: ${deleteStoriesData.response.body.data}
+      array1: ${deleteStoriesData.response.body.data[1]}
       array2: ${[storyData]}
       iteratee: "story"
   result: mergedStories
@@ -88,7 +81,6 @@ convertJsonToYaml:
   args:
     url: "[#TRAINING_DMAPPER]/convert/json-to-yaml-stories"
     body:
-      version: "3.0"
       stories: ${mergedStories.response.body}
   result: storiesYaml
 
@@ -124,10 +116,6 @@ returnSuccess:
 
 returnStoryIsMissing:
   return: "Can't find story to update"
-  next: end
-
-returnStoryExists:
-  return: "Story exists"
   status: 409
   next: end
 
