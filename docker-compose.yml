@@ -52,6 +52,7 @@ services:
       context: ./DSL/DataMapper
     volumes:
       - ./mock1:/mock1
+      - ./docker-compose-bot.yml:/docker-bot/docker-compose-bot.yml
       - ./DSL/CronManager:/DSL/CronManager
       - ../Service-Module/DSL/mock1:/mock2
       - ./DSL/DataMapper/views:/workspace/app/views/training
