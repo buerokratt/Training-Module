@@ -9,6 +9,6 @@ assign_step:
       regex_location: '/mock1/data/regex/'
       training_result_location: '/mock1/results'
       config_location: '/mock1/config.yml'
-      docker_location: '/mock1/docker-compose.yml'
+      docker_location: '/docker-bot/docker-compose-bot.yml'
 return_value:
   return: ${locations}

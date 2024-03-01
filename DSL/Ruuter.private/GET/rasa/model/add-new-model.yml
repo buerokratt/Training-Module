@@ -8,9 +8,8 @@ assignDefaultValues:
   assign:
     version: '1_0'
     name: 'rasa_'
-    modelPath: '/mock1/bot-training/models/'
-    mockEnd: 'rasa_1_1/intent_report.json'
-    reportPath: '/mock1/bot-training/results/'
+    modelPath: '/mock1/models/'
+    reportPath: '/mock1/results/'
     modelExtension: '.tar.gz'
     reportEnding: '/intent_report.json'
     state: 'Trained'
@@ -33,7 +32,7 @@ getLatestVersionFromDb:
     url: "[#TRAINING_RESQL]/get-latest-llm-version"
   result: dbResult
 
-validateVersion:
+validateDbVersion:
   switch:
     - condition: ${dbResult.response.body.length > 0}
       next: increaseVersion
@@ -88,7 +87,7 @@ convertYamlToJson:
 
 reAssignReport:
   assign:
-    testReport: ${reportData.response.body}
+    test_report: ${reportData.response.body}
   next: updateInDatabase
 
 updateInDatabase:
@@ -144,11 +143,3 @@ returnSuccess:
   return: 'New model added Successfully.'
   wrapper: false
   next: end
-
-checkEntity:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/dmapper/checkV"
-    body:
-      hits: ${trainedVersion.response.body}
-  result: fileResult

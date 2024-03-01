@@ -7,7 +7,12 @@ import {TrainConfigDataDTO, TrainedDataDTO} from "../../../types/trainSettings";
 import {Controller, useForm} from "react-hook-form";
 import {AxiosError} from "axios";
 import {useToast} from "../../../hooks/useToast";
-import {convertFromDaySelect, convertToDaySelect, updateTrainSettings} from "../../../services/train-settings";
+import {
+    convertFromDaySelect,
+    convertToDaySelect,
+    initBotTraining,
+    updateTrainSettings
+} from "../../../services/train-settings";
 import React, {useEffect, useState} from "react";
 import {AiOutlineExclamationCircle} from "react-icons/ai";
 import useStore from "../../../store/store";
@@ -82,6 +87,25 @@ const TrainAndTest = () => {
         trainSettingsEditMutation.mutate(data);
     });
 
+    const trainNowMutation = useMutation({
+        mutationFn: () => initBotTraining(),
+        onSuccess: async () => {
+            toast.open({
+                type: 'success',
+                title: t('global.notification'),
+                message: 'Training is Initialized.',
+            });
+        },
+        onError: (error: AxiosError) => {
+            toast.open({
+
+                type: 'error',
+                title: t('global.notificationError'),
+                message: error.message,
+            });
+        },
+    });
+
     const formatDate = (date: string) => {
         const [year, month, day] = date.split("-");
         return `${day}.${month}.${year}`;
@@ -97,7 +121,7 @@ const TrainAndTest = () => {
                         time: lastTrainedTime,
                     })}
                 </p>
-                <Button appearance="primary">{t('training.trainNew.trainNow')}</Button>
+                <Button onClick={() => trainNowMutation.mutate()} appearance="primary">{t('training.trainNew.trainNow')}</Button>
             </div>
             {llmFailed && trainedData && (<Box
                 color="red"

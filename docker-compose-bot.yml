@@ -8,11 +8,11 @@ services:
     ports:
       - 5006:5005
     volumes:
-      - ./bot-training/:/app
+      - ./mock1/:/app
     command:
       - train
       - --fixed-model-name
-      - rasa_1.1
+      - rasa_1_0
     networks:
       - bykstack
     logging:
@@ -28,11 +28,11 @@ services:
     ports:
       - 5006:5005
     volumes:
-      - ./bot-training/:/app
+      - ./mock1/:/app
     command:
       - test
       - --out
-      - results/rasa_1.1
+      - results/rasa_1_0
     depends_on:
       train-bot:
         condition: service_completed_successfully
@@ -51,14 +51,14 @@ services:
     ports:
       - 5007:5005
     volumes:
-      - ./bot-training/:/app
+      - ./mock1/:/app
     command:
       - test
       - --cross-validation
       - --folds
       - "2"
       - --out
-      - results/cross-rasa_1.1
+      - results/cross-rasa_1_0
     logging:
       driver: json-file
       options:

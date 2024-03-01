@@ -83,6 +83,7 @@ app.use('/rules/remove-by-intent-name', removeRulesByIntentName);
 app.use('/array/replace-next-element', replaceNextElementInArray);
 app.use('/docker/update-parameter-by-key', updateParametersByKey);
 app.use('/docker/update-version-for-bot', updateVersionForBot);
+app.use('/docker/bot-trained-version', botTrainedVersion);
 app.use('/cron/generate-expression-date-days', createExpressionFromDateDays);
 app.use('/domain/update-existing-response', domainUpdateExistingResponse)
 app.use('/util/objectListContainsId', objectListContainsId)

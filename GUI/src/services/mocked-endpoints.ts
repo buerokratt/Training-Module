@@ -9,7 +9,7 @@ export const mockedEndpoints : string[] = [
     // 'models',
     'selected-model',
     'test-stories',
-    'intents-report',
+    // 'intents-report',
     'active-configuration',
     'conversations',
     'conversations/1',
