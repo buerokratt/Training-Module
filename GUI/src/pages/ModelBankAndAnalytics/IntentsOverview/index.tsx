@@ -14,13 +14,14 @@ import { Model } from 'types/model';
 const IntentsOverview: FC = () => {
   const { t } = useTranslation();
   const [filter, setFilter] = useState('');
-  const [selectedModelId, setSelectedModelId] = useState(0);
+  const [selectedModelId, setSelectedModelId] = useState('');
   
   const { data: models } = useQuery<Model[]>({
     queryKey: ['models'],
   });
 
-  const { data: intentsReport, refetch: refetchIntentsReport } = useQuery<IntentsReport>({
+  const { data: intentsReport, refetch } = useQuery<IntentsReport>({
+    // queryKey: [`model/get-report-by-name?fileName=${selectedModelId}`],
     queryKey: ['intents-report', selectedModelId],
     enabled: false,
   });
@@ -42,7 +43,7 @@ const IntentsOverview: FC = () => {
 
   useEffect(() => {
     if(!selectedModelId) return;
-    refetchIntentsReport();
+    refetch();
   }, [selectedModelId])
   
   const formattedIntentsReport = useMemo(
@@ -94,7 +95,7 @@ const IntentsOverview: FC = () => {
             props.row.original['f1-score'] >= 0.8
               ? '#D9E9DF'
               : props.row.original['f1-score'] <= 0.3 ? '#F7DBDB' : undefined,
-        }}>{truncateNumber(props.getValue())}</div>
+        }}>{truncateNumber(props.getValue() || 0)}</div>
       ),
     }),
     columnHelper.accessor('recall', {
@@ -159,7 +160,10 @@ const IntentsOverview: FC = () => {
               fitContent
               options={modelsOptions}
               value={String(selectedModelId)}
-              onSelectionChange={(model) => setSelectedModelId(Number(model?.value))}
+              onSelectionChange={(model) => {
+                  refetch();
+                  setSelectedModelId(model?.value ?? '')}
+                }
             />
           )}
           <Button>{t('global.choose')}</Button>

@@ -8,6 +8,10 @@ Handlebars.registerHelper('eq', function(a, b) {
     return a == b;
 });
 
+Handlebars.registerHelper('jsonParse', function(obj) {
+    return JSON.parse(obj);
+});
+
 Handlebars.registerHelper('arrayIsNotEmpty', function(array) {
     return !(!Array.isArray(array) || !array.length);
 });
