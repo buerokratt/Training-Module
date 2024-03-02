@@ -46,6 +46,7 @@ import updateParametersByKey from "./js/docker/updateParametersByKey.js";
 import createExpressionFromDateDays from "./js/cron/createExpressionFromDateDays.js";
 import incrementDoubleDigitStringVersion from "./js/util/incrementDoubleDigitStringVersion.js";
 import updateVersionForBot from "./js/docker/updateVersionForBot.js";
+import botTrainedVersion from "./js/docker/botTrainedVersion.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
