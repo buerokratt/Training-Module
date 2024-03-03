@@ -1,0 +1,55 @@
+assignValue:
+  assign:
+    fileName: ${incoming.params.fileName}
+
+validateName:
+  switch:
+    - condition: ${fileName.trim().length !== 0}
+      next: getDataFromDb
+  next: returnError
+
+getDataFromDb:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/get-llm-model-by-filename"
+    body:
+      fileName: ${fileName}
+  result: dbResult
+
+validateRecordExists:
+  switch:
+    - condition: ${dbResult.response.body.length !== 0}
+      next: checkEntity
+  next: checkEntity
+
+updateInDatabase:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/remove-llm-trainings"
+    body:
+      model_type: ${modelType}
+      state: 'Removed'
+      file_name: ${name + trainedVersion.response.body + modelExtension}
+      version_number: ${trainedVersion.response.body}
+      image_version: ${imageVersion}
+      test_report: ${test_report}
+  result: dbResult
+
+returnSuccess:
+  return: 'Model deleted.'
+  wrapper: true
+  next: end
+
+returnError:
+  return: 'Model not found.'
+  wrapper: true
+  code: 409
+  next: end
+
+checkEntity:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/dmapper/checkV"
+    body:
+      hits: ${dbResult.response.body}
+  result: fileResult

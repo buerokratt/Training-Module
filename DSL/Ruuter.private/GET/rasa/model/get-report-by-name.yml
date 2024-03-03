@@ -20,7 +20,7 @@ getReportFromDb:
 validateRecordExists:
   switch:
     - condition: ${dbResult.response.body.length !== 0}
-      next: returnSuccess
+      next: mapReport
   next: returnEmptyObject
 
 mapReport:
@@ -29,11 +29,11 @@ mapReport:
     url: "[#TRAINING_DMAPPER]/dmapper/get-intent-report"
     body:
       keys: ${Object.keys(JSON.parse(dbResult.response.body[0].testReport.value))}
-      object: ${JSON.parse(dbResult.response.body[0].testReport.value)}
-  result: fileResult
+      object: ${JSON.parse(dbResult.response.body[0].testReport.value.replaceAll('=',':'))}
+  result: intentReport
 
 returnSuccess:
-  return: ${JSON.parse(dbResult.response.body[0].testReport.value)}
+  return: ${mappedReport.response.body.data}
   wrapper: true
   next: end
 
@@ -47,5 +47,5 @@ checkEntity:
   args:
     url: "[#TRAINING_DMAPPER]/dmapper/checkV"
     body:
-      hits: ${dbResult.response.body[0]}
+      hits: ${intentReport.response.body}
   result: fileResult
