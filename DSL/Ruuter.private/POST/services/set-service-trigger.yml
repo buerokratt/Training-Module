@@ -1,0 +1,20 @@
+assign_values:
+  assign:
+    params: ${incoming.body}
+
+setServiceTrigger:
+  call: http.post
+  args:
+    url: '[#TRAINING_SERVICE_RESQL]/services/set-service-trigger'
+    body:
+      id: 'intent-with-name'
+      params: ${params}
+  result: setServiceTrigger
+
+returnSuccess:
+  return: ${setServiceTrigger.response.body}
+  next: end
+
+returnUnauthorized:
+  return: 'error: unauthorized'
+  next: end

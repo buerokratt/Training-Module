@@ -24,22 +24,23 @@ import ModelsDetail from 'pages/ModelBankAndAnalytics/Models/ModelsDetail';
 import IntentsFollowupTraining from 'pages/Training/IntentsFollowupTraining';
 import RegexDetail from 'pages/Training/IntentsFollowupTraining/RegexDetail';
 import TrainAndTest from 'pages/Training/TrainAndTest';
+import AutoServicesPage from 'pages/Training/AutoServices';
 
 const App: FC = () => {
-  if (import.meta.env.REACT_APP_LOCAL === "true") {
+  if (import.meta.env.REACT_APP_LOCAL === 'true') {
     useQuery<{
       data: { custom_jwt_userinfo: UserInfo };
     }>({
-      queryKey: ["userinfo", "prod"],
+      queryKey: ['userinfo', 'prod'],
       onSuccess: (res: any) => {
-        return useStore.getState().setUserInfo(res.data)
+        return useStore.getState().setUserInfo(res.data);
       },
     });
   } else {
     const { data: userInfo } = useQuery<UserInfo>({
       queryKey: [import.meta.env.REACT_APP_AUTH_PATH, 'auth'],
       onSuccess: (res: { response: UserInfo }) => {
-        localStorage.setItem("exp", res.response.JWTExpirationTimestamp);
+        localStorage.setItem('exp', res.response.JWTExpirationTimestamp);
         return useStore.getState().setUserInfo(res.response);
       },
     });
@@ -48,32 +49,51 @@ const App: FC = () => {
   return (
     <Routes>
       <Route element={<Layout />}>
-        <Route index element={<Navigate to='/training/intents' />} />
-        <Route path='/training/intents' element={<Intents />} />
-        <Route path='/training/common-intents' element={<CommonIntents />} />
-        <Route path='/training/intents-followup-training' element={<IntentsFollowupTraining />} />
-        <Route path='/training/regex/:id' element={<RegexDetail />} />
-        <Route path='/training/responses' element={<Responses />} />
-        <Route path='/training/configuration' element={<Configuration />} />
-        <Route path='/training/stories' element={<Stories />} />
-        <Route path='/training/stories/new' element={<StoriesDetail mode='new' />} />
-        <Route path='/training/stories/:id' element={<StoriesDetail mode='edit' />} />
-        <Route path='/training/rules/new' element={<StoriesDetail mode='new' />} />
-        <Route path='/training/stories/rules/:id' element={<StoriesDetail mode='edit' />} />
-        <Route path='/training/:id' element={<StoriesDetail mode='edit' />} />
-        <Route path='/training/slots' element={<Slots />} />
-        <Route path='/training/slots/new' element={<SlotsDetail mode='new' />} />
-        <Route path='/training/slots/:id' element={<SlotsDetail mode='edit' />} />
-        <Route path='/training/forms' element={<Forms />} />
-        <Route path='/training/forms/new' element={<FormsDetail mode='new' />} />
-        <Route path='/training/forms/:id' element={<FormsDetail mode='edit' />} />
-        <Route path='/history/history' element={<History />} />
-        <Route path='/history/appeal' element={<Appeals />} />
-        <Route path='/analytics/overview' element={<IntentsOverview />} />
-        <Route path='/analytics/testcases' element={<Testcases />} />
-        <Route path='/analytics/models' element={<Models />} />
-        <Route path='/analytics/models/:id' element={<ModelsDetail />} />
-        <Route path='/train-new-model' element={<TrainAndTest />} />
+        <Route index element={<Navigate to="/training/intents" />} />
+        <Route path="/training/intents" element={<Intents />} />
+        <Route path="/training/common-intents" element={<CommonIntents />} />
+        <Route
+          path="/training/intents-followup-training"
+          element={<IntentsFollowupTraining />}
+        />
+        <Route path="/training/regex/:id" element={<RegexDetail />} />
+        <Route path="/training/responses" element={<Responses />} />
+        <Route path="/training/configuration" element={<Configuration />} />
+        <Route path="/training/stories" element={<Stories />} />
+        <Route
+          path="/training/stories/new"
+          element={<StoriesDetail mode="new" />}
+        />
+        <Route
+          path="/training/stories/:id"
+          element={<StoriesDetail mode="edit" />}
+        />
+        <Route path="/training/slots" element={<Slots />} />
+        <Route
+          path="/training/slots/new"
+          element={<SlotsDetail mode="new" />}
+        />
+        <Route
+          path="/training/slots/:id"
+          element={<SlotsDetail mode="edit" />}
+        />
+        <Route path="/training/forms" element={<Forms />} />
+        <Route
+          path="/training/forms/new"
+          element={<FormsDetail mode="new" />}
+        />
+        <Route
+          path="/training/forms/:id"
+          element={<FormsDetail mode="edit" />}
+        />
+        <Route path="/history/history" element={<History />} />
+        <Route path="/history/appeal" element={<Appeals />} />
+        <Route path="/analytics/overview" element={<IntentsOverview />} />
+        <Route path="/analytics/testcases" element={<Testcases />} />
+        <Route path="/analytics/models" element={<Models />} />
+        <Route path="/analytics/models/:id" element={<ModelsDetail />} />
+        <Route path="/train-new-model" element={<TrainAndTest />} />
+        <Route path="/training/auto-services" element={<AutoServicesPage />} />
       </Route>
     </Routes>
   );

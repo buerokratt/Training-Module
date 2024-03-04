@@ -1,0 +1,10 @@
+get_services_list:
+  call: http.post
+  args:
+    url: '[#TRAINING_SERVICE_RESQL]/services/get-services-list'
+  result: results
+
+return_ok:
+  status: 200
+  return: ${results.response.body}
+  next: end

@@ -1,0 +1,8 @@
+get_available_intents:
+  call: http.post
+  args:
+    url: '[#TRAINING_RESQL]/get-available-intents'
+  result: res
+
+return_result:
+  return: ${res.response.body}
