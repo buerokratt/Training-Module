@@ -1,4 +1,5 @@
 import api from './api';
+import { Service } from '../store/intents.store';
 const baseUrl = import.meta.env.REACT_APP_API_URL;
 
 export async function setServiceTrigger(intentData: {
@@ -18,7 +19,7 @@ export const changeIntentConnection = (): string =>
 export const deleteService = (id: string): string =>
   `${baseUrl}/services/delete`;
 
-export const respondToConnectionRequest = (): string =>
+export const respondToConnectionRequest = (service: Service) =>
   `${baseUrl}/services/respond-to-connection-request`;
 
 export const getConnectionRequests = (): string =>

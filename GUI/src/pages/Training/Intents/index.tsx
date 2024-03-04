@@ -39,6 +39,7 @@ import {
 import IntentExamplesTable from './IntentExamplesTable';
 import LoadingDialog from '../../../components/LoadingDialog';
 import useIntentsListStore, { Service } from '../../../store/intents.store';
+import { respondToConnectionRequest } from '../../../services/services';
 
 const Intents: FC = () => {
   const { t } = useTranslation();
@@ -327,6 +328,15 @@ const Intents: FC = () => {
       setRefreshing(false);
     },
   });
+
+  const connectIntent = () => {
+    useIntentsListStore
+      .getState()
+      .setSelectedService(connectedService as unknown as Service);
+    respondToConnectionRequest(connectedService as unknown as Service);
+    setConnectServiceModalOpen(false);
+    setConnectedService('');
+  };
 
   const intentModelMutation = useMutation({
     mutationFn: (intentModelData: { name: string; inModel: boolean }) =>
@@ -755,15 +765,7 @@ const Intents: FC = () => {
               <Button appearance="secondary" onClick={onModalClose}>
                 Tühista
               </Button>
-              <Button
-                onClick={() =>
-                  useIntentsListStore
-                    .getState()
-                    .setSelectedService(connectedService as unknown as Service)
-                }
-              >
-                Jah
-              </Button>
+              <Button onClick={connectIntent}>Jah</Button>
             </>
           )
         }
