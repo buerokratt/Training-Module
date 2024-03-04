@@ -1,14 +1,19 @@
-import { FC, useMemo, useState } from 'react';
+import {FC, useEffect, useMemo, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import * as Tabs from '@radix-ui/react-tabs';
-import { useQuery } from '@tanstack/react-query';
+import {useMutation, useQuery} from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { MdDeleteOutline, MdOutlineModeEditOutline } from 'react-icons/md';
 
-import { Button, DataTable, FormInput, Icon, Track } from 'components';
+import {Button, DataTable, Dialog, FormInput, Icon, Track} from 'components';
 import {Rule, Rules} from 'types/rule';
 import {Stories as StoriesType, Story} from 'types/story';
+import {deleteStoryOrRule} from "../../../services/stories";
+import {AxiosError} from "axios";
+import LoadingDialog from "../../../components/LoadingDialog";
+import { useToast } from 'hooks/useToast';
+
 
 const Stories: FC = () => {
   const { t } = useTranslation();
@@ -21,16 +26,36 @@ const Stories: FC = () => {
   });
   const [selectedTab, setSelectedTab] = useState<string>('stories');
   const [filter, setFilter] = useState('');
-  const rules = useMemo(() => rulesResponse ? rulesResponse.response.map((r, i) => ({
-    id: r.id,
-    rule: r.id
-  })) : [], [rulesResponse]);
-  const stories = useMemo(() => storiesResponse ? storiesResponse.response.map((r, i) => ({
-    id: r.id,
-    rule: r.id
-  })) : [], [storiesResponse]);
+  const [stories, setStories] = useState<Story[]>([]);
+  const [rules, setRules] = useState<Rules[]>([]);
   const storiesColumnHelper = createColumnHelper<Story>();
   const rulesColumnHelper = createColumnHelper<Rule>();
+  const toast = useToast();
+  const [deleteConfirmation, setDeleteConfirmation] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [deleteId, setDeleteId] = useState<string>('');
+
+  useEffect(() => {
+    if (selectedTab === 'stories' && storiesResponse) {
+      setStories(storiesResponse.response.map((r, i) => ({
+        id: r.id,
+        story: r.id
+      })));
+    } else if (selectedTab === 'rules' && rulesResponse) {
+      setRules(rulesResponse.response.map((r, i) => ({
+        id: r.id,
+        rule: r.id
+      })));
+    } else {
+      setStories([]);
+      setRules([]);
+    }
+  }, [rulesResponse, selectedTab, storiesResponse]);
+
+  const handleDelete = (id: string) => {
+    setDeleteConfirmation(true);
+    setDeleteId(id);
+  };
 
   const storiesColumns = useMemo(() => [
     storiesColumnHelper.accessor('id', {
@@ -41,7 +66,7 @@ const Stories: FC = () => {
       cell: (props) => (
         <Button
           appearance='text'
-          onClick={() => navigate(`${props.row.original.id}`, { state: { storyTitle: filter, type: 'stories' } })}
+          onClick={() => navigate(`${props.row.original.id}`, { state: { storyTitle: filter, category: 'stories' } })}
         >
           <Icon
             label={t('global.edit')}
@@ -58,7 +83,9 @@ const Stories: FC = () => {
     storiesColumnHelper.display({
       header: '',
       cell: (props) => (
-        <Button appearance='text'>
+        <Button appearance='text'
+                onClick={() => handleDelete(props.row.original.id)}
+        >
           <Icon
             label={t('global.delete')}
             icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />}
@@ -82,7 +109,7 @@ const Stories: FC = () => {
       cell: (props) => (
         <Button
           appearance='text'
-          onClick={() => navigate(`reeglid/${props.row.original.id}`)}
+          onClick={() => navigate(`rules/${props.row.original.id}`, { state: { category: 'rules' } })}
         >
           <Icon
             label={t('global.edit')}
@@ -99,10 +126,13 @@ const Stories: FC = () => {
     rulesColumnHelper.display({
       header: '',
       cell: (props) => (
-        <Button appearance='text'>
+        <Button
+            appearance='text'
+            onClick={() => handleDelete(props.row.original.id)}
+        >
           <Icon
-            label={t('global.delete')}
-            icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />}
+              label={t('global.delete')}
+              icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />}
           />
           {t('global.delete')}
         </Button>
@@ -118,6 +148,34 @@ const Stories: FC = () => {
     setFilter('');
     setSelectedTab(value);
   };
+
+  const deleteStoryMutation = useMutation({
+    mutationFn: ({ id, category }: { id: string, category: string }) => deleteStoryOrRule(id, category),
+    onMutate: () => setRefreshing(true),
+    onSuccess: async () => {
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: 'Story deleted',
+      });
+      if (selectedTab === 'stories') {
+        setStories(stories.filter(story => story.id !== deleteId));
+      } else {
+        setRules(rules.filter(rule => rule.id !== deleteId));
+      }
+      navigate(import.meta.env.BASE_URL + 'stories');
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
+    onSettled: () => {
+      setRefreshing(false)
+    },
+  });
 
   return (
     <>
@@ -148,9 +206,7 @@ const Stories: FC = () => {
                 hideLabel
                 onChange={(e) => setFilter(e.target.value)}
               />
-              <Button onClick={() => navigate('/training/stories/new', {
-                state: { storyTitle: filter,
-                         category: "stories" } })}>
+              <Button onClick={() => navigate('/training/stories/new', { state: { id: filter, category: 'stories' } })}>
                 {t('global.add')}
               </Button>
             </Track>
@@ -177,7 +233,9 @@ const Stories: FC = () => {
                 hideLabel
                 onChange={(e) => setFilter(e.target.value)}
               />
-              <Button>{t('global.add')}</Button>
+              <Button onClick={() => navigate('/training/rules/new', { state: { id: filter, category: 'rules' } })}>
+                {t('global.add')}
+              </Button>
             </Track>
           </div>
           <div className='vertical-tabs__content'>
@@ -192,6 +250,36 @@ const Stories: FC = () => {
           </div>
         </Tabs.Content>
       </Tabs.Root>
+
+      {deleteId && deleteConfirmation && (
+          <Dialog
+              title={t('training.responses.deleteStory')}
+              onClose={() => setDeleteConfirmation(false)}
+              footer={
+                <>
+                  <Button appearance='secondary' onClick={() => setDeleteConfirmation(false)}>{t('global.no')}</Button>
+                  <Button
+                      appearance='error'
+                      onClick={() => {
+                        deleteStoryMutation.mutate({ id: deleteId, category: selectedTab });
+                        setDeleteConfirmation(false);
+                      }
+                    }
+                  >
+                    {t('global.yes')}
+                  </Button>
+                </>
+              }
+          >
+            <p>{t('global.removeValidation')}</p>
+          </Dialog>
+      )}
+
+      {refreshing && (
+          <LoadingDialog title={t('global.updatingDataHead')} >
+            <p>{t('global.updatingDataBody')}</p>
+          </LoadingDialog>
+      )}
     </>
   );
 };

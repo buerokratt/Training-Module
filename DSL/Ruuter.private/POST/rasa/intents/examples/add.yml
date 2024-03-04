@@ -82,35 +82,24 @@ convertYamlToJson:
 checkIfIntentEmpty:
   switch:
     - condition: ${intentData.response.body.nlu[0] != undefined}
-      next: replaceString
+      next: convertStringToArray
 
 assignEmptyExamples:
   assign:
     examplesToWriteIntoYml: []
   next: checkIfExampleIsList
 
-replaceString:
+convertStringToArray:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/string/replace"
+    url: "[#TRAINING_DMAPPER]/convert/string/toArray"
     body:
       data: ${intentData.response.body.nlu[0].examples}
-      search: "- "
-      replace: ""
-  result: replacedString
-
-splitExamples:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/convert/string/split"
-    body:
-      data: ${replacedString.response.body}
-      separator: "\n"
-  result: splitExamples
+  result: convertedArray
 
 assignExamples:
   assign:
-    examplesToWriteIntoYml: ${splitExamples.response.body}
+    examplesToWriteIntoYml: ${convertedArray.response.body}
 
 checkIfExampleIsList:
   switch:

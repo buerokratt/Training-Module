@@ -37,6 +37,9 @@ const NewExampleModal: FC<NewExampleModalProps> = ({ message, setMessage, onSubm
   });
 
   const handleNewExample = handleSubmit((data) => {
+    if(!isNewIntent) {
+      data.intentName = selectedIntent;
+    }
     onSubmitExample(data);
   });
 
@@ -54,7 +57,7 @@ const NewExampleModal: FC<NewExampleModalProps> = ({ message, setMessage, onSubm
       }
     >
       <Track direction='vertical' gap={16} align='left'>
-        <FormInput {...register('example')} label={t('training.intents.example')} defaultValue={message.content} />
+        <FormInput {...register('example')} label={t('training.intents.example')} defaultValue={decodeURIComponent(message.content || '')} />
         {intents && !isNewIntent && (
           <Controller
               disabled={true}

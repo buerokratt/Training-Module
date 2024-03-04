@@ -1,5 +1,4 @@
 version: "3.0"
-
 intents:
   - rahvaarv
   - common_tervitus
@@ -13,7 +12,6 @@ intents:
   - service_car_rent
   - greet
   - mood_selected
-  - greet
   - affirm
   - deny
 
@@ -35,13 +33,11 @@ slots:
     type: text
     influence_conversation: true
     mappings:
-      type: from_entity
-      entity: asukoht
-      intent:
-        - common_teenus_ilm
-        - nlu_fallback
-      not_intent:
-        - rahvaarv
+    -  type: from_entity
+       entity: asukoht
+       intent:
+         - common_teenus_ilm
+         - nlu_fallback
 
 forms:
   custom_fallback_form:
@@ -58,9 +54,6 @@ actions:
   - action_react_to_affirm_deny_in_custom_fallback_form
   - action_react_to_affirm_deny_in_direct_to_customer_support_form
   - action_check_confidence
-  - utter_greet
-  - utter_good_day
-  - utter_bad_day
   
 responses:
 #  Final response

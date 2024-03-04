@@ -26,14 +26,14 @@ import { Story, StoryDTO } from 'types/story';
 import { Form } from 'types/form';
 import { Slot } from 'types/slot';
 import { useToast } from 'hooks/useToast';
-import { addStory, deleteStory, editStory } from 'services/stories';
+import { addStoryOrRule, deleteStoryOrRule, editStoryOrRule } from 'services/stories';
 import CustomNode from './CustomNode';
 import useDocumentEscapeListener from '../../../hooks/useDocumentEscapeListener';
 import { generateStoryStepsFromNodes, generateNodesFromStorySteps } from 'services/rasa';
 import { GRID_UNIT, generateNewEdge, generateNewNode } from 'services/nodes';
 import './StoriesDetail.scss';
 import LoadingDialog from "../../../components/LoadingDialog";
-
+import {Rule, RuleDTO} from "../../../types/rule";
 
 const nodeTypes = {
   customNode: CustomNode,
@@ -59,30 +59,28 @@ const initialNodes: Node[] = [
 const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   const { t } = useTranslation();
   const { id } = useParams<{ id: string }>()
-  const [storyId, setStoryId] = useState<string | undefined>(id);
+  const [currentEntityId, setCurrentEntityId] = useState<string | undefined>(id);
+  const location = useLocation();
   const navigate = useNavigate();
   const toast = useToast();
   const queryClient = useQueryClient();
-  const locationState = useLocation();
   const [deleteConfirmation, setDeleteConfirmation] = useState(false);
   const [restartConfirmation, setRestartConfirmation] = useState(false);
   const [deleteId, setDeleteId] = useState('');
   const [editableTitle, setEditableTitle] = useState<string | null>(null);
-  const [story, setStory] = useState<Story | undefined | null>(null);
+  const [currentEntity, setCurrentEntity] = useState<Story | Rule | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [category, setCategory] = useState<string>('stories');
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-
   const onConnect = useCallback((params: Connection) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
 
-  const category = locationState?.category || 'stories';
-  const storyTitle = locationState?.storyTitle || null;
-
-  const { data: storyData, refetch } = useQuery<Story>({
-    queryKey: ['story-by-name', storyId],
-    enabled: category === 'stories' && !!storyId,
+  const { data: currentEntityData, refetch: refetchCurrentEntity } = useQuery<Story | Rule>({
+    queryKey: [category === 'rules' ? 'rule-by-name' : 'story-by-name', currentEntityId],
+    enabled: !!currentEntityId,
   });
+
   const { data: intents } = useQuery<string[]>({
     queryKey: ['intents'],
   });
@@ -99,47 +97,35 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   useDocumentEscapeListener(() => setEditableTitle(null));
 
   useEffect(() => {
-    setStory(storyData ?? story);
+    if (location.state && location.state.category) {
+      setCategory(location.state.category);
+    }
+
+    setCurrentEntity(currentEntityData ?? null);
 
     let nodes = [...initialNodes];
     let edges: any[] = [];
 
-    generateNodesFromStorySteps(storyData?.steps || story?.steps || [])
-      .forEach((x) => {
-        edges.push(generateNewEdge(nodes, edges));
-        nodes.push(generateNewNode({...x, nodes, handleNodeDelete, handleNodePayloadChange,}));
-      });
-      
+    generateNodesFromStorySteps(currentEntityData?.steps || currentEntity?.steps || [])
+        .forEach((x) => {
+          edges.push(generateNewEdge(nodes, edges));
+          nodes.push(generateNewNode({...x, nodes, handleNodeDelete, handleNodePayloadChange,}));
+        });
+
     setNodes(nodes);
     setEdges(edges);
 
-  }, [setEdges, setNodes, story, storyData]);
+  }, [location.state, category, currentEntity, currentEntityData]);
 
   const addStoryMutation = useMutation({
-    mutationFn: (data: StoryDTO) => addStory(data),
+    mutationFn: ({ data, category }: { data: StoryDTO | RuleDTO, category: string }) => {
+      if (location.state.category === 'stories') {
+        return addStoryOrRule(data as StoryDTO, category);
+      } else {
+        return addStoryOrRule(data as RuleDTO, category);
+      }
+    },
     onMutate: () => setRefreshing(true),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries(['stories']);
-      toast.open({
-        type: 'success',
-        title: t('global.notification'),
-        message: 'Story added',
-      });
-    },
-    onError: (error: AxiosError) => {
-      toast.open({
-        type: 'error',
-        title: t('global.notificationError'),
-        message: error.message,
-      });
-    },
-  });
-
-  const editStoryMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string, data: StoryDTO }) => editStory(id, data),
-    onMutate: () => {
-      setRefreshing(true)
-    },
     onSuccess: async () => {
       await queryClient.invalidateQueries(['stories']);
       toast.open({
@@ -158,15 +144,42 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     onSettled: () => setRefreshing(false),
   });
 
-  const deleteStoryMutation = useMutation({
-    mutationFn: ({ id }: { id: string | number }) => deleteStory(id),
+  const editStoryMutation = useMutation({
+    mutationFn: ({ id, data, category }: { id: string, data: StoryDTO | RuleDTO, category: string }) => {
+      if (location.state.category === 'stories') {
+        return editStoryOrRule(id, data as StoryDTO, category);
+      } else {
+        return editStoryOrRule(id, data as RuleDTO, category);
+      }
+    },
     onMutate: () => setRefreshing(true),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['stories']);
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Intent deleted',
+        message: 'Story updated',
+      });
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
+    onSettled: () => setRefreshing(false),
+  });
+
+  const deleteStoryMutation = useMutation({
+    mutationFn: ({ id }: { id: string | number }) => deleteStoryOrRule(id, location.state.category),
+    onMutate: () => setRefreshing(true),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['stories']);
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: 'Story deleted',
       });
       navigate(import.meta.env.BASE_URL + 'treening/treening/stories');
     },
@@ -241,7 +254,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     });
   }
 
-  const title = story?.story || t('global.title');
+  const title = currentEntityId || t('global.title');
 
   const handleGraphSave = async () => {
     const isRename = editableTitle && editableTitle !== id;
@@ -259,34 +272,44 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     }
 
     const data = {
-      story: editableTitle || id || title,
+      [category === 'stories' ? 'story' : 'rule']: editableTitle || id || title,
       steps: generateStoryStepsFromNodes(nodes),
     };
 
     setRefreshing(true);
     if (mode === 'new') {
-      addStoryMutation.mutate(data);
+      addStoryMutation.mutate({ data, category });
     }
     if (mode === 'edit' && id) {
-      editStoryMutation.mutate({id, data});
+      editStoryMutation.mutate({id, data, category});
     }
     await handleMutationLoadingAfterPopulateTable(data);
 
     if (isRename) {
       navigate(`/training/stories/${editableTitle}`, { replace: true });
       setEditableTitle(null);
-      setStory({ steps: story?.steps, story: editableTitle });
+      setCurrentEntity({ steps: story?.steps, story: editableTitle });
     }
   };
 
   const handleMutationLoadingAfterPopulateTable = async (data) => {
-    if (storyId === undefined) {
-      setStoryId(editableTitle);
+    let updatedData;
+
+    if (setCurrentEntityId === undefined) {
+      if (category === 'rules') {
+        setCurrentEntityId(editableTitle);
+        await refetchCurrentEntity();
+        updatedData = refetchCurrentEntity();
+      } else {
+        setCurrentEntityId(editableTitle);
+        await refetchCurrentEntity();
+        updatedData = refetchCurrentEntity();
+      }
     }
-    await refetch();
-    const updatedStoryData  = refetch();
-    updatedStoryData.then((storyOrRuleObject) => {
-      if (mode === 'new' && (storyOrRuleObject.data.story != null && storyOrRuleObject.data.story === editableTitle)) {
+
+    updatedData.then((storyOrRuleObject) => {
+      if (mode === 'new' && (storyOrRuleObject.data != null && (storyOrRuleObject.data.story === editableTitle ||
+                                                                storyOrRuleObject.data.rule === editableTitle))) {
         setRefreshing(false);
       } else {
         setTimeout(() => {

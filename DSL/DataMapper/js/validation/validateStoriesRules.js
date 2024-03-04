@@ -2,24 +2,21 @@ import express from 'express';
 
 const router = express.Router();
 router.post('/', (req, res) => {
-
-    const steps = req.body.story.steps;
+    const steps = req.category === 'rules' ? req.body.rule.steps : req.body.story.steps;
     const isValid = validateStepsForNoConsecutiveDuplicates(steps);
     res.json({ result: isValid });
-
 });
 
 function validateStepsForNoConsecutiveDuplicates(steps) {
-
     for (let i = 1; i < steps.length; i++) {
         const currentStep = steps[i];
         const previousStep = steps[i - 1];
 
         if (currentStep.entities && previousStep.entities && areConsecutive(currentStep, previousStep)) {
-            const currentEntities = currentStep.entities.map(entity => entity.entity);
-            const previousEntities = previousStep.entities.map(entity => entity.entity);
+            const currententities = currentstep.entities.map(entity => entity.entity);
+            const previousentities = previousstep.entities.map(entity => entity.entity);
 
-            if (hasCommonElement(currentEntities, previousEntities)) {
+            if (hascommonelement(currententities, previousentities)) {
                 return false;
             }
         }
@@ -39,7 +36,11 @@ function hasCommonElement(arr1, arr2) {
 }
 
 function areConsecutive(currentStep, previousStep) {
-    return currentStep.start === previousStep.end + 1;
+    if (currentStep.start !== undefined && previousStep.end !== undefined) {
+        return currentStep.start === previousStep.end + 1;
+    }
+
+    return false;
 }
 
 export default router;
