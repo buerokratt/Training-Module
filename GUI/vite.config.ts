@@ -6,9 +6,6 @@ import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  define: {
-    process: process
-  },
   envPrefix: 'REACT_APP_',
   plugins: [react(), tsconfigPaths(), svgr()],
    base: '/training/', //Change this according to your reverse proxy subpath
