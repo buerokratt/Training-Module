@@ -47,7 +47,7 @@ const Models: FC = () => {
   const deleteModelMutation = useMutation({
     mutationFn: ({ id }: { id: string | number }) => deleteModel(id),
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['models', 'selected-model']);
+      await queryClient.invalidateQueries(['model', 'delete-model']);
       toast.open({
         type: 'success',
         title: t('global.notification'),

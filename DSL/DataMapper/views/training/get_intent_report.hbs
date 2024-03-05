@@ -1,5 +1,0 @@
-{
-    {{#each keys as |key|}}
-        "{{key}}": {{{ jsonParse object.key }}}{{#unless @last}},{{/unless}}
-    {{/each}}
-}

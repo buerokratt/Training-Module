@@ -21,8 +21,7 @@ const IntentsOverview: FC = () => {
   });
 
   const { data: intentsReport, refetch } = useQuery<IntentsReport>({
-    // queryKey: [`model/get-report-by-name?fileName=${selectedModelId}`],
-    queryKey: ['intents-report', selectedModelId],
+    queryKey: [`model/get-report-by-name?fileName=${selectedModelId}`],
     enabled: false,
   });
 
@@ -82,7 +81,7 @@ const IntentsOverview: FC = () => {
             props.row.original['f1-score'] >= 0.8
               ? '#D9E9DF'
               : props.row.original['f1-score'] <= 0.3 ? '#F7DBDB' : undefined,
-        }}>{props.getValue()}</div>
+        }}>{props.getValue() ?? undefined}</div>
       ),
     }),
     columnHelper.accessor('precision', {
@@ -95,7 +94,7 @@ const IntentsOverview: FC = () => {
             props.row.original['f1-score'] >= 0.8
               ? '#D9E9DF'
               : props.row.original['f1-score'] <= 0.3 ? '#F7DBDB' : undefined,
-        }}>{truncateNumber(props.getValue() || 0)}</div>
+        }}>{props.getValue() ? truncateNumber(props.getValue()) : undefined}</div>
       ),
     }),
     columnHelper.accessor('recall', {
@@ -108,7 +107,7 @@ const IntentsOverview: FC = () => {
             props.row.original['f1-score'] >= 0.8
               ? '#D9E9DF'
               : props.row.original['f1-score'] <= 0.3 ? '#F7DBDB' : undefined,
-        }}>{props.getValue().toPrecision(2)}</div>
+        }}>{props.getValue() ? props.getValue().toPrecision(2) : undefined}</div>
       ),
     }),
     columnHelper.accessor('f1-score', {
@@ -125,7 +124,7 @@ const IntentsOverview: FC = () => {
             props.row.original['f1-score'] >= 0.8
               ? '#D9E9DF'
               : props.row.original['f1-score'] <= 0.3 ? '#F7DBDB' : undefined,
-        }}>{truncateNumber(props.getValue())}</div>
+        }}>{props.getValue() ? truncateNumber(props.getValue()) : undefined}</div>
       ),
     }),
     columnHelper.display({
@@ -155,7 +154,6 @@ const IntentsOverview: FC = () => {
           {models && (
             <FormSelect
               label={t('training.mba.modelInUse')}
-              hideLabel
               name='model'
               fitContent
               options={modelsOptions}
@@ -166,14 +164,13 @@ const IntentsOverview: FC = () => {
                 }
             />
           )}
-          <Button>{t('global.choose')}</Button>
-          <Track gap={8} style={{ whiteSpace: 'nowrap', color: '#308653' }}>
-            <Icon icon={<MdOutlineSettingsInputAntenna />} size='medium' />
-            <p>{t('training.mba.modelInUse')}</p>
-          </Track>
-          <p style={{ color: '#4D4F5D', whiteSpace: 'nowrap' }}>
-            {t('training.mba.trained')}: {format(new Date(), 'dd.MM.yyyy')}
-          </p>
+          {/*<Track gap={8} style={{ whiteSpace: 'nowrap', color: '#308653' }}>*/}
+          {/*  <Icon icon={<MdOutlineSettingsInputAntenna />} size='medium' />*/}
+          {/*  <p>{t('training.mba.modelInUse')}</p>*/}
+          {/*</Track>*/}
+          {/*<p style={{ color: '#4D4F5D', whiteSpace: 'nowrap' }}>*/}
+          {/*  {t('training.mba.trained')}: {format(new Date(), 'dd.MM.yyyy')}*/}
+          {/*</p>*/}
         </Track>
       </Card>
 

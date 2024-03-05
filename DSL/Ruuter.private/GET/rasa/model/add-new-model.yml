@@ -100,7 +100,7 @@ updateInDatabase:
       file_name: ${name + trainedVersion.response.body + modelExtension}
       version_number: ${trainedVersion.response.body}
       image_version: ${imageVersion}
-      test_report: ${test_report}
+      test_report: ${JSON.stringify(test_report)}
   result: dbResult
 
 updateDockerCompose:

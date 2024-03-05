@@ -9,7 +9,7 @@
             <column name="file_name" type="varchar(100)" defaultValue="rasa_1_0"/>
             <column name="version_number" type="varchar(20)" defaultValue="1_0"/>
             <column name="image_version" type="varchar(40)" defaultValue="riaee/byk:loba-bot-v0.2"/>
-            <column name="test_report" type="JSONB"/>
+            <column name="test_report" type="text"/>
             <column name="created" type="timestamp with time zone" valueComputed="CURRENT_TIMESTAMP">
                 <constraints nullable="false"/>
             </column>
