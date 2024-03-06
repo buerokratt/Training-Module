@@ -1,0 +1,42 @@
+getModelsFromDB:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/get-llm-trainings"
+  result: dbResult
+
+validateDbRecords:
+  switch:
+    - condition: ${dbResult.response.body.length !== 0}
+      next: mapModels
+  next: returnEmpty
+
+checkEntity:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/dmapper/checkV"
+    body:
+      hits: ${dbResult.response.body}
+  result: fileResult
+
+mapModels:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/dmapper/get-models"
+    body:
+      records: ${dbResult.response.body}
+  result: mappedModels
+
+returnSuccess:
+  return: ${mappedModels.response.body.data}
+  wrapper: false
+  next: end
+
+returnEmpty:
+  return: ${dbResult.response.body}
+  wrapper: false
+  next: end
+
+returnError:
+  return: "Can't find train settings record."
+  status: 409
+  next: end

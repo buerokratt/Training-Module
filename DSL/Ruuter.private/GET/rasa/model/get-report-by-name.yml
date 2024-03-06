@@ -1,0 +1,34 @@
+assignValues:
+  assign:
+    fileName: ${incoming.params.fileName}
+    emptyReport: {}
+
+validateName:
+  switch:
+    - condition: ${fileName.trim().length !== 0}
+      next: getReportFromDb
+  next: returnEmptyObject
+
+getReportFromDb:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/get-llm-model-report-by-filename"
+    body:
+      fileName: ${fileName}
+  result: dbResult
+
+validateRecordExists:
+  switch:
+    - condition: ${dbResult.response.body.length !== 0}
+      next: returnSuccess
+  next: returnEmptyObject
+
+returnSuccess:
+  return: ${JSON.parse(dbResult.response.body[0].testReport)}
+  wrapper: false
+  next: end
+
+returnEmptyObject:
+  return: ${JSON.parse(emptyReport)}
+  wrapper: false
+  next: end

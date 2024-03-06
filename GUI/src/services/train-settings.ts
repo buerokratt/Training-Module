@@ -1,9 +1,15 @@
 import {TrainConfigDataDTO} from "../types/trainSettings";
 import api from "./api";
 import {DaysSelect} from "../components/FormElements/FormDaySelect/FormDaySelect";
+import cronApi from "./cron-api";
 
 export async function updateTrainSettings(request: TrainConfigDataDTO) {
     const { data } = await api.post<TrainConfigDataDTO>(`training/settings`, request);
+    return data;
+}
+
+export async function initBotTraining() {
+    const { data } = await api.get<void>(`model/init-train`);
     return data;
 }
 

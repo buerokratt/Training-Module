@@ -7,6 +7,6 @@ export async function activateModel(id: string | number, modelData: UpdateModelD
 }
 
 export async function deleteModel(id: string | number) {
-  const { data } = await api.delete<void>(`models/${id}`);
+  const { data } = await api.get<void>(`model/delete-model?fileName=${id}`);
   return data;
 }

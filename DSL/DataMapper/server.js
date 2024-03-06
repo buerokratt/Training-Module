@@ -44,6 +44,9 @@ import validateStoriesRules from "./js/validation/validateStoriesRules.js";
 import replaceNextElementInArray from "./js/util/replaceNextElementInArray.js";
 import updateParametersByKey from "./js/docker/updateParametersByKey.js";
 import createExpressionFromDateDays from "./js/cron/createExpressionFromDateDays.js";
+import incrementDoubleDigitStringVersion from "./js/util/incrementDoubleDigitStringVersion.js";
+import updateVersionForBot from "./js/docker/updateVersionForBot.js";
+import botTrainedVersion from "./js/docker/botTrainedVersion.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
@@ -80,9 +83,12 @@ app.use('/convert/string/toArray', stringToArray)
 app.use('/rules/remove-by-intent-name', removeRulesByIntentName);
 app.use('/array/replace-next-element', replaceNextElementInArray);
 app.use('/docker/update-parameter-by-key', updateParametersByKey);
+app.use('/docker/update-version-for-bot', updateVersionForBot);
+app.use('/docker/bot-trained-version', botTrainedVersion);
 app.use('/cron/generate-expression-date-days', createExpressionFromDateDays);
 app.use('/domain/update-existing-response', domainUpdateExistingResponse)
 app.use('/util/objectListContainsId', objectListContainsId)
+app.use('/util/increase-double-digit-version', incrementDoubleDigitStringVersion)
 app.use('/validate/validate-stories-rules', validateStoriesRules)
 app.use(express.urlencoded({ extended: true }));
 

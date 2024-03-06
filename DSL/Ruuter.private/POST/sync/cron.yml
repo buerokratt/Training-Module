@@ -63,8 +63,8 @@ createCronJson:
       cronExpression: ${cronExpression.response.body.expression}
       type: "http"
       method: "GET"
-      url: "[#TRAINING_BOT]/train"
       startDate: ${cronExpression.response.body.startDate}
+      url: "[#TRAINING_PUBLIC_RUUTER]/rasa/model/init-train"
   result: cronJson
 
 convertJsonToYaml:

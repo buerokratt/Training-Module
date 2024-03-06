@@ -2,8 +2,6 @@ getFileLocations:
   call: http.get
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
-  #    headers:
-  #      cookie: {incoming.headers.cookie}
   result: fileLocations
 
 getDockerFile:

@@ -8,9 +8,11 @@ services:
     ports:
       - 5006:5005
     volumes:
-      - ./chatbot-train/:/app
+      - ./mock1/:/app
     command:
       - train
+      - --fixed-model-name
+      - rasa_1_0
     networks:
       - bykstack
     logging:
@@ -26,11 +28,11 @@ services:
     ports:
       - 5006:5005
     volumes:
-      - ./chatbot-train/:/app
+      - ./mock1/:/app
     command:
       - test
       - --out
-      - results/test
+      - results/rasa_1_0
     depends_on:
       train-bot:
         condition: service_completed_successfully
@@ -49,18 +51,22 @@ services:
     ports:
       - 5007:5005
     volumes:
-      - ./chatbot-train/:/app
+      - ./mock1/:/app
     command:
       - test
       - --cross-validation
       - --folds
-      - "5"
+      - "2"
       - --out
-      - results/test-cross-validate
-    networks:
-      - bykstack
+      - results/cross-rasa_1_0
     logging:
       driver: json-file
       options:
         max-size: 50m
         max-file: "3"
+networks:
+  bykstack:
+    name: bykstack
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: 1400

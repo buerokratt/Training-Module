@@ -57,6 +57,7 @@ convertJsonToYaml:
     body:
       version: ${updatedDocker.response.body.version}
       services: ${updatedDocker.response.body.services}
+      networks: ${updatedDocker.response.body.networks}
   result: dockerYaml
 
 getFileLocations:

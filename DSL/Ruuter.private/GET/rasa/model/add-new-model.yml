@@ -1,0 +1,145 @@
+getDockerFile:
+  call: http.get
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/docker-file"
+  result: dockerData
+
+assignDefaultValues:
+  assign:
+    version: '1_0'
+    name: 'rasa_'
+    modelPath: '/mock1/models/'
+    reportPath: '/mock1/results/'
+    modelExtension: '.tar.gz'
+    reportEnding: '/intent_report.json'
+    state: 'Trained'
+    modelType: 'RASA'
+    test_report: {}
+    imageVersion: ${dockerData.response.body.services['train-bot'].image}
+
+getTrainedVersion:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/docker/bot-trained-version"
+    body:
+      object: ${dockerData.response.body}
+      name: ${name}
+  result: trainedVersion
+
+getLatestVersionFromDb:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/get-latest-llm-version"
+  result: dbResult
+
+validateDbVersion:
+  switch:
+    - condition: ${dbResult.response.body.length > 0}
+      next: increaseVersion
+  next: checkModelCreated
+
+increaseVersion:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/util/increase-double-digit-version"
+    body:
+      version: ${dbResult.response.body[0].versionNumber}
+  result: updatedVersion
+
+reAssignVersion:
+  assign:
+    version: ${updatedVersion.response.body}
+
+checkModelCreated:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file/check"
+    body:
+      file_path: ${modelPath + name + trainedVersion.response.body + modelExtension}
+  result: modelCreated
+
+decideState:
+  switch:
+    - condition: ${modelCreated.response.body}
+      next: getIntentsReport
+  next: reAssignState
+
+reAssignState:
+  assign:
+    state: 'Failed'
+  next: updateInDatabase
+
+getIntentsReport:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file/read"
+    body:
+      file_path: ${reportPath + name + trainedVersion.response.body + reportEnding}
+  result: intentReport
+
+convertYamlToJson:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
+    body:
+      file: ${intentReport.response.body.file}
+  result: reportData
+
+reAssignReport:
+  assign:
+    test_report: ${reportData.response.body}
+  next: updateInDatabase
+
+updateInDatabase:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/add-llm-trainings"
+    body:
+      model_type: ${modelType}
+      state: ${state}
+      file_name: ${name + trainedVersion.response.body + modelExtension}
+      version_number: ${trainedVersion.response.body}
+      image_version: ${imageVersion}
+      test_report: ${JSON.stringify(test_report)}
+  result: dbResult
+
+updateDockerCompose:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/docker/update-version-for-bot"
+    body:
+      object: ${dockerData.response.body}
+      servicesArray: ['train-bot','test-bot','test-bot-cv']
+      newVersion: ${name + version}
+  result: updatedDocker
+
+convertJsonToYaml:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
+    body:
+      version: ${updatedDocker.response.body.version}
+      services: ${updatedDocker.response.body.services}
+      networks: ${updatedDocker.response.body.networks}
+  result: dockerYaml
+
+getFileLocations:
+  call: http.get
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
+  result: fileLocations
+
+saveDockerFile:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file/write"
+    body:
+      file_path: ${fileLocations.response.body.response.docker_location}
+      content: ${dockerYaml.response.body.json}
+  result: fileResult
+  next: returnSuccess
+
+returnSuccess:
+  return: 'New model added Successfully.'
+  wrapper: false
+  next: end

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Message } from 'types/message';
 import { CHAT_EVENTS } from 'types/chat';
 import { format } from 'date-fns';
+import { DATETIME_FORMAT } from 'utils/datetime-fromat';
 
 type ChatEventProps = {
   message: Message;
@@ -19,7 +20,7 @@ const ChatEvent: FC<ChatEventProps> = ({ message }) => {
         <p>{t('chat.redirectedMessage', {
           from: forwardedFromCsa,
           to: forwardedToCsa,
-          date: format(new Date(authorTimestamp), 'dd.MM.yyyy HH:ii:ss'),
+          date: format(new Date(authorTimestamp), DATETIME_FORMAT),
         })}</p>
       )}
     </div>

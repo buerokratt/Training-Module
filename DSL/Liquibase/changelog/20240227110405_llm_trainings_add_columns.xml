@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+
+    <changeSet id="20240227110405" author="DV">
+        <addColumn tableName="llm_trainings">
+            <column name="file_name" type="varchar(100)" defaultValue="rasa_1_0"/>
+            <column name="version_number" type="varchar(20)" defaultValue="1_0"/>
+            <column name="image_version" type="varchar(40)" defaultValue="riaee/byk:loba-bot-v0.2"/>
+            <column name="test_report" type="text"/>
+            <column name="created" type="timestamp with time zone" valueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="20240227110406" author="DV">
+        <sql>
+      <![CDATA[
+            CREATE EXTENSION IF NOT EXISTS hstore;
+            ]]>
+    </sql>
+    </changeSet>
+
+    <changeSet id="20240227110407" author="DV">
+        <sql>
+      <![CDATA[
+            DELETE FROM llm_trainings;
+            ]]>
+    </sql>
+    </changeSet>
+</databaseChangeLog>

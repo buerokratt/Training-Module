@@ -164,6 +164,7 @@
     },
     "mba": {
       "intentsOverview": "Intents overview",
+      "modelOverview": "Report overview",
       "modelInUse": "Model in use",
       "trained": "Trained",
       "precision": "Precision",
@@ -184,6 +185,7 @@
       "activateModel": "Activate model",
       "allModels": "All models",
       "lastTrained": "Last trained",
+      "state": "State",
       "live": "Live",
       "compareResults": "Compare results",
       "deleteModel": "Delete model",

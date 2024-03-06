@@ -1,0 +1,76 @@
+assignValue:
+  assign:
+    fileName: ${incoming.params.fileName}
+    modelPath: '/mock1/models/'
+
+validateName:
+  switch:
+    - condition: ${fileName.trim().length !== 0}
+      next: checkFileExists
+  next: returnError
+
+checkFileExists:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file/check"
+    body:
+      file_path: ${modelPath}${fileName}
+  result: modelCreated
+
+validateFileExists:
+  switch:
+    - condition: ${modelCreated.response.body}
+      next: removeModel
+  next: getModelDataFromDb
+
+removeModel:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file/delete"
+    body:
+      file_path: ${modelPath}${fileName}
+  result: fileRemoved
+
+getModelDataFromDb:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/get-llm-model-by-filename"
+    body:
+      fileName: ${fileName}
+  result: dbResult
+
+validateRecordExists:
+  switch:
+    - condition: ${dbResult.response.body.length !== 0}
+      next: assignRecord
+  next: returnError
+
+assignRecord:
+  assign:
+    model: ${dbResult.response.body[0]}
+
+updateInDatabase:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/remove-llm-model-by-filename"
+    body:
+      model_type: ${model.modelType}
+      trained_date: ${model.trainedDate}
+      state: 'Removed'
+      file_name: ${model.fileName}
+      version_number: ${model.versionNumber}
+      image_version: ${model.imageVersion}
+      test_report: ${model.testReport}
+  result: dbResult
+  next: returnSuccess
+
+returnSuccess:
+  return: 'Model deleted.'
+  wrapper: true
+  next: end
+
+returnError:
+  return: 'Model not found.'
+  wrapper: true
+  code: 409
+  next: end

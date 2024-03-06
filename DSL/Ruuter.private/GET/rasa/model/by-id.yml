@@ -1,0 +1,7 @@
+assignValues:
+  assign:
+    modelId: ${incoming}
+
+returnSuccess:
+  return: ${modelId}
+  next: end
