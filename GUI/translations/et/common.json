@@ -164,6 +164,7 @@
     },
     "mba": {
       "intentsOverview": "Teemade ülevaade",
+      "modelOverview": "Mudeli ülevaade",
       "modelInUse": "Kasutusesolev mudel",
       "trained": "Treenitud",
       "precision": "Täpsus",

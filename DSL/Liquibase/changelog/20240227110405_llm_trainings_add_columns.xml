@@ -23,4 +23,12 @@
             ]]>
     </sql>
     </changeSet>
+
+    <changeSet id="20240227110407" author="DV">
+        <sql>
+      <![CDATA[
+            DELETE FROM llm_trainings;
+            ]]>
+    </sql>
+    </changeSet>
 </databaseChangeLog>

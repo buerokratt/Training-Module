@@ -20,7 +20,7 @@ const Models: FC = () => {
   const [selectedModel, setSelectedModel] = useState<Model>();
   const [modelConfirmation, setModelConfirmation] = useState<string | number | null>(null);
   const [deletableModel, setDeletableModel] = useState<string | number | null>(null);
-  const { data: models } = useQuery<Model[]>({
+  const { data: models, refetch } = useQuery<Model[]>({
     queryKey: ['models'],
   });
 
@@ -48,6 +48,7 @@ const Models: FC = () => {
     mutationFn: ({ id }: { id: string | number }) => deleteModel(id),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['model', 'delete-model']);
+      refetch();
       toast.open({
         type: 'success',
         title: t('global.notification'),

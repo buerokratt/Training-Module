@@ -164,6 +164,7 @@
     },
     "mba": {
       "intentsOverview": "Intents overview",
+      "modelOverview": "Report overview",
       "modelInUse": "Model in use",
       "trained": "Trained",
       "precision": "Precision",

@@ -9,7 +9,7 @@ export async function updateTrainSettings(request: TrainConfigDataDTO) {
 }
 
 export async function initBotTraining() {
-    const { data } = await cronApi.post<void>(`execute/train-bot/train_bot_now`);
+    const { data } = await api.get<void>(`model/init-train`);
     return data;
 }
 
