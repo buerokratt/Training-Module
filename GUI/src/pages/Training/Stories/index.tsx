@@ -66,7 +66,7 @@ const Stories: FC = () => {
       cell: (props) => (
         <Button
           appearance='text'
-          onClick={() => navigate(`${props.row.original.id}`, { state: { storyTitle: filter, type: 'stories' } })}
+          onClick={() => navigate(`${props.row.original.id}`, { state: { storyTitle: filter, category: 'stories' } })}
         >
           <Icon
             label={t('global.edit')}
@@ -109,7 +109,7 @@ const Stories: FC = () => {
       cell: (props) => (
         <Button
           appearance='text'
-          onClick={() => navigate(`rules/${props.row.original.id}`)}
+          onClick={() => navigate(`rules/${props.row.original.id}`, { state: { category: 'rules' } })}
         >
           <Icon
             label={t('global.edit')}
@@ -206,9 +206,7 @@ const Stories: FC = () => {
                 hideLabel
                 onChange={(e) => setFilter(e.target.value)}
               />
-              <Button onClick={() => navigate('/training/stories/new', {
-                state: { storyTitle: filter,
-                         category: "stories" } })}>
+              <Button onClick={() => navigate('/training/stories/new', { state: { id: filter, category: 'stories' } })}>
                 {t('global.add')}
               </Button>
             </Track>
@@ -235,9 +233,7 @@ const Stories: FC = () => {
                 hideLabel
                 onChange={(e) => setFilter(e.target.value)}
               />
-              <Button onClick={() => navigate('/training/rules/new', {
-                state: { title: filter,
-                  category: "rules" } })}>
+              <Button onClick={() => navigate('/training/rules/new', { state: { id: filter, category: 'rules' } })}>
                 {t('global.add')}
               </Button>
             </Track>

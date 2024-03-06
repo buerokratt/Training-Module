@@ -33,11 +33,11 @@ slots:
     type: text
     influence_conversation: true
     mappings:
-      -  type: from_entity
-         entity: asukoht
-         intent:
-           - common_teenus_ilm
-           - nlu_fallback
+    -  type: from_entity
+       entity: asukoht
+       intent:
+         - common_teenus_ilm
+         - nlu_fallback
 
 forms:
   custom_fallback_form:
@@ -54,13 +54,13 @@ actions:
   - action_react_to_affirm_deny_in_custom_fallback_form
   - action_react_to_affirm_deny_in_direct_to_customer_support_form
   - action_check_confidence
-
+  
 responses:
-  #  Final response
+#  Final response
   utter_custom_fallback_form:
     - text: "rain"
 
-  #Question per slot
+#Question per slot
   utter_ask_affirm_deny:
     - text: "Where you want to go?"
 
@@ -131,10 +131,10 @@ responses:
   utter_greet:
     - text: "Hello! How is your day going?"
       buttons:
-        - title: "Good"
-          payload: "/mood_good"
-        - title: "Bad"
-          payload: "/mood_bad"
+      - title: "Good"
+        payload: "/mood_good"
+      - title: "Bad"
+        payload: "/mood_bad"
   utter_good_day:
     - text: "Glad to hear that you're having a good day!"
   utter_bad_day:

@@ -1,4 +1,4 @@
-version: '3.9'
+version: "3.9"
 services:
   ruuter:
     container_name: byk-private-ruuter
@@ -12,15 +12,40 @@ services:
       - 8080:8080
     networks:
       - bykstack
+
+  database:
+    container_name: database
+    image: postgres:14.1
+    environment:
+      - POSTGRES_USER=byk
+      - POSTGRES_PASSWORD=01234
+      - POSTGRES_DB=training_db
+    ports:
+      - 5433:5432
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    networks:
+      - bykstack
+
   resql:
     container_name: byk-resql
     image: resql
+    depends_on:
+      - database
+    environment:
+      - sqlms.datasources.[0].name=training
+      - sqlms.datasources.[0].jdbcUrl=jdbc:postgresql://database:5432/training_db
+      - sqlms.datasources.[0].username=byk
+      - sqlms.datasources.[0].password=01234
+      - logging.level.org.springframework.boot=INFO
+      - server.port=8082
     ports:
       - 8082:8082
     volumes:
       - ./DSL/Resql:/workspace/app/templates/
     networks:
       - bykstack
+
   opensearch-node:
     image: opensearchproject/opensearch:latest
     container_name: opensearch-node
@@ -123,7 +148,7 @@ services:
     environment:
       - server.port=9010
     ports:
-      - 9010:8080
+      - 9010:9010
     networks:
       - bykstack
 
