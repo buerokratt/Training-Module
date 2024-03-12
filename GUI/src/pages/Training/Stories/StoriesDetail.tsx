@@ -99,6 +99,9 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   useEffect(() => {
     if (location.state && location.state.category) {
       setCategory(location.state.category);
+      if (location.state.id) {
+        setEditableTitle(location.state.id);
+      }
     }
 
     setCurrentEntity(currentEntityData ?? null);

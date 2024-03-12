@@ -12,17 +12,14 @@ function validateStepsForNoConsecutiveDuplicates(steps) {
         const currentStep = steps[i];
         const previousStep = steps[i - 1];
 
-        if (currentStep.entities && previousStep.entities && areConsecutive(currentStep, previousStep)) {
-            const currententities = currentstep.entities.map(entity => entity.entity);
-            const previousentities = previousstep.entities.map(entity => entity.entity);
-
-            if (hascommonelement(currententities, previousentities)) {
+        if (currentStep.intent && previousStep.intent) {
+            if (currentStep.intent === previousStep.intent) {
                 return false;
             }
         }
 
-        if (currentStep.intent && previousStep.intent && areConsecutive(currentStep, previousStep)) {
-            if (currentStep.intent === previousStep.intent) {
+        if (currentStep.entities && previousStep.entities) {
+            if (hasCommonElement(currentStep.entities, previousStep.entities)) {
                 return false;
             }
         }
@@ -32,15 +29,7 @@ function validateStepsForNoConsecutiveDuplicates(steps) {
 }
 
 function hasCommonElement(arr1, arr2) {
-    return arr1.some(element => arr2.includes(element));
-}
-
-function areConsecutive(currentStep, previousStep) {
-    if (currentStep.start !== undefined && previousStep.end !== undefined) {
-        return currentStep.start === previousStep.end + 1;
-    }
-
-    return false;
+    return arr1.some(element => arr2.some(item => item.entity === element.entity));
 }
 
 export default router;
