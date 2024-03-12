@@ -46,21 +46,21 @@ export const generateNodesFromStorySteps = (steps) : Node[] => steps?.map((step)
     let payload;
     let className;
 
-    if (step.condition) {
-      type = 'conditionNode';
-      className = 'condition';
-      payload = {
-        conditions: step?.condition?.map((condition) => {
-          if (condition.active_loop) {
-            return { active_loop: { label: condition.active_loop } };
-          }
-          if (condition.slot_was_set) {
-            const [slotLabel, value] = Object.entries(condition.slot_was_set)[0];
-            return { slot: { label: slotLabel, value } };
-          }
-          return null;
-        }),
-      };
+    if (step.condition && Array.isArray(step.condition)) {
+        type = 'conditionNode';
+        className = 'condition';
+        payload = {
+            conditions: step?.condition?.map((condition) => {
+                if (condition.active_loop) {
+                    return { active_loop: { label: condition.active_loop } };
+                }
+                if (condition.slot_was_set) {
+                    const [slotLabel, value] = Object.entries(condition.slot_was_set)[0];
+                    return { slot: { label: slotLabel, value } };
+                }
+                return null;
+            }),
+        };
     } else if (step.intent) {
         type = 'intentNode';
         className = 'intent';
@@ -72,36 +72,36 @@ export const generateNodesFromStorySteps = (steps) : Node[] => steps?.map((step)
             })),
         };
     } else if (step.action) {
-      if (step.active_loop !== undefined) {
-        type = 'formNode';
-        className = 'form';
-        label = step.action;
-        payload = { active_loop: step.active_loop !== null };
-      } else {
-        type = 'responseNode';
-        className = 'response';
-        label = step.action;
-      }
+        if (step.active_loop !== undefined) {
+            type = 'formNode';
+            className = 'form';
+            label = step.action;
+            payload = { active_loop: step.active_loop !== null };
+        } else {
+            type = 'responseNode';
+            className = 'response';
+            label = step.action;
+        }
     } else if (step.slot_was_set) {
-      type = 'slotNode';
-      className = 'slot';
-      const [slotLabel, value] = Object.entries(step.slot_was_set)[0];
-      label = slotLabel;
-      payload = { value };
+        type = 'slotNode';
+        className = 'slot';
+        const [slotLabel, value] = Object.entries(step.slot_was_set)[0];
+        label = slotLabel;
+        payload = { value };
     } else if (step.action) {
-      type = 'actionNode';
-      className = 'action';
-      label = step.action;
-      payload = { value: step.action };
+        type = 'actionNode';
+        className = 'action';
+        label = step.action;
+        payload = { value: step.action };
     }
     else {
-      return null;
+        return null;
     }
 
     return {
-      label,
-      type,
-      className,
-      payload,
+        label,
+        type,
+        className,
+        payload,
     };
 }).filter(Boolean);
