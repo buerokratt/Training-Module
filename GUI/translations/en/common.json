@@ -92,6 +92,8 @@
       "deleteEntity": "Delete entity",
       "turnExampleIntoIntent": "Turn into an intent",
       "turnIntoService": "Turn into a Service",
+      "connectToService": "Connect to a Service",
+      "connectToServiceTooltip": "To connect the service, the service must be previously created in the Services module",
       "error": {
         "turnExampleIntoIntent": "Unable to turn this example into intent"
       }
@@ -327,6 +329,25 @@
       "formRulesDependency": "Deleting a form is forbidden because it has relation to rules",
       "formStoriesDependency": "Deleting a form is forbidden because it has relation to stories",
       "formNotFound": "Can't find form to delete."
+    }
+  },
+  "connectionRequests": {
+    "title": "Connection Requests",
+    "approvedConnection": "Connection Approved",
+    "declinedConnection": "Connection Declined",
+    "connect": "Connect",
+    "service": "Service",
+    "noServiceAvailable": "No service available to be connected",
+    "searchServices": "Search services",
+    "connectIntentToService": "Connect intent to service",
+    "connectionQuestion": "Are you sure you want to connect to this service?",
+    "toast": {
+      "requestedConnection": "Connection Requested",
+      "failed": {
+        "requests": "Failed to retreive connection requests",
+        "requestConnection": "Connection Request failed",
+        "availableServices": "Failed to retrieve available services"
+      }
     }
   }
 }
