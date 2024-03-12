@@ -1,0 +1,8 @@
+get_services:
+  call: http.post
+  args:
+    url: "[#SERVICES_RESQL]/get-services"
+  result: res
+
+return_result:
+  return: ${res.response.body}
