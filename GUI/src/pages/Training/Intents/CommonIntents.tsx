@@ -21,6 +21,7 @@ import {
 } from 'services/intents';
 import IntentExamplesTable from './IntentExamplesTable';
 import LoadingDialog from "../../../components/LoadingDialog";
+import ConnectServiceToIntentModel from 'pages/ConnectServiceToIntentModel';
 
 const CommonIntents: FC = () => {
   const { t } = useTranslation();
@@ -31,6 +32,7 @@ const CommonIntents: FC = () => {
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
   const [selectedIntent, setSelectedIntent] = useState<Intent | null>(null);
   const [deletableIntent, setDeletableIntent] = useState<string | number | null>(null);
+  const [connectableIntent, setConnectableIntent] = useState<Intent | null>(null);
   const [filter, setFilter] = useState('');
   const [refreshing, setRefreshing] = useState(false);
 
@@ -166,7 +168,9 @@ const CommonIntents: FC = () => {
     mutationFn: (data: { name: string }) => deleteIntent(data),
     onMutate: () => {
       setRefreshing(true);
-      setDeletableIntent(null) },
+      setDeletableIntent(null);
+      setConnectableIntent(null);
+    },
     onSuccess: async () => {
       setSelectedIntent(null)
       queryRefresh(null);
@@ -461,6 +465,14 @@ const CommonIntents: FC = () => {
                             })
                         }>{t('training.intents.addToModel')}</Button>
                     )}
+                      <Button
+                        appearance="secondary"
+                        onClick={() => setConnectableIntent(selectedIntent)}
+                      >
+                        <Tooltip content={t('training.intents.connectToServiceTooltip')}>
+                          {t('training.intents.connectToService')}
+                        </Tooltip>
+                      </Button>
                     <Button
                       appearance='error'
                       onClick={() => setDeletableIntent(selectedIntent.id)}
@@ -484,6 +496,13 @@ const CommonIntents: FC = () => {
             </Tabs.Content>
           )}
         </Tabs.Root>
+      )}
+
+      {connectableIntent !== null && (
+        <ConnectServiceToIntentModel
+          intent={connectableIntent.intent}
+          onModalClose={() => setConnectableIntent(null)}
+        />
       )}
 
       {deletableIntent !== null && (

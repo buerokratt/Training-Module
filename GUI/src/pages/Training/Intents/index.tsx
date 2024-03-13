@@ -25,6 +25,7 @@ import {
 } from 'services/intents';
 import IntentExamplesTable from './IntentExamplesTable';
 import LoadingDialog from "../../../components/LoadingDialog";
+import ConnectServiceToIntentModel from 'pages/ConnectServiceToIntentModel';
 
 const Intents: FC = () => {
   const { t } = useTranslation();
@@ -37,6 +38,7 @@ const Intents: FC = () => {
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
   const [selectedIntent, setSelectedIntent] = useState<Intent | null>(null);
   const [deletableIntent, setDeletableIntent] = useState<Intent | null>(null);
+  const [connectableIntent, setConnectableIntent] = useState<Intent | null>(null);
   const [turnIntentToServiceIntent, setTurnIntentToServiceIntent] = useState<
     Intent | null
   >(null);
@@ -145,6 +147,7 @@ const Intents: FC = () => {
     onMutate: () => {
       setRefreshing(true);
       setDeletableIntent(null);
+      setConnectableIntent(null);
       setSelectedIntent(null);
       setSelectedTab(null); },
     onSuccess: async () => {
@@ -397,7 +400,6 @@ const Intents: FC = () => {
     input.click();
   };
 
-
   if (isLoading) return <>Loading...</>;
 
   return (
@@ -578,6 +580,16 @@ const Intents: FC = () => {
                             })
                         }>{t('training.intents.addToModel')}</Button>
                     )}
+                    <Tooltip content={t('training.intents.connectToServiceTooltip')}>
+                      <span>
+                        <Button
+                          appearance="secondary"
+                          onClick={() => setConnectableIntent(selectedIntent)}
+                        >
+                          {t('training.intents.connectToService')}
+                        </Button>
+                      </span>
+                    </Tooltip>
                     <Button
                       appearance="error"
                       onClick={() => setDeletableIntent(selectedIntent)}
@@ -630,6 +642,14 @@ const Intents: FC = () => {
           <p>{t('global.removeValidation')}</p>
         </Dialog>
       )}
+
+      {connectableIntent !== null && (
+        <ConnectServiceToIntentModel
+          intent={connectableIntent.intent}
+          onModalClose={() => setConnectableIntent(null)}
+        />
+      )}
+      
       {turnIntentToServiceIntent !== null && (
         <Dialog
           title={t('training.intents.turnIntoService')}
