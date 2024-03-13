@@ -8,12 +8,12 @@ import { Service } from "types/service";
 import { requestServiceIntentConnection } from "services/requests";
 import { useToast } from "hooks/useToast";
 
-type ConnectServiceToIntentModelProps = {
+type ConnectServiceToIntentModalProps = {
   onModalClose: () => void;
   intent: string;
 };
 
-const ConnectServiceToIntentModel: FC<ConnectServiceToIntentModelProps> = ({
+const ConnectServiceToIntentModal: FC<ConnectServiceToIntentModalProps> = ({
   onModalClose, 
   intent,
 }) => {
@@ -158,4 +158,4 @@ const ConnectServiceToIntentModel: FC<ConnectServiceToIntentModelProps> = ({
   );
 };
 
-export default ConnectServiceToIntentModel;
+export default ConnectServiceToIntentModal;

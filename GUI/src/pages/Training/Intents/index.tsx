@@ -25,7 +25,7 @@ import {
 } from 'services/intents';
 import IntentExamplesTable from './IntentExamplesTable';
 import LoadingDialog from "../../../components/LoadingDialog";
-import ConnectServiceToIntentModel from 'pages/ConnectServiceToIntentModel';
+import ConnectServiceToIntentModal from 'pages/ConnectServiceToIntentModal';
 
 const Intents: FC = () => {
   const { t } = useTranslation();
@@ -644,7 +644,7 @@ const Intents: FC = () => {
       )}
 
       {connectableIntent !== null && (
-        <ConnectServiceToIntentModel
+        <ConnectServiceToIntentModal
           intent={connectableIntent.intent}
           onModalClose={() => setConnectableIntent(null)}
         />
