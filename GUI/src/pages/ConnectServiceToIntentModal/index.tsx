@@ -29,7 +29,7 @@ const ConnectServiceToIntentModal: FC<ConnectServiceToIntentModalProps> = ({
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
   const { data: services, isError } = useQuery<Service[]>({
-    queryKey: ['services/get-services'],
+    queryKey: ['services/get-services-not-assigned-to-intent'],
   });
 
   const connectRequest = useMutation({

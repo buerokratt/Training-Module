@@ -47,6 +47,7 @@ import createExpressionFromDateDays from "./js/cron/createExpressionFromDateDays
 import incrementDoubleDigitStringVersion from "./js/util/incrementDoubleDigitStringVersion.js";
 import updateVersionForBot from "./js/docker/updateVersionForBot.js";
 import botTrainedVersion from "./js/docker/botTrainedVersion.js";
+import removeServicesConnectedToIntent from "./js/util/removeServicesConnectedToIntent.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
@@ -90,6 +91,7 @@ app.use('/domain/update-existing-response', domainUpdateExistingResponse)
 app.use('/util/objectListContainsId', objectListContainsId)
 app.use('/util/increase-double-digit-version', incrementDoubleDigitStringVersion)
 app.use('/validate/validate-stories-rules', validateStoriesRules)
+app.use('/filter_out_services_connected_to_intent', removeServicesConnectedToIntent);
 app.use(express.urlencoded({ extended: true }));
 
 app.use(
