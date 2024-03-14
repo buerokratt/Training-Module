@@ -65,7 +65,8 @@ const Intents: FC = () => {
         inModel: intent.inmodel,
         modifiedAt: '',
         examplesCount: countExamples,
-        examples: intent.examples
+        examples: intent.examples,
+        serviceId: intent.serviceId
       };
       intents.push(newIntent);
     });
@@ -586,16 +587,22 @@ const Intents: FC = () => {
                           appearance="secondary"
                           onClick={() => setConnectableIntent(selectedIntent)}
                         >
-                          {t('training.intents.connectToService')}
+                            {selectedIntent.serviceId 
+                              ? t('training.intents.changeConnectedService')
+                              : t('training.intents.connectToService')}
                         </Button>
                       </span>
                     </Tooltip>
-                    <Button
-                      appearance="error"
-                      onClick={() => setDeletableIntent(selectedIntent)}
-                    >
-                      {t('global.delete')}
-                    </Button>
+                    <Tooltip content={t('training.intents.deleteTooltip')} hidden={!selectedIntent.serviceId}>
+                      <span>
+                        <Button
+                          appearance="error"
+                          onClick={() => setDeletableIntent(selectedIntent)}
+                        >
+                          {t('global.delete')}
+                        </Button>
+                      </span>
+                    </Tooltip>
                   </Track>
                 </Track>
               </div>

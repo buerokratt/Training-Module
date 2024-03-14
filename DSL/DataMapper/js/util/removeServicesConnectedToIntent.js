@@ -7,9 +7,7 @@ router.post('/', (req, res) => {
   const usedServiceIds = new Set(connections.map(x => x.service));
   const unusedServices = services.filter(x => !usedServiceIds.has(x.serviceId));
   
-  return res.status(200).send({ 
-    unusedServices
-  });
+  return res.status(200).send(unusedServices);
 });
 
 export default router;

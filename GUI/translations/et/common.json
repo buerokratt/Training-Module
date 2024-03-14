@@ -94,6 +94,8 @@
       "turnIntoService": "Muuda teenuseks",
       "connectToService": "Seo teenusega",
       "connectToServiceTooltip": "Teenuse ühendamiseks tuleb teenus eelnevalt luua Teenuste moodulis",
+      "changeConnectedService": "Muutke teenust",
+      "deleteTooltip": "Ainult kavatsus kustutatakse ja teenus jääb alles, selle kustutamine saab toimuda teenuse moodulis",
       "error": {
         "turnExampleIntoIntent": "Näidet ei saa teenuseks muuta"
       }

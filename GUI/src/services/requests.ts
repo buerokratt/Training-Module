@@ -9,6 +9,7 @@ export async function updateConnectionRequest(request: Trigger, status: "approve
     authorRole: request.authorRole,
     status,
   });
+  
   return data.response[0];
 }
 

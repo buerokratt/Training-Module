@@ -57,7 +57,8 @@ const CommonIntents: FC = () => {
         inModel: intent.inmodel,
         modifiedAt: '',
         examplesCount: countExamples,
-        examples: intent.examples
+        examples: intent.examples,
+        serviceId: intent.serviceId,
       };
       commonIntents.push(newIntent);
     });
@@ -464,20 +465,29 @@ const CommonIntents: FC = () => {
                             })
                         }>{t('training.intents.addToModel')}</Button>
                     )}
-                      <Button
-                        appearance="secondary"
-                        onClick={() => setConnectableIntent(selectedIntent)}
-                      >
-                        <Tooltip content={t('training.intents.connectToServiceTooltip')}>
-                          {t('training.intents.connectToService')}
-                        </Tooltip>
-                      </Button>
-                    <Button
-                      appearance='error'
-                      onClick={() => setDeletableIntent(selectedIntent.id)}
-                    >
-                      {t('global.delete')}
-                    </Button>
+                    <Tooltip content={t('training.intents.connectToServiceTooltip')}>
+                      <span>
+                        <Button
+                          appearance="secondary"
+                          onClick={() => setConnectableIntent(selectedIntent)}
+                        >
+                            {selectedIntent.serviceId 
+                              ? t('training.intents.changeConnectedService')
+                              : t('training.intents.connectToService')}
+                        </Button>
+                      </span>
+                    </Tooltip>
+
+                    <Tooltip content={t('training.intents.deleteTooltip')} hidden={!selectedIntent.serviceId}>
+                      <span>
+                        <Button
+                          appearance='error'
+                          onClick={() => setDeletableIntent(selectedIntent.id)}
+                        >
+                          {t('global.delete')}
+                        </Button>
+                      </span>
+                    </Tooltip>
                   </Track>
                 </Track>
               </div>

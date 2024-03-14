@@ -94,6 +94,8 @@
       "turnIntoService": "Turn into a Service",
       "connectToService": "Connect to a Service",
       "connectToServiceTooltip": "To connect the service, the service must be previously created in the Services module",
+      "changeConnectedService": "Change service",
+      "deleteTooltip": "Only the Intent is deleted and the service remains, its deletion can be done in the Service module",
       "error": {
         "turnExampleIntoIntent": "Unable to turn this example into intent"
       }
