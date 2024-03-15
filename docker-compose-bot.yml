@@ -13,6 +13,7 @@ services:
       - train
       - --fixed-model-name
       - rasa_1_0
+      - --force
     networks:
       - bykstack
     logging:
