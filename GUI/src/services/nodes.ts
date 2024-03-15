@@ -37,17 +37,17 @@ export const generateNewNode = ({
     const prevNode = nodes[nodes.length - 1];
 
     let height = 0;
-    if(!prevNode.height && prevNode.data.type == 'intentNode'){
+    if(!prevNode.height && prevNode.data.type === 'intentNode'){
       height = (prevNode.data.payload?.entities?.length || 4) * 2 * GRID_UNIT;
     }
-    else if(!prevNode.height && prevNode.data.type == 'conditionNode'){
+    else if(!prevNode.height && prevNode.data.type === 'conditionNode'){
       height = (prevNode.data.payload?.conditions?.length || 8) * 2 * GRID_UNIT;
     }
     const newNodeY = (prevNode.position.y + (prevNode.height || height)) + (6 * GRID_UNIT);
 
-    return {
+  return {
       id: String(nodes.length + 1),
-      position: { x: (12 * GRID_UNIT) - 160 + 32, y: newNodeY },
+      position: { x: (12 * GRID_UNIT) - 160 + 64, y: newNodeY + 64 },
       type: nodeType,
       data: {
         id: String(nodes.length + 1),
