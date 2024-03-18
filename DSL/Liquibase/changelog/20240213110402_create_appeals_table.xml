@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+
+    <changeSet id="20240213110402" author="DV">
+        <createTable tableName="appeal">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="appeal" type="varchar">
+                <constraints nullable="false" />
+            </column>
+            <column name="intent" type="varchar(30)">
+                <constraints nullable="true" />
+            </column>
+            <column name="status" type="varchar(15)">
+                <constraints nullable="true" />
+            </column>
+            <column name="created" type="timestamp with time zone">
+                <constraints nullable="false" />
+                <defaultValueComputed>CURRENT_TIMESTAMP</defaultValueComputed>
+            </column>
+            <column name="last_modified" type="timestamp with time zone">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <modifySql>
+            <replace replace="last_modified timestamp with time zone" with="last_modified timestamp with time zone DEFAULT CURRENT_TIMESTAMP"/>
+        </modifySql>
+    </changeSet>
+</databaseChangeLog>

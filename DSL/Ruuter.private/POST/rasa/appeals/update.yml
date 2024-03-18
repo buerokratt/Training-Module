@@ -1,0 +1,49 @@
+validateInputLength:
+  switch:
+    - condition: ${incoming.body.name.length > 2}
+      next: assign_values
+  next: returnTooShortError
+
+assign_values:
+  assign:
+    newAppeal: ${incoming.body.updatedAppeal}
+    oldAppeal: ${incoming.body.appeal}
+
+validateIntentExists:
+  switch:
+    - condition: ${!intentList.response.body}
+      next: returnIntentsError
+    - condition: ${intentList.response.body.includes(intent)}
+      next: returnIntentExists
+  next: getFileLocations
+
+addInDatabase:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/update-appeal"
+    body:
+      intent: ${incoming.body.name}
+      status: "ACTIVE"
+  result: addIntentResult
+
+returnSuccess:
+  return: "Intent created"
+  next: end
+
+returnTooShortError:
+  status: 409
+  wrapper: false
+  return: "Intent name is too short"
+  next: end
+
+returnIntentExists:
+  status: 409
+  wrapper: false
+  return: "Intent with that name already exists"
+  next: end
+
+returnIntentsError:
+  status: 409
+  wrapper: false
+  return: "Intents parsing error"
+  next: end
