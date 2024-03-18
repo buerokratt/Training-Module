@@ -66,6 +66,12 @@ Handlebars.registerHelper('isInModel', function(intentTitle, intents) {
     return Array.isArray(inModelIntents) ? inModelIntents.includes(intentTitle) : false;
 });
 
+Handlebars.registerHelper('findConnectedServiceId', function(intentTitle, intents) {
+  const name = intentTitle.replace('_', ' ');
+  const service = intents?.connections.find(x => x.intent === name);
+  return service?.service ?? "";
+});
+
 Handlebars.registerHelper('getCount', function(intentTitle, intents) {
     const intentCounts = intents.count;
     const intentCount = intentCounts?.find(intent => intent.key === intentTitle)?.examples_counts?.value;

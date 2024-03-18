@@ -5,9 +5,10 @@ import './Tooltip.scss';
 
 type TooltipProps = {
   content: ReactNode;
+  hidden?: boolean;
 }
 
-const Tooltip: FC<PropsWithChildren<TooltipProps>> = ({ content, children }) => {
+const Tooltip: FC<PropsWithChildren<TooltipProps>> = ({ content, hidden, children }) => {
   return (
     <RadixTooltip.Provider delayDuration={100}>
       <RadixTooltip.Root>
@@ -15,7 +16,7 @@ const Tooltip: FC<PropsWithChildren<TooltipProps>> = ({ content, children }) => 
           {children}
         </RadixTooltip.Trigger>
         <RadixTooltip.Portal>
-          <RadixTooltip.Content className='tooltip'>
+          <RadixTooltip.Content className='tooltip' hidden={hidden}>
             {content}
             <RadixTooltip.Arrow className='tooltip__arrow' />
           </RadixTooltip.Content>

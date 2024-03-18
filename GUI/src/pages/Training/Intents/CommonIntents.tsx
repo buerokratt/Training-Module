@@ -15,12 +15,12 @@ import {
   addExample,
   addRemoveIntentModel,
   deleteIntent, downloadExamples,
-  editIntent,
   getLastModified,
   uploadExamples
 } from 'services/intents';
 import IntentExamplesTable from './IntentExamplesTable';
 import LoadingDialog from "../../../components/LoadingDialog";
+import ConnectServiceToIntentModal from 'pages/ConnectServiceToIntentModal';
 
 const CommonIntents: FC = () => {
   const { t } = useTranslation();
@@ -31,6 +31,7 @@ const CommonIntents: FC = () => {
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
   const [selectedIntent, setSelectedIntent] = useState<Intent | null>(null);
   const [deletableIntent, setDeletableIntent] = useState<string | number | null>(null);
+  const [connectableIntent, setConnectableIntent] = useState<Intent | null>(null);
   const [filter, setFilter] = useState('');
   const [refreshing, setRefreshing] = useState(false);
 
@@ -56,7 +57,8 @@ const CommonIntents: FC = () => {
         inModel: intent.inmodel,
         modifiedAt: '',
         examplesCount: countExamples,
-        examples: intent.examples
+        examples: intent.examples,
+        serviceId: intent.serviceId,
       };
       commonIntents.push(newIntent);
     });
@@ -166,7 +168,9 @@ const CommonIntents: FC = () => {
     mutationFn: (data: { name: string }) => deleteIntent(data),
     onMutate: () => {
       setRefreshing(true);
-      setDeletableIntent(null) },
+      setDeletableIntent(null);
+      setConnectableIntent(null);
+    },
     onSuccess: async () => {
       setSelectedIntent(null)
       queryRefresh(null);
@@ -461,12 +465,29 @@ const CommonIntents: FC = () => {
                             })
                         }>{t('training.intents.addToModel')}</Button>
                     )}
-                    <Button
-                      appearance='error'
-                      onClick={() => setDeletableIntent(selectedIntent.id)}
-                    >
-                      {t('global.delete')}
-                    </Button>
+                    <Tooltip content={t('training.intents.connectToServiceTooltip')}>
+                      <span>
+                        <Button
+                          appearance="secondary"
+                          onClick={() => setConnectableIntent(selectedIntent)}
+                        >
+                            {selectedIntent.serviceId 
+                              ? t('training.intents.changeConnectedService')
+                              : t('training.intents.connectToService')}
+                        </Button>
+                      </span>
+                    </Tooltip>
+
+                    <Tooltip content={t('training.intents.deleteTooltip')} hidden={!selectedIntent.serviceId}>
+                      <span>
+                        <Button
+                          appearance='error'
+                          onClick={() => setDeletableIntent(selectedIntent.id)}
+                        >
+                          {t('global.delete')}
+                        </Button>
+                      </span>
+                    </Tooltip>
                   </Track>
                 </Track>
               </div>
@@ -484,6 +505,13 @@ const CommonIntents: FC = () => {
             </Tabs.Content>
           )}
         </Tabs.Root>
+      )}
+
+      {connectableIntent !== null && (
+        <ConnectServiceToIntentModal
+          intent={connectableIntent.intent}
+          onModalClose={() => setConnectableIntent(null)}
+        />
       )}
 
       {deletableIntent !== null && (

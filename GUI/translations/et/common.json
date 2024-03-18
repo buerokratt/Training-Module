@@ -92,6 +92,10 @@
       "deleteEntity": "Kustuta olem",
       "turnExampleIntoIntent": "Muuda teemaks",
       "turnIntoService": "Muuda teenuseks",
+      "connectToService": "Seo teenusega",
+      "connectToServiceTooltip": "Teenuse ühendamiseks tuleb teenus eelnevalt luua Teenuste moodulis",
+      "changeConnectedService": "Muutke teenust",
+      "deleteTooltip": "Ainult kavatsus kustutatakse ja teenus jääb alles, selle kustutamine saab toimuda teenuse moodulis",
       "error": {
         "turnExampleIntoIntent": "Näidet ei saa teenuseks muuta"
       }
@@ -329,6 +333,25 @@
       "formRulesDependency": "Vormi kustutamine on keelatud, kuna sellel on seos reegliga.",
       "formStoriesDependency": "Vormi kustutamine on keelatud, kuna sellel on seos kasutajalooga.",
       "formNotFound": "Ei leia vastavat vormi kustutamiseks."
+    }
+  },
+  "connectionRequests": {
+    "title": "Ühenduse taotlused",
+    "approvedConnection": "Ühendus kinnitatud",
+    "declinedConnection": "Ühendus tagasi lükatud",
+    "connect": "Ühenda",
+    "service": "Teenus",
+    "noServiceAvailable": "Ühtegi teenust pole saadaval ühendamiseks",
+    "searchServices": "Otsi teenuseid",
+    "connectIntentToService": "Ühenda kavatsus teenusega",
+    "connectionQuestion": "Kas olete kindel, et soovite ühenduda selle teenusega?",
+    "toast": {
+      "requestedConnection": "Ühenduse taotlus saadetud",
+      "failed": {
+        "requests": "Ühendustaotluste toomine ebaõnnestus",
+        "requestConnection": "Ühenduse taotlus ebaõnnestus",
+        "availableServices": "Saadaolevate teenuste hankimine ebaõnnestus"
+      }
     }
   }
 }
