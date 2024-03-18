@@ -75,7 +75,7 @@ const App: FC = () => {
         <Route path='/analytics/models' element={<Models />} />
         <Route path='/analytics/models/:id' element={<ModelsDetail />} />
         <Route path='/train-new-model' element={<TrainAndTest />} />
-        <Route path='/auto-services' element={<ConnectionRequests />} />
+        <Route path='/training/auto-services' element={<ConnectionRequests />} />
       </Route>
     </Routes>
   );
