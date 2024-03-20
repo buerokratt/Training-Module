@@ -1,44 +1,38 @@
 import { Node } from 'reactflow';
 
 export const generateStoryStepsFromNodes = (nodes: Node[]) =>
-  nodes.map(({ data: { type, label, payload, checkpoint }}) => {
-    switch (type) {
-        case 'conditionNode':
-            return {
-              condition: (payload.conditions || []).map((x: any) => {
-                if(x.active_loop)
-                  return { active_loop: x.active_loop.label }
-                if(x.slot)
-                  return { slot_was_set: { [x.slot.label]: x.value } }
+    nodes.map(({ data: { type, label, payload, checkpoint }}) => {
+        switch (type) {
+            case 'intentNode':
+                return {
+                    intent: label,
+                    entities: payload.entities || [],
+                };
+            case 'responseNode':
+                return { action: label };
+            case 'formNode':
+                return {
+                    action: label,
+                    active_loop: payload.active_loop !== undefined ? payload.active_loop : null,
+                };
+            case 'slotNode':
+                return {
+                    slot_was_set: {
+                        [label]: payload.value,
+                    },
+                };
+            case 'actionNode':
+                return checkpoint
+                    ? { action: payload?.value || label }
+                    : { action: label };
+            case 'conditionNode':
+                return {
+                    condition: payload.conditions || [],
+                };
+            default:
                 return null;
-              }).filter(Boolean),
-            };
-        case 'intentNode':
-            return {
-                intent: label,
-                entities: (payload.entities || []).map((x: any) => ({ entity: x })),
-            };
-        case 'responseNode':
-            return { action: label };
-        case 'formNode':
-            return {
-                action: label,
-                active_loop: payload.active_loop === false ? null: label,
-            };
-        case 'slotNode':
-            return {
-                slot_was_set: {
-                  [label]: payload.value,
-                }
-            };
-        case 'actionNode':
-            return checkpoint
-              ? { 'action': payload?.value || label, }
-              : { 'action': label, }
-        default:
-            return null;
-    }
-  }).filter(Boolean);
+        }
+    }).filter(Boolean);
 
 export const generateNodesFromStorySteps = (steps): Node[] =>
     steps?.map((step) => {
@@ -67,9 +61,11 @@ export const generateNodesFromStorySteps = (steps): Node[] =>
             className = 'intent';
             label = step.intent;
             payload = {
-                entities: step.entities?.map((entity) => ({
-                    label: entity.entity,
-                })) || [],
+                entities: step.entities?.map((entity) => {
+                    return {
+                        value: Object.keys(entity)[0],
+                    };
+                }) || [],
             };
         } else if (step.action) {
             if (step.active_loop !== undefined) {

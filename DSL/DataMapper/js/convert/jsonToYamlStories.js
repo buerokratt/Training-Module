@@ -19,7 +19,9 @@ router.post('/', multer().array('file'), async (req, res) => {
                         case !!step.intent:
                             formattedStep.intent = step.intent;
                             if (step.entities && step.entities.length > 0) {
-                                formattedStep.entities = step.entities;
+                                formattedStep.entities = step.entities.map(entity => ({
+                                    [entity]: ""
+                                }));
                             }
                             break;
                         case !!step.action:
@@ -49,7 +51,9 @@ router.post('/', multer().array('file'), async (req, res) => {
                         case !!step.intent:
                             formattedStep.intent = step.intent;
                             if (step.entities && step.entities.length > 0) {
-                                formattedStep.entities = step.entities;
+                                formattedStep.entities = step.entities.map(entity => ({
+                                    [entity]: ""
+                                }));
                             }
                             break;
                         case !!step.action:

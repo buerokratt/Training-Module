@@ -128,7 +128,8 @@
       "title": "Stories and rules",
       "stories": "Stories",
       "rules": "Rules",
-      "entityWarning": "There are two entities with the same name in intent '{{intent}}'"
+      "entityWarning": "There are two entities with the same name in intent '{{intent}}'",
+      "noEntitiesAvailable": "No Entities available"
     },
     "slots": {
       "title": "Slots",
