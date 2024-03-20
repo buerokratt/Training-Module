@@ -99,6 +99,9 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   useEffect(() => {
     if (location.state && location.state.category) {
       setCategory(location.state.category);
+      if (location.state.id) {
+        setEditableTitle(location.state.id);
+      }
     }
 
     setCurrentEntity(currentEntityData ?? null);
@@ -115,7 +118,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     setNodes(nodes);
     setEdges(edges);
 
-  }, [location.state, category, currentEntity, currentEntityData]);
+  }, [location.state, category, currentEntity, currentEntityData, setNodes, setEdges]);
 
   const addStoryMutation = useMutation({
     mutationFn: ({ data, category }: { data: StoryDTO | RuleDTO, category: string }) => {
@@ -270,7 +273,6 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
       });
       return;
     }
-
     const data = {
       [category === 'stories' ? 'story' : 'rule']: editableTitle || id || title,
       steps: generateStoryStepsFromNodes(nodes),
