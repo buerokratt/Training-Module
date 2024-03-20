@@ -1,10 +1,13 @@
 version: "3.9"
 services:
   ruuter:
-    container_name: byk-private-ruuter
+    container_name: ruuter
     image: ruuter
     environment:
-      - application.cors.allowedOrigins=http://localhost:3001, http://localhost:3002
+      - application.cors.allowedOrigins=http://localhost:3001,http://localhost:3002
+      - server.port=8080
+      - application.logging.displayRequestContent=true
+      - application.logging.displayResponseContent=true
     volumes:
       - ./DSL/Ruuter.private:/DSL
       - ./constants.ini:/app/constants.ini
@@ -28,13 +31,14 @@ services:
       - bykstack
 
   resql:
-    container_name: byk-resql
+    container_name: resql
     image: resql
     depends_on:
       - database
     environment:
       - sqlms.datasources.[0].name=training
-      - sqlms.datasources.[0].jdbcUrl=jdbc:postgresql://database:5432/training_db
+      # - sqlms.datasources.[0].jdbcUrl=jdbc:postgresql://database:5432/training_db // For Local Use
+      - sqlms.datasources.[0].jdbcUrl=jdbc:postgresql://171.22.247.13:5434/train_db
       - sqlms.datasources.[0].username=byk
       - sqlms.datasources.[0].password=01234
       - logging.level.org.springframework.boot=INFO
@@ -42,37 +46,52 @@ services:
     ports:
       - 8082:8082
     volumes:
-      - ./DSL/Resql:/workspace/app/templates/
+      - ./DSL/Resql/training:/workspace/app/templates/training
     networks:
       - bykstack
 
-  opensearch-node:
-    image: opensearchproject/opensearch:latest
-    container_name: opensearch-node
+  resql_services:
+    container_name: resql-services
+    image: resql
+    depends_on:
+      - database
     environment:
-      - cluster.name=opensearch-cluster # Name the cluster
-      - node.name=opensearch-node # Name the node that will run in this container
-      - discovery.type=single-node
-      - bootstrap.memory_lock=true # Disable JVM heap memory swapping
-      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m" # Set min and max JVM heap sizes to at least 50% of system RAM
-      - "DISABLE_INSTALL_DEMO_CONFIG=true" # Prevents execution of bundled demo script which installs demo certificates and security configurations to OpenSearch
-      - "DISABLE_SECURITY_PLUGIN=true" # Disables security plugin
-    ulimits:
-      memlock:
-        soft: -1 # Set memlock to unlimited (no soft or hard limit)
-        hard: -1
-      nofile:
-        soft: 65536 # Maximum number of open files for the opensearch user - set to at least 65536
-        hard: 65536
-    volumes:
-      - opensearch-data:/usr/share/opensearch/data # Creates volume called opensearch-data1 and mounts it to the container
+      - sqlms.datasources.[0].name=services
+      # - sqlms.datasources.[0].jdbcUrl=jdbc:postgresql://database:5432/services_db // For Local Use
+      - sqlms.datasources.[0].jdbcUrl=jdbc:postgresql://171.22.247.13:5435/services_db
+      - sqlms.datasources.[0].username=byk
+      - sqlms.datasources.[0].password=01234
+      - logging.level.org.springframework.boot=INFO
+      - server.port=8087
     ports:
-      - 9200:9200 # REST API
-      - 9600:9600 # Performance Analyzer
+      - 8087:8087
+    volumes:
+      - ./DSL/Resql/services:/workspace/app/templates/services
     networks:
-      - bykstack # All of the containers will join the same Docker bridge network
-  node:
-    container_name: node
+      - bykstack
+
+  resql_users:
+    container_name: resql-users
+    image: resql
+    depends_on:
+      - database
+    environment:
+      - server.port=8088
+      - sqlms.datasources.[0].name=users
+      # - sqlms.datasources.[0].jdbcUrl=jdbc:postgresql://database:5432/users_db // For Local Use
+      - sqlms.datasources.[0].jdbcUrl=jdbc:postgresql://171.22.247.13:5433/byk
+      - sqlms.datasources.[0].username=byk
+      - sqlms.datasources.[0].password=2nH09n6Gly
+      - logging.level.org.springframework.boot=INFO
+    ports:
+      - 8088:8088
+    volumes:
+      - ./DSL/Resql/users:/workspace/app/templates/users
+    networks:
+      - bykstack
+
+  data_mapper:
+    container_name: data_mapper
     build:
       context: ./DSL/DataMapper
     volumes:
@@ -86,49 +105,50 @@ services:
       - 3000:3000
     networks:
       - bykstack
+
   training_gui:
     container_name: training_gui
     build:
       context: ./GUI
-      target: web
-      dockerfile: Dockerfile
+      # target: web // To be used in production (Dockerfile)
+      dockerfile: Dockerfile.dev
     ports:
-      - 3001:80
+      - 3001:3001
     volumes:
       - /app/node_modules
       - ./GUI:/app
     networks:
       - bykstack
 
-  # TIM part is commented out in case a developer needs to run just the training module part
-  # tim:
-  #  container_name: tim
-  #  image: tim
-  #  depends_on:
-  #    - tim-postgresql
-  #  ports:
-  #    - 8085:8085
-  #  networks:
-  #    - bykstack
-  #  extra_hosts:
-  #    - "host.docker.internal:host-gateway"
-  #  cpus: "0.5"  (Example CPU limit)
-  #  mem_limit: "512M"  (Example memory limit)
+  tim:
+    container_name: tim
+    image: tim
+    depends_on:
+      - tim-postgresql
+    ports:
+      - 8085:8085
+    networks:
+      - bykstack
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    cpus: "0.5" #(Example CPU limit)
+    mem_limit: "512M" #(Example memory limit)
 
-  # tim-postgresql:
-  #  container_name: tim-postgresql
-  #  image: postgres:14.1
-  #  environment:
-  #    - POSTGRES_USER=tim
-  #    - POSTGRES_PASSWORD=123
-  #    - POSTGRES_DB=tim
-  #    - POSTGRES_HOST_AUTH_METHOD=trust
-  #  volumes:
-  #    - ./tim-db:/var/lib/postgresql/data
-  #  ports:
-  #    - 9876:5432
-  #  networks:
-  #    - bykstack
+  tim-postgresql:
+    container_name: tim-postgresql
+    image: postgres:14.1
+    environment:
+      - POSTGRES_USER=tim
+      - POSTGRES_PASSWORD=123
+      - POSTGRES_DB=tim
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    volumes:
+      - ./tim-db:/var/lib/postgresql/data
+    ports:
+      - 9876:5432
+    networks:
+      - bykstack
+
   pipelines:
     container_name: pipelines
     build:
@@ -142,13 +162,38 @@ services:
 
   cron-manager:
     container_name: cron-manager
-    image: cron_manager
+    image: cron-manager
     volumes:
       - ./DSL/CronManager:/DSL
     environment:
       - server.port=9010
     ports:
       - 9010:9010
+    networks:
+      - bykstack
+
+  opensearch:
+    image: opensearchproject/opensearch:latest
+    container_name: opensearch
+    environment:
+      - node.name=opensearch
+      - discovery.seed_hosts=opensearch
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+      - plugins.security.disabled=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - opensearch-data1:/usr/share/opensearch/data
+    ports:
+      - 9200:9200
+      - 9600:9600
     networks:
       - bykstack
 

@@ -1,0 +1,25 @@
+get_services:
+  call: http.post
+  args:
+    url: "[#SERVICES_RESQL]/get-services"
+  result: services_res
+
+get_service_intent_connections:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/get-service-intent-connections"
+  result: connection_res
+
+filter_out_services_connected_to_intent:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/filter_out_services_connected_to_intent"
+    body:
+      services: ${services_res.response.body}
+      connections: ${connection_res.response.body}
+  result: unused_services_res
+  
+return_result:
+  status: 200
+  return: ${unused_services_res.response.body}
+
