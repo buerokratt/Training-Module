@@ -6,4 +6,5 @@ export interface Intent {
   modifiedAt: string;
   examplesCount: number | null;
   examples: string[];
+  serviceId: string;
 }

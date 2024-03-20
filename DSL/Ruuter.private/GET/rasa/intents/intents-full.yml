@@ -23,14 +23,21 @@ getDomainFile:
 checkIfIntentsExists:
   switch:
     - condition: ${getIntentDataResult.response.body.data.intents != null}
-      next: assignResults
+      next: get_service_intent_connections
   next: returnNoIntentsFound
+
+get_service_intent_connections:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/get-service-intent-connections"
+  result: connection_res
 
 assignResults:
   assign:
     intents:
       intents: ${getIntentDataResult.response.body.data.intents}
       inmodel: ${getDomainDataResult.response.body.response.intents}
+      connections: ${connection_res.response.body}
 
 mapIntentsData:
   call: http.post

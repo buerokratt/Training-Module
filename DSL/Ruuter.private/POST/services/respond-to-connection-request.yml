@@ -1,0 +1,23 @@
+extract_request_data:
+  assign:
+    serviceId: ${incoming.body.serviceId}
+    serviceName: ${incoming.body.serviceName}
+    authorRole: ${incoming.body.authorRole}
+    intent: ${incoming.body.intent}
+    status: ${incoming.body.status}
+
+add_connection_request:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/add-service-trigger"
+    body:
+      serviceId: ${serviceId}
+      intent: ${intent}
+      status: ${status}
+      authorRole: ${authorRole}
+      serviceName: ${serviceName}
+  result: res
+
+return_result:
+  status: 200
+  return: ${res.response.body}
