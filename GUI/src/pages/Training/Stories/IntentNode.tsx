@@ -62,14 +62,14 @@ const IntentNode: FC<NodeDataProps> = ({ data }) => {
     });
     return () => unsubscribe();
   }, [data, watch]);
-  
+
   return (
     <>
       {'label' in data && (<p><strong>{t('training.intent')}: {data.label}</strong></p>)}
-      <p>entity:</p>
+      {data.payload.entities?.length !== 0 ? <p>entities:</p> : <p>{t('training.stories.noEntitiesAvailable')}</p>}
 
       {fields.map((item, index) => (
-        <Track key={item.id} style={{ width: '100%' }}>
+        <Track key={item.label} style={{ width: '100%' }}>
           <div style={{ flex: 1 }}>
             <Controller
               name={`entities[${index}].value` as const}
@@ -78,7 +78,7 @@ const IntentNode: FC<NodeDataProps> = ({ data }) => {
                 <FormSelect
                     {...field}
                     value={field.value}
-                    placeholder={t('training.intents.entity') || ''}
+                    placeholder={field.value || t('training.intents.entity')}
                     onSelectionChange={(selection) => {
                       const selectedValue = selection?.value || '';
                       field.onChange(selectedValue);

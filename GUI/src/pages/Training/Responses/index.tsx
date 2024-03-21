@@ -1,4 +1,4 @@
-import {FC, useMemo, useState} from 'react';
+import {FC, useEffect, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {createColumnHelper} from '@tanstack/react-table';
@@ -13,6 +13,7 @@ import type {Dependencies as DependenciesType} from 'types/dependencises';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import {useToast} from 'hooks/useToast';
 import {deleteResponse, editResponse} from 'services/responses';
+import LoadingDialog from "../../../components/LoadingDialog";
 
 type NewResponse = {
   name: string;
@@ -26,7 +27,7 @@ const Responses: FC = () => {
   const { data: dependencies } = useQuery<DependenciesType>({
     queryKey: ['responses/dependencies'],
   });
-  const { data: responses } = useQuery<ResponsesType>({
+  const { data: responses, refetch } = useQuery<ResponsesType>({
     queryKey: ['responses-list'],
   });
   const [addFormVisible, setAddFormVisible] = useState(false);
@@ -34,20 +35,23 @@ const Responses: FC = () => {
   const [deletableRow, setDeletableRow] = useState<string | null>(null);
   const [filter, setFilter] = useState('');
   const { register, handleSubmit } = useForm<NewResponse>();
+  const [formattedResponses, setFormattedResponses] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
 
-  let editingTrainingTitle: string;
-  const formattedResponses = useMemo(() => {
+  useMemo(() => {
     if (responses && responses.length > 0) {
-      return responses[0].response.map((r, i) => ({
+      const formattedData = responses[0].response.map((r, i) => ({
         id: i,
         response: r.name,
         text: r.text,
       }));
+      setFormattedResponses(formattedData);
     } else {
-      return [];
+      setFormattedResponses([]);
     }
   }, [responses]);
 
+  let editingTrainingTitle: string;
   useDocumentEscapeListener(() => setEditableRow(null));
 
   function setEditingTrainingTitle(title: string) {
@@ -58,15 +62,16 @@ const Responses: FC = () => {
     mutationFn: ({ id, text }: { id: string, text: string }) => editResponse(id,  text),
     onMutate: async () => {
       await queryClient.cancelQueries(['responses-list']);
+      setRefreshing(true);
     },
     onSuccess: async () => {
-      queryClient.fetchQuery(['responses-list']).then(() => {
-        toast.open({
-          type: 'success',
-          title: t('global.notification'),
-          message: 'Response saved',
-        });
+      await queryClient.invalidateQueries(['responses-list']);
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: 'Response saved',
       });
+      setTimeout(() => refetch(), 800);
     },
     onError: (error: AxiosError) => {
       toast.open({
@@ -74,15 +79,22 @@ const Responses: FC = () => {
         title: t('global.notificationError'),
         message: error.message,
       });
+      setRefreshing(false)
     },
-    onSettled: () => setEditableRow(null),
+    onSettled: () => {
+      setEditableRow(null);
+      setRefreshing(false)
+    },
   });
 
   const responseDeleteMutation = useMutation({
     mutationFn: (data: { response: string }) => deleteResponse(data),
+    onMutate: async () => {
+      await queryClient.invalidateQueries(['responses-list']);
+      setRefreshing(true);
+    },
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['responses']);
-
+      setTimeout(() => refetch(), 1300);
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -95,23 +107,28 @@ const Responses: FC = () => {
         title: t('global.notificationError'),
         message: error.message,
       });
+      setRefreshing(false)
     },
-    onSettled: () => setDeletableRow(null),
+    onSettled: async () => {
+      const updatedResponses = formattedResponses.filter((r) => r.response !== deletableRow);
+      setFormattedResponses(updatedResponses);
+      setDeletableRow(null);
+      setRefreshing(false)
+    },
   });
 
   const newResponseMutation = useMutation({
     mutationFn: ({ name}: { name: string}) => editResponse("utter_"+name,  editingTrainingTitle, false),
     onMutate: async () => {
+      await queryClient.invalidateQueries(['responses-list']);
+      setRefreshing(true);
     },
     onSuccess: async () => {
       setAddFormVisible(false);
-      queryClient.refetchQueries(['responses-list']).then((data) => {
-        formattedResponses();
         toast.open({
           type: 'success',
           title: t('global.notification'),
           message: 'Response saved',
-        });
       });
     },
     onError: (error: AxiosError) => {
@@ -120,7 +137,12 @@ const Responses: FC = () => {
         title: t('global.notificationError'),
         message: error.message,
       });
+      setRefreshing(false)
     },
+    onSettled: () => {
+      setTimeout(() => refetch(), 1100);
+      setRefreshing(false);
+    }
   });
 
   const handleNewResponseSubmit = handleSubmit(async (data) => {
@@ -313,6 +335,12 @@ const Responses: FC = () => {
         >
           <p>{t('global.removeValidation')}</p>
         </Dialog>
+      )}
+
+      {refreshing && (
+          <LoadingDialog title={t('global.updatingDataHead')} >
+            <p>{t('global.updatingDataBody')}</p>
+          </LoadingDialog>
       )}
     </>
   );

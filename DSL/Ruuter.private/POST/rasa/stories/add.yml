@@ -84,7 +84,23 @@ saveStoriesFile:
       content: ${storiesYaml.response.body.json}
   result: fileResult
 
-updateOpenSearch:
+getUpdatedStoriesFile:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file/read"
+    body:
+      file_path: ${fileLocations.response.body.response.stories_location}
+  result: updatedStoriesFile
+
+convertUpdatedYamlToJson:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
+    body:
+      file: ${updatedStoriesFile.response.body.file}
+  result: storiesData
+
+updateOpenSearchWithUpdatedStoriesFile:
   call: http.post
   args:
     url: "[#TRAINING_PIPELINE]/bulk/stories/story"
