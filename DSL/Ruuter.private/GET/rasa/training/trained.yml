@@ -1,7 +1,7 @@
 getFromDatabase:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/get-llm-trainings"
+    url: "[#TRAINING_RESQL]/get-last-trained-model"
   result: dbResult
 
 validateDbRecords:

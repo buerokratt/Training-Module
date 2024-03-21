@@ -16,6 +16,8 @@ import {
 import React, {useEffect, useState} from "react";
 import {AiOutlineExclamationCircle} from "react-icons/ai";
 import useStore from "../../../store/store";
+import {format} from "date-fns";
+import {DATE_FORMAT, TIME_FORMAT} from "../../../utils/datetime-fromat";
 
 const TrainAndTest = () => {
     const toast = useToast();
@@ -53,10 +55,10 @@ const TrainAndTest = () => {
     }, [reset, settingsData]);
 
     useEffect(() => {
-        if(trainedData) {
+        if(trainedData && trainedData.trainedDate) {
             setLlmFailed(trainedData.state === 'Failed');
-            setLastTrainedTime(trainedData.trainedDate.split("T")[1].split(".")[0]);
-            setLastTrainedDay(formatDate(trainedData.trainedDate.split('T')[0]));
+            setLastTrainedTime(format(new Date(trainedData.trainedDate),TIME_FORMAT));
+            setLastTrainedDay(format(new Date(trainedData.trainedDate),DATE_FORMAT));
         }
     }, [trainedData]);
 
@@ -105,11 +107,6 @@ const TrainAndTest = () => {
             });
         },
     });
-
-    const formatDate = (date: string) => {
-        const [year, month, day] = date.split("-");
-        return `${day}.${month}.${year}`;
-    }
 
     return (
         <div className={styles.container}>

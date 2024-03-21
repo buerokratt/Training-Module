@@ -1,7 +1,7 @@
 initTraining:
   call: http.post
   args:
-    url: "[#CRON_INSTANCE]/execute/train-bot/train_bot_now"
+    url: "[#CRON_INSTANCE]/execute/train_bot/train_bot_now"
   result: trainingData
 
 returnSuccess:
