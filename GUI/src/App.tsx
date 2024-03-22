@@ -24,7 +24,7 @@ import ModelsDetail from 'pages/ModelBankAndAnalytics/Models/ModelsDetail';
 import IntentsFollowupTraining from 'pages/Training/IntentsFollowupTraining';
 import RegexDetail from 'pages/Training/IntentsFollowupTraining/RegexDetail';
 import TrainAndTest from 'pages/Training/TrainAndTest';
-import ConnectionRequests from 'pages/Training/ConnectionRequests';
+import ConnectionRequests from 'pages/ConnectionRequests';
 
 const App: FC = () => {
   if (import.meta.env.REACT_APP_LOCAL === "true") {
@@ -75,7 +75,7 @@ const App: FC = () => {
         <Route path='/analytics/models' element={<Models />} />
         <Route path='/analytics/models/:id' element={<ModelsDetail />} />
         <Route path='/train-new-model' element={<TrainAndTest />} />
-        <Route path='/training/auto-services' element={<ConnectionRequests />} />
+        <Route path='/auto-services' element={<ConnectionRequests />} />
       </Route>
     </Routes>
   );
