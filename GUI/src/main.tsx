@@ -92,17 +92,13 @@ const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
     const { data } = await apiInstance.post(queryKey[0] as string, request);
     return data.response;
   }
-  if(queryKey.includes('services/connection-requests')) {
-    const { data } = await apiDev.get(queryKey[0] as string);
-    return data.response;
-  }
-  if(queryKey.includes('services/get-services-not-assigned-to-intent')) {
-    const { data } = await apiDev.get(queryKey[0] as string);
-    return data.response;
-  }
 
   const { data } = await apiInstance.get(queryKey[0] as string);
-  if (queryKey.includes('entities')) {
+  if (
+    queryKey.includes('entities')
+    || queryKey.includes('services/connection-requests') 
+    || queryKey.includes('services/get-services-not-assigned-to-intent')
+  ) {
     return data.response;
   }
   if (queryKey.includes('regexes')) {
