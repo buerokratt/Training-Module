@@ -54,44 +54,50 @@ const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
   modulusLength: 2048,
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = import.meta.env.PORT || 3000;
 const app = express();
 const hbs = create({ helpers });
 
 app.use(express.json());
 app.use("/file-manager", files);
-app.use('/file/read', fileRead);
-app.use('/file/read-directory', fileReadDir);
-app.use('/file/write', fileWrite);
-app.use('/file/delete', fileDelete);
-app.use('/file/delete-intent', deleteIntentFile);
-app.use('/file/check', fileCheck);
-app.use('/merge', merge);
-app.use('/forms/detailed-information', formDetails);
-app.use('/merge/objects', mergeObjects);
-app.use('/replace/key-value-in-obj', replaceKeyValueObj);
-app.use('/merge/remove-key', mergeRemoveKey);
-app.use('/merge/remove-array-value', mergeRemoveArrayValue);
-app.use('/merge/replace-array-element', mergeReplaceArrayElement);
-app.use('/validate/array-elements-length', validate);
-app.use('/convert/yaml-to-json', yamlToJson)
-app.use('/convert/json-to-yaml', jsonToYaml)
-app.use('/convert/json-to-yaml-stories', jsonToYamlStories)
-app.use('/convert/csv-to-json', csvToJson)
-app.use('/convert/string/split', stringSplit)
-app.use('/convert/string/replace', stringReplace)
-app.use('/convert/string/toArray', stringToArray)
-app.use('/rules/remove-by-intent-name', removeRulesByIntentName);
-app.use('/array/replace-next-element', replaceNextElementInArray);
-app.use('/docker/update-parameter-by-key', updateParametersByKey);
-app.use('/docker/update-version-for-bot', updateVersionForBot);
-app.use('/docker/bot-trained-version', botTrainedVersion);
-app.use('/cron/generate-expression-date-days', createExpressionFromDateDays);
-app.use('/domain/update-existing-response', domainUpdateExistingResponse)
-app.use('/util/objectListContainsId', objectListContainsId)
-app.use('/util/increase-double-digit-version', incrementDoubleDigitStringVersion)
-app.use('/validate/validate-stories-rules', validateStoriesRules)
-app.use('/filter_out_services_connected_to_intent', removeServicesConnectedToIntent);
+app.use("/file/read", fileRead);
+app.use("/file/read-directory", fileReadDir);
+app.use("/file/write", fileWrite);
+app.use("/file/delete", fileDelete);
+app.use("/file/delete-intent", deleteIntentFile);
+app.use("/file/check", fileCheck);
+app.use("/merge", merge);
+app.use("/forms/detailed-information", formDetails);
+app.use("/merge/objects", mergeObjects);
+app.use("/replace/key-value-in-obj", replaceKeyValueObj);
+app.use("/merge/remove-key", mergeRemoveKey);
+app.use("/merge/remove-array-value", mergeRemoveArrayValue);
+app.use("/merge/replace-array-element", mergeReplaceArrayElement);
+app.use("/validate/array-elements-length", validate);
+app.use("/convert/yaml-to-json", yamlToJson);
+app.use("/convert/json-to-yaml", jsonToYaml);
+app.use("/convert/json-to-yaml-stories", jsonToYamlStories);
+app.use("/convert/csv-to-json", csvToJson);
+app.use("/convert/string/split", stringSplit);
+app.use("/convert/string/replace", stringReplace);
+app.use("/convert/string/toArray", stringToArray);
+app.use("/rules/remove-by-intent-name", removeRulesByIntentName);
+app.use("/array/replace-next-element", replaceNextElementInArray);
+app.use("/docker/update-parameter-by-key", updateParametersByKey);
+app.use("/docker/update-version-for-bot", updateVersionForBot);
+app.use("/docker/bot-trained-version", botTrainedVersion);
+app.use("/cron/generate-expression-date-days", createExpressionFromDateDays);
+app.use("/domain/update-existing-response", domainUpdateExistingResponse);
+app.use("/util/objectListContainsId", objectListContainsId);
+app.use(
+  "/util/increase-double-digit-version",
+  incrementDoubleDigitStringVersion
+);
+app.use("/validate/validate-stories-rules", validateStoriesRules);
+app.use(
+  "/filter_out_services_connected_to_intent",
+  removeServicesConnectedToIntent
+);
 app.use(express.urlencoded({ extended: true }));
 
 app.use(
@@ -110,7 +116,7 @@ app.use(
 );
 
 app.engine("handlebars", hbs.engine);
-app.use("/dmapper", mapper)
+app.use("/dmapper", mapper);
 
 app.set("view engine", "handlebars");
 app.set("views", "./views");
