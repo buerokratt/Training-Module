@@ -26,7 +26,7 @@ export const mapSecretToJson = (secrets) => {
 };
 
 export const buildContentFilePath = (fileName) => {
-  return path.join(process.env.CONTENT_FOLDER || "data", fileName);
+  return path.join(import.meta.env.CONTENT_FOLDER || "data", fileName);
 };
 
 export const isValidFilename = (fileName) => {
@@ -42,7 +42,7 @@ export const isValidFilePath = (filePath) => {
 };
 
 export const getAllFiles = function (dirPath) {
-  const folder = path.join(process.env.CONTENT_FOLDER || "data", dirPath);
+  const folder = path.join(import.meta.env.CONTENT_FOLDER || "data", dirPath);
   return getAllFilesInsideFolder(folder);
 };
 
