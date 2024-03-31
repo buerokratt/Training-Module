@@ -9,7 +9,7 @@ if [[ -z $URL || -z $AUTH ]]; then
   exit 1
 fi
 
-# responses
+# # responses
 curl -XDELETE "$URL/responses?ignore_unavailable=true" -u "$AUTH" --insecure
 curl -H "Content-Type: application/x-ndjson" -X PUT "$URL/responses" -ku "$AUTH" --data-binary "@fieldMappings/responses.json"
 if $MOCK_ALLOWED; then curl -H "Content-Type: application/x-ndjson" -X PUT "$URL/responses/_bulk" -ku "$AUTH" --data-binary "@mock/responses.json"; fi
