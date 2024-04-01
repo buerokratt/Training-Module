@@ -1,8 +1,8 @@
 {
-  "mappings" : {
-    "properties" : {
-      "story" : {
-        "type" : "text",
+  "mappings": {
+    "properties": {
+      "story": {
+        "type": "text",
         "fielddata": true,
         "fields": {
           "raw": {
@@ -10,18 +10,17 @@
           }
         }
       },
-      "steps" : {
-        "properties" : {
-          "properties" : {
-            "user" : {
-              "type" : "text"
-            },
-            "intent" : {
-              "type" : "text"
-            }
+      "steps": {
+        "type": "nested",
+        "properties": {
+          "user": {
+            "type": "text"
           },
-          "action" : {
-            "type" : "text"
+          "intent": {
+            "type": "text"
+          },
+          "action": {
+            "type": "text"
           }
         }
       }
