@@ -186,7 +186,7 @@ const Responses: FC = () => {
         </Label>
       ),
       meta: {
-        size: '1%',
+        size: '167px',
       },
     }),
     columnHelper.accessor('text', {
