@@ -1,8 +1,8 @@
-import {FC, useEffect, useMemo, useState} from 'react';
+import {FC, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {createColumnHelper} from '@tanstack/react-table';
-import {useForm} from 'react-hook-form';
+import {Controller, useForm} from 'react-hook-form';
 import {AxiosError} from 'axios';
 import {MdDeleteOutline, MdOutlineModeEditOutline, MdOutlineSave} from 'react-icons/md';
 
@@ -34,7 +34,7 @@ const Responses: FC = () => {
   const [editableRow, setEditableRow] = useState<{ id: string; text: string; } | null>(null);
   const [deletableRow, setDeletableRow] = useState<string | null>(null);
   const [filter, setFilter] = useState('');
-  const { register, handleSubmit } = useForm<NewResponse>();
+  const { register,control, handleSubmit } = useForm<NewResponse>();
   const [formattedResponses, setFormattedResponses] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -118,7 +118,7 @@ const Responses: FC = () => {
   });
 
   const newResponseMutation = useMutation({
-    mutationFn: ({ name}: { name: string}) => editResponse("utter_"+name,  editingTrainingTitle, false),
+    mutationFn: ({ name, text}: { name: string, text: string}) => editResponse("utter_" + name,  text, false),
     onMutate: async () => {
       await queryClient.invalidateQueries(['responses-list']);
       setRefreshing(true);
@@ -186,7 +186,7 @@ const Responses: FC = () => {
         </Label>
       ),
       meta: {
-        size: '1%',
+        size: '167px',
       },
     }),
     columnHelper.accessor('text', {
@@ -215,7 +215,7 @@ const Responses: FC = () => {
         <>
           {editableRow && editableRow.id === props.row.original.response ? (
             <Button appearance='text'
-                    onClick={() => responseSaveMutation.mutate({id: editableRow.id, text: editingTrainingTitle == null ? "" : editingTrainingTitle})}>
+                    onClick={() => responseSaveMutation.mutate({id: editableRow.id, text: editingTrainingTitle ?? props.row.original.text})}>
               <Icon label={t('global.save')} icon={<MdOutlineSave color={'rgba(0,0,0,0.54)'} />} />
               {t('global.save')}
             </Button>
@@ -284,18 +284,21 @@ const Responses: FC = () => {
                   label={t('training.responses.responseName')}
                   hideLabel
                 />
-                <FormTextarea
-                  {...register('text')}
-                  label={t('training.responses.responseText')}
-                  placeholder={t('training.responses.newResponseTextPlaceholder') || ''}
-                  minRows={1}
-                  hideLabel
-                  maxLength={RESPONSE_TEXT_LENGTH}
-                  showMaxLength
-                  onChange={(e) =>
+                <Controller name='text' control={control} render={({ field }) => (
+                  <FormTextarea
+                    {...field}
+                    label={t('training.responses.responseText')}
+                    placeholder={t('training.responses.newResponseTextPlaceholder') || ''}
+                    hideLabel
+                    minRows={1}
+                    maxLength={RESPONSE_TEXT_LENGTH}
+                    showMaxLength
+                    onChange={(e) => {
+                      field.onChange(e.target.value)
                       setEditingTrainingTitle(e.target.value)
-                  }
-                />
+                    }}
+                  />
+                )} />
               </Track>
             </div>
             <Track gap={16}>
