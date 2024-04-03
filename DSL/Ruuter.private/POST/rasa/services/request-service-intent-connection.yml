@@ -12,7 +12,7 @@ add_connection_request:
       serviceId: ${serviceId}
       intent: ${intent}
       status: "pending"
-      authorRole: "service_manager"
+      authorRole: "trainer"
       serviceName: ${serviceName}
   result: res
 
