@@ -97,10 +97,9 @@ services:
     environment:
       - PORT=3000
     volumes:
-      - ./mock1:/mock1
+      - ./DSL/DataMapper/locations:/rasa/locations
       - ./docker-compose-bot.yml:/docker-bot/docker-compose-bot.yml
       - ./DSL/CronManager:/DSL/CronManager
-      - ../Service-Module/DSL/mock1:/mock2
       - ./DSL/DataMapper/views:/workspace/app/views/training
       - ./DSL/DataMapper/views:/workspace/app/js/analytics
     ports:

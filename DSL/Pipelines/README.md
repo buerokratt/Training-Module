@@ -111,7 +111,7 @@ forms:
 
 ### Script to populate OpenSearch with mock YAMLs
 ***./init_with_mocks.sh***
-expects mock YAMLs to be in a configurable folder (default: .*./../mock1*)
+expects mock YAMLs to be in a configurable folder (default: .*./DataMapper/locations*)
 Server has to be running
 
 ## 2. YAML to JSON (and vice versa)
