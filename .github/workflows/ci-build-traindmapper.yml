@@ -36,6 +36,7 @@ jobs:
           find . -name "README.md" -type f -delete
       - name: Docker Build
         run: | 
+           cd DSL/DataMapper
            docker image build --no-cache --tag $DOCKER_TAG_CUSTOM .
 
 
