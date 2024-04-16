@@ -3,7 +3,7 @@ getFileLocations:
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
     headers:
-      cookie: {incoming.headers.cookie}
+      cookie: ${incoming.headers.cookie}
   result: fileLocations
 
 getDomainFile:

@@ -54,7 +54,7 @@ const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
   modulusLength: 2048,
 });
 
-const PORT = import.meta.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 const app = express();
 const hbs = create({ helpers });
 
