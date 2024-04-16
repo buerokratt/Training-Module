@@ -10,10 +10,10 @@ import { Client } from "@opensearch-project/opensearch";
 const router = express.Router();
 const upload = multer({ dest: os.tmpdir() + "/" });
 
-const HOST = import.meta.env.OPENSEARCH_HOST || "host.docker.internal";
-const PORT = import.meta.env.OPENSEARCH_PORT || "9200";
-const PROTOCOL = import.meta.env.OPENSEARCH_PROTOCOL || "https";
-const AUTH = import.meta.env.OPENSEARCH_AUTH || "admin:admin";
+const HOST = process.env.OPENSEARCH_HOST || "host.docker.internal";
+const PORT = process.env.OPENSEARCH_PORT || "9200";
+const PROTOCOL = process.env.OPENSEARCH_PROTOCOL || "https";
+const AUTH = process.env.OPENSEARCH_AUTH || "admin:admin";
 
 function os_open_client() {
   var host = `${HOST}:9200`;

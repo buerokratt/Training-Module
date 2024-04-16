@@ -94,11 +94,12 @@ services:
     container_name: data_mapper
     build:
       context: ./DSL/DataMapper
+    environment:
+      - PORT=3000
     volumes:
-      - ./mock1:/mock1
+      - ./DSL/DataMapper/locations:/rasa/locations
       - ./docker-compose-bot.yml:/docker-bot/docker-compose-bot.yml
       - ./DSL/CronManager:/DSL/CronManager
-      - ../Service-Module/DSL/mock1:/mock2
       - ./DSL/DataMapper/views:/workspace/app/views/training
       - ./DSL/DataMapper/views:/workspace/app/js/analytics
     ports:
@@ -125,6 +126,8 @@ services:
     image: tim
     depends_on:
       - tim-postgresql
+    environment:
+      - SECURITY_ALLOWLIST_JWT=resql,tim,tim-postgresql,ruuter,data_mapper,training_gui,127.0.0.1,::1
     ports:
       - 8085:8085
     networks:
@@ -155,6 +158,10 @@ services:
       context: ./DSL/Pipelines
     environment:
       - OPENSEARCH_PROTOCOL=http
+      - PORT=3010
+      - OPENSEARCH_HOST=opensearch
+      - OPENSEARCH_PORT=9200
+      - OPENSEARCH_AUTH=admin:admin
     ports:
       - 3010:3010
     networks:
@@ -190,7 +197,7 @@ services:
         soft: 65536
         hard: 65536
     volumes:
-      - opensearch-data1:/usr/share/opensearch/data
+      - opensearch-data:/usr/share/opensearch/data
     ports:
       - 9200:9200
       - 9600:9600

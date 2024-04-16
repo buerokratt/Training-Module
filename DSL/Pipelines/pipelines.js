@@ -5,7 +5,7 @@ const app = express();
 import yaml2json from "./pipelines/yaml.js";
 import opensearch from "./pipelines/opensearch.js";
 
-const PORT = import.meta.env.PORT || 3010;
+const PORT = process.env.PORT || 3010;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
