@@ -68,6 +68,7 @@ const App: FC = () => {
         <Route path='/training/forms' element={<Forms />} />
         <Route path='/training/forms/new' element={<FormsDetail mode='new' />} />
         <Route path='/training/forms/:id' element={<FormsDetail mode='edit' />} />
+        <Route path='/training/auto-services' element={<ConnectionRequests />} />
         <Route path='/history/history' element={<History />} />
         <Route path='/history/appeal' element={<Appeals />} />
         <Route path='/analytics/overview' element={<IntentsOverview />} />
@@ -75,7 +76,6 @@ const App: FC = () => {
         <Route path='/analytics/models' element={<Models />} />
         <Route path='/analytics/models/:id' element={<ModelsDetail />} />
         <Route path='/train-new-model' element={<TrainAndTest />} />
-        <Route path='/auto-services' element={<ConnectionRequests />} />
       </Route>
     </Routes>
   );
