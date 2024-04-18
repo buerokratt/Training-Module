@@ -1,0 +1,149 @@
+version: "3.0"
+intents:
+  - rahvaarv
+  - common_tervitus
+  - kompliment
+  - common_hüvasti_jätmine
+  - common_kinnitamine
+  - common_kelle_loodud
+  - common_eitamine
+  - common_teenus_ilm
+  - andmekaitse_küsimused
+  - service_car_rent
+  - greet
+  - mood_selected
+  - affirm
+  - deny
+
+entities:
+  - weather
+  - asukoht
+
+slots:
+  affirm_deny:
+    type: text
+    mappings:
+      - type: from_text
+        conditions:
+          - active_loop: custom_fallback_form
+            requested_slot: affirm_deny
+          - active_loop: direct_to_customer_support_form
+            requested_slot: affirm_deny
+  common_teenus_ilm_asukoht:
+    type: text
+    influence_conversation: true
+    mappings:
+    -  type: from_entity
+       entity: asukoht
+       intent:
+         - common_teenus_ilm
+         - nlu_fallback
+
+forms:
+  custom_fallback_form:
+    ignored_intents:
+      - common_eitamine
+    required_slots:
+      - affirm_deny
+  direct_to_customer_support_form:
+    required_slots:
+      - affirm_deny
+
+actions:
+  - action_ask_custom_fallback_form_affirm_deny
+  - action_react_to_affirm_deny_in_custom_fallback_form
+  - action_react_to_affirm_deny_in_direct_to_customer_support_form
+  - action_check_confidence
+  
+responses:
+#  Final response
+  utter_custom_fallback_form:
+    - text: "rain"
+
+#Question per slot
+  utter_ask_affirm_deny:
+    - text: "Where you want to go?"
+
+  utter_service_car_rent:
+    - text: "#service_car_rent"
+
+  utter_andmekaitse_küsimused:
+    - text: "kõik on kaitstud"
+
+  utter_fallback_kontroll:
+    - text: "Jäi arusaamatuks, kas soovisite, et suunan edasi?"
+
+  utter_mille_kohta_küsimus_käis:
+    - text: "Kas küsimus käis selle teema kohta: {intent}? (Jah/Ei)"
+
+  utter_not_confident:
+    - text: "Ma ei saanud päris täpselt aru."
+
+  utter_ei_pakkunud_õigesti:
+    - text: "Ma pean natuke juurde õppima, et oskaksin sellele vastata."
+
+  utter_ask_direct_to_customer_support_form_affirm_deny:
+    - text: "Kas suunan teid klienditeenindajale? (Jah/Ei)"
+
+  utter_common_klienditeenindajale_suunamine:
+    - text: "Suunan teid klienditeenindajale. Varuge natukene kannatust."
+
+  utter_common_ei_suuna_klienditeenindajale:
+    - text: "Selge. Kuidas saan veel abiks olla?"
+
+  utter_common_kelle_loodud:
+    - text: "Mind täiendab ja koolitab Bürokrati meeskond. Loe lisaks https://kratid.ee"
+
+  utter_common_tervitus:
+    - text: "tere"
+
+  utter_common_hüvasti_jätmine:
+    - text: "headaega"
+
+  utter_rahvaarv_puudu:
+    - text: "millist rahvaarvu sa täpsemalt soovid?"
+
+  utter_rahvaarv_olemas:
+    - text: "#rahvaarv {common_teenus_ilm_asukoht}"
+
+  utter_kompliment:
+    - text: "kena olen"
+
+  utter_common_teenus_ilm:
+    - condition:
+        - type: slot
+          name: common_teenus_ilm_asukoht
+          value: null
+      text: "Hetkel oskan ma öelda ilma Eesti raames piirkonnapõhiselt. Palun sisestage korrektne piirkonna nimi."
+    - text: "#weather; {common_teenus_ilm_asukoht};"
+  utter_common_ilm_checkpoint:
+    - text: ""
+  utter_common_teenus_ilm_fallback:
+    - condition:
+        - type: slot
+          name: common_teenus_ilm_asukoht
+          value: null
+      text: "Kahjuks ei saanud ma praegu piirkonnast aru ja ei oska ilma kohta midagi öelda. Kuidas saan abiks olla?"
+    - text: "#weather; {common_teenus_ilm_asukoht};"
+  utter_common_esimene_tervitus:
+    - text: "Tere! Kuidas saan abiks olla?"
+
+  utter_greet:
+    - text: "Hello! How is your day going?"
+      buttons:
+      - title: "Good"
+        payload: "/mood_good"
+      - title: "Bad"
+        payload: "/mood_bad"
+  utter_good_day:
+    - text: "Glad to hear that you're having a good day!"
+  utter_bad_day:
+    - text: "I'm sorry to hear that. I hope things get better soon!"
+  utter_goodbye:
+    - text: "Bye"
+  utter_iamabot:
+    - text: "I am a bot, powered by Rasa."
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true

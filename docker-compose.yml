@@ -90,18 +90,37 @@ services:
     networks:
       - bykstack
 
+  # data_mapper:
+  #   container_name: data_mapper
+  #   build:
+  #     context: ./DSL/DataMapper
+  #   environment:
+  #     - PORT=3000
+  #   volumes:
+  #     - ./DSL/DataMapper/locations:/rasa/locations
+  #     - ./docker-compose-bot.yml:/docker-bot/docker-compose-bot.yml
+  #     - ./DSL/CronManager:/DSL/CronManager
+  #     - ./DSL/DataMapper/views:/workspace/app/views/training
+  #     - ./DSL/DataMapper/views:/workspace/app/js/analytics
+  #   ports:
+  #     - 3000:3000
+  #   networks:
+  #     - bykstack
+
   data_mapper:
     container_name: data_mapper
-    build:
-      context: ./DSL/DataMapper
+    image: data-mapper
     environment:
       - PORT=3000
+      - CONTENT_FOLDER=/data
     volumes:
-      - ./DSL/DataMapper/locations:/rasa/locations
+      - ./DSL:/data
+      - ./DSL/DMapper/hbs:/workspace/app/views/training
+      - ./DSL/DMapper/js:/workspace/app/js/training
+      - ./DSL/DMapper/lib:/workspace/app/lib
+      - ./DSL/DMapper/locations:/rasa/locations
       - ./docker-compose-bot.yml:/docker-bot/docker-compose-bot.yml
       - ./DSL/CronManager:/DSL/CronManager
-      - ./DSL/DataMapper/views:/workspace/app/views/training
-      - ./DSL/DataMapper/views:/workspace/app/js/analytics
     ports:
       - 3000:3000
     networks:

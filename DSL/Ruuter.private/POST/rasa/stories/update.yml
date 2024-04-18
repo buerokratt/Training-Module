@@ -60,7 +60,9 @@ convertYamlToJson:
 deleteStory:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/dmapper/delete-story"
+    url: "[#TRAINING_DMAPPER]/hbs/training/delete_story"
+    headers:
+      type: 'json'
     body:
       stories: ${storiesData.response.body}
       story_name: ${id}

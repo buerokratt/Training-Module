@@ -1,0 +1,17 @@
+{{#if hits.0._source.regex}}
+    {{#if examples}}
+        {
+        "name": "{{hits.0._source.regex}}",
+        "examples": [
+        {{#each hits.0._source.examples}}
+            "{{this}}"{{#unless @last}},{{/unless}}
+        {{/each}}
+        ],
+        "id": "{{hits.0._source.regex}}"
+        }
+    {{else}}
+        true
+    {{/if}}
+{{else}}
+    false
+{{/if}}

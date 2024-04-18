@@ -1,0 +1,106 @@
+[
+  {
+    "text": "mkm",
+    "intent": "common_eitamine",
+    "intent_prediction": {
+      "name": "common_kinnitamine",
+      "confidence": 0.9900127649307251
+    }
+  },
+  {
+    "text": "hei-hei",
+    "intent": "common_tervitus",
+    "intent_prediction": {
+      "name": "common_eitamine",
+      "confidence": 0.6280729174613953
+    }
+  },
+  {
+    "text": "Ega andmed ei leki?",
+    "intent": "andmekaitse_küsimused",
+    "intent_prediction": {
+      "name": "common_eitamine",
+      "confidence": 0.721256673336029
+    }
+  },
+  {
+    "text": "hüvasti",
+    "intent": "common_hüvasti_jätmine",
+    "intent_prediction": {
+      "name": "common_kinnitamine",
+      "confidence": 0.9177528619766235
+    }
+  },
+  {
+    "text": "Miks on su nimi bürokratt",
+    "intent": "common_kelle_loodud",
+    "intent_prediction": {
+      "name": "common_tervitus",
+      "confidence": 0.928866982460022
+    }
+  },
+  {
+    "text": "tõepoolest",
+    "intent": "common_kinnitamine",
+    "intent_prediction": {
+      "name": "common_tervitus",
+      "confidence": 0.5111559629440308
+    }
+  },
+  {
+    "text": "kelle toodang sa oled?",
+    "intent": "common_kelle_loodud",
+    "intent_prediction": {
+      "name": "kompliment",
+      "confidence": 0.9463905692100525
+    }
+  },
+  {
+    "text": "õige",
+    "intent": "common_kinnitamine",
+    "intent_prediction": {
+      "name": "common_hüvasti_jätmine",
+      "confidence": 0.4243227541446686
+    }
+  },
+  {
+    "text": "Nope",
+    "intent": "common_eitamine",
+    "intent_prediction": {
+      "name": "common_kinnitamine",
+      "confidence": 0.9706326127052307
+    }
+  },
+  {
+    "text": "mhm, teeme siis ära",
+    "intent": "common_kinnitamine",
+    "intent_prediction": {
+      "name": "common_kelle_loodud",
+      "confidence": 0.3805294930934906
+    }
+  },
+  {
+    "text": "sa näed hea välja",
+    "intent": "kompliment",
+    "intent_prediction": {
+      "name": "common_hüvasti_jätmine",
+      "confidence": 0.5277339220046997
+    }
+  },
+  {
+    "text": "kõike paremat",
+    "intent": "common_hüvasti_jätmine",
+    "intent_prediction": {
+      "name": "common_eitamine",
+      "confidence": 0.7025217413902283
+    }
+  },
+  {
+    "text": "Kust sa pärit oled?",
+    "intent": "common_kelle_loodud",
+    "intent_prediction": {
+      "name": "kompliment",
+      "confidence": 0.8015075325965881
+    }
+  }
+]

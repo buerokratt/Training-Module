@@ -1,0 +1,114 @@
+[
+  {
+    "text": "kena päeva",
+    "intent": "common_hüvasti_jätmine",
+    "intent_prediction": {
+      "name": "kompliment",
+      "confidence": 0.632066547870636
+    }
+  },
+  {
+    "text": "päikest!",
+    "intent": "common_hüvasti_jätmine",
+    "intent_prediction": {
+      "name": "common_teenus_ilm",
+      "confidence": 0.9957671165466309
+    }
+  },
+  {
+    "text": "maga hästi",
+    "intent": "common_hüvasti_jätmine",
+    "intent_prediction": {
+      "name": "common_kinnitamine",
+      "confidence": 0.9982243180274963
+    }
+  },
+  {
+    "text": "kelle toodang sa oled?",
+    "intent": "common_kelle_loodud",
+    "intent_prediction": {
+      "name": "kompliment",
+      "confidence": 0.97853684425354
+    }
+  },
+  {
+    "text": "õige",
+    "intent": "common_kinnitamine",
+    "intent_prediction": {
+      "name": "common_eitamine",
+      "confidence": 0.9254422187805176
+    }
+  },
+  {
+    "text": "värvilisi unesid",
+    "intent": "common_hüvasti_jätmine",
+    "intent_prediction": {
+      "name": "andmekaitse_küsimused",
+      "confidence": 0.28251343965530396
+    }
+  },
+  {
+    "text": "mkm",
+    "intent": "common_eitamine",
+    "intent_prediction": {
+      "name": "common_kinnitamine",
+      "confidence": 0.997565507888794
+    }
+  },
+  {
+    "text": "hüvasti",
+    "intent": "common_hüvasti_jätmine",
+    "intent_prediction": {
+      "name": "common_kinnitamine",
+      "confidence": 0.7230595946311951
+    }
+  },
+  {
+    "text": "kõike paremat",
+    "intent": "common_hüvasti_jätmine",
+    "intent_prediction": {
+      "name": "common_eitamine",
+      "confidence": 0.7507553100585938
+    }
+  },
+  {
+    "text": "Loomulikult",
+    "intent": "common_kinnitamine",
+    "intent_prediction": {
+      "name": "common_kelle_loodud",
+      "confidence": 0.5479633212089539
+    }
+  },
+  {
+    "text": "Nope",
+    "intent": "common_eitamine",
+    "intent_prediction": {
+      "name": "common_kinnitamine",
+      "confidence": 0.9209418892860413
+    }
+  },
+  {
+    "text": "Kust sa pärit oled?",
+    "intent": "common_kelle_loodud",
+    "intent_prediction": {
+      "name": "kompliment",
+      "confidence": 0.9611958265304565
+    }
+  },
+  {
+    "text": "mhm, teeme siis ära",
+    "intent": "common_kinnitamine",
+    "intent_prediction": {
+      "name": "common_eitamine",
+      "confidence": 0.9570755958557129
+    }
+  },
+  {
+    "text": "sa näed hea välja",
+    "intent": "kompliment",
+    "intent_prediction": {
+      "name": "common_hüvasti_jätmine",
+      "confidence": 0.7401307821273804
+    }
+  }
+]

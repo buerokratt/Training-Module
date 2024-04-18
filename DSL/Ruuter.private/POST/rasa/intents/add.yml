@@ -35,7 +35,9 @@ getFileLocations:
 mapIntentsData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/dmapper/get-intent-file"
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_intent_file"
+    headers:
+      type: 'json'
     body:
       intent: ${intent}
   result: intentFileJson

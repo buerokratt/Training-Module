@@ -9,7 +9,7 @@ getFileLocations:
 getDomainFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/read"
+    url: "[#TRAINING_DMAPPER]/file-manager/read"
     body:
       file_path: ${fileLocations.response.body.response.domain_location}
   result: domainFile
@@ -17,7 +17,7 @@ getDomainFile:
 convertYamlToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/conversion/yaml_to_json"
     body:
       file: ${domainFile.response.body.file}
   result: domainData

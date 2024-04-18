@@ -74,7 +74,9 @@ getRulesSearchForSlots:
 mapRulesData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/dmapper/get-rules"
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_rules"
+    headers:
+      type: 'json'
     body:
       hits: ${getRulesResult.response.body.hits.hits}
   result: rulesData

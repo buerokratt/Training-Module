@@ -7,7 +7,9 @@ getIntents:
 mapIntentsData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/dmapper/get-intents"
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_intents"
+    headers:
+      type: 'json'
     body:
       hits: ${getIntentsResult.response.body.hits.hits}
   result: intentsData

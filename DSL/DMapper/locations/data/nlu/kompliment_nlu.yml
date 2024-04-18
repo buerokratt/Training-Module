@@ -1,0 +1,12 @@
+version: "3.0"
+nlu:
+- intent: kompliment
+  examples: |
+    - ilus oled
+    - kena oled             
+    - tore oled
+    - vahva oled
+    - sa näed hea välja
+    - toredalt käitud
+    - sa oled nii tore
+    - aitähh tore robot

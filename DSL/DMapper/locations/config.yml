@@ -1,0 +1,33 @@
+recipe: default.v1
+language: et
+pipeline:
+   - name: WhitespaceTokenizer
+   - name: RegexFeaturizer
+   - name: LexicalSyntacticFeaturizer
+   - name: CountVectorsFeaturizer
+   - name: CountVectorsFeaturizer
+     analyzer: char_wb
+     min_ngram: 1
+     max_ngram: 4
+   - name: DIETClassifier
+     entity_recognition: False
+     epochs: 60
+     random_seed: 50
+   - name: RegexEntityExtractor
+     case_sensitive: False
+     use_regexes: True
+   - name: FallbackClassifier
+     threshold: 0.8
+     
+policies:
+   - name: MemoizationPolicy
+     priority: 3
+   - name: TEDPolicy
+     priority: 1
+     max_history: 5
+     epochs: 60
+   - name: RulePolicy
+     priority: 6
+     core_fallback_threshold: 0.8
+     enable_fallback_prediction: false
+  

@@ -1,0 +1,5 @@
+[
+  {{#each (removeEntityFromArray entities entity_name)}}
+      {{{toJSON this}}}{{#unless @last}},{{/unless}}
+  {{/each}}
+]

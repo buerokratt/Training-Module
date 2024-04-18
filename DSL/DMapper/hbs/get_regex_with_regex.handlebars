@@ -1,0 +1,8 @@
+{
+  {{#each regexes}}
+    {{#if (eq regex ../regex_name)}}
+      "regex": "{{regex}}",
+      "examples": "{{toJSON examples}}"
+    {{/if}}
+  {{/each}}
+}

@@ -1,0 +1,11 @@
+{
+"stories": [
+{{#each hits}}
+    {
+    "id":"{{this._source.story}}",
+    "steps":{{{toJSON this._source.steps}}}
+    }
+    {{#unless @last}},{{/unless}}
+{{/each}}
+]
+}

@@ -58,7 +58,9 @@ generateCronExpression:
 createCronJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/dmapper/get-cron-file"
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_cron_file"
+    headers:
+      type: 'json'
     body:
       cronExpression: ${cronExpression.response.body.expression}
       type: "http"

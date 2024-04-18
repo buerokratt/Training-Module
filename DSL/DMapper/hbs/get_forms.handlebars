@@ -1,0 +1,15 @@
+{
+  "forms": [
+{{#each hits}}
+    {{#if (eq this._id "forms") }}
+        {{#each (getObjectKeys this._source.forms)}}
+            {
+            "id": "{{ this }}",
+            "form": "{{ this }}"
+            }
+            {{#unless @last}},{{/unless}}
+        {{/each}}
+    {{/if}}
+{{/each}}
+  ]
+}

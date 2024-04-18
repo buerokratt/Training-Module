@@ -7,7 +7,9 @@ getRegexes:
 mapRegexesData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/dmapper/get-regexes"
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_regexes"
+    headers:
+      type: 'json'
     body:
       hits: ${getRegexesResult.response.body.hits.hits}
   result: regexesData

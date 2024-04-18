@@ -13,7 +13,9 @@ validateDbRecords:
 checkEntity:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/dmapper/checkV"
+    url: "[#TRAINING_DMAPPER]/hbs/training/checkV"
+    headers:
+      type: 'json'
     body:
       hits: ${dbResult.response.body}
   result: fileResult
@@ -21,7 +23,9 @@ checkEntity:
 mapModels:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/dmapper/get-models"
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_models"
+    headers:
+      type: 'json'
     body:
       records: ${dbResult.response.body}
   result: mappedModels

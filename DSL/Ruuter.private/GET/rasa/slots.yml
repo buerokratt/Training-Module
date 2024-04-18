@@ -11,7 +11,9 @@ getSlots:
 mapSlotsData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/dmapper/extract-slot-keys"
+    url: "[#TRAINING_DMAPPER]/hbs/training/extract_slot_keys"
+    headers:
+      type: 'json'
     body:
       hits: ${getSlotsResult.response.body.hits.hits}
   result: slotsData

@@ -1,0 +1,4 @@
+{{#each data.[0]}}{{#if @root.qul}}{{@root.qul}}{{@key}}{{@root.qul}} {{/if}}{{#unless @root.qul}}{{@key}}{{/unless}}{{#unless @last}}{{#if @root.del}}{{@root.del}}{{/if}}{{#unless @root.del}},{{/unless}}{{/unless}}{{/each}}
+{{#each data}}
+{{#each this}}{{#if @root.qul}}{{@root.qul}}{{this}}{{@root.qul}} {{/if}}{{#unless @root.qul}}{{this}}{{/unless}}{{#unless @last}}{{#if @root.del}}{{@root.del}}{{/if}}{{#unless @root.del}},{{/unless}}{{/unless}}{{/each}}
+{{/each}}

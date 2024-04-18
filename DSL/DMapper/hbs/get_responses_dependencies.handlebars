@@ -1,0 +1,31 @@
+[
+  {{#each responses}}
+    {{assign 'response' name}}
+    {"name": "{{name}}",
+      "rules": [
+        {{assign 'multiple' false}}
+        {{#each ../rules}}
+          {{#each _source.steps as |step|}}
+            {{#if (eq @root.response step.action)}}
+              {{#if @root.multiple}},{{/if}}
+              "{{../_source.rule}}"
+              {{assign 'multiple' true}}
+            {{/if}}
+          {{/each}}
+        {{/each}}
+      ],
+      "stories": [
+        {{assign 'multiple' false}}
+        {{#each ../stories}}
+          {{#each _source.steps as |step|}}
+            {{#if (eq @root.response step.action)}}
+              {{#if @root.multiple}},{{/if}}
+               "{{../_source.story}}"
+              {{assign 'multiple' true}}
+            {{/if}}
+          {{/each}}
+        {{/each}}
+      ]
+    }{{#unless @last}},{{/unless}}
+  {{/each}}
+]

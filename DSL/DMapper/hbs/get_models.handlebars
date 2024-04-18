@@ -1,0 +1,10 @@
+[
+    {{#each records}}
+        {
+            "id": "{{ this.fileName }}",
+            "name": "{{ this.fileName }}",
+            "lastTrained": "{{ this.trainedDate }}",
+            "state": "{{ this.state }}"
+        }{{#unless @last}},{{/unless}}
+    {{/each}}
+]

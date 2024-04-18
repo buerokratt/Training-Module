@@ -84,7 +84,9 @@ splitExamples:
 mapIntentsData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/dmapper/get-intent-examples"
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_intent_examples"
+    headers:
+      type: 'json'
     body:
       intent: ${parameters.intent}
       examples: ${splitExamples.response.body}

@@ -46,7 +46,9 @@ convertYamlToJson:
 deleteRule:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/dmapper/delete-rule"
+    url: "[#TRAINING_DMAPPER]/hbs/training/delete_rule"
+    headers:
+      type: 'json'
     body:
       rules: ${rulesData.response.body}
       rule_name: ${body.id}

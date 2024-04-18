@@ -1,0 +1,20 @@
+{{#if hits}}
+  [
+    {{#each hits}}
+    {
+      "file": "{{_source.file}}",
+      "intent": "{{_source.intent}}"
+      {{#if ../examples}},
+        "examples":
+        [
+          {{#each _source.examples}}
+            "{{{this}}}"{{#unless @last}},{{/unless}}
+          {{/each}}
+        ]
+      {{/if}}
+    }{{#unless @last}},{{/unless}}
+    {{/each}}
+  ]
+{{else}}
+  false
+{{/if}}

@@ -106,7 +106,9 @@ switchMapFileType:
 mapRegexesData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/dmapper/get-regex-file"
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_regex_file"
+    headers:
+      type: 'json'
     body:
       regex: ${parameters.entity}
       examples: ${intentData.response.body.nlu[0].examples}
@@ -116,7 +118,9 @@ mapRegexesData:
 mapIntentsData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/dmapper/get-intent-file"
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_intent_file"
+    headers:
+      type: 'json'
     body:
       intent: ${parameters.entity}
       examples: ${splitExamples.response.body}

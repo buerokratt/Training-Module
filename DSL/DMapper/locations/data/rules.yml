@@ -1,0 +1,94 @@
+version: "3.0"
+rules:
+- rule: Rule about car rent service
+  steps:
+  - intent: service_car_rent
+  - action: utter_service_car_rent
+
+- rule: common_tervitus_conversation
+  conversation_start: true
+  steps:
+  - intent: common_tervitus
+  - action: utter_common_esimene_tervitus
+
+- rule: common_tervitus
+  steps:
+  - intent: common_tervitus
+  - action: utter_common_tervitus
+
+- rule: common_hüvasti_jätmine
+  steps:
+  - intent: common_hüvasti_jätmine
+  - action: utter_common_hüvasti_jätmine
+
+- rule: rahvaarv_olemas
+  steps:
+  - intent: rahvaarv
+  - action: utter_rahvaarv_puudu
+
+- rule: rahvaarv_puudu
+  steps:
+  - intent: rahvaarv
+    entities:
+    - asukoht: tallinn
+  - action: utter_rahvaarv_olemas
+
+- rule: kompliment
+  steps:
+  - intent: kompliment
+  - action: utter_kompliment
+
+- rule: common_kinnitamine
+  steps:
+  - intent: common_kinnitamine
+  - action: action_listen
+
+- rule: common_eitamine 
+  steps:
+  - intent: common_eitamine
+  - action: action_listen
+
+# rules for ilm
+- rule: common_teenus_ilm
+  steps:
+  - intent: common_teenus_ilm
+  - action: utter_common_teenus_ilm
+  wait_for_user_input: false
+
+- rule: common_teenus_ilm_puudu
+  condition:
+  - slot_was_set:
+    - common_teenus_ilm_asukoht: null  
+  steps:
+  - action: utter_common_teenus_ilm
+  - intent: nlu_fallback
+    entities:
+    - asukoht: tallinn
+  - action: utter_common_teenus_ilm_fallback
+  - action: action_restart
+
+- rule: common_teenus_ilm_puudu
+  condition:
+  - slot_was_set:
+    - common_teenus_ilm_asukoht: null  
+  steps:
+  - action: utter_common_teenus_ilm
+  - intent: nlu_fallback
+  - action: utter_common_teenus_ilm_fallback
+  - action: action_restart
+
+- rule: common_teenus_ilm_olemas
+  condition:
+  - slot_was_set:
+    - common_teenus_ilm_asukoht: tallinn
+  steps:
+  - action: utter_common_teenus_ilm
+  - action: action_restart
+
+
+# Custom Fallback and Directing to Customer Support STARTS
+- rule: Activate confidence check up
+  steps:
+  - intent: nlu_fallback
+  - action: utter_not_confident
+  - action: utter_ask_direct_to_customer_support_form_affirm_deny

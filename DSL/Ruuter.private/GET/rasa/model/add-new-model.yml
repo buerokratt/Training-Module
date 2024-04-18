@@ -8,8 +8,8 @@ assignDefaultValues:
   assign:
     version: '1_0'
     name: 'rasa_'
-    modelPath: '/DSL/DataMapper/locations/models/'
-    reportPath: '/DSL/DataMapper/locations/results/'
+    modelPath: '/DSL/DMapper/locations/models/'
+    reportPath: '/DSL/DMapper/locations/results/'
     modelExtension: '.tar.gz'
     reportEnding: '/intent_report.json'
     state: 'Trained'
