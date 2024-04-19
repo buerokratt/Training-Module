@@ -13,10 +13,13 @@ get_service_intent_connections:
 filter_out_services_connected_to_intent:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/filter_out_services_connected_to_intent"
+    url: "[#TRAINING_DMAPPER]/hbs/training/remove_services_connected_to_intent"
+    headers:
+      type: 'json'
     body:
-      services: ${services_res.response.body}
-      connections: ${connection_res.response.body}
+      services: "${services_res.response.body}"
+      connections: "${connection_res.response.body}"
+      layout: false
   result: unused_services_res
   
 return_result:

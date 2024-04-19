@@ -10,6 +10,17 @@ getLastChanged:
         intent: ${intent}
   result: lastChangedResult
 
+checkIfIntentLastChangeExists:
+  switch:
+    - condition: ${lastChangedResult.response.body.length > 0}
+      next: returnStep
+    - condition: ${lastChangedResult.response.body.length == 0}
+      next: return_empty_change
+
 returnStep:
   return: ${lastChangedResult.response.body[0].created}
   next: end
+
+return_empty_change:
+  return: ""
+  next: end    

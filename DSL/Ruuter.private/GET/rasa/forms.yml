@@ -16,7 +16,7 @@ mapFormsData:
   next: returnSuccess
 
 returnSuccess:
-  return: ${formsData.response.body.data.forms}
+  return: ${formsData.response.body.forms}
   wrapper: false
   next: end
 

@@ -31,7 +31,7 @@ mapModels:
   result: mappedModels
 
 returnSuccess:
-  return: ${mappedModels.response.body.data}
+  return: ${mappedModels.response.body}
   wrapper: false
   next: end
 

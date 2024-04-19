@@ -16,5 +16,5 @@ mapStoriesData:
   next: returnSuccess
 
 returnSuccess:
-  return: ${storiesData.response.body.data.stories}
+  return: ${storiesData.response.body.stories}
   next: end

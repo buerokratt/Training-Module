@@ -35,9 +35,9 @@ mapDependenciesData:
     body:
       rules: ${getRulesResult.response.body.hits.hits}
       stories: ${getStoriesResult.response.body.hits.hits}
-      responses: ${responsesData.response.body.data.responses}
+      responses: ${responsesData.response.body.responses}
   result: dependenciesData
 
 returnSuccess:
-  return: ${dependenciesData.response.body.data}
+  return: ${dependenciesData.response.body}
   next: end

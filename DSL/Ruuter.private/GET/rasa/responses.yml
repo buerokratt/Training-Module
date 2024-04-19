@@ -16,6 +16,6 @@ mapResponsesData:
   next: returnSuccess
 
 returnSuccess:
-  return: ${responsesData.response.body.data.responses}
+  return: ${responsesData.response.body.responses}
   wrapper: false
   next: end

@@ -2,12 +2,14 @@ getFileLocations:
   call: http.get
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
+    headers:
+      cookie: ${incoming.headers.cookie}
   result: fileLocations
 
 getDockerFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/read"
+    url: "[#TRAINING_DMAPPER]/file-manager/read-file"
     body:
       file_path: ${fileLocations.response.body.response.docker_location}
   result: dockerFile
@@ -15,7 +17,7 @@ getDockerFile:
 convertYamlToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/conversion/yaml_to_json"
     body:
       file: ${dockerFile.response.body.file}
   result: configData

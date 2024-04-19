@@ -9,7 +9,7 @@ getFileLocations:
 getDomainFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file-manager/read"
+    url: "[#TRAINING_DMAPPER]/file-manager/read-file"
     body:
       file_path: ${fileLocations.response.body.response.domain_location}
   result: domainFile

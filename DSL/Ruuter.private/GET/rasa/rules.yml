@@ -16,5 +16,5 @@ mapRulesData:
   next: returnSuccess
 
 returnSuccess:
-  return: ${rulesData.response.body.data.rules}
+  return: ${rulesData.response.body.rules}
   next: end
