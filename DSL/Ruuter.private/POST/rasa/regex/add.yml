@@ -40,7 +40,7 @@ mapRegexData:
 convertJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
     body:
       version: "3.0"
       nlu: ${regexFileJson.response.body.data}
@@ -49,7 +49,7 @@ convertJsonToYaml:
 saveRegexFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/write"
+    url: "[#TRAINING_DMAPPER]/file-manager/create"
     body:
       file_path: ${fileLocations.response.body.response.regex_location + regex + "_nlu.yml"}
       content: ${regexYaml.response.body.json}

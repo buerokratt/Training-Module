@@ -34,7 +34,7 @@ assignFilePath:
 checkIntentFileYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/check"
+    url: "[#TRAINING_DMAPPER]/file-manager/exists"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + intentName + file_end}
   result: fileExists
@@ -52,7 +52,7 @@ assignTmpFilePath:
 checkIntentFileTmp:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/check"
+    url: "[#TRAINING_DMAPPER]/file-manager/exists"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + intentName + file_end}
   result: tmpFileExists
@@ -66,7 +66,7 @@ validateTmpFileExists:
 getIntentFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/read"
+    url: "[#TRAINING_DMAPPER]/file-manager/read-file"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + intentName + file_end}
   result: intentFile
@@ -74,7 +74,7 @@ getIntentFile:
 convertYamlToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/conversion/yaml_to_json"
     body:
       file: ${intentFile.response.body.file}
   result: intentData
@@ -92,7 +92,7 @@ assignEmptyExamples:
 convertStringToArray:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/string/toArray"
+    url: "[#TRAINING_DMAPPER]/conversion/string-to-array"
     body:
       data: ${intentData.response.body.nlu[0].examples}
   result: convertedArray
@@ -115,7 +115,7 @@ makeArrayFromExamples:
 mergeExamples:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/merge"
+    url: "[#TRAINING_DMAPPER]/file-manager/merge"
     body:
       array1: ${newExamples}
       array2: ${examplesToWriteIntoYml}
@@ -135,7 +135,7 @@ mapIntentsData:
 convertJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
     body:
       version: "3.0"
       nlu: ${intentFileJson.response.body.data}
@@ -144,7 +144,7 @@ convertJsonToYaml:
 saveIntentFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/write"
+    url: "[#TRAINING_DMAPPER]/file-manager/create"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + intentName + file_end}
       content: ${intentYaml.response.body.json}
@@ -153,7 +153,7 @@ saveIntentFile:
 removePipe:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/string/replace"
+    url: "[#TRAINING_DMAPPER]/conversion/string-replace"
     body:
       data: ${intentYaml.response.body.json}
       search: "|"

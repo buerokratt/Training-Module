@@ -45,7 +45,7 @@ mapIntentsData:
 convertJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
     body:
       version: "3.0"
       nlu: ${intentFileJson.response.body.data}
@@ -54,7 +54,7 @@ convertJsonToYaml:
 saveIntentFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/write"
+    url: "[#TRAINING_DMAPPER]/file-manager/create"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + intent + "_nlu.yml.tmp"}
       content: ${intentYaml.response.body.json}
@@ -63,7 +63,7 @@ saveIntentFile:
 removePipe:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/string/replace"
+    url: "[#TRAINING_DMAPPER]/conversion/string-replace"
     body:
       data: ${intentYaml.response.body.json}
       search: "|"

@@ -1,7 +1,0 @@
-[
-  {{#each rules}}
-    {{#unless (eq rule ../rule_name)}}
-      {{{toJSON this}}}{{#unless @last}},{{/unless}}
-    {{/unless}}
-  {{/each}}
-]

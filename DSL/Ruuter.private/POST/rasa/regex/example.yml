@@ -13,7 +13,7 @@ getFileLocations:
 getRegexFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/read"
+    url: "[#TRAINING_DMAPPER]/file-manager/read-file"
     body:
       file_path: ${fileLocations.response.body.response.regex_location}
   result: regexFile
@@ -21,7 +21,7 @@ getRegexFile:
 convertYamlToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/conversion/yaml-to-json"
     body:
       file: ${regexFile.response.body.file}
   result: regexData
@@ -40,7 +40,7 @@ mapRegexesData:
 replaceJsonString:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/string/replace"
+    url: "[#TRAINING_DMAPPER]/conversion/string-replace"
     body:
       data: ${regexesData.response.body.examples}
       search: "&quot;"
@@ -50,7 +50,7 @@ replaceJsonString:
 replaceString:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/string/replace"
+    url: "[#TRAINING_DMAPPER]/conversion/string-replace"
     body:
       data: ${replacedJsonString.response.body}
       search: "- "
@@ -60,7 +60,7 @@ replaceString:
 splitExamples:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/string/split"
+    url: "[#TRAINING_DMAPPER]/conversion/string-split"
     body:
       data: ${replacedString.response.body}
       separator: "\n"

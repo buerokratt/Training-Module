@@ -30,7 +30,7 @@ checkIfIntentEmpty:
 replaceString:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/string/replace"
+    url: "[#TRAINING_DMAPPER]/conversion/string-replace"
     body:
       data: ${intentFile.response.body.response.nlu[0].examples}
       search: "- "
@@ -40,7 +40,7 @@ replaceString:
 splitExamples:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/string/split"
+    url: "[#TRAINING_DMAPPER]/conversion/string-split"
     body:
       data: ${replacedString.response.body}
       separator: "\n"

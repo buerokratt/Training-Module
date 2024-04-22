@@ -30,7 +30,7 @@ getFileLocations:
 getStoriesFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/read"
+    url: "[#TRAINING_DMAPPER]/file-manager/read-file"
     body:
       file_path: ${fileLocations.response.body.response.test_stories_location}
   result: testStoriesFile
@@ -38,7 +38,7 @@ getStoriesFile:
 convertYamlToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/conversion/yaml-to-json"
     body:
       file: ${testStoriesFile.response.body.file}
   result: testStoriesData
@@ -46,7 +46,7 @@ convertYamlToJson:
 mergeStories:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/merge"
+    url: "[#TRAINING_DMAPPER]/file-manager/merge"
     body:
       array1: ${testStoriesData.response.body.stories}
       array2: ${[parameters]}
@@ -56,7 +56,7 @@ mergeStories:
 convertJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/conversion/json-to-yaml"
     body:
       stories: ${mergedTestStories.response.body}
   result: testStoriesYaml
@@ -64,7 +64,7 @@ convertJsonToYaml:
 saveFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/write"
+    url: "[#TRAINING_DMAPPER]/file-manager/create"
     body:
       file_path: ${fileLocations.response.body.response.test_stories_location}
       content: ${testStoriesYaml.response.body.json}

@@ -32,7 +32,7 @@ assignFilePaths:
 getRegexFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/read"
+    url: "[#TRAINING_DMAPPER]/file-manager/read-file"
     body:
       file_path: ${oldPath}
   result: regexFile
@@ -40,7 +40,7 @@ getRegexFile:
 convertYamlToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/conversion/yaml-to-json"
     body:
       file: ${regexFile.response.body.file}
   result: regexData
@@ -59,7 +59,7 @@ mapRegexesData:
 convertJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
     body:
       version: "3.0"
       nlu: ${regexesData.response.body.data}
@@ -69,7 +69,7 @@ convertJsonToYaml:
 saveRegexFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/write"
+    url: "[#TRAINING_DMAPPER]/file-manager/create"
     body:
       file_path: ${newPath}
       content: ${regexYaml.response.body.json}

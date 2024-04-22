@@ -18,7 +18,7 @@ assignExamples:
 convertStringToArray:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/string/toArray"
+    url: "[#TRAINING_DMAPPER]/conversion/string-to-array"
     body:
       data: ${examplesArray}
   result: convertedArray

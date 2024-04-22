@@ -40,7 +40,7 @@ assignFilePath:
 checkIntentFileYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/check"
+    url: "[#TRAINING_DMAPPER]/file-manager/exists"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + intent_old_name + file_end}
   result: fileExists
@@ -54,7 +54,7 @@ validateFileExists:
 getRulesFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/read"
+    url: "[#TRAINING_DMAPPER]/file-manager/read-file"
     body:
       file_path: ${fileLocations.response.body.response.rules_location}
   result: rulesFile
@@ -62,7 +62,7 @@ getRulesFile:
 convertRulesYamlToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/conversion/yaml-to-json"
     body:
       file: ${rulesFile.response.body.file}
   result: rulesData
@@ -70,7 +70,7 @@ convertRulesYamlToJson:
 convertRulesJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
     body:
       version: "3.0"
       rules: ${rulesData.response.body.rules}
@@ -79,7 +79,7 @@ convertRulesJsonToYaml:
 updateRules:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/string/replace"
+    url: "[#TRAINING_DMAPPER]/conversion/string-replace"
     body:
       data: ${rulesYaml.response.body.json}
       search: ${"intent:" + " " + intent_old_name}
@@ -89,7 +89,7 @@ updateRules:
 saveRulesFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/write"
+    url: "[#TRAINING_DMAPPER]/file-manager/create"
     body:
       file_path: ${fileLocations.response.body.response.rules_location}
       content: ${updatedRules.response.body}
@@ -99,7 +99,7 @@ saveRulesFile:
 getStoriesFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/read"
+    url: "[#TRAINING_DMAPPER]/file-manager/read-file"
     body:
       file_path: ${fileLocations.response.body.response.stories_location}
   result: storiesFile
@@ -107,7 +107,7 @@ getStoriesFile:
 convertStoriesYamlToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/conversion/yaml-to-json"
     body:
       file: ${storiesFile.response.body.file}
   result: storiesData
@@ -115,7 +115,7 @@ convertStoriesYamlToJson:
 convertStoriesJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
     body:
       version: "3.0"
       stories: ${storiesData.response.body.stories}
@@ -124,7 +124,7 @@ convertStoriesJsonToYaml:
 updateStories:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/string/replace"
+    url: "[#TRAINING_DMAPPER]/conversion/string-replace"
     body:
       data: ${storiesYaml.response.body.json}
       search: ${"intent:" + " " + intent_old_name}
@@ -134,7 +134,7 @@ updateStories:
 saveStoriesFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/write"
+    url: "[#TRAINING_DMAPPER]/file-manager/create"
     body:
       file_path: ${fileLocations.response.body.response.stories_location}
       content: ${updatedStories.response.body}
@@ -148,7 +148,7 @@ assignTmpFilePath:
 checkIntentFileTmp:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/check"
+    url: "[#TRAINING_DMAPPER]/file-manager/exists"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + intent_old_name + file_end}
   result: tmpFileExists
@@ -162,7 +162,7 @@ validateTmpFileExists:
 getIntentFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/read"
+    url: "[#TRAINING_DMAPPER]/file-manager/read-file"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + intent_old_name + file_end}
   result: intentFile
@@ -170,7 +170,7 @@ getIntentFile:
 convertYamlToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/conversion/yaml-to-json"
     body:
       file: ${intentFile.response.body.file}
   result: intentData
@@ -188,7 +188,7 @@ assignEmptyExamples:
 replaceString:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/string/replace"
+    url: "[#TRAINING_DMAPPER]/conversion/string-replace"
     body:
       data: ${intentData.response.body.nlu[0].examples}
       search: "- "
@@ -198,7 +198,7 @@ replaceString:
 splitExamples:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/string/split"
+    url: "[#TRAINING_DMAPPER]/conversion/string-split"
     body:
       data: ${replacedString.response.body}
       separator: "\n"
@@ -222,7 +222,7 @@ mapIntentsData:
 convertJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
     body:
       version: "3.0"
       nlu: ${intentFileJson.response.body.data}
@@ -231,7 +231,7 @@ convertJsonToYaml:
 saveIntentFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/write"
+    url: "[#TRAINING_DMAPPER]/file-manager/create"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
       content: ${intentYaml.response.body.json}
@@ -240,7 +240,7 @@ saveIntentFile:
 removePipe:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/string/replace"
+    url: "[#TRAINING_DMAPPER]/conversion/string-replace"
     body:
       data: ${intentYaml.response.body.json}
       search: "|"
@@ -275,7 +275,7 @@ addInDatabase:
 deleteOldIntentFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/delete-intent"
+    url: "[#TRAINING_DMAPPER]/file-manager/delete"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + intent_old_name + file_end}
   result: deleted
@@ -297,7 +297,7 @@ validateExistsInDomain:
 mergeIntents:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/merge"
+    url: "[#TRAINING_DMAPPER]/file-manager/merge"
     body:
       array1: ${domainData.response.body.response.intents}
       array2: ${[intent]}
@@ -316,7 +316,7 @@ replaceExistingIntent:
 convertDomainJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
     body:
       version: ${domainData.response.body.response.version}
       intents: ${updatedIntents.response.body}
@@ -331,7 +331,7 @@ convertDomainJsonToYaml:
 saveDomainFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/write"
+    url: "[#TRAINING_DMAPPER]/file-manager/create"
     body:
       file_path: ${fileLocations.response.body.response.domain_location}
       content: ${domainYaml.response.body.json}

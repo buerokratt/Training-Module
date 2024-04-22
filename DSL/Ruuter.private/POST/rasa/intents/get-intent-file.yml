@@ -18,7 +18,7 @@ assignFilePath:
 checkIntentFileYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/check"
+    url: "[#TRAINING_DMAPPER]/file-manager/exists"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
   result: fileExists
@@ -36,7 +36,7 @@ assignTmpFilePath:
 checkIntentFileTmp:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/check"
+    url: "[#TRAINING_DMAPPER]/file-manager/exists"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
   result: tmpFileExists
@@ -50,7 +50,7 @@ validateTmpFileExists:
 getIntentFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/read"
+    url: "[#TRAINING_DMAPPER]/file-manager/read-file"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
   result: intentFile
@@ -63,7 +63,7 @@ checkReturnType:
 convertYamlToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/conversion/yaml-to-json"
     body:
       file: ${intentFile.response.body.file}
   result: intentData

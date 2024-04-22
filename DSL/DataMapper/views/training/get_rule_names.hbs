@@ -1,9 +1,0 @@
-{
-{{#if hits}}
-    "names": [
-    {{#each hits}}
-        "{{this._source.rule}}"{{#unless @last}},{{/unless}}
-    {{/each}}
-    ]
-{{/if}}
-}

@@ -31,7 +31,7 @@ validateEntryExists:
 updateEntry:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/array/replace-next-element"
+    url: "[#TRAINING_DMAPPER]/object/array/replace-next-element"
     body:
       array: ${dockerData.response.body.services['test-bot-cv'].command}
       element: '--folds'
@@ -53,7 +53,7 @@ updateDockerCompose:
 convertJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/conversion/json-to-yaml"
     body:
       version: ${updatedDocker.response.body.version}
       services: ${updatedDocker.response.body.services}
@@ -71,7 +71,7 @@ getFileLocations:
 saveDockerFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/write"
+    url: "[#TRAINING_DMAPPER]/file-manager/create"
     body:
       file_path: ${fileLocations.response.body.response.docker_location}
       content: ${dockerYaml.response.body.json}

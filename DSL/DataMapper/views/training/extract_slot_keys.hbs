@@ -1,9 +1,0 @@
-{
-"slots": [
-{{#each hits}}
-    {{#each (extractSlotKeys _source.slots)}}
-        {"id":"{{this}}","name":"{{this}}"}{{#unless @last}},{{/unless}}
-    {{/each}}{{#unless @last}},{{/unless}}
-{{/each}}
-]
-}

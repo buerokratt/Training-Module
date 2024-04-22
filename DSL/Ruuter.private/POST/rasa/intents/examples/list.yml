@@ -17,7 +17,7 @@ assignFilePath:
 checkIntentFileYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/check"
+    url: "[#TRAINING_DMAPPER]/file-manager/exists"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
   result: fileExists
@@ -35,7 +35,7 @@ assignTmpFilePath:
 checkIntentFileTmp:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/check"
+    url: "[#TRAINING_DMAPPER]/file-manager/exists"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
   result: tmpFileExists
@@ -49,7 +49,7 @@ validateTmpFileExists:
 getIntentFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/read"
+    url: "[#TRAINING_DMAPPER]/file-manager/read-file"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
   result: intentFile
@@ -65,7 +65,7 @@ convertYamlToJson:
 replaceString:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/string/replace"
+    url: "[#TRAINING_DMAPPER]/conversion/string-replace"
     body:
       data: ${intentData.response.body.nlu[0].examples}
       search: "- "
@@ -75,7 +75,7 @@ replaceString:
 splitExamples:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/string/split"
+    url: "[#TRAINING_DMAPPER]/conversion/string-split"
     body:
       data: ${replacedString.response.body}
       separator: "\n"

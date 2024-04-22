@@ -53,7 +53,7 @@ mapFormsData:
   next: returnSuccess
 
 returnSuccess:
-  return: ${formsData.response.body.data}
+  return: ${formsData.response.body}
   wrapper: false
   next: end
 
