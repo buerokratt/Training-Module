@@ -14,31 +14,32 @@ intents:
   - mood_selected
   - affirm
   - deny
-
 entities:
-  - weather
-  - asukoht
-
+  error: false
+  message: Merged Successfully
+  array:
+    - ss
+    - weather
+    - asukoht
 slots:
   affirm_deny:
+    influence_conversation: false
     type: text
     mappings:
       - type: from_text
-        conditions:
-          - active_loop: custom_fallback_form
-            requested_slot: affirm_deny
-          - active_loop: direct_to_customer_support_form
-            requested_slot: affirm_deny
+        entity: test
+        intent:
+          - andmekaitse_küsimused
+        notIntent: []
   common_teenus_ilm_asukoht:
     type: text
     influence_conversation: true
     mappings:
-    -  type: from_entity
-       entity: asukoht
-       intent:
-         - common_teenus_ilm
-         - nlu_fallback
-
+      - type: from_entity
+        entity: asukoht
+        intent:
+          - common_teenus_ilm
+          - nlu_fallback
 forms:
   custom_fallback_form:
     ignored_intents:
@@ -48,73 +49,53 @@ forms:
   direct_to_customer_support_form:
     required_slots:
       - affirm_deny
-
 actions:
   - action_ask_custom_fallback_form_affirm_deny
   - action_react_to_affirm_deny_in_custom_fallback_form
   - action_react_to_affirm_deny_in_direct_to_customer_support_form
   - action_check_confidence
-  
 responses:
-#  Final response
   utter_custom_fallback_form:
-    - text: "rain"
-
-#Question per slot
+    - text: rain
   utter_ask_affirm_deny:
-    - text: "Where you want to go?"
-
+    - text: Where you want to go?
   utter_service_car_rent:
     - text: "#service_car_rent"
-
   utter_andmekaitse_küsimused:
-    - text: "kõik on kaitstud"
-
+    - text: kõik on kaitstud
   utter_fallback_kontroll:
-    - text: "Jäi arusaamatuks, kas soovisite, et suunan edasi?"
-
+    - text: Jäi arusaamatuks, kas soovisite, et suunan edasi?
   utter_mille_kohta_küsimus_käis:
     - text: "Kas küsimus käis selle teema kohta: {intent}? (Jah/Ei)"
-
   utter_not_confident:
-    - text: "Ma ei saanud päris täpselt aru."
-
+    - text: Ma ei saanud päris täpselt aru.
   utter_ei_pakkunud_õigesti:
-    - text: "Ma pean natuke juurde õppima, et oskaksin sellele vastata."
-
+    - text: Ma pean natuke juurde õppima, et oskaksin sellele vastata.
   utter_ask_direct_to_customer_support_form_affirm_deny:
-    - text: "Kas suunan teid klienditeenindajale? (Jah/Ei)"
-
+    - text: Kas suunan teid klienditeenindajale? (Jah/Ei)
   utter_common_klienditeenindajale_suunamine:
-    - text: "Suunan teid klienditeenindajale. Varuge natukene kannatust."
-
+    - text: Suunan teid klienditeenindajale. Varuge natukene kannatust.
   utter_common_ei_suuna_klienditeenindajale:
-    - text: "Selge. Kuidas saan veel abiks olla?"
-
+    - text: Selge. Kuidas saan veel abiks olla?
   utter_common_kelle_loodud:
-    - text: "Mind täiendab ja koolitab Bürokrati meeskond. Loe lisaks https://kratid.ee"
-
+    - text: Mind täiendab ja koolitab Bürokrati meeskond. Loe lisaks https://kratid.ee
   utter_common_tervitus:
-    - text: "tere"
-
+    - text: tere
   utter_common_hüvasti_jätmine:
-    - text: "headaega"
-
+    - text: headaega
   utter_rahvaarv_puudu:
-    - text: "millist rahvaarvu sa täpsemalt soovid?"
-
+    - text: millist rahvaarvu sa täpsemalt soovid?
   utter_rahvaarv_olemas:
     - text: "#rahvaarv {common_teenus_ilm_asukoht}"
-
   utter_kompliment:
-    - text: "kena olen"
-
+    - text: kena olen
   utter_common_teenus_ilm:
     - condition:
         - type: slot
           name: common_teenus_ilm_asukoht
           value: null
-      text: "Hetkel oskan ma öelda ilma Eesti raames piirkonnapõhiselt. Palun sisestage korrektne piirkonna nimi."
+      text: Hetkel oskan ma öelda ilma Eesti raames piirkonnapõhiselt. Palun sisestage
+        korrektne piirkonna nimi.
     - text: "#weather; {common_teenus_ilm_asukoht};"
   utter_common_ilm_checkpoint:
     - text: ""
@@ -123,27 +104,26 @@ responses:
         - type: slot
           name: common_teenus_ilm_asukoht
           value: null
-      text: "Kahjuks ei saanud ma praegu piirkonnast aru ja ei oska ilma kohta midagi öelda. Kuidas saan abiks olla?"
+      text: Kahjuks ei saanud ma praegu piirkonnast aru ja ei oska ilma kohta midagi
+        öelda. Kuidas saan abiks olla?
     - text: "#weather; {common_teenus_ilm_asukoht};"
   utter_common_esimene_tervitus:
-    - text: "Tere! Kuidas saan abiks olla?"
-
+    - text: Tere! Kuidas saan abiks olla?
   utter_greet:
-    - text: "Hello! How is your day going?"
+    - text: Hello! How is your day going?
       buttons:
-      - title: "Good"
-        payload: "/mood_good"
-      - title: "Bad"
-        payload: "/mood_bad"
+        - title: Good
+          payload: /mood_good
+        - title: Bad
+          payload: /mood_bad
   utter_good_day:
-    - text: "Glad to hear that you're having a good day!"
+    - text: Glad to hear that you're having a good day!
   utter_bad_day:
-    - text: "I'm sorry to hear that. I hope things get better soon!"
+    - text: I'm sorry to hear that. I hope things get better soon!
   utter_goodbye:
-    - text: "Bye"
+    - text: Bye
   utter_iamabot:
-    - text: "I am a bot, powered by Rasa."
-
+    - text: I am a bot, powered by Rasa.
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true

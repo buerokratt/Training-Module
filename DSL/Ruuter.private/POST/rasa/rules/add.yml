@@ -50,7 +50,7 @@ getRulesFile:
 convertYamlToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/conversion/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/conversion/yaml_to_json"
     body:
       file: ${ruleFile.response.body.file}
   result: rulesData

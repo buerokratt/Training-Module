@@ -62,7 +62,7 @@ getRulesFile:
 convertRulesYamlToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/conversion/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/conversion/yaml_to_json"
     body:
       file: ${rulesFile.response.body.file}
   result: rulesData
@@ -107,7 +107,7 @@ getStoriesFile:
 convertStoriesYamlToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/conversion/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/conversion/yaml_to_json"
     body:
       file: ${storiesFile.response.body.file}
   result: storiesData
@@ -170,7 +170,7 @@ getIntentFile:
 convertYamlToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/conversion/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/conversion/yaml_to_json"
     body:
       file: ${intentFile.response.body.file}
   result: intentData

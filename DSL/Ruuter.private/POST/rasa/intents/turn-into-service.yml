@@ -51,7 +51,7 @@ get_existing_intent_file:
 convert_yaml_to_json:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/conversion/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/conversion/yaml_to_json"
     body:
       file: ${intentFile.response.body.file}
   result: intentData
@@ -169,7 +169,7 @@ get_rules_file:
 convert_rules_yaml_to_json:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/conversion/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/conversion/yaml_to_json"
     body:
       file: ${ruleFile.response.body.file}
   result: rulesData

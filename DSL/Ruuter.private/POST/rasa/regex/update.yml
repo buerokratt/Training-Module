@@ -40,7 +40,7 @@ getRegexFile:
 convertYamlToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/conversion/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/conversion/yaml_to_json"
     body:
       file: ${regexFile.response.body.file}
   result: regexData

@@ -38,7 +38,7 @@ getStoriesFile:
 convertYamlToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/conversion/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/conversion/yaml_to_json"
     body:
       file: ${testStoriesFile.response.body.file}
   result: testStoriesData
@@ -57,7 +57,7 @@ deleteTestStory:
 convertJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/conversion/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
     body:
       stories: ${deleteTestStoriesData.response.body}
   result: testStoriesYaml

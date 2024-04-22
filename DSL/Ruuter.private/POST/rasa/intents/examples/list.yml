@@ -57,7 +57,7 @@ getIntentFile:
 convertYamlToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/convert/yaml_to_json"
     body:
       file: ${intentFile.response.body.file}
   result: intentData

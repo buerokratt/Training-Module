@@ -25,7 +25,7 @@ checkIntentFileYaml:
 
 validateFileExists:
   switch:
-    - condition: ${fileExists.response.body}
+    - condition: ${fileExists.response.body.error === false}
       next: getIntentFile
   next: assignTmpFilePath
 
@@ -43,7 +43,7 @@ checkIntentFileTmp:
 
 validateTmpFileExists:
   switch:
-    - condition: ${tmpFileExists.response.body}
+    - condition: ${tmpFileExists.response.body.error === false}
       next: getIntentFile
   next: returnIntentFileMissing
 
@@ -63,7 +63,7 @@ checkReturnType:
 convertYamlToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/conversion/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/conversion/yaml_to_json"
     body:
       file: ${intentFile.response.body.file}
   result: intentData

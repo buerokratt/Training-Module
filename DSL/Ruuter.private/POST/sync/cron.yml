@@ -72,7 +72,7 @@ createCronJson:
 convertJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/conversion/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
     body:
       train_bot: ${cronJson.response.body.data}
   result: cronYaml
