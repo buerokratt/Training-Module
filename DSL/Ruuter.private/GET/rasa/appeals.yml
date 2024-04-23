@@ -1,0 +1,18 @@
+getAppealsFromDB:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/get-all-appeals"
+  result: appealsResult
+
+mapAppealsData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/dmapper/get-appeals"
+    body:
+      appeals: ${appealsResult.response.body}
+  result: mappedAppeals
+
+returnSuccess:
+  wrapper: false
+  return: ${mappedAppeals.response.body.data}
+  next: end

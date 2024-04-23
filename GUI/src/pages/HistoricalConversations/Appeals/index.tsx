@@ -6,7 +6,7 @@ import { AxiosError } from 'axios';
 import { useForm } from 'react-hook-form';
 import { MdDeleteOutline, MdOutlineSave } from 'react-icons/md';
 
-import { Button, Card, DataTable, Dialog, FormInput, FormSelect, Icon, Track } from 'components';
+import {Button, Card, DataTable, Dialog, FormInput, FormSelect, FormTextarea, Icon, Track} from 'components';
 import { Appeal } from 'types/appeal';
 import { Intent } from 'types/intent';
 import { addAppeal, deleteAppeal } from 'services/appeals';
@@ -23,13 +23,14 @@ const Appeals: FC = () => {
   const { data: appeals } = useQuery<Appeal[]>({
     queryKey: ['appeals'],
     onSuccess: (data) => {
+      console.log(data)
       const appealsMap: Record<string, string | null> = {};
       data.forEach((appeal) => appealsMap[appeal.appeal] = null);
       setProcessedAppeals(appealsMap);
     },
   });
   const { data: intents } = useQuery<Intent[]>({
-    queryKey: ['intents'],
+    queryKey: ['intent-and-id'],
   });
   const { register, handleSubmit } = useForm<{ message: string }>();
 
@@ -54,6 +55,7 @@ const Appeals: FC = () => {
   });
 
   const handleNewAppealSubmit = handleSubmit(async (data) => {
+    console.log(data);
     newAppealMutation.mutate(data);
   });
 
@@ -109,12 +111,12 @@ const Appeals: FC = () => {
         />
       ),
     }),
-    // columnHelper.display({
-    //   id: 'save',
-    //   cell: (props) => processedAppeals?.[props.row.original.appeal] ? (
-    //     <Button appearance='text'>{t('global.save')}</Button>
-    //   ) : null,
-    // }),
+    columnHelper.display({
+      id: 'save',
+      cell: (props) => processedAppeals?.[props.row.original.appeal] ? (
+        <Button appearance='text'>{t('global.save')}</Button>
+      ) : null,
+    }),
     columnHelper.display({
       id: 'save',
       meta: {
