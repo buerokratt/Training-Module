@@ -92,16 +92,17 @@ services:
 
   data_mapper:
     container_name: data_mapper
-    build:
-      context: ./DSL/DataMapper
+    image: data-mapper
     environment:
       - PORT=3000
+      - CONTENT_FOLDER=/data
     volumes:
-      - ./DSL/DataMapper/locations:/rasa/locations
-      - ./docker-compose-bot.yml:/docker-bot/docker-compose-bot.yml
+      - ./DSL:/data
+      - ./DSL/DMapper/hbs:/workspace/app/views/training
+      - ./DSL/DMapper/js:/workspace/app/js/training
+      - ./DSL/DMapper/locations:/rasa/locations
+      - ./docker-compose-bot.yml:/data/docker-bot/docker-compose-bot.yml
       - ./DSL/CronManager:/DSL/CronManager
-      - ./DSL/DataMapper/views:/workspace/app/views/training
-      - ./DSL/DataMapper/views:/workspace/app/js/analytics
     ports:
       - 3000:3000
     networks:

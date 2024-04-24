@@ -18,7 +18,7 @@ assignExamples:
 convertStringToArray:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/string/toArray"
+    url: "[#TRAINING_DMAPPER]/conversion/string-to-array"
     body:
       data: ${examplesArray}
   result: convertedArray
@@ -30,7 +30,9 @@ reassignExamples:
 mapRegexesData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/dmapper/get-regex-details"
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_regex_details"
+    headers:
+      type: 'json'
     body:
       hits: ${getRegexesResult.response.body.hits.hits}
       examplesArray: ${examplesArray}

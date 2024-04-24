@@ -44,7 +44,7 @@ getFileLocations:
 getStoriesFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/read"
+    url: "[#TRAINING_DMAPPER]/file-manager/read-file"
     body:
       file_path: ${fileLocations.response.body.response.stories_location}
   result: storiesFile
@@ -52,7 +52,7 @@ getStoriesFile:
 convertYamlToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/conversion/yaml_to_json"
     body:
       file: ${storiesFile.response.body.file}
   result: storiesData
@@ -60,7 +60,9 @@ convertYamlToJson:
 deleteStory:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/dmapper/delete-story"
+    url: "[#TRAINING_DMAPPER]/hbs/training/delete_story"
+    headers:
+      type: 'json'
     body:
       stories: ${storiesData.response.body}
       story_name: ${id}
@@ -69,7 +71,7 @@ deleteStory:
 mergeStories:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/merge"
+    url: "[#TRAINING_DMAPPER]/file-manager/merge"
     body:
       array1: ${deleteStoriesData.response.body.data[1]}
       array2: ${[storyData]}
@@ -79,7 +81,7 @@ mergeStories:
 convertJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml-stories"
+    url: "[#TRAINING_DMAPPER]/conversion/json-to-yaml-stories"
     body:
       stories: ${mergedStories.response.body}
   result: storiesYaml
@@ -87,7 +89,7 @@ convertJsonToYaml:
 saveStoriesFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/write"
+    url: "[#TRAINING_DMAPPER]/file-manager/create"
     body:
       file_path: ${fileLocations.response.body.response.stories_location}
       content: ${storiesYaml.response.body.json}

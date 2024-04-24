@@ -7,13 +7,15 @@ getResponses:
 mapResponsesData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/dmapper/get-responses"
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_responses"
+    headers:
+      type: 'json'
     body:
       hits: ${getResponsesResult.response.body.hits.hits}
   result: responsesData
   next: returnSuccess
 
 returnSuccess:
-  return: ${responsesData.response.body.data.responses}
+  return: ${responsesData.response.body.responses}
   wrapper: false
   next: end

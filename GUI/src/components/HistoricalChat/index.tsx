@@ -15,24 +15,24 @@ import ChatEvent from './ChatEvent';
 import NewExampleModal from './NewExampleModal';
 import NewResponseModal from './NewResponseModal';
 import './HistoricalChat.scss';
-import apigeneric from "../../services/apigeneric";
-import apiDev from "../../services/api-dev";
+import apigeneric from '../../services/apigeneric';
+import apiDev from '../../services/api-dev';
 
 type ChatProps = {
   chat: ChatType;
   trigger: boolean;
-}
+};
 
 type GroupedMessage = {
   name: string;
   type: string;
   messages: Message[];
-}
+};
 
 type NewResponse = {
   name: string;
   text: string;
-}
+};
 
 const HistoricalChat: FC<ChatProps> = ({ chat, trigger }) => {
   const { t } = useTranslation();
@@ -47,15 +47,10 @@ const HistoricalChat: FC<ChatProps> = ({ chat, trigger }) => {
   }, [trigger]);
 
   const getMessages = async () => {
-    if(import.meta.env.REACT_APP_LOCAL === 'true') {
-      const { data: res } = await apigeneric.get(`csa/messages-by-id/${chat.id}`);
-      setMessagesList(res.response);
-    } else {
-      const { data: res } = await apiDev.post('csa/messages-by-id', {
-        chatId: chat.id,
-      });
-      setMessagesList(res.response);
-    }
+    const { data: res } = await apiDev.post('csa/messages-by-id', {
+      chatId: chat.id,
+    });
+    setMessagesList(res.response);
   };
 
   const addExamplesMutation = useMutation({
@@ -65,10 +60,15 @@ const HistoricalChat: FC<ChatProps> = ({ chat, trigger }) => {
       newIntent: boolean;
       intentName?: string;
     }) => {
-      if(data.newIntent) {
-        return addIntentWithExample({ intentName: data.intentName ?? '',newExamples:  data.example });
+      if (data.newIntent) {
+        return addIntentWithExample({
+          intentName: data.intentName ?? '',
+          newExamples: data.example,
+        });
       }
-      return addExampleFromHistory(data.intentName ?? '', { example: data.example });
+      return addExampleFromHistory(data.intentName ?? '', {
+        example: data.example,
+      });
     },
     onSuccess: async () => {
       toast.open({
@@ -114,22 +114,25 @@ const HistoricalChat: FC<ChatProps> = ({ chat, trigger }) => {
   });
 
   const validateName = (name: string) => {
-    if(name && name.trim().length !== 0) {
-      return name.trim().replace(/\s/g, "_");
+    if (name && name.trim().length !== 0) {
+      return name.trim().replace(/\s/g, '_');
     }
-    return "";
-  }
+    return '';
+  };
 
-  const endUserFullName = chat.endUserFirstName !== '' && chat.endUserLastName !== ''
-    ? `${chat.endUserFirstName} ${chat.endUserLastName}` : t('global.anonymous');
+  const endUserFullName =
+    chat.endUserFirstName !== '' && chat.endUserLastName !== ''
+      ? `${chat.endUserFirstName} ${chat.endUserLastName}`
+      : t('global.anonymous');
 
   useEffect(() => {
     if (!messagesList) return;
     let groupedMessages: GroupedMessage[] = [];
     messagesList.forEach((message) => {
+      message.event = message.event?.toLowerCase();
       const lastGroup = groupedMessages[groupedMessages.length - 1];
       if (lastGroup?.type === message.authorRole) {
-        if (!message.event || message.event === 'greeting') {
+        if (!message.event || message.event.toLowerCase() === 'greeting') {
           lastGroup.messages.push(message);
         } else {
           groupedMessages.push({
@@ -139,11 +142,12 @@ const HistoricalChat: FC<ChatProps> = ({ chat, trigger }) => {
           });
         }
       } else {
-        if (!message.event || message.event === 'greeting') {
+        if (!message.event || message.event.toLowerCase() === 'greeting') {
           groupedMessages.push({
-            name: message.authorRole === 'end-user'
-              ? endUserFullName
-              : message.authorRole === 'backoffice-user'
+            name:
+              message.authorRole === 'end-user'
+                ? endUserFullName
+                : message.authorRole === 'backoffice-user'
                 ? `${message.authorFirstName} ${message.authorLastName}`
                 : message.authorRole,
             type: message.authorRole,
@@ -168,38 +172,55 @@ const HistoricalChat: FC<ChatProps> = ({ chat, trigger }) => {
 
   return (
     <>
-      <div className='historical-chat'>
-        <div className='historical-chat__body'>
-          <div className='historical-chat__group-wrapper'>
-            {messageGroups && messageGroups.map((group, index) => (
-              <div className={clsx(['historical-chat__group', `historical-chat__group--${group.type}`])}
-                   key={`group-${index}`}>
-                {group.type === 'event' ? (
-                  <ChatEvent message={group.messages[0]} />
-                ) : (
-                  <>
-                    <div className='historical-chat__group-initials'>
-                      {group.type === 'buerokratt' || group.type === 'chatbot' ? (
-                        <BykLogoWhite height={24} />
-                      ) : (
-                        <>{group.name.split(' ').map((n) => n[0]).join('').toUpperCase()}</>
-                      )}
-                    </div>
-                    <div className='historical-chat__group-name'>{group.name}</div>
-                    <div className='historical-chat__messages'>
-                      {group.messages.map((message, i) => (
-                        <ChatMessage
-                          message={message}
-                          key={`message-${i}`}
-                          onMessageClick={(message) => setMarkedMessage(message)}
-                        />
-                      ))}
-                    </div>
-                  </>
-                )}
-              </div>
-            ))}
-            <div id='anchor' ref={chatRef}></div>
+      <div className="historical-chat">
+        <div className="historical-chat__body">
+          <div className="historical-chat__group-wrapper">
+            {messageGroups &&
+              messageGroups.map((group, index) => (
+                <div
+                  className={clsx([
+                    'historical-chat__group',
+                    `historical-chat__group--${group.type}`,
+                  ])}
+                  key={`group-${index}`}
+                >
+                  {group.type === 'event' ? (
+                    <ChatEvent message={group.messages[0]} />
+                  ) : (
+                    <>
+                      <div className="historical-chat__group-initials">
+                        {group.type === 'buerokratt' ||
+                        group.type === 'chatbot' ? (
+                          <BykLogoWhite height={24} />
+                        ) : (
+                          <>
+                            {group.name
+                              .split(' ')
+                              .map((n) => n[0])
+                              .join('')
+                              .toUpperCase()}
+                          </>
+                        )}
+                      </div>
+                      <div className="historical-chat__group-name">
+                        {group.name}
+                      </div>
+                      <div className="historical-chat__messages">
+                        {group.messages.map((message, i) => (
+                          <ChatMessage
+                            message={message}
+                            key={`message-${i}`}
+                            onMessageClick={(message) =>
+                              setMarkedMessage(message)
+                            }
+                          />
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+              ))}
+            <div id="anchor" ref={chatRef}></div>
           </div>
         </div>
       </div>

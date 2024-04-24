@@ -11,7 +11,9 @@ getIntentsExampleCount:
 mapIntentsData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/dmapper/get-intents-with-examples-count"
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_intents_with_examples_count"
+    headers:
+      type: 'json'
     body:
       buckets: ${getIntentsResult.response.body.aggregations.hot.buckets}
   result: intentsData

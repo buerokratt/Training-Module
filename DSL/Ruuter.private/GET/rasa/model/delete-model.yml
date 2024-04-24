@@ -1,7 +1,7 @@
 assignValue:
   assign:
     fileName: ${incoming.params.fileName}
-    modelPath: '/DSL/DataMapper/locations/models/'
+    modelPath: '/DSL/DMapper/locations/models/'
 
 validateName:
   switch:
@@ -12,7 +12,7 @@ validateName:
 checkFileExists:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/check"
+    url: "[#TRAINING_DMAPPER]/file-manager/exists"
     body:
       file_path: ${modelPath}${fileName}
   result: modelCreated
@@ -26,7 +26,7 @@ validateFileExists:
 removeModel:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/delete"
+    url: "[#TRAINING_DMAPPER]/file-manager/delete"
     body:
       file_path: ${modelPath}${fileName}
   result: fileRemoved

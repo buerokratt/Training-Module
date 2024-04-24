@@ -7,23 +7,31 @@ getEntities:
 mapEntitiesData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/dmapper/get-entities"
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_entities"
+    headers:
+      type: 'json'
     body:
-      hits: ${getEntitiesResult.response.body.hits.hits}
+      data: {
+        "hits": "${getEntitiesResult.response.body.hits.hits}"
+      }
   result: entitiesData
   next: sortEntities
 
 sortEntities:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/dmapper/sort-entities"
+    url: "[#TRAINING_DMAPPER]/hbs/training/sort_entities"
+    headers:
+      type: 'json'
     body:
-      hits: ${entitiesData.response.body.data.entities}
+      data: {
+        "hits": "${entitiesData.response.body.entities}"
+      }
   result: sortedEntities
   next: returnSuccess
 
 returnSuccess:
-  return: ${sortedEntities.response.body.data.entities}
+  return: ${sortedEntities.response.body.entities}
   next: end
 
 returnUnauthorized:

@@ -15,7 +15,9 @@ getFormsSlots:
 mapFormsSlotsData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/dmapper/get-forms-search-slots"
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_forms_search_slots"
+    headers:
+      type: 'json'
     body:
       hits: ${getFormsResultSlots.response.body.hits.hits}
   result: formsData

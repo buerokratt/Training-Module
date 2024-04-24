@@ -13,7 +13,9 @@ getIntentLastChanged:
 mapIntentsData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/dmapper/get-intent-last-changed"
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_intent_last_changed"
+    headers:
+      type: 'json'
     body:
       intent: ${getIntentLastChangedResult.response.body}
   result: intentsData

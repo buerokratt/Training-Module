@@ -1,0 +1,11 @@
+{
+    "entities": [
+    {{#each (sortEntities data.hits)}}
+        {
+            "name": "{{ name }}",
+            "id": "{{ id }}"
+        }
+        {{#unless @last}},{{/unless}}
+    {{/each}}
+    ]
+}

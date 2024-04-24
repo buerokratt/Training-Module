@@ -14,7 +14,7 @@ getFileLocations:
 convertJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
     body:
       recipe: ${input.recipe}
       language: ${input.language}
@@ -25,7 +25,7 @@ convertJsonToYaml:
 saveConfigFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/write"
+    url: "[#TRAINING_DMAPPER]/file-manager/create"
     body:
       file_path: ${fileLocations.response.body.response.config_location}
       content: ${configYaml.response.body.json}

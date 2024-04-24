@@ -7,7 +7,9 @@ runCommand:
   call: http.post
   args:
     #TODO: Implement the command execution logic
-    url: "[#TRAINING_DMAPPER]/dmapper/execute-command"
+    url: "[#TRAINING_DMAPPER]/hbs/training/execute_command"
+    headers:
+      type: 'json'
     body:
       command: ${parameters.command}
   result: commandResponse

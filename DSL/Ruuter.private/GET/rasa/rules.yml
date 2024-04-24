@@ -7,12 +7,14 @@ getRules:
 mapRulesData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/dmapper/get-rules"
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_rules"
+    headers:
+      type: 'json'
     body:
       hits: ${getRulesResult.response.body.hits.hits}
   result: rulesData
   next: returnSuccess
 
 returnSuccess:
-  return: ${rulesData.response.body.data.rules}
+  return: ${rulesData.response.body.rules}
   next: end

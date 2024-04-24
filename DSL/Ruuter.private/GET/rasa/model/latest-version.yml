@@ -10,9 +10,9 @@ getVersionFromDatabase:
 
 validateVersion:
   switch:
-    - condition: ${dbResult.response.body.latestVersion !== null}
+    - condition: ${dbResult.response.body.latestVersion !== null && dbResult.response.body.length > 0}
       next: returnSuccess
-  next: returnError
+  next: returnDefaultVersion
 
 returnSuccess:
   return: ${dbResult.response.body.latestVersion}

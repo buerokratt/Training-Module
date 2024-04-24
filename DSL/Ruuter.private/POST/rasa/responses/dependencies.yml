@@ -43,7 +43,9 @@ storiesResponses:
 mapResponsesData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/dmapper/get-response-dependencies"
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_response_dependencies"
+    headers:
+      type: 'json'
     body:
       response: ${getResponsesResult.response.body.hits.hits}
       stories: ${storiesResponses.response.body.response.stories}
