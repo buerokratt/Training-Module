@@ -55,7 +55,7 @@ const Intents: FC = () => {
     isLoading,
     refetch,
   } = useQuery({
-    queryKey: ['intents/intents-full'],
+    queryKey: ['intents/full'],
   });
 
   const { data: entities } = useQuery<Entity[]>({
@@ -94,7 +94,7 @@ const Intents: FC = () => {
   const queryRefresh = useCallback(
     function queryRefresh(selectIntent: string | null) {
       setSelectedIntent(null);
-      queryClient.fetchQuery(['intents/intents-full']).then(() => {
+      queryClient.fetchQuery(['intents/full']).then(() => {
         setRefreshing(false);
         if (intents.length > 0) {
           setSelectedIntent(() => {
@@ -141,8 +141,8 @@ const Intents: FC = () => {
       setRefreshing(true);
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['intents/intents-full']);
-      await queryClient.refetchQueries(['intents/intents-full']);
+      await queryClient.invalidateQueries(['intents/full']);
+      await queryClient.refetchQueries(['intents/full']);
       getExampleArrayForIntentId(selectedIntent as Intent).push('');
       setRefreshing(false);
       if (selectedIntent) {

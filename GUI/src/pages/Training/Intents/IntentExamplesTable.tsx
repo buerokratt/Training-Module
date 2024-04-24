@@ -127,7 +127,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
       newExample: string}) => editExample(addExamplesData),
     onMutate: async () => {
       setRefreshing(true)
-      await queryClient.invalidateQueries(['intents/intents-full']);
+      await queryClient.invalidateQueries(['intents/full']);
     },
     onSuccess: () => {
       toast.open({

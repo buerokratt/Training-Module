@@ -50,7 +50,7 @@ const CommonIntents: FC = () => {
   const [refreshing, setRefreshing] = useState(false);
 
   const { data: intentsFullResponse, isLoading } = useQuery({
-    queryKey: ['intents/common-intents'],
+    queryKey: ['intents/common'],
   });
 
   const { data: entities } = useQuery<Entity[]>({
@@ -107,7 +107,7 @@ const CommonIntents: FC = () => {
   const queryRefresh = useCallback(
     function queryRefresh(selectIntent: string | null) {
       setSelectedIntent(null);
-      queryClient.fetchQuery(['intents/intents-full']).then(() => {
+      queryClient.fetchQuery(['intents/full']).then(() => {
         setRefreshing(false);
         if (commonIntents.length > 0) {
           setSelectedIntent(() => {
@@ -132,8 +132,8 @@ const CommonIntents: FC = () => {
       setRefreshing(true);
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['intents/intents-full']);
-      await queryClient.refetchQueries(['intents/intents-full']);
+      await queryClient.invalidateQueries(['intents/full']);
+      await queryClient.refetchQueries(['intents/full']);
       getExampleArrayForIntentId(selectedIntent as Intent).push('');
       setRefreshing(false);
       if (selectedIntent) {
