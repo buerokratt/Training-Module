@@ -11,7 +11,9 @@ getIntents:
 getIntentsData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/dmapper/get-intents-with-examples"
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_intents_with_examples"
+    headers:
+      type: 'json'
     body:
       hits: ${getIntentsResult.response.body.hits.hits}
   result: getIntentDataResult
@@ -34,7 +36,7 @@ getIntentsExampleCount:
 
 checkIfIntentsExists:
   switch:
-    - condition: ${getIntentDataResult.response.body.data.intents != null}
+    - condition: ${getIntentDataResult.response.body.intents != null}
       next: get_service_intent_connections
   next: returnNoIntentsFound
 
@@ -47,7 +49,7 @@ get_service_intent_connections:
 assignResults:
   assign:
     intents:
-      intents: ${getIntentDataResult.response.body.data.intents}
+      intents: ${getIntentDataResult.response.body.intents}
       inmodel: ${getDomainDataResult.response.body.response.intents}
       count: ${getIntentCountResult.response.body.aggregations.hot.buckets}
       connections: ${connection_res.response.body}
@@ -55,7 +57,9 @@ assignResults:
 mapIntentsData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/dmapper/get-intents-full"
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_intents_full"
+    headers:
+      type: 'json'
     body:
       intents: ${intents}
   result: getIntentDataResult

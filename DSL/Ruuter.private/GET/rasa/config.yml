@@ -3,13 +3,13 @@ getFileLocations:
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]/internal/return-file-locations"
     headers:
-      cookie: {incoming.headers.cookie}
+      cookie: ${incoming.headers.cookie}
   result: fileLocations
 
 getConfigFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/read"
+    url: "[#TRAINING_DMAPPER]/file-manager/read-file"
     body:
       file_path: ${fileLocations.response.body.response.config_location}
   result: configFile
@@ -17,7 +17,7 @@ getConfigFile:
 convertYamlToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/conversion/yaml_to_json"
     body:
       file: ${configFile.response.body.file}
   result: configData

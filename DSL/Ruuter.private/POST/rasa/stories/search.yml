@@ -75,7 +75,9 @@ getStoriesSearchForSlots:
 mapStoriesData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/dmapper/get-stories"
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_stories"
+    headers:
+      type: 'json'
     body:
       hits: ${getStoriesResult.response.body.hits.hits}
   result: storiesData

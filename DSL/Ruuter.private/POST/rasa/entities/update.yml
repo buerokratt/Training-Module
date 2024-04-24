@@ -29,7 +29,7 @@ replaceExistingEntity:
 convertJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
     body:
       version: ${domainData.response.body.response.version}
       intents: ${domainData.response.body.response.intents}
@@ -52,7 +52,7 @@ getFileLocations:
 saveDomainFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/write"
+    url: "[#TRAINING_DMAPPER]/file-manager/create"
     body:
       file_path: ${fileLocations.response.body.response.domain_location}
       content: ${domainYaml.response.body.json}
@@ -75,7 +75,7 @@ switchFileType:
 getRegexFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/read"
+    url: "[#TRAINING_DMAPPER]/file-manager/read-file"
     body:
       file_path: ${fileLocations.response.body.response.regex_location}
   result: intentFile
@@ -84,7 +84,7 @@ getRegexFile:
 getIntentFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/read"
+    url: "[#TRAINING_DMAPPER]/file-manager/read-file"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + "_nlu.yml"}
   result: intentFile
@@ -92,7 +92,7 @@ getIntentFile:
 convertYamlToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
     body:
       file: ${intentFile.response.body.file}
   result: intentData
@@ -106,7 +106,9 @@ switchMapFileType:
 mapRegexesData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/dmapper/get-regex-file"
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_regex_file"
+    headers:
+      type: 'json'
     body:
       regex: ${parameters.entity}
       examples: ${intentData.response.body.nlu[0].examples}
@@ -116,7 +118,9 @@ mapRegexesData:
 mapIntentsData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/dmapper/get-intent-file"
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_intent_file"
+    headers:
+      type: 'json'
     body:
       intent: ${parameters.entity}
       examples: ${splitExamples.response.body}
@@ -125,7 +129,7 @@ mapIntentsData:
 convertIntentJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
     body:
       version: "3.0"
       nlu: ${intentFileJson.response.body.data}
@@ -140,7 +144,7 @@ switchSaveFileType:
 saveRegexFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/write"
+    url: "[#TRAINING_DMAPPER]/file-manager/create"
     body:
       file_path: ${fileLocations.response.body.response.regex_location}
       content: ${intentYaml.response.body.json}
@@ -149,7 +153,7 @@ saveRegexFile:
 removePipe:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/string/replace"
+    url: "[#TRAINING_DMAPPER]/conversion/string-replace"
     body:
       data: ${intentYaml.response.body.json}
       search: "|"
@@ -167,7 +171,7 @@ updateRegexOpenSearch:
 saveIntentFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/write"
+    url: "[#TRAINING_DMAPPER]/file-manager/create"
     body:
       file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + "_nlu.yml"}
       content: ${intentYaml.response.body.json}

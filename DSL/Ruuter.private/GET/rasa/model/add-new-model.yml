@@ -2,14 +2,16 @@ getDockerFile:
   call: http.get
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]/internal/docker-file"
+    headers:
+      cookie: ${incoming.headers.cookie}  
   result: dockerData
 
 assignDefaultValues:
   assign:
     version: '1_0'
     name: 'rasa_'
-    modelPath: '/DSL/DataMapper/locations/models/'
-    reportPath: '/DSL/DataMapper/locations/results/'
+    modelPath: '/DSL/DMapper/locations/models/'
+    reportPath: '/DSL/DMapper/locations/results/'
     modelExtension: '.tar.gz'
     reportEnding: '/intent_report.json'
     state: 'Trained'
@@ -53,7 +55,7 @@ reAssignVersion:
 checkModelCreated:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/check"
+    url: "[#TRAINING_DMAPPER]/file-manager/exists"
     body:
       file_path: ${modelPath + name + trainedVersion.response.body + modelExtension}
   result: modelCreated
@@ -72,7 +74,7 @@ reAssignState:
 getIntentsReport:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/read"
+    url: "[#TRAINING_DMAPPER]/file-manager/read-file"
     body:
       file_path: ${reportPath + name + trainedVersion.response.body + reportEnding}
   result: intentReport
@@ -80,7 +82,7 @@ getIntentsReport:
 convertYamlToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/conversion/yaml_to_json"
     body:
       file: ${intentReport.response.body.file}
   result: reportData
@@ -116,7 +118,7 @@ updateDockerCompose:
 convertJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/json-to-yaml"
+    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
     body:
       version: ${updatedDocker.response.body.version}
       services: ${updatedDocker.response.body.services}
@@ -132,7 +134,7 @@ getFileLocations:
 saveDockerFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/write"
+    url: "[#TRAINING_DMAPPER]/file-manager/create"
     body:
       file_path: ${fileLocations.response.body.response.docker_location}
       content: ${dockerYaml.response.body.json}

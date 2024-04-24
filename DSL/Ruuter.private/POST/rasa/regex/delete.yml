@@ -17,7 +17,7 @@ assignFilePath:
 checkFileExists:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/check"
+    url: "[#TRAINING_DMAPPER]/file-manager/exists"
     body:
       file_path: ${filePath}
   result: fileExists
@@ -31,7 +31,7 @@ removeFileIfExists:
 deleteRegexFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/delete"
+    url: "[#TRAINING_DMAPPER]/file-manager/delete"
     body:
       file_path: ${filePath}
   result: fileRemoved

@@ -7,7 +7,9 @@ getTestStories:
 mapTestStoriesData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/dmapper/get-test-stories"
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_test_stories"
+    headers:
+      type: 'json'
     body:
       hits: ${getTestStoriesResult.response.body.hits.hits}
   result: testStoriesData

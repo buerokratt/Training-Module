@@ -9,7 +9,7 @@ getFileLocations:
 getStoriesFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/read"
+    url: "[#TRAINING_DMAPPER]/file-manager/read-file"
     body:
       file_path: ${fileLocations.response.body.response.stories_location}
   result: storiesFile
@@ -17,11 +17,11 @@ getStoriesFile:
 convertYamlToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/yaml-to-json"
+    url: "[#TRAINING_DMAPPER]/conversion/yaml_to_json"
     body:
       file: ${storiesFile.response.body.file}
-  result: rulesData
+  result: storiesConvertData
 
 returnSuccess:
-  return: ${storiesData.response.body}
+  return: ${storiesConvertData.response.body}
   next: end

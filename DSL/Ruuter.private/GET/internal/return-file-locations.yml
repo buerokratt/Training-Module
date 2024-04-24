@@ -1,14 +1,14 @@
 assign_step:
   assign:
     locations:
-      rules_location: '/rasa/locations/data/rules.yml'
-      stories_location: '/rasa/locations/data/stories.yml'
-      domain_location: '/rasa/locations/domain.yml'
-      test_stories_location: '/rasa/locations/tests/test_stories.yml'
-      intents_location: '/rasa/locations/data/nlu/'
-      regex_location: '/rasa/locations/data/regex/'
-      training_result_location: '/rasa/locations/results'
-      config_location: '/rasa/locations/config.yml'
+      rules_location: '/DMapper/locations/data/rules.yml'
+      stories_location: '/DMapper/locations/data/stories.yml'
+      domain_location: '/DMapper/locations/domain.yml'
+      test_stories_location: '/DMapper/locations/tests/test_stories.yml'
+      intents_location: '/DMapper/locations/data/nlu/'
+      regex_location: '/DMapper/locations/data/regex/'
+      training_result_location: '/DMapper/locations/results'
+      config_location: '/DMapper/locations/config.yml'
       docker_location: '/docker-bot/docker-compose-bot.yml'
 return_value:
   return: ${locations}

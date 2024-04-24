@@ -19,7 +19,9 @@ getResponses:
 mapResponsesData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/dmapper/get-responses"
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_responses"
+    headers:
+      type: 'json'
     body:
       hits: ${getResponsesResult.response.body.hits.hits}
   result: responsesData
@@ -27,13 +29,15 @@ mapResponsesData:
 mapDependenciesData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/dmapper/get-responses-dependencies"
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_responses_dependencies"
+    headers:
+      type: 'json'
     body:
       rules: ${getRulesResult.response.body.hits.hits}
       stories: ${getStoriesResult.response.body.hits.hits}
-      responses: ${responsesData.response.body.data.responses}
+      responses: ${responsesData.response.body.responses}
   result: dependenciesData
 
 returnSuccess:
-  return: ${dependenciesData.response.body.data}
+  return: ${dependenciesData.response.body}
   next: end

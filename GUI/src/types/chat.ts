@@ -32,6 +32,10 @@ export enum CHAT_EVENTS {
   REQUESTED_CHAT_FORWARD = 'requested-chat-forward',
   REQUESTED_CHAT_FORWARD_ACCEPTED = 'requested-chat-forward-accepted',
   REQUESTED_CHAT_FORWARD_REJECTED = 'requested-chat-forward-rejected',
+  ASSIGN_PENDING_CHAT_CSA = 'pending-assigned',
+  PENDING_USER_REACHED = 'user-reached',
+  PENDING_USER_NOT_REACHED = 'user-not-reached',
+  USER_AUTHENTICATED = 'user-authenticated',
   READ = 'message-read',
 }
 

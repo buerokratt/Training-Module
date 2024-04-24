@@ -6,7 +6,7 @@
       "aggs": {
         "hot": {
           "terms": {
-            "field": "intent"
+            "field": "intent.keyword"
           },
           "aggs": {
             "examples_counts": {

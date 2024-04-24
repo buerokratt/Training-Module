@@ -1140,7 +1140,7 @@ paths:
       responses:
         '200':
           description: Content of a test result file for a specified trained model
-  /convert/yaml-to-json:
+  /convert/yaml_to_json:
     post:
       tags:
         - Nodejs
@@ -1165,7 +1165,7 @@ paths:
               schema:
                 type: string
 
-  /convert/json-to-yaml:
+  /convert/json_to_yaml:
     post:
       tags:
         - Nodejs

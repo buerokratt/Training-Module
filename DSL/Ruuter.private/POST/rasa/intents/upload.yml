@@ -5,7 +5,7 @@ assign_values:
 convertCsvToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/convert/csv-to-json"
+    url: "[#TRAINING_DMAPPER]/conversion/csv-to-json"
     body:
       file: ${incoming.body}
   result: jsonData
@@ -13,7 +13,9 @@ convertCsvToJson:
 mapCsvToArray:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/dmapper/csv-examples-to-array"
+    url: "[#TRAINING_DMAPPER]/hbs/training/csv_examples_to_array"
+    headers:
+      type: 'json'
     body:
       examples: ${jsonData.response.body}
   result: examples

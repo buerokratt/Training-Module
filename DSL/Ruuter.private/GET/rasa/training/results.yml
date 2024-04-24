@@ -9,13 +9,13 @@ getFileLocations:
 getTrainingResultsDirectory:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file/read-directory"
+    url: "[#TRAINING_DMAPPER]/file-manager/read-file-dir"
     body:
       file_path: ${fileLocations.response.body.response.training_result_location}
   result: trainingResults
 
 returnSuccess:
-  return: ${trainingResults.response.body}
+  return: ${trainingResults.response.body.data}
   next: end
 
 returnUnauthorized:

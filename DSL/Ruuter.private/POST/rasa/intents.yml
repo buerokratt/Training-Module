@@ -15,7 +15,9 @@ getIntentsWithName:
 mapIntentsData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/dmapper/get-intent-with-name"
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_intent_with_name"
+    headers:
+      type: 'json'
     body:
       hits: ${getIntentsResult.response.body.hits.hits}
   result: intentsData
