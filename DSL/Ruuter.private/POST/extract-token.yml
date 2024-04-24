@@ -1,3 +1,10 @@
+declaration:
+  call: declare
+  allowlist:
+    body:
+      - field: role
+        type: string
+
 extractTokenData:
   call: http.post
   args:
