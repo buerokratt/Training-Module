@@ -23,7 +23,7 @@ updateInDatabase:
 syncDockerCompose:
   call: http.post
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]/sync/docker"
+    url: "[#TRAINING_PUBLIC_RUUTER]/internal/sync/docker"
     headers:
       cookie: ${incoming.headers.cookie}
   result: updatedDocker
@@ -31,7 +31,7 @@ syncDockerCompose:
 syncCronTask:
   call: http.post
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]/sync/cron"
+    url: "[#TRAINING_PUBLIC_RUUTER]/internal/sync/cron"
     headers:
       cookie: ${incoming.headers.cookie}
   result: updatedCron

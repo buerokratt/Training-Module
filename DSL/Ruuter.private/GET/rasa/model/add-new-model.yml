@@ -1,7 +1,7 @@
 getDockerFile:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]/docker-file"
+    url: "[#TRAINING_PUBLIC_RUUTER]/internal/docker-file"
   result: dockerData
 
 assignDefaultValues:
@@ -126,7 +126,7 @@ convertJsonToYaml:
 getFileLocations:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]/return-file-locations"
+    url: "[#TRAINING_PUBLIC_RUUTER]/internal/return-file-locations"
   result: fileLocations
 
 saveDockerFile:

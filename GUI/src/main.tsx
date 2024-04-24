@@ -96,7 +96,7 @@ const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
   const { data } = await apiInstance.get(queryKey[0] as string);
   if (
     queryKey.includes('entities')
-    || queryKey.includes('services/get-services-not-assigned-to-intent')
+    || queryKey.includes('services/unassigned')
     || queryKey.includes('services/connection-requests')
   ) {
     return data.response;

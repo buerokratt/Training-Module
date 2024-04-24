@@ -1,7 +1,11 @@
 getIntents:
-  call: http.get
+  call: http.post
   args:
     url: "[#TRAINING_OPENSEARCH]/intents/_search?size=10000"
+    body:
+      query:
+        prefix:
+          id: "common_"
   result: getIntentsResult
 
 getIntentsData:
@@ -15,10 +19,18 @@ getIntentsData:
 getDomainFile:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER]/domain-file"
+    url: "[#TRAINING_PUBLIC_RUUTER]/internal/domain-file"
     headers:
       cookie: ${incoming.headers.cookie}
   result: getDomainDataResult
+
+getIntentsExampleCount:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]/intents/_search/template"
+    body:
+      id: "intents-with-examples-count"
+  result: getIntentCountResult
 
 checkIfIntentsExists:
   switch:
@@ -37,6 +49,7 @@ assignResults:
     intents:
       intents: ${getIntentDataResult.response.body.data.intents}
       inmodel: ${getDomainDataResult.response.body.response.intents}
+      count: ${getIntentCountResult.response.body.aggregations.hot.buckets}
       connections: ${connection_res.response.body}
 
 mapIntentsData:
@@ -54,6 +67,4 @@ returnSuccess:
 
 returnNoIntentsFound:
   return: "Error: no intents found"
-  wrapper: false
-  status: 409
   next: end
