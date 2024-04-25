@@ -68,8 +68,6 @@ export const generateNodesFromStorySteps = (steps): Node[] =>
         let className;
 
         if (step.condition && Array.isArray(step.condition)) {
-            console.log("generate nodes")
-            console.log(step)
             type = 'conditionNode';
             className = 'condition';
             payload = {
