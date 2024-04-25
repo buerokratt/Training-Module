@@ -341,20 +341,21 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     <Track gap={16} align='left' style={{ margin: '-16px' }}>
       <div style={{ flex: 1, maxWidth: 'calc(100% / 3)', padding: '16px 0 16px 16px' }}>
         <Track direction='vertical' gap={16} align='stretch'>
-        <Collapsible title={t('training.conditions')}>
-            <Track direction='vertical' align='stretch' gap={4}>
-              <button
-                onClick={() => handleNodeAdd({
-                  label: '',
-                  type: 'conditionNode',
-                  className: 'condition',
-                })}
-              >
-                <Box color='green'>condition</Box>
-              </button>
-            </Track>
-          </Collapsible>
-
+          {category === 'rules' && (
+              <Collapsible title={t('training.conditions')}>
+                <Track direction='vertical' align='stretch' gap={4}>
+                  <button
+                      onClick={() => handleNodeAdd({
+                        label: '',
+                        type: 'conditionNode',
+                        className: 'condition',
+                      })}
+                  >
+                    <Box color='green'>condition</Box>
+                  </button>
+                </Track>
+              </Collapsible>
+          )}
           {intents && Array.isArray(intents) && (
             <Collapsible title={t('training.intents.title')} defaultOpen>
               <Track direction='vertical' align='stretch' gap={4}>
