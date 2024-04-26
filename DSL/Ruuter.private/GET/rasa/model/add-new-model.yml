@@ -6,6 +6,11 @@ declaration:
   accepts: json
   returns: json
   namespace: training
+  allowlist:
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie field"
 
 getDockerFile:
   call: http.get

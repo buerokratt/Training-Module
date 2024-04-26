@@ -11,6 +11,10 @@ declaration:
       - field: slotName
         type: string
         description: "Body field 'slotName'"
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie field"
 
 assign_values:
   assign:

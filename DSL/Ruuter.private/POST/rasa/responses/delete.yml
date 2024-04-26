@@ -11,6 +11,10 @@ declaration:
       - field: response
         type: string
         description: "Body field 'response'"
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie field"
 
 assign_values:
   assign:

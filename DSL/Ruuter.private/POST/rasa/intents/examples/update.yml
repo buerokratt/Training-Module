@@ -17,6 +17,10 @@ declaration:
       - field: oldExample
         type: string
         description: "Body field 'oldExample'"
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie field"
 
 assign_values:
   assign:

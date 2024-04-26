@@ -11,6 +11,10 @@ declaration:
       - field: returnType
         type: string
         description: "Body field 'returnType'"
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie field"
 
 assignParameters:
   assign:
