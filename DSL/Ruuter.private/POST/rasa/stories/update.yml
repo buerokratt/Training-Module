@@ -1,3 +1,20 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'UPDATE'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    body:
+      - field: data
+        type: string
+        description: "Body field 'data'"
+      - field: id
+        type: string
+        description: "Body field 'id'"
+
 assign_values:
   assign:
     id: ${incoming.body.id}

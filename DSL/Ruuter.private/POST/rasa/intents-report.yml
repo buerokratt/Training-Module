@@ -1,3 +1,17 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'INTENTS-REPORT'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    body:
+      - field: id
+        type: string
+        description: "Body field 'id'"
+
 extract_request_data:
   assign:
     id: ${incoming.body.id}

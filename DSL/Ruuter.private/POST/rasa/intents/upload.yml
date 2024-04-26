@@ -1,3 +1,17 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'UPLOAD'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    params:
+      - field: intentName
+        type: string
+        description: "Parameter 'intentName'"
+
 assign_values:
   assign:
     intentName: ${incoming.params.intentName}

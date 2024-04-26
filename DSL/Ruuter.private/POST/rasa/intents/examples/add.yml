@@ -1,3 +1,23 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'ADD'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    body:
+      - field: intentExamples
+        type: string
+        description: "Body field 'intentExamples'"
+      - field: intentName
+        type: string
+        description: "Body field 'intentName'"
+      - field: newExamples
+        type: string
+        description: "Body field 'newExamples'"
+
 assign_values:
   assign:
     intentName: ${incoming.body.intentName.replaceAll(/\s+/g, "_")}

@@ -1,3 +1,17 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'FORMBYID'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    body:
+      - field: form
+        type: string
+        description: "Body field 'form'"
+
 assign_values:
   assign:
     form: ${incoming.body.form}

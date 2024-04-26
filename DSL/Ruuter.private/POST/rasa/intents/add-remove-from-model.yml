@@ -1,3 +1,17 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'ADD-REMOVE-FROM-MODEL'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    body:
+      - field: inModel
+        type: string
+        description: "Body field 'inModel'"
+
 assign_values:
   assign:
     intent: ${incoming.body.name.replaceAll(/\s+/g, "_")}

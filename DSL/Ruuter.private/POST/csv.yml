@@ -1,3 +1,23 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'CSV'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    body:
+      - field: data
+        type: string
+        description: "Body field 'data'"
+      - field: del
+        type: string
+        description: "Body field 'del'"
+      - field: qul
+        type: string
+        description: "Body field 'qul'"
+
 check_for_required_parameters:
   switch:
     - condition: ${incoming.body == null}

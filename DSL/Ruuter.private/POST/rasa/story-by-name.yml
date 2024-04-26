@@ -1,3 +1,12 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'STORY-BY-NAME'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+
 assign_values:
   assign:
     params: ${incoming.body}

@@ -1,9 +1,11 @@
 declaration:
   call: declare
-  allowlist:
-    body:
-      - field: role
-        type: string
+  version: 0.1
+  description: "Decription placeholder for 'EXTRACT-TOKEN'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
 
 extractTokenData:
   call: http.post

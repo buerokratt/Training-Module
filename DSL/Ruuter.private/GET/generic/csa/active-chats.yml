@@ -1,3 +1,12 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'ACTIVE-CHATS'"
+  method: get
+  accepts: json
+  returns: json
+  namespace: training
+
 step_1:
   call: reflect.mock
   args:
