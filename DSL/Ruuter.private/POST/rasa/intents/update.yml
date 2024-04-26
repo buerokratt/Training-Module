@@ -11,6 +11,9 @@ declaration:
       - field: newName
         type: string
         description: "Body field 'newName'"
+      - field: oldName
+        type: string
+        description: "Body field 'oldName'"
     headers:
       - field: cookie
         type: string

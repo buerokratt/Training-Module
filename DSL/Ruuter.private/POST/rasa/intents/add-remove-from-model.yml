@@ -8,6 +8,9 @@ declaration:
   namespace: training
   allowlist:
     body:
+      - field: name
+        type: string
+        description: "Body field 'name'"
       - field: inModel
         type: string
         description: "Body field 'inModel'"

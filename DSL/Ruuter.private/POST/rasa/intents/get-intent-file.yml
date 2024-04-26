@@ -11,6 +11,9 @@ declaration:
       - field: returnType
         type: string
         description: "Body field 'returnType'"
+      - field: intentName
+        type: string
+        description: "Body field 'intentName'"
     headers:
       - field: cookie
         type: string
