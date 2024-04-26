@@ -1,3 +1,29 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'RESPOND-TO-CONNECTION-REQUEST'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    body:
+      - field: authorRole
+        type: string
+        description: "Body field 'authorRole'"
+      - field: intent
+        type: string
+        description: "Body field 'intent'"
+      - field: serviceId
+        type: string
+        description: "Body field 'serviceId'"
+      - field: serviceName
+        type: string
+        description: "Body field 'serviceName'"
+      - field: status
+        type: string
+        description: "Body field 'status'"
+
 extract_request_data:
   assign:
     serviceId: ${incoming.body.serviceId}

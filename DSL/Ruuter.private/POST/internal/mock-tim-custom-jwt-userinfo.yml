@@ -1,3 +1,12 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'MOCK-TIM-CUSTOM-JWT-USERINFO'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+
 mockValue:
   call: reflect.mock
   args:

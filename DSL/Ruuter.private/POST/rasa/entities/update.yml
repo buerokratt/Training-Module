@@ -1,3 +1,27 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'UPDATE'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    body:
+      - field: entity_name
+        type: string
+        description: "Body field 'entity_name'"
+      - field: entity
+        type: json
+        description: "Body field 'entity'"
+      - field: intent
+        type: string
+        description: "Body field 'intent'"
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie field"
+
 assign_values:
   assign:
     parameters: ${incoming.body}

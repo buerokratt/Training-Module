@@ -1,3 +1,24 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'ADD'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    body:
+      - field: rule
+        type: json
+        description: "Body field 'rule'"
+      - field: story
+        type: json
+        description: "Body field 'story'"
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie field"
+
 assign_values:
   assign:
     body: ${incoming.body}
@@ -5,7 +26,7 @@ assign_values:
 validateRules:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/validate/validate-stories-rules"
+  url: "[#TRAINING_DMAPPER]/validate/validate-stories-rules"
     body:
       story: ${body}
       category: "rules"

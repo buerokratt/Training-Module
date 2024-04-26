@@ -1,3 +1,21 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'TURN-INTO-SERVICE'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    body:
+      - field: intentName
+        type: string
+        description: "Body field 'intentName'"
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie field"
+
 assign_values:
   assign:
     intentName: ${incoming.body.intentName.replaceAll(/\s+/g, "_")}

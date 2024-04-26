@@ -1,3 +1,12 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for '5772CB21-603E-4EB7-A2C2-F0AB1B0B2914'"
+  method: get
+  accepts: json
+  returns: json
+  namespace: training
+
 getData:
   call: reflect.mock
   args:

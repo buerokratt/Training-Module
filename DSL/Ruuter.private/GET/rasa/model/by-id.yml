@@ -1,3 +1,17 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'BY-ID'"
+  method: get
+  accepts: json
+  returns: json
+  namespace: training
+  allowedlist:
+    params:
+      - field: modelId
+        type: string
+        description: "Parameter 'modelId'"
+
 assignValues:
   assign:
     modelId: ${incoming}

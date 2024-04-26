@@ -1,3 +1,21 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'ADD'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    body:
+      - field: name
+        type: string
+        description: "Body field 'name'"
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie field"
+
 validateInputLength:
   switch:
     - condition: ${incoming.body.name.length > 2}

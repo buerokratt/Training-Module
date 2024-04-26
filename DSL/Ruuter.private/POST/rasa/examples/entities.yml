@@ -1,3 +1,17 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'ENTITIES'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    body:
+      - field: examples
+        type: array
+        description: "Body field 'examples'"
+
 assign_values:
   assign:
     params: ${incoming.body}

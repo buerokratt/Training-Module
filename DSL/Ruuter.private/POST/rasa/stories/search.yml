@@ -1,3 +1,20 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'SEARCH'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    body:
+      - field: type
+        type: string
+        description: "Body field 'type'"
+      - field: value
+        type: string
+        description: "Body field 'value'"
+
 assign_values:
   assign:
     params: ${incoming.body}

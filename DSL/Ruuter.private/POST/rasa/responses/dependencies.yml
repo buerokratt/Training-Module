@@ -1,3 +1,21 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'DEPENDENCIES'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    body:
+      - field: response_name
+        type: string
+        description: "Body field 'response_name'"
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie field"
+
 assign_values:
   assign:
     params: ${incoming.body}

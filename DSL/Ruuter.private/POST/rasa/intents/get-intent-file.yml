@@ -1,3 +1,24 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'GET-INTENT-FILE'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    body:
+      - field: returnType
+        type: string
+        description: "Body field 'returnType'"
+      - field: intentName
+        type: string
+        description: "Body field 'intentName'"
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie field"
+
 assignParameters:
   assign:
     intent: ${incoming.body.intentName.replaceAll(/\s+/g, "_")}

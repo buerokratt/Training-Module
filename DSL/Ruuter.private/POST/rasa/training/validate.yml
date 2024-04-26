@@ -1,3 +1,17 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'VALIDATE'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    body:
+      - field: command
+        type: string
+        description: "Body field 'command'"
+
 extractRequestData:
   assign:
     parameters: ${incoming.body}

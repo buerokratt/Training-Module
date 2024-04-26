@@ -1,3 +1,24 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'UPDATE-EXAMPLE'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    body:
+      - field: input
+        type: json
+        description: "Body field 'input'"
+      - field: regex_name
+        type: string
+        description: "Body field 'regex_name'"
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie field"
+
 assign_values:
   assign:
     parameters: ${incoming.body}

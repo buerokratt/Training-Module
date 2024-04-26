@@ -1,3 +1,17 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'ADD-NEW-MODEL'"
+  method: get
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie field"
+
 getDockerFile:
   call: http.get
   args:
