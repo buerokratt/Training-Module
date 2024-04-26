@@ -7,6 +7,13 @@ declaration:
   returns: json
   namespace: training
   allowlist:
+    body:
+      - field: input
+        type: json
+        description: "Body field 'input'"
+      - field: regex_name
+        type: string
+        description: "Body field 'regex_name'"
     headers:
       - field: cookie
         type: string

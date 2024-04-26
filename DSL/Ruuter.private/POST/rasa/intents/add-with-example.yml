@@ -9,7 +9,7 @@ declaration:
   allowlist:
     body:
       - field: newExamples
-        type: string
+        type: array
         description: "Body field 'newExamples'"
       - field: intentName
         type: string

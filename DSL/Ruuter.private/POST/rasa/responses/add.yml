@@ -7,6 +7,13 @@ declaration:
   returns: json
   namespace: training
   allowlist:
+    body:
+      - field: response_name
+        type: string
+        description: "Body field 'response_name'"
+      - field: response
+        type: string
+        description: "Body field 'response'"
     headers:
       - field: cookie
         type: string

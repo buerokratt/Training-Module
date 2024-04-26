@@ -6,6 +6,11 @@ declaration:
   accepts: json
   returns: json
   namespace: training
+  allowlist:
+    body:
+      - field: examples
+        type: array
+        description: "Body field 'examples'"
 
 assign_values:
   assign:

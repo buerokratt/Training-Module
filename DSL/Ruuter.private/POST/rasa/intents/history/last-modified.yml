@@ -6,6 +6,11 @@ declaration:
   accepts: json
   returns: json
   namespace: training
+  allowlist:
+    body:
+      - field: intent
+        type: string
+        description: "Body field 'intent'"
 
 assign_values:
   assign:

@@ -7,6 +7,10 @@ declaration:
   returns: json
   namespace: training
   allowlist:
+    body:
+      - field: intent
+        type: string
+        description: "Body field 'intent'"
     headers:
       - field: cookie
         type: string

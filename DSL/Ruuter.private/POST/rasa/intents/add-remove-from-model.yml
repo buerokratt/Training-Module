@@ -12,7 +12,7 @@ declaration:
         type: string
         description: "Body field 'name'"
       - field: inModel
-        type: string
+        type: boolean
         description: "Body field 'inModel'"
     headers:
       - field: cookie

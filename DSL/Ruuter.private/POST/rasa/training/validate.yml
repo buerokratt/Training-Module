@@ -6,6 +6,11 @@ declaration:
   accepts: json
   returns: json
   namespace: training
+  allowlist:
+    body:
+      - field: command
+        type: string
+        description: "Body field 'command'"
 
 extractRequestData:
   assign:

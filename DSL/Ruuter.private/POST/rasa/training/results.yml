@@ -7,6 +7,10 @@ declaration:
   returns: json
   namespace: training
   allowlist:
+    body:
+      - field: trained_model
+        type: string
+        description: "Body field 'trained_model'"
     headers:
       - field: cookie
         type: string
