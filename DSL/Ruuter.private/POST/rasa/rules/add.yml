@@ -7,6 +7,13 @@ declaration:
   returns: json
   namespace: training
   allowlist:
+    body:
+      - field: rule
+        type: json
+        description: "Body field 'rule'"
+      - field: story
+        type: json
+        description: "Body field 'story'"
     headers:
       - field: cookie
         type: string
@@ -19,7 +26,7 @@ assign_values:
 validateRules:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/validate/validate-stories-rules"
+  url: "[#TRAINING_DMAPPER]/validate/validate-stories-rules"
     body:
       story: ${body}
       category: "rules"

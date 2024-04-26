@@ -6,6 +6,11 @@ declaration:
   accepts: json
   returns: json
   namespace: training
+  allowedlist:
+    params:
+      - field: modelId
+        type: string
+        description: "Parameter 'modelId'"
 
 assignValues:
   assign:
