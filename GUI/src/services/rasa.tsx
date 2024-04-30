@@ -4,16 +4,29 @@ export const generateStoryStepsFromNodes = (nodes: Node[]) =>
     nodes.map(({ data: { type, label, payload, checkpoint }}) => {
         switch (type) {
             case 'intentNode':
-                return {
-                    intent: label,
-                    entities: payload.entities || [],
-                };
+                if (payload.entities === undefined) {
+                    return {
+                        intent: label,
+                        entities: [],
+                    };
+                } else if (payload.entities.length > 0 &&
+                    typeof payload.entities[0] === 'string') {
+                    return {
+                        intent: label,
+                        entities: payload.entities || []
+                    };
+                } else {
+                    return {
+                        intent: label,
+                        entities: payload.entities.map((entity) => entity.value) || [],
+                    };
+                }
             case 'responseNode':
-                return { action: label };
+                return { response: label };
             case 'formNode':
                 return {
-                    action: label,
-                    active_loop: payload.active_loop !== undefined ? payload.active_loop : null,
+                    form: label,
+                    active_loop: payload.active_loop !== undefined ? payload.active_loop : true,
                 };
             case 'slotNode':
                 return {
@@ -26,9 +39,22 @@ export const generateStoryStepsFromNodes = (nodes: Node[]) =>
                     ? { action: payload?.value || label }
                     : { action: label };
             case 'conditionNode':
+                let conditions: { active_loop?: any; slot?: any; value?: any; }[] = [];
+
+                payload.conditions.forEach((condition: { active_loop: { value: any; }; slot: { value: any; }; value: any; }) => {
+                    if (condition.active_loop) {
+                        conditions.push({ "active_loop": condition.active_loop.value });
+                    }
+                    if (condition.slot) {
+                        conditions.push({ "slot": condition.slot.value });
+                        conditions.push({ "value": condition.value });
+                    }
+                });
+
                 return {
-                    condition: payload.conditions || [],
+                    condition: conditions,
                 };
+
             default:
                 return null;
         }
@@ -60,13 +86,16 @@ export const generateNodesFromStorySteps = (steps): Node[] =>
             type = 'intentNode';
             className = 'intent';
             label = step.intent;
-            payload = {
-                entities: step.entities?.map((entity) => {
-                    return {
-                        value: Object.keys(entity)[0],
-                    };
-                }) || [],
-            };
+            if (step.entities !== undefined) {
+                payload = {
+                    entities: step.entities.map((entityObj: {}) => {
+                        const key = Object.keys(entityObj)[0];
+                        return { label: key, value: key };
+                    }) || [],
+                };
+            } else {
+                payload = { entities: [] };
+            }
         } else if (step.action) {
             if (step.active_loop !== undefined) {
                 type = 'formNode';
