@@ -1,7 +1,7 @@
 declaration:
   call: declare
   version: 0.1
-  description: "Decription placeholder for 'ACTIVE-CHATS'"
+  description: "Decription placeholder for 'ACTIVE'"
   method: get
   accepts: json
   returns: json

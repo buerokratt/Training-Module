@@ -28,7 +28,6 @@ import {
   setToLocalStorage,
 } from '../../../utils/local-storage-utils';
 import { CHAT_HISTORY_PREFERENCES_KEY } from 'constants/config';
-import apigeneric from '../../../services/apigeneric';
 import useStore from '../../../store/store';
 import { useToast } from '../../../hooks/useToast';
 import { AxiosError } from 'axios';
@@ -112,7 +111,7 @@ const History: FC = () => {
 
   const getAllEndedChats = useMutation({
     mutationFn: (data: { startDate: string; endDate: string }) => {
-      return apiDev.post('csa/ended-chats', {
+      return apiDev.post('agents/chats/ended', {
         startDate: data.startDate,
         endDate: data.endDate,
       });
