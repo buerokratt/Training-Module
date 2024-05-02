@@ -25,7 +25,7 @@ const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
     const { data } = await apiGeneric.get(queryKey[0] as string);
     return data?.response;
   }
-  if (queryKey.includes('user-profile-settings')) {
+  if (queryKey.includes('settings')) {
     const { data } = await apiTraining.get(queryKey[0] as string);
     return data;
   }
