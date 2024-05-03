@@ -5,8 +5,8 @@ CREATE TYPE author_role AS ENUM ('trainer', 'service_manager', 'admin');
 
 CREATE TABLE service_trigger (
   id BIGSERIAL PRIMARY KEY,
-  intent VARCHAR NOT NULL,
-  service VARCHAR NOT NULL,
+  intent VARCHAR(250) NOT NULL,
+  service VARCHAR(250) NOT NULL,
   status trigger_status NOT NULL DEFAULT 'pending',
   author_role author_role NOT NULL DEFAULT 'trainer',
   created TIMESTAMPTZ NOT NULL DEFAULT NOW()

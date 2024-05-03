@@ -83,7 +83,7 @@ const Intents: FC = () => {
     });
   }
 
-  const getExampleArrayForIntentId = (intent: Intent): string[] => {
+  const getExampleArrayForIntentId = (): string[] => {
     if (selectedIntent) {
       return selectedIntent.examples;
     } else {
@@ -97,11 +97,8 @@ const Intents: FC = () => {
       queryClient.fetchQuery(['intents/full']).then(() => {
         setRefreshing(false);
         if (intents.length > 0) {
-          setSelectedIntent(() => {
-            return (
-              intents.find((intent) => intent.intent === selectIntent) || null
-            );
-          });
+          const newSelectedIntent = intents.find((intent) => intent.intent === selectIntent) || null;
+          setSelectedIntent(newSelectedIntent);
         }
       });
     },
@@ -143,7 +140,7 @@ const Intents: FC = () => {
     onSuccess: async () => {
       await queryClient.invalidateQueries(['intents/full']);
       await queryClient.refetchQueries(['intents/full']);
-      getExampleArrayForIntentId(selectedIntent as Intent).push('');
+      getExampleArrayForIntentId().push('');
       setRefreshing(false);
       if (selectedIntent) {
         setRefreshing(false);
@@ -649,9 +646,9 @@ const Intents: FC = () => {
                 </Track>
               </div>
               <div className="vertical-tabs__content">
-                {getExampleArrayForIntentId(selectedIntent) && (
+                {getExampleArrayForIntentId() && (
                   <IntentExamplesTable
-                    examples={getExampleArrayForIntentId(selectedIntent)}
+                    examples={getExampleArrayForIntentId()}
                     onAddNewExample={handleNewExample}
                     entities={entities ?? []}
                     selectedIntent={selectedIntent}

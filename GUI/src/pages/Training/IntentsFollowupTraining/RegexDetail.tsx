@@ -303,38 +303,36 @@ const RegexDetail: FC = () => {
     }),
   ], [columnHelper, editableRow, t]);
 
-  const inputRef = useRef<HTMLInputElement | null>(null);
-
-  const handleRegexExamplesUpload = (regexId: string | number) => {
+  const handleRegexExamplesUpload = () => {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = '.csv';
     input.onchange = ((e) => {
-      const files = (e.target as HTMLInputElement).files ?? [];
-
-      if (!files) {
-        return;
-      }
-      const file: File = files[0];
-      if (file) {
-        const fileReader = new FileReader();
-        fileReader.onload = function (event) {
-          const csvOutput: string = event?.target?.result as string ?? '';
-          let result = Papa.parse(csvOutput);
-          const data: string[] = result.data as string[] ?? []
-          data.splice(0,1);
-          const res = data.map((e) => (e[1]));
-          if(res.length !== 0 && regex) {
-            regexExampleAddMutation.mutate({ regex_name: regex.name,examples: res });
-          }
-        };
-
-        fileReader.readAsText(file);
-      }
-
+      const files = (e.target as HTMLInputElement).files;
+      if (files && files.length > 0)
+        uploadFiles(files);
     });
     input.click();
   };
+
+  const uploadFiles = (files: FileList) => {
+    const file: File = files[0];
+    if (file) {
+      const fileReader = new FileReader();
+      fileReader.onload = (event) => {
+        const csvOutput: string = event?.target?.result as string ?? '';
+        let result = Papa.parse(csvOutput);
+        const data: string[] = result.data as string[] ?? []
+        data.splice(0,1);
+        const res = data.map((e) => (e[1]));
+        if(res.length !== 0 && regex) {
+          regexExampleAddMutation.mutate({ regex_name: regex.name,examples: res });
+        }
+      };
+
+      fileReader.readAsText(file);
+    }
+  }
 
   const handleRegexExamplesDownload = (regexId: string | number) => {
     downloadExamplesMutation.mutate({
@@ -397,19 +395,11 @@ const RegexDetail: FC = () => {
                     </Button>
                   )}
                 </Track>
-                {/*<p style={{ color: '#4D4F5D' }}>*/}
-                {/*  {`${t('global.modifiedAt')} ${format(*/}
-                {/*    new Date(regex.modifiedAt),*/}
-                {/*    'dd.MM.yyyy',*/}
-                {/*  )}`}*/}
-                {/*</p>*/}
               </Track>
               <Track justify='end' gap={8}>
                 <Button
                   appearance='secondary'
-                  onClick={() =>
-                    handleRegexExamplesUpload(regex.id)
-                  }
+                  onClick={handleRegexExamplesUpload}
                 >
                   {t('training.intents.upload')}
                 </Button>

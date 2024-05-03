@@ -83,9 +83,7 @@ const Chat: FC<ChatProps> = ({ chat, onChatEnd, onForwardToColleauge, onForwardT
     chatRef.current.scrollIntoView({ block: 'end', inline: 'end' });
   }, [messageGroups]);
 
-  const handleResponseTextSend = () => {
-
-  };
+  const onMessageSelect = (message: Message) => setSelectedMessages(prevState => [...prevState, message]);
 
   return (
     <div className='active-chat'>
@@ -119,7 +117,7 @@ const Chat: FC<ChatProps> = ({ chat, onChatEnd, onForwardToColleauge, onForwardT
                       <ChatMessage
                         message={message}
                         key={`message-${i}`}
-                        onSelect={(message) => setSelectedMessages(prevState => [...prevState, message])}
+                        onSelect={onMessageSelect}
                       />
                     ))}
                   </div>
@@ -138,7 +136,7 @@ const Chat: FC<ChatProps> = ({ chat, onChatEnd, onForwardToColleauge, onForwardT
             onChange={(e) => setResponseText(e.target.value)}
           />
           <div className='active-chat__toolbar-actions'>
-            <Button appearance='primary' onClick={handleResponseTextSend}>
+            <Button appearance='primary'>
               <Icon icon={<MdOutlineSend fontSize={18} />} size='medium' />
             </Button>
             <Button appearance='secondary'>

@@ -119,10 +119,18 @@ const HistoricalChat: FC<ChatProps> = ({ chat, trigger }) => {
     return '';
   };
 
-  const endUserFullName =
-    chat.endUserFirstName !== '' && chat.endUserLastName !== ''
+
+  const getUserName = (message: Message) => {
+    const endUserFullName = chat.endUserFirstName !== '' && chat.endUserLastName !== ''
       ? `${chat.endUserFirstName} ${chat.endUserLastName}`
       : t('global.anonymous');
+
+    if(message.authorRole === 'end-user')
+      return endUserFullName;
+    if(message.authorRole === 'backoffice-user')
+      return `${message.authorFirstName} ${message.authorLastName}`;
+    return message.authorRole;
+  }
 
   useEffect(() => {
     if (!messagesList) return;
@@ -130,39 +138,25 @@ const HistoricalChat: FC<ChatProps> = ({ chat, trigger }) => {
     messagesList.forEach((message) => {
       message.event = message.event?.toLowerCase();
       const lastGroup = groupedMessages[groupedMessages.length - 1];
-      if (lastGroup?.type === message.authorRole) {
-        if (!message.event || message.event.toLowerCase() === 'greeting') {
-          lastGroup.messages.push(message);
-        } else {
-          groupedMessages.push({
-            name: '',
-            type: 'event',
-            messages: [message],
-          });
-        }
+      const isGreeting = !message.event || message.event.toLowerCase() === 'greeting';
+      if (lastGroup?.type === message.authorRole && isGreeting) {
+        lastGroup.messages.push(message);
+      } else if (isGreeting) {
+        groupedMessages.push({
+          name: getUserName(message),
+          type: message.authorRole,
+          messages: [message],
+        });
       } else {
-        if (!message.event || message.event.toLowerCase() === 'greeting') {
-          groupedMessages.push({
-            name:
-              message.authorRole === 'end-user'
-                ? endUserFullName
-                : message.authorRole === 'backoffice-user'
-                ? `${message.authorFirstName} ${message.authorLastName}`
-                : message.authorRole,
-            type: message.authorRole,
-            messages: [message],
-          });
-        } else {
-          groupedMessages.push({
-            name: '',
-            type: 'event',
-            messages: [message],
-          });
-        }
+        groupedMessages.push({
+          name: '',
+          type: 'event',
+          messages: [message],
+        });
       }
     });
     setMessageGroups(groupedMessages);
-  }, [messagesList, endUserFullName]);
+  }, [messagesList]);
 
   useEffect(() => {
     if (!chatRef.current || !messageGroups) return;
