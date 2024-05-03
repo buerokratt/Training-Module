@@ -118,7 +118,7 @@ const ConnectionRequests: React.FC = () => {
     [appRequestColumnHelper, t]
   );
 
-  if (!triggers || isLoading) return <label>Loading ... </label>;
+  if (!triggers || isLoading) return <span>Loading ... </span>;
 
   return (
     <>

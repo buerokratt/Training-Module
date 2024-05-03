@@ -156,13 +156,13 @@ const Responses: FC = () => {
   const columnHelper = createColumnHelper<typeof formattedResponses[0]>();
 
   const getRules = (responseId: string) => {
-    const dependency = dependencies && dependencies.response.find(d => d.name === responseId);
-    return dependency ? dependency.rules.map((name, i) => <p key={i}>{name}</p>) : null;
+    const dependency = dependencies?.response.find(d => d.name === responseId);
+    return dependency?.rules.map((name, i) => <p key={name}>{name}</p>);
   };
 
   const getStories = (responseId: string) => {
-    const dependency = dependencies && dependencies.response.find(d => d.name === responseId);
-    return dependency ? dependency.stories.map((name, i) => <p key={i}>{name}</p>) : null;
+    const dependency = dependencies?.response.find(d => d.name === responseId);
+    return dependency?.stories.map((name, i) => <p key={name}>{name}</p>);
   };
 
   const responsesColumns = useMemo(() => [
@@ -319,7 +319,7 @@ const Responses: FC = () => {
         />
       </Card>
 
-      {/* TODO: Refactor dialog content */}
+      {/* Refactor dialog content later */}
       {deletableRow !== null && (
         <Dialog
           title={t('training.responses.deleteResponse')}

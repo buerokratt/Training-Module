@@ -15,10 +15,10 @@ const ChatMessage: FC<ChatMessageProps> = ({ message, onSelect }) => {
 
   return (
     <div className={clsx('active-chat__message', { 'active-chat__message--selected': selected })}>
-      <div className='active-chat__message-text' onClick={() => {
+      <button className='active-chat__message-text' onClick={() => {
         setSelected(!selected);
         onSelect(message);
-      }}>{message.content}</div>
+      }}>{message.content}</button>
       <time dateTime={message.authorTimestamp} className='active-chat__message-date'>
         {format(new Date(message.authorTimestamp), 'HH:ii:ss')}
       </time>

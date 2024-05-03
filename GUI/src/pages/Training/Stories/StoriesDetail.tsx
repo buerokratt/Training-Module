@@ -97,7 +97,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   useDocumentEscapeListener(() => setEditableTitle(null));
 
   useEffect(() => {
-    if (location.state && location.state.category) {
+    if (location.state?.category) {
       setCategory(location.state.category);
       if (location.state.id) {
         setEditableTitle(location.state.id);
@@ -297,19 +297,13 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   const handleMutationLoadingAfterPopulateTable = async (data) => {
     let updatedData;
 
-    if (setCurrentEntityId === undefined) {
-      if (category === 'rules') {
-        setCurrentEntityId(editableTitle);
-        await refetchCurrentEntity();
-        updatedData = refetchCurrentEntity();
-      } else {
-        setCurrentEntityId(editableTitle);
-        await refetchCurrentEntity();
-        updatedData = refetchCurrentEntity();
-      }
+    if (!currentEntityId && editableTitle) {
+      setCurrentEntityId(editableTitle);
+      await refetchCurrentEntity();
+      updatedData = refetchCurrentEntity();
     }
 
-    updatedData.then((storyOrRuleObject) => {
+    updatedData?.then((storyOrRuleObject) => {
       if (mode === 'new' && (storyOrRuleObject.data != null && (storyOrRuleObject.data.story === editableTitle ||
                                                                 storyOrRuleObject.data.rule === editableTitle))) {
         setRefreshing(false);

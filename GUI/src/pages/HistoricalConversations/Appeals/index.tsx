@@ -18,7 +18,7 @@ const Appeals: FC = () => {
   const toast = useToast();
   const [filter, setFilter] = useState('');
   const [addFormVisible, setAddFormVisible] = useState(false);
-  const [processedAppeals, setProcessedAppeals] = useState<Record<string, string | null> | null>(null);
+  const [, setProcessedAppeals] = useState<Record<string, string | null> | null>(null);
   const [deletableAppeal, setDeletableAppeal] = useState<string | number | null>(null);
   const { data: appeals } = useQuery<Appeal[]>({
     queryKey: ['appeals'],
@@ -98,10 +98,6 @@ const Appeals: FC = () => {
           name='intent'
           label={t('training.intents.title')}
           hideLabel
-          // onSelectionChange={(selection) => setProcessedAppeals((prevState) => ({
-          //   ...prevState,
-          //   [props.row.original.appeal]: selection?.value ?? null,
-          // }))}
           options={intents?.map((intent) => ({
             label: intent.intent,
             value: intent.intent,
@@ -109,12 +105,6 @@ const Appeals: FC = () => {
         />
       ),
     }),
-    // columnHelper.display({
-    //   id: 'save',
-    //   cell: (props) => processedAppeals?.[props.row.original.appeal] ? (
-    //     <Button appearance='text'>{t('global.save')}</Button>
-    //   ) : null,
-    // }),
     columnHelper.display({
       id: 'save',
       meta: {

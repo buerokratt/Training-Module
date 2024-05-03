@@ -1,6 +1,5 @@
 import Layout from './Layout';
 import Button from './Button';
-//import Header from './Header';
 import Icon from './Icon';
 import Track from './Track';
 import {
@@ -33,7 +32,6 @@ import Modal from './Modal';
 export {
   Layout,
   Button,
-  //Header,
   Icon,
   Track,
   Tooltip,

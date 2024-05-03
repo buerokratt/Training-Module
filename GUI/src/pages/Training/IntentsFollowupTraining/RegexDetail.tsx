@@ -74,7 +74,7 @@ const RegexDetail: FC = () => {
   });
 
   let regexData = useMemo(
-    () => regex && regex.examples.map((e, index) => ({ id: index, value: e })),
+    () => regex?.examples.map((e, index) => ({ id: index, value: e })),
     [regex],
   );
 
@@ -83,7 +83,7 @@ const RegexDetail: FC = () => {
   }).map((e) => ({ label: e.name, value: String(e.id) })), [entities, regexList]);
 
   useEffect(() => {
-    const result = regex && regex.examples.map((e, index) => ({ id: index, value: e }));
+    const result = regex?.examples.map((e, index) => ({ id: index, value: e }));
     setRegexList(result ?? []);
     setEditRegexName((availableEntities && availableEntities.length > 0) ? availableEntities[0].label : '');
   }, [regex?.examples, regex?.name, availableEntities?.length,regex])

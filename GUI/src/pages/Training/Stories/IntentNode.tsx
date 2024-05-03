@@ -30,7 +30,7 @@ type IntentPayload = {
   entities?: ({
     label: string;
     value: string;
-  } | undefined)[] | undefined;
+  } | undefined)[];
 }
 
 type EntityPayload = (string | undefined)[] | undefined;

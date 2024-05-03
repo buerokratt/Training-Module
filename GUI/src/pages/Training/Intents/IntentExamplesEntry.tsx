@@ -21,7 +21,6 @@ const IntentExamplesEntry: FC<IntentExamplesEntryProps> = ({ value, entities, on
   const { t } = useTranslation();
   const toast = useToast();
   const [ref, setRef] = useState<HTMLElement | null>(null);
-  const [editableEntity, setEditableEntity] = useState<string | null>(null);
   const { register, handleSubmit } = useForm<{ entity: string }>({
     mode: 'onChange',
     shouldUnregister: true,
@@ -44,11 +43,6 @@ const IntentExamplesEntry: FC<IntentExamplesEntryProps> = ({ value, entities, on
       });
     },
   });
-
-  const handleExampleEntityEdit = () => {
-    if (!editableEntity) return;
-    // TODO: Add endpoint for mocking entity edit
-  };
 
   const handleEntityAdd = handleSubmit((data) => {
     console.log(data);

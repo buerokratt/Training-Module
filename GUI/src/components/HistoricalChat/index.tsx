@@ -1,6 +1,6 @@
 import { FC, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import clsx from 'clsx';
 
@@ -168,14 +168,13 @@ const HistoricalChat: FC<ChatProps> = ({ chat, trigger }) => {
       <div className="historical-chat">
         <div className="historical-chat__body">
           <div className="historical-chat__group-wrapper">
-            {messageGroups &&
-              messageGroups.map((group, index) => (
+            {messageGroups?.map((group) => (
                 <div
                   className={clsx([
                     'historical-chat__group',
                     `historical-chat__group--${group.type}`,
                   ])}
-                  key={`group-${index}`}
+                  key={`group-${group.type}-${group.name}`}
                 >
                   {group.type === 'event' ? (
                     <ChatEvent message={group.messages[0]} />
@@ -202,7 +201,7 @@ const HistoricalChat: FC<ChatProps> = ({ chat, trigger }) => {
                         {group.messages.map((message, i) => (
                           <ChatMessage
                             message={message}
-                            key={`message-${i}`}
+                            key={`message-${message.id}-${message.created}-${message.authorTimestamp}`}
                             onMessageClick={(message) =>
                               setMarkedMessage(message)
                             }
