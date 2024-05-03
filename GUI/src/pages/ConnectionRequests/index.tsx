@@ -50,72 +50,11 @@ const ConnectionRequests: React.FC = () => {
     }
   }, [isError]);
 
-  const appRequestColumnHelper = createColumnHelper<Trigger>();
   const appRequestColumns = useMemo(
-    () => [
-      appRequestColumnHelper.accessor("intent", {
-        header: "Intent",
-        cell: (uniqueIdentifier) => uniqueIdentifier.getValue(),
-      }),
-      appRequestColumnHelper.accessor("serviceName", {
-        header: "Service",
-        cell: (uniqueIdentifier) => uniqueIdentifier.getValue(),
-      }),
-      appRequestColumnHelper.accessor("requestedAt", {
-        header: "Requested At",
-        cell: (props) => <span>{format(new Date(props.getValue()), "dd-MM-yyyy HH:mm:ss")}</span>,
-      }),
-      appRequestColumnHelper.display({
-        header: "",
-        cell: (props) => (
-          <Button appearance='icon'>
-            <Icon
-              icon={
-                <AiFillCheckCircle
-                  fontSize={22}
-                  color="rgba(34,139,34, 1)"
-                  onClick={() => updateRequestStatus.mutate({ request: props.row.original, status: 'approved' })}
-                />
-              }
-              size="medium"
-            />
-          </Button>
-        ),
-        id: "approve",
-        meta: {
-          size: "1%",
-        },
-      }),
-      appRequestColumnHelper.display({
-        header: "",
-        cell: (props) => (
-          <Button appearance='icon'>
-            <Icon
-              icon={
-                <AiFillCloseCircle
-                  fontSize={22}
-                  color="rgba(210, 4, 45, 1)"
-                  onClick={() => updateRequestStatus.mutate({ request: props.row.original, status: 'declined' })}
-                />
-              }
-              size="medium"
-            />
-          </Button>
-        ),
-        id: "reject",
-        meta: {
-          size: "1%",
-        },
-      }),
-      appRequestColumnHelper.display({
-        header: "",
-        id: "space",
-        meta: {
-          size: "1%",
-        },
-      }),
-    ],
-    [appRequestColumnHelper, t]
+    () => getColumns(
+      (trigger) => updateRequestStatus.mutate({ request: trigger, status: 'approved' }),
+      (trigger) => updateRequestStatus.mutate({ request: trigger, status: 'declined' })),
+    []
   );
 
   if (!triggers || isLoading) return <span>Loading ... </span>;
@@ -133,5 +72,76 @@ const ConnectionRequests: React.FC = () => {
     </>
   );
 };
+
+const getColumns = (
+  onApprove: (trigger: Trigger) => void,
+  onDecline: (trigger: Trigger) => void,
+) => {
+  const appRequestColumnHelper = createColumnHelper<Trigger>();
+
+  return [
+    appRequestColumnHelper.accessor("intent", {
+      header: "Intent",
+      cell: (uniqueIdentifier) => uniqueIdentifier.getValue(),
+    }),
+    appRequestColumnHelper.accessor("serviceName", {
+      header: "Service",
+      cell: (uniqueIdentifier) => uniqueIdentifier.getValue(),
+    }),
+    appRequestColumnHelper.accessor("requestedAt", {
+      header: "Requested At",
+      cell: (props) => <span>{format(new Date(props.getValue()), "dd-MM-yyyy HH:mm:ss")}</span>,
+    }),
+    appRequestColumnHelper.display({
+      header: "",
+      cell: (props) => (
+        <Button appearance='icon'>
+          <Icon
+            icon={
+              <AiFillCheckCircle
+                fontSize={22}
+                color="rgba(34,139,34, 1)"
+                onClick={() => onApprove(props.row.original)}
+              />
+            }
+            size="medium"
+          />
+        </Button>
+      ),
+      id: "approve",
+      meta: {
+        size: "1%",
+      },
+    }),
+    appRequestColumnHelper.display({
+      header: "",
+      cell: (props) => (
+        <Button appearance='icon'>
+          <Icon
+            icon={
+              <AiFillCloseCircle
+                fontSize={22}
+                color="rgba(210, 4, 45, 1)"
+                onClick={() => onDecline(props.row.original)}
+              />
+            }
+            size="medium"
+          />
+        </Button>
+      ),
+      id: "reject",
+      meta: {
+        size: "1%",
+      },
+    }),
+    appRequestColumnHelper.display({
+      header: "",
+      id: "space",
+      meta: {
+        size: "1%",
+      },
+    }),
+  ];
+}
 
 export default ConnectionRequests;

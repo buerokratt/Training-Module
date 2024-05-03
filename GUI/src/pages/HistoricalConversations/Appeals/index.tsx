@@ -11,6 +11,7 @@ import { Appeal } from 'types/appeal';
 import { Intent } from 'types/intent';
 import { addAppeal, deleteAppeal } from 'services/appeals';
 import { useToast } from 'hooks/useToast';
+import i18n from '../../../../i18n';
 
 const Appeals: FC = () => {
   const { t } = useTranslation();
@@ -71,66 +72,8 @@ const Appeals: FC = () => {
     onSettled: () => setDeletableAppeal(null),
   });
 
-  const columnHelper = createColumnHelper<Appeal>();
 
-  const appealsColumns = useMemo(() => [
-    columnHelper.accessor('appeal', {
-      header: t('training.historicalConversations.appeals') || '',
-      cell: (props) => (
-        <FormInput
-          label={t('training.historicalConversations.appeal')}
-          hideLabel
-          name='appeal'
-          defaultValue={props.getValue()}
-        />
-      ),
-    }),
-    columnHelper.accessor('intent', {
-      header: t('training.intents.title') || '',
-      cell: (props) => (
-        <FormSelect
-          name='intent'
-          label={t('training.intents.title')}
-          hideLabel
-          options={intents?.map((intent) => ({
-            label: intent.intent,
-            value: intent.intent,
-          })) || []}
-        />
-      ),
-    }),
-    columnHelper.display({
-      id: 'save',
-      meta: {
-        size: '1%',
-      },
-      cell: (props) => (
-        <Button appearance='text' onClick={() => handleNewAppealSubmit()}>
-          <Icon
-            label={t('global.save')}
-            icon={<MdOutlineSave color={'rgba(0,0,0,0.54)'} />}
-          />
-          {t('global.save')}
-        </Button>
-      ) 
-    }),
-    columnHelper.display({
-      header: '',
-      cell: (props) => (
-        <Button appearance='text' onClick={() => setDeletableAppeal(props.row.original.id)}>
-          <Icon
-            label={t('global.delete')}
-            icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />}
-          />
-          {t('global.delete')}
-        </Button>
-      ),
-      id: 'delete',
-      meta: {
-        size: '1%',
-      },
-    }),
-  ], [columnHelper, intents, t]);
+  const appealsColumns = useMemo(() => getColumns(handleNewAppealSubmit, setDeletableAppeal, intents), [intents]);
 
   if (!appeals) return <>Loading...</>;
 
@@ -204,5 +147,72 @@ const Appeals: FC = () => {
     </>
   );
 };
+
+const getColumns = (
+  handleNewAppealSubmit: () => void,
+  setDeletableAppeal: (id: number) => void,
+  intents?: Intent[],
+) => {
+  const columnHelper = createColumnHelper<Appeal>();
+
+  return [
+    columnHelper.accessor('appeal', {
+      header: i18n.t('training.historicalConversations.appeals') || '',
+      cell: (props) => (
+        <FormInput
+          label={i18n.t('training.historicalConversations.appeal')}
+          hideLabel
+          name='appeal'
+          defaultValue={props.getValue()}
+        />
+      ),
+    }),
+    columnHelper.accessor('intent', {
+      header: i18n.t('training.intents.title') || '',
+      cell: (props) => (
+        <FormSelect
+          name='intent'
+          label={i18n.t('training.intents.title')}
+          hideLabel
+          options={intents?.map((intent) => ({
+            label: intent.intent,
+            value: intent.intent,
+          })) || []}
+        />
+      ),
+    }),
+    columnHelper.display({
+      id: 'save',
+      meta: {
+        size: '1%',
+      },
+      cell: (props) => (
+        <Button appearance='text' onClick={() => handleNewAppealSubmit()}>
+          <Icon
+            label={i18n.t('global.save')}
+            icon={<MdOutlineSave color={'rgba(0,0,0,0.54)'} />}
+          />
+          {i18n.t('global.save')}
+        </Button>
+      ) 
+    }),
+    columnHelper.display({
+      header: '',
+      cell: (props) => (
+        <Button appearance='text' onClick={() => setDeletableAppeal(props.row.original.id)}>
+          <Icon
+            label={i18n.t('global.delete')}
+            icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />}
+          />
+          {i18n.t('global.delete')}
+        </Button>
+      ),
+      id: 'delete',
+      meta: {
+        size: '1%',
+      },
+    }),
+  ]
+}
 
 export default Appeals;
