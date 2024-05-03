@@ -21,7 +21,6 @@ class ActionDealWithAffirmationAnswer(Action):
             domain: Dict[Text, Any]
             ) -> List['Event']:
 	
-        affirmdeny_value = tracker.get_slot("affirm_deny")
         intent = tracker.latest_message['intent'].get('name')
 
         events = tracker.events_after_latest_restart()[-25:]

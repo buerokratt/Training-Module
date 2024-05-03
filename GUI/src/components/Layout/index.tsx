@@ -9,7 +9,7 @@ import {useToast} from "../../hooks/useToast";
 
 const Layout: FC = () => {   const CACHE_NAME = 'mainmenu-cache';
 
-    const [MainMenuItems, setMainMenuItems] = useState([])
+    const [mainMenuItems, setMainMenuItems] = useState([])
 
     useQuery({
         queryKey: [import.meta.env.REACT_APP_MENU_URL + import.meta.env.REACT_APP_MENU_PATH],
@@ -27,13 +27,13 @@ const Layout: FC = () => {   const CACHE_NAME = 'mainmenu-cache';
   });
 
     function getCache(): any {
-        const cache = localStorage.getItem(CACHE_NAME) || '{}';
+        const cache = localStorage.getItem(CACHE_NAME) ?? '{}';
         return JSON.parse(cache);
     }
 
     return (
         <div className="layout">
-            <MainNavigation serviceId={import.meta.env.REACT_APP_SERVICE_ID.split(',')} items={MainMenuItems}/>
+            <MainNavigation serviceId={import.meta.env.REACT_APP_SERVICE_ID.split(',')} items={mainMenuItems}/>
             <div className="layout__wrapper">
                 <Header
                     toastContext={useToast()}

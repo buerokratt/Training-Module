@@ -9,10 +9,18 @@ export const getColumns = ({
   copyValueToClipboard,
   setSelectedChat,
 }:{
-  copyValueToClipboard: (value: string) => void,
+  copyValueToClipboard: (value: string) => Promise<void>,
   setSelectedChat: (chat: ChatType) => void,
 }) => {
   const columnHelper = createColumnHelper<ChatType>();
+
+  const getStatus = (original: ChatType, status: CHAT_STATUS) => {
+    if(status !== CHAT_STATUS.ENDED)
+      return '';
+    if (original.lastMessageEvent != null && original.lastMessageEvent !== 'message-read')
+      return i18n.t('chat.plainEvents.' + original.lastMessageEvent);
+    return i18n.t('chat.status.ended');
+  }
 
   return [
     columnHelper.accessor('created', {
@@ -64,29 +72,20 @@ export const getColumns = ({
     }),
     columnHelper.accessor('labels', {
       header: i18n.t('chat.history.label') || '',
-      cell: (props) => <span></span>,
+      cell: () => <span></span>,
     }),
     columnHelper.accessor('status', {
       id: 'status',
       header: i18n.t('global.status') || '',
-      cell: (props) =>
-        props.getValue() === CHAT_STATUS.ENDED
-          ? props.row.original.lastMessageEvent != null &&
-            props.row.original.lastMessageEvent !== 'message-read'
-            ? i18n.t(
-                'chat.plainEvents.' + props.row.original.lastMessageEvent ??
-                  ''
-              )
-            : i18n.t('chat.status.ended')
-          : '',
+      cell: (props) => getStatus(props.row.original, props.getValue()),
       sortingFn: (a, b, isAsc) => {
         const statusA =
           a.getValue('status') === CHAT_STATUS.ENDED
-            ? i18n.t('chat.plainEvents.' + (a.original.lastMessageEvent ?? ''))
+            ? i18n.t('chat.plainEvents.' + a.original.lastMessageEvent)
             : '';
         const statusB =
           b.getValue('status') === CHAT_STATUS.ENDED
-            ? i18n.t('chat.plainEvents.' + (b.original.lastMessageEvent ?? ''))
+            ? i18n.t('chat.plainEvents.' + b.original.lastMessageEvent)
             : '';
         return (
           statusA.localeCompare(statusB, undefined, {

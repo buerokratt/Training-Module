@@ -37,12 +37,12 @@ const Stories: FC = () => {
 
   useEffect(() => {
     if (selectedTab === 'stories' && storiesResponse) {
-      setStories(storiesResponse.response.map((r, i) => ({
+      setStories(storiesResponse.response.map((r) => ({
         id: r.id,
         story: r.id
       })));
     } else if (selectedTab === 'rules' && rulesResponse) {
-      setRules(rulesResponse.response.map((r, i) => ({
+      setRules(rulesResponse.response.map((r) => ({
         id: r.id,
         rule: r.id
       })));

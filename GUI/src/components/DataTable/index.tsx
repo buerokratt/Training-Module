@@ -51,12 +51,6 @@ type DataTableProps = {
   meta?: TableMeta<any>;
 }
 
-type ColumnMeta = {
-  meta: {
-    size: number | string;
-  }
-}
-
 declare module '@tanstack/table-core' {
   interface FilterFns {
     fuzzy: FilterFn<unknown>;
@@ -72,8 +66,6 @@ declare module '@tanstack/react-table' {
     getRowStyles: (row: Row<TData>) => CSSProperties;
   }
 }
-
-type CustomColumnDef = ColumnDef<any> & ColumnMeta;
 
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   const itemRank = rankItem(row.getValue(columnId), value);
@@ -132,8 +124,6 @@ const DataTable: FC<DataTableProps> = (
   });
 
   return (
-
-    <>
     <div className='data-table__wrapper'>
       <div className='data-table__scrollWrapper'>
       <table className='data-table'>
@@ -142,26 +132,24 @@ const DataTable: FC<DataTableProps> = (
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <th key={header.id} style={{ width: (header.column.columnDef as CustomColumnDef).meta?.size }}>
-                  {header.isPlaceholder ? null : (
-                    <>
-                      <Track gap={8}>
-                        {sortable && header.column.getCanSort() && (
-                          <button onClick={header.column.getToggleSortingHandler()}>
-                            {{
-                              asc: <Icon icon={<MdExpandMore fontSize={20} />} size='medium' />,
-                              desc: <Icon icon={<MdExpandLess fontSize={20} />} size='medium' />,
-                            }[header.column.getIsSorted() as string] ?? (
-                              <Icon icon={<MdUnfoldMore fontSize={22} />} size='medium' />
-                            )}
-                          </button>
-                        )}
-                        {flexRender(header.column.columnDef.header, header.getContext())}
-                        {filterable && header.column.getCanFilter() && (
-                          <Filter column={header.column} table={table} />
-                        )}
-                      </Track>
-                    </>
+                <th key={header.id} style={{ width: header.column.columnDef.size }}>
+                  {header.isPlaceholder && (
+                    <Track gap={8}>
+                      {sortable && header.column.getCanSort() && (
+                        <button onClick={header.column.getToggleSortingHandler()}>
+                          {{
+                            asc: <Icon icon={<MdExpandMore fontSize={20} />} size='medium' />,
+                            desc: <Icon icon={<MdExpandLess fontSize={20} />} size='medium' />,
+                          }[header.column.getIsSorted() as string] ?? (
+                            <Icon icon={<MdUnfoldMore fontSize={22} />} size='medium' />
+                          )}
+                        </button>
+                      )}
+                      {flexRender(header.column.columnDef.header, header.getContext())}
+                      {filterable && header.column.getCanFilter() && (
+                        <Filter column={header.column} table={table} />
+                      )}
+                    </Track>
                   )}
                 </th>
               ))}
@@ -241,7 +229,6 @@ const DataTable: FC<DataTableProps> = (
         </div>
       )}
     </div>
-          </>
   );
 };
 

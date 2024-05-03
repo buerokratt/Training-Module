@@ -9,7 +9,6 @@ type SwitchProps = Partial<ControllerRenderProps> & {
   onLabel?: string;
   offLabel?: string;
   onColor?: string;
-  name: string;
   label: string;
   checked?: boolean;
   defaultChecked?: boolean;

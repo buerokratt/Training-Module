@@ -44,7 +44,11 @@ export const getColumns = ({
     columnHelper.accessor('precision', {
         header: i18n.t('training.mba.precision') || '',
         cell: (props) => (
-            <ColumnContainer original={props.row.original}>{props.row.original.intent === 'accuracy' ? accuracyValue : props.getValue() ? truncateNumber(props.getValue()) : undefined}</ColumnContainer>
+            <ColumnContainer original={props.row.original}>{
+              props.row.original.intent === 'accuracy' 
+              ? accuracyValue 
+              : props.getValue() &&  truncateNumber(props.getValue()) 
+              }</ColumnContainer>
         ),
     }),
     columnHelper.accessor('recall', {

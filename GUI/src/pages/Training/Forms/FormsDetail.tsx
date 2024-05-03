@@ -41,7 +41,7 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
     setSelectedSlots(values);
   };
 
-  const { register, formState: { errors },control, handleSubmit, reset,setValue } = useForm<FormCreateDTO>({
+  const { register, control, handleSubmit, reset,setValue } = useForm<FormCreateDTO>({
     mode: 'onChange',
     shouldUnregister: true,
   });

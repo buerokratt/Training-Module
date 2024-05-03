@@ -16,8 +16,8 @@ const Configuration: FC = () => {
   const toast = useToast();
   const queryClient = useQueryClient();
   const [initialConfig, setInitialConfig] = useState<Config | null>(null);
-  const [selectedComponent, setSelectedComponent] = useState<PipelineComponent | null>(null);
-  const [selectedPolicy, setSelectedPolicy] = useState<Policy | null>(null);
+  const [, setSelectedComponent] = useState<PipelineComponent | null>(null);
+  const [, setSelectedPolicy] = useState<Policy | null>(null);
   const { register, control, reset, handleSubmit, formState: { isDirty } } = useForm<Config>();
   const { data: configurationData } = useQuery<Config>({
     queryKey: ['active-configuration'],
