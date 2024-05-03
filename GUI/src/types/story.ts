@@ -1,4 +1,5 @@
 export interface Story {
+  id: string;
   story: string;
   steps: string | string[];
 }
