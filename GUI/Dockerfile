@@ -1,7 +1,13 @@
-ARG node_version=node:lts
-ARG nginx_version=nginx:1.21.3-alpine
+ARG node_version=node:22-alpine
+ARG nginx_version=nginx:1.25.4-alpine
 
 FROM $node_version AS image
+
+RUN addgroup -S nonroot \
+    && adduser -S nonroot -G nonroot
+
+USER nonroot
+
 WORKDIR /usr/training-module
 COPY ./package*.json ./
 
