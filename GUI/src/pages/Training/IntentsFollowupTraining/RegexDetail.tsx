@@ -25,6 +25,7 @@ import {
   editRegexExample
 } from 'services/regex';
 import { Entity } from 'types/entity';
+import i18n from '../../../../i18n';
 
 type Regex = {
   readonly id: string;
@@ -214,7 +215,6 @@ const RegexDetail: FC = () => {
     onSettled: () => { },
   });
 
-  const columnHelper = createColumnHelper<{ id: number; value: string }>();
 
   const handleEditableRow = (example: { id: number; value: string }) => {
     setEditableRow(example);
@@ -231,76 +231,20 @@ const RegexDetail: FC = () => {
     updatedExampleName = newName;
   }
 
-  const regexColumns = useMemo(() => [
-    columnHelper.accessor('value', {
-      header: t('training.intents.examples') || '',
-      cell: (props) => (
-        editableRow && editableRow.id === props.row.original.id ? (
-          <FormInput
-            name={`example-${props.row.original.id}`}
-            label=''
-            defaultValue={editableRow.value}
-            hideLabel
-            onChange={(e) => newExampleName(e.target.value)}
-          />
-        ) : props.getValue()
-      ),
-    }),
-    columnHelper.display({
-      header: '',
-      cell: (props) => (
-        <>
-          {editableRow && editableRow.id === props.row.original.id ? (
-            <Button appearance='text' onClick={() => regexExampleEditMutation.mutate({
-              regex_name: regex!.name,
-              input: {
-                regex: regex!.name,
-                example: props.row.original.value,
-                newExample: updatedExampleName ?? props.row.original.value
-              },
-            })}>
-              <Icon
-                label={t('global.save')}
-                icon={<MdOutlineSave color={'rgba(0,0,0,0.54)'} />}
-              />
-              {t('global.save')}
-            </Button>
-          ) : (
-            <Button
-              appearance='text'
-              onClick={() => handleEditableRow(props.row.original)}
-            >
-              <Icon
-                label={t('global.edit')}
-                icon={<MdOutlineModeEditOutline color={'rgba(0,0,0,0.54)'} />}
-              />
-              {t('global.edit')}
-            </Button>
-          )}
-        </>
-      ),
-      id: 'edit',
-      meta: {
-        size: '1%',
+  const regexColumns = useMemo(() => getColumns(
+    editableRow,
+    setDeletableRow,
+    (value) => regexExampleEditMutation.mutate({
+      regex_name: regex!.name,
+      input: {
+        regex: regex!.name,
+        example: value,
+        newExample: updatedExampleName ?? value
       },
     }),
-    columnHelper.display({
-      header: '',
-      cell: (props) => (
-        <Button appearance='text' onClick={() => setDeletableRow(props.row.original.value)}>
-          <Icon
-            label={t('global.delete')}
-            icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />}
-          />
-          {t('global.delete')}
-        </Button>
-      ),
-      id: 'delete',
-      meta: {
-        size: '1%',
-      },
-    }),
-  ], [columnHelper, editableRow, t]);
+    handleEditableRow,
+    newExampleName,
+  ), [editableRow]);
 
   const handleRegexExamplesUpload = () => {
     const input = document.createElement('input');
@@ -495,5 +439,80 @@ const RegexDetail: FC = () => {
     </>
   );
 };
+
+const getColumns = (
+  editableRow: { id: number; value: string } | null,
+  setDeletableRow: (id: string) => void,
+  onSaveClick: (value: string) => void,
+  handleEditableRow: (row: { id: number; value: string }) => void,
+  newExampleName: (value: string) => void,
+) => {
+  const columnHelper = createColumnHelper<{ id: number; value: string }>();
+  
+  return [
+    columnHelper.accessor('value', {
+      header: i18n.t('training.intents.examples') || '',
+      cell: (props) => (
+        editableRow?.id === props.row.original.id ? (
+          <FormInput
+            name={`example-${props.row.original.id}`}
+            label=''
+            defaultValue={editableRow.value}
+            hideLabel
+            onChange={(e) => newExampleName(e.target.value)}
+          />
+        ) : props.getValue()
+      ),
+    }),
+    columnHelper.display({
+      header: '',
+      cell: (props) => (
+        <>
+          {editableRow && editableRow.id === props.row.original.id ? (
+            <Button appearance='text' onClick={() => onSaveClick(props.row.original.value)}>
+              <Icon
+                label={i18n.t('global.save')}
+                icon={<MdOutlineSave color={'rgba(0,0,0,0.54)'} />}
+              />
+              {i18n.t('global.save')}
+            </Button>
+          ) : (
+            <Button
+              appearance='text'
+              onClick={() => handleEditableRow(props.row.original)}
+            >
+              <Icon
+                label={i18n.t('global.edit')}
+                icon={<MdOutlineModeEditOutline color={'rgba(0,0,0,0.54)'} />}
+              />
+              {i18n.t('global.edit')}
+            </Button>
+          )}
+        </>
+      ),
+      id: 'edit',
+      meta: {
+        size: '1%',
+      },
+    }),
+    columnHelper.display({
+      header: '',
+      cell: (props) => (
+        <Button appearance='text' onClick={() => setDeletableRow(props.row.original.value)}>
+          <Icon
+            label={i18n.t('global.delete')}
+            icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />}
+          />
+          {i18n.t('global.delete')}
+        </Button>
+      ),
+      id: 'delete',
+      meta: {
+        size: '1%',
+      },
+    }),
+  
+  ];
+}
 
 export default RegexDetail;

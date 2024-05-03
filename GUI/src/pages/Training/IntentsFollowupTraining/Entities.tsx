@@ -12,6 +12,7 @@ import { useToast } from 'hooks/useToast';
 import { addEntity, deleteEntity, editEntity } from 'services/entities';
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import i18n from '../../../../i18n';
 
 const Entities: FC = () => {
   let newEntityName = '';
@@ -99,99 +100,23 @@ const Entities: FC = () => {
     onSettled: () => setDeletableRow(null),
   });
 
-  const columnHelper = createColumnHelper<Entity>();
-
   const updateEntityName = (newName: string) => {
     newEntityName = newName;
   }
 
-  const entitiesColumns = useMemo(() => [
-    columnHelper.accessor('name', {
-      header: t('training.intents.entities') || '',
-      cell: (props) => editableRow && editableRow.id === props.row.original.id ? (
-        <FormInput
-          name={`entity-${props.row.original.id}`}
-          label={t('training.intents.entity')}
-          defaultValue={editableRow.name}
-          onChange={(e) => updateEntityName(e.target.value)}
-          hideLabel
-        />
-      ) : props.row.original.relatedIntents ? (
-        <Tooltip content={
-          <Track direction='vertical' align='left'>
-            <strong>{t('training.intents.title')}</strong>
-            {props.row.original.relatedIntents.map((intent) => (
-              <Link
-                key={intent}
-                style={{ color: '#005AA3' }}
-                to={intent.startsWith('common')
-                  ? `/training/common-intents?intent=${intent}#tabs`
-                  : `/treening/treening/teemad?intent=${intent}#tabs`
-                }
-              >
-                {intent}
-              </Link>
-            ))}
-          </Track>
-        }>
-          <span style={{ color: '#005AA3' }}>{props.getValue()}</span>
-        </Tooltip>
-      ) : props.getValue(),
-    }),
-    columnHelper.display({
-      header: '',
-      cell: (props) => (
-        <>
-          {editableRow && editableRow.id === props.row.original.id ? (
-            <Button appearance='text' onClick={() => entityEditMutation.mutate({
-              data: {
-                entity_name: props.row.original.name,
-                entity: newEntityName,
-                intent: 'regex'
-              },
-            })}>
-              <Icon
-                label={t('global.save')}
-                icon={<MdOutlineSave color={'rgba(0,0,0,0.54)'} />}
-              />
-              {t('global.save')}
-            </Button>
-          ) : (
-            <Button
-              appearance='text'
-              onClick={() => handleEditableRow(props.row.original)}
-            >
-              <Icon
-                label={t('global.edit')}
-                icon={<MdOutlineModeEditOutline color={'rgba(0,0,0,0.54)'} />}
-              />
-              {t('global.edit')}
-            </Button>
-          )}
-        </>
-      ),
-      id: 'edit',
-      meta: {
-        size: '1%',
+  const entitiesColumns = useMemo(() => getColumns(
+    editableRow,
+    updateEntityName,
+    handleEditableRow,
+    setDeletableRow,
+    (name) => entityEditMutation.mutate({
+      data: {
+        entity_name: name,
+        entity: newEntityName,
+        intent: 'regex'
       },
-    }),
-    columnHelper.display({
-      header: '',
-      cell: (props) => (
-        <Button appearance='text' onClick={() => setDeletableRow(props.row.original.id)}>
-          <Icon
-            label={t('global.delete')}
-            icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />}
-          />
-          {t('global.delete')}
-        </Button>
-      ),
-      id: 'delete',
-      meta: {
-        size: '1%',
-      },
-    }),
-  ], [columnHelper, editableRow, entityEditMutation, t]);
+    })),
+    [editableRow]);
 
   const handleNewEntitySubmit = handleSubmit((data) => {
     entityAddMutation.mutate(data);
@@ -260,5 +185,101 @@ const Entities: FC = () => {
     </>
   );
 };
+
+const getColumns = (
+  editableRow: { id: number; name: string; } | null,
+  updateEntityName: (newName: string) => void,
+  handleEditableRow: (entity: Entity) => void,
+  setDeletableRow: (id: number) => void,
+  onSaveClick: (name: string) => void,
+) => {
+  const columnHelper = createColumnHelper<Entity>();
+
+  const buildEntity = (entity: Entity, value: string) => {
+    if(editableRow?.id === entity.id) {
+      return (
+        <FormInput
+        name={`entity-${entity.id}`}
+        label={i18n.t('training.intents.entity')}
+        defaultValue={editableRow.name}
+        onChange={(e) => updateEntityName(e.target.value)}
+        hideLabel />
+      )
+    }
+    if(entity.relatedIntents) {
+      return (
+        <Tooltip content={<Track direction='vertical' align='left'>
+          <strong>{i18n.t('training.intents.title')}</strong>
+          {entity.relatedIntents.map((intent) => (
+            <Link
+              key={intent}
+              style={{ color: '#005AA3' }}
+              to={intent.startsWith('common')
+                ? `/training/common-intents?intent=${intent}#tabs`
+                : `/treening/treening/teemad?intent=${intent}#tabs`}
+            >
+              {intent}
+            </Link>
+          ))}
+        </Track>}>
+          <span style={{ color: '#005AA3' }}>{value}</span>
+        </Tooltip>
+      )
+    }
+
+    return (<>{value}</>)
+  }
+
+  return [
+    columnHelper.accessor('name', {
+      header: i18n.t('training.intents.entities') || '',
+      cell: (props) => buildEntity(props.row.original, props.getValue()),
+    }),
+    columnHelper.display({
+      header: '',
+      cell: (props) => (
+        <>
+          {editableRow && editableRow.id === props.row.original.id ? (
+            <Button appearance='text' onClick={() => onSaveClick(props.row.original.name)}>
+              <Icon
+                label={i18n.t('global.save')}
+                icon={<MdOutlineSave color={'rgba(0,0,0,0.54)'} />} />
+              {i18n.t('global.save')}
+            </Button>
+          ) : (
+            <Button
+              appearance='text'
+              onClick={() => handleEditableRow(props.row.original)}
+            >
+              <Icon
+                label={i18n.t('global.edit')}
+                icon={<MdOutlineModeEditOutline color={'rgba(0,0,0,0.54)'} />} />
+              {i18n.t('global.edit')}
+            </Button>
+          )}
+        </>
+      ),
+      id: 'edit',
+      meta: {
+        size: '1%',
+      },
+    }),
+    columnHelper.display({
+      header: '',
+      cell: (props) => (
+        <Button appearance='text' onClick={() => setDeletableRow(props.row.original.id)}>
+          <Icon
+            label={i18n.t('global.delete')}
+            icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />} />
+          {i18n.t('global.delete')}
+        </Button>
+      ),
+      id: 'delete',
+      meta: {
+        size: '1%',
+      },
+    }),
+  ];
+}
 
 export default Entities;

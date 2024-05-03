@@ -10,6 +10,7 @@ import { Entity } from 'types/entity';
 import { useToast } from 'hooks/useToast';
 import { deleteEntity } from 'services/entities';
 import { useForm } from 'react-hook-form';
+import i18n from '../../../../i18n';
 
 type IntentExamplesEntryProps = {
   value: string;
@@ -48,35 +49,9 @@ const IntentExamplesEntry: FC<IntentExamplesEntryProps> = ({ value, entities, on
     console.log(data);
   });
 
-  const parsedEntry = useMemo(() => regexifyString({
-    pattern: /\[(.+?)\]\((.+?)\)/gmu,
-    decorator: (match, index, result) => (
-      <Tooltip content={
-        <Track direction='vertical' gap={4} align='left' style={{ padding: 8 }}>
-          <h4>{result?.[1]}</h4>
-          <FormSelect
-            label={t('training.intents.entity')}
-            hideLabel
-            name='entity'
-            defaultValue={entities.find((e) => e.name === result?.[2])?.id + ''}
-            options={entities.map((e) => ({ label: e.name, value: e.id + '' }))}
-          />
-          <Track gap={4}>
-            <Button
-              appearance='error'
-              onClick={() => entityDeleteMutation.mutate({ id: value })}
-            >
-              {t('global.delete')}
-            </Button>
-            <Button>{t('global.save')}</Button>
-          </Track>
-        </Track>
-      }>
-        <span className='entity'>{result?.[1]}<span>{result?.[2]}</span></span>
-      </Tooltip>
-    ),
-    input: value,
-  }), [entities, entityDeleteMutation, t, value]);
+  const parsedEntry = useMemo(
+    () => getRegexifiedString(entities, value, () => entityDeleteMutation.mutate({ id: value })), 
+  [entities, value]);
 
   return (
     <>
@@ -138,5 +113,34 @@ const IntentExamplesEntry: FC<IntentExamplesEntryProps> = ({ value, entities, on
     </>
   );
 };
+
+const getRegexifiedString = (entities: Entity[], value: string, onClick: () => void) => {
+  return regexifyString({
+    pattern: /\[(.+?)\]\((.+?)\)/gmu,
+    decorator: (match, index, result) => (
+      <Tooltip content={<Track direction='vertical' gap={4} align='left' style={{ padding: 8 }}>
+        <h4>{result?.[1]}</h4>
+        <FormSelect
+          label={i18n.t('training.intents.entity')}
+          hideLabel
+          name='entity'
+          defaultValue={entities.find((e) => e.name === result?.[2])?.id + ''}
+          options={entities.map((e) => ({ label: e.name, value: e.id + '' }))} />
+        <Track gap={4}>
+          <Button
+            appearance='error'
+            onClick={onClick}
+          >
+            {i18n.t('global.delete')}
+          </Button>
+          <Button>{i18n.t('global.save')}</Button>
+        </Track>
+      </Track>}>
+        <span className='entity'>{result?.[1]}<span>{result?.[2]}</span></span>
+      </Tooltip>
+    ),
+    input: value,
+  });
+}
 
 export default IntentExamplesEntry;

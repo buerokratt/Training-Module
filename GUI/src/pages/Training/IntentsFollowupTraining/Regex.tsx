@@ -2,7 +2,7 @@ import {FC, useMemo, useState} from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
-import { useNavigate } from 'react-router-dom';
+import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import { useForm, Controller } from 'react-hook-form';
 import { MdDeleteOutline, MdOutlineEdit } from 'react-icons/md';
@@ -11,6 +11,7 @@ import { Button, DataTable, Dialog, FormInput, FormSelect, Icon, Track } from 'c
 import { useToast } from 'hooks/useToast';
 import { addRegex, deleteRegex } from 'services/regex';
 import { Entity } from 'types/entity';
+import i18n from '../../../../i18n';
 
 type RegexTeaser = {
   readonly id: number;
@@ -81,46 +82,7 @@ const Regex: FC = () => {
     onSettled: () => setDeletableRow(null),
   });
 
-  const columnHelper = createColumnHelper<RegexTeaser>();
-
-  const regexColumns = useMemo(() => [
-    columnHelper.accessor('name', {
-      header: t('training.intents.entities') || '',
-    }),
-    columnHelper.display({
-      header: '',
-      cell: (props) => (
-        <Button appearance='text'
-                onClick={() => navigate(`/training/regex/${props.row.original.id}`)}>
-          <Icon
-            label={t('global.edit')}
-            icon={<MdOutlineEdit color={'rgba(0,0,0,0.54)'} />}
-          />
-          {t('global.edit')}
-        </Button>
-      ),
-      id: 'edit',
-      meta: {
-        size: '1%',
-      },
-    }),
-    columnHelper.display({
-      header: '',
-      cell: (props) => (
-        <Button appearance='text' onClick={() => setDeletableRow(props.row.original.id)}>
-          <Icon
-            label={t('global.delete')}
-            icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />}
-          />
-          {t('global.delete')}
-        </Button>
-      ),
-      id: 'delete',
-      meta: {
-        size: '1%',
-      },
-    }),
-  ], [columnHelper, navigate, t]);
+  const regexColumns = useMemo(() => getColumns(navigate, setDeletableRow), []);
 
   const handleNewRegexSubmit = handleSubmit((data) => {
     if(selectedRegex) {
@@ -199,5 +161,51 @@ const Regex: FC = () => {
     </>
   );
 };
+
+const getColumns = (
+  navigate: NavigateFunction,
+  setDeletableRow: (id: number) => void,
+) => {
+  const columnHelper = createColumnHelper<RegexTeaser>();
+
+  return [
+    columnHelper.accessor('name', {
+      header: i18n.t('training.intents.entities') || '',
+    }),
+    columnHelper.display({
+      header: '',
+      cell: (props) => (
+        <Button appearance='text'
+                onClick={() => navigate(`/training/regex/${props.row.original.id}`)}>
+          <Icon
+            label={i18n.t('global.edit')}
+            icon={<MdOutlineEdit color={'rgba(0,0,0,0.54)'} />}
+          />
+          {i18n.t('global.edit')}
+        </Button>
+      ),
+      id: 'edit',
+      meta: {
+        size: '1%',
+      },
+    }),
+    columnHelper.display({
+      header: '',
+      cell: (props) => (
+        <Button appearance='text' onClick={() => setDeletableRow(props.row.original.id)}>
+          <Icon
+            label={i18n.t('global.delete')}
+            icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />}
+          />
+          {i18n.t('global.delete')}
+        </Button>
+      ),
+      id: 'delete',
+      meta: {
+        size: '1%',
+      },
+    }),
+  ]
+}
 
 export default Regex;

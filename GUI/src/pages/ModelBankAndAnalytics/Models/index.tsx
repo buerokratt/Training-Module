@@ -12,6 +12,7 @@ import { Model, ModelStateType, UpdateModelDTO } from 'types/model';
 import { activateModel, deleteModel } from 'services/models';
 import { useToast } from 'hooks/useToast';
 import { DATETIME_FORMAT } from 'utils/datetime-fromat';
+import i18n from '../../../../i18n';
 
 const Models: FC = () => {
   const { t } = useTranslation();
@@ -65,66 +66,7 @@ const Models: FC = () => {
     onSettled: () => setDeletableModel(null),
   });
 
-  const columnHelper = createColumnHelper<Model>();
-
-  const modelsColumns = useMemo(() => [
-    columnHelper.accessor('name', {
-      header: t('global.name') || '',
-      cell: (props) => (
-        <Button appearance='text' onClick={() => setSelectedModel(props.row.original)}>
-          {props.getValue()}
-        </Button>
-      ),
-    }),
-    columnHelper.display({
-      id: 'compare',
-      cell: (props) => (
-        <Link to={String(props.row.original.id)} style={{ color: '#005AA3' }}>
-          {t('training.mba.compareResults')}
-        </Link>
-      ),
-    }),
-    columnHelper.accessor('lastTrained', {
-      header: t('training.mba.lastTrained') || '',
-      cell: (props) =>
-        props.getValue()
-          ? format(new Date(props.getValue()), DATETIME_FORMAT)
-          : null,
-    }),
-    columnHelper.accessor('state', {
-      header: t('training.mba.state') || '',
-      cell: (props) => renderState(props.getValue()),
-    }),
-    columnHelper.accessor('state', {
-      header: t('training.mba.live') || '',
-      cell: (props) => renderDeployedIcon(props.getValue()),
-      meta: { size: '1%' },
-    }),
-  ], [columnHelper, t]);
-
-  const renderState = (value: ModelStateType) => {
-    if(!value) {
-      return null;
-    }
-    return (
-      <span style={{ color: getModelStatusColor(value) }}>
-        {value}
-      </span>
-    )
-  }
-
-  const renderDeployedIcon = (value: ModelStateType) => {
-    if(value !== 'DEPLOYED') {
-      return null;
-    }
-
-    return (
-      <Track gap={8} style={{ whiteSpace: 'nowrap', color: '#308653' }}>
-        <Icon icon={<MdOutlineSettingsInputAntenna fontSize={24} />} size='medium' />
-        <p>{t('training.mba.modelInUse')}</p>
-      </Track>
-    );
-  }
+  const modelsColumns = useMemo(() => getColumns(setSelectedModel), []);
 
   return (
     <>
@@ -218,6 +160,71 @@ function getModelStatusColor(status: ModelStateType): string {
     case 'Removed': return '#AAA';
     default: return '#000';
   }
+}
+
+const getColumns = (
+  setSelectedModel: (model: Model) => void,
+) => {
+  const columnHelper = createColumnHelper<Model>();
+
+  const renderState = (value: ModelStateType) => {
+    if(!value) {
+      return null;
+    }
+    return (
+      <span style={{ color: getModelStatusColor(value) }}>
+        {value}
+      </span>
+    )
+  }
+
+  const renderDeployedIcon = (value: ModelStateType) => {
+    if(value !== 'DEPLOYED') {
+      return null;
+    }
+
+    return (
+      <Track gap={8} style={{ whiteSpace: 'nowrap', color: '#308653' }}>
+        <Icon icon={<MdOutlineSettingsInputAntenna fontSize={24} />} size='medium' />
+        <p>{i18n.t('training.mba.modelInUse')}</p>
+      </Track>
+    );
+  }
+
+  return [
+    columnHelper.accessor('name', {
+      header: i18n.t('global.name') || '',
+      cell: (props) => (
+        <Button appearance='text' onClick={() => setSelectedModel(props.row.original)}>
+          {props.getValue()}
+        </Button>
+      ),
+    }),
+    columnHelper.display({
+      id: 'compare',
+      cell: (props) => (
+        <Link to={String(props.row.original.id)} style={{ color: '#005AA3' }}>
+          {i18n.t('training.mba.compareResults')}
+        </Link>
+      ),
+    }),
+    columnHelper.accessor('lastTrained', {
+      header: i18n.t('training.mba.lastTrained') || '',
+      cell: (props) =>
+        props.getValue()
+          ? format(new Date(props.getValue()), DATETIME_FORMAT)
+          : null,
+    }),
+    columnHelper.accessor('state', {
+      header: i18n.t('training.mba.state') || '',
+      cell: (props) => renderState(props.getValue()),
+    }),
+    columnHelper.accessor('state', {
+      header: i18n.t('training.mba.live') || '',
+      cell: (props) => renderDeployedIcon(props.getValue()),
+      meta: { size: '1%' },
+    }),
+  ]
 }
 
 export default Models;
