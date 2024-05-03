@@ -33,14 +33,14 @@ const FormDaySelect: FC<Props> = ({ onCheckedChange, value }) => {
       const newData = [...data];
       newData[i] = { id, checked, name };
       setData(newData);
-      onCheckedChange && onCheckedChange(newData);
+      onCheckedChange?.(newData);
     };
   return (
     <div className={styles.container}>
       {data.map((day, i) => {
         const index = i + 1;
         return (
-          <div key={i} className={styles.inputs}>
+          <div key={`${day.id}-${day.name}`} className={styles.inputs}>
             <input
               type="checkbox"
               name={t(day.name).toString()}

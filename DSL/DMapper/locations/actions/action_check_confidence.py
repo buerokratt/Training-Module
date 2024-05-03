@@ -30,6 +30,4 @@ class AskForSlotAction(Action):
         if intent_ranking[0].get("confidence", 0) < self.LOWEST_CONFIDENCE:
         	return [FollowupAction(name = "utter_ei_pakkunud_õigesti"), SlotSet("affirm_deny",None)]
         else:
-            return [FollowupAction(name = "utter_not_confident"), SlotSet("affirm_deny",None)]
-
-        return  []
+          return [FollowupAction(name = "utter_not_confident"), SlotSet("affirm_deny",None)]

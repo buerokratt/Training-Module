@@ -24,16 +24,10 @@ class ActionDealWithAffirmationAnswer(Action):
         affirmdeny_value = tracker.get_slot("affirm_deny")
         intent = tracker.latest_message['intent'].get('name')
 
-        if intent == "common_kinnitamine": #Siin suunatakse klienditeenindajale intenti kaudu
+        if intent == "common_kinnitamine" or affirmdeny_value.lower() in self.affirm_list:  #Siin suunatakse klienditeenindajale listi kaudu #Siin suunatakse klienditeenindajale intenti kaudu
             dispatcher.utter_message(response="utter_common_klienditeenindajale_suunamine")
             return [SlotSet("affirm_deny",None)]
-        elif affirmdeny_value.lower() in self.affirm_list: #Siin suunatakse klienditeenindajale listi kaudu
-            dispatcher.utter_message(response="utter_common_klienditeenindajale_suunamine")
-            return [SlotSet("affirm_deny",None)]
-        elif intent == "common_eitamine": # Bot ütleb selge, head päeva intent eituse kaudu
-            dispatcher.utter_message(response="utter_common_ei_suuna_klienditeenindajale")
-            return [SlotSet("affirm_deny",None)]
-        elif affirmdeny_value.lower() in self.deny_list: # Bot ütleb selge, head päeva eituse listi kaudu
+        elif intent == "common_eitamine" or affirmdeny_value.lower() in self.deny_list: # Bot ütleb selge, head päeva intent eituse kaudu # Bot ütleb selge, head päeva eituse listi kaudu
             dispatcher.utter_message(response="utter_common_ei_suuna_klienditeenindajale")
             return [SlotSet("affirm_deny",None)]
         elif intent == "nlu_fallback": # Fallbacki puhul küsib korra uuesti, kas tahtis klienditeendindajat

@@ -64,7 +64,8 @@ const FormCheckboxesWithInput = forwardRef<HTMLInputElement, FormCheckboxesType>
         const handleCheckboxChange = (e: ChangeEvent<HTMLInputElement>) => {
             items.map((element) => {
                 if(element.label === e.target.value) {
-                    return element.checked = !element.checked;
+                  element.checked = !element.checked;
+                  return element.checked;
                 }
                 return element;
             })

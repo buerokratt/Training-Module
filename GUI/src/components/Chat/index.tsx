@@ -1,14 +1,12 @@
-import { FC, useEffect, useMemo, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { et } from 'date-fns/locale';
 import clsx from 'clsx';
 import { MdOutlineAttachFile, MdOutlineSend } from 'react-icons/md';
-
 import { Button, FormInput, Icon, Track } from 'components';
 import { ReactComponent as BykLogoWhite } from 'assets/logo-white.svg';
-import useUserInfoStore from 'store/store';
 import { Chat as ChatType } from 'types/chat';
 import { Message } from 'types/message';
 import ChatMessage from './ChatMessage';
@@ -31,22 +29,24 @@ type GroupedMessage = {
 
 const Chat: FC<ChatProps> = ({ chat, onChatEnd, onForwardToColleauge, onForwardToEstablishment, onSendToEmail }) => {
   const { t } = useTranslation();
-  const { userInfo } = useUserInfoStore();
   const chatRef = useRef<HTMLDivElement>(null);
   const [messageGroups, setMessageGroups] = useState<GroupedMessage[]>([]);
-  const [responseText, setResponseText] = useState('');
-  const [selectedMessages, setSelectedMessages] = useState<Message[]>([]);
+  const [, setResponseText] = useState('');
+  const [, setSelectedMessages] = useState<Message[]>([]);
   const { data: messages } = useQuery<Message[]>({
     queryKey: [`cs-get-messages-by-chat-id/${chat.id}`],
   });
 
-  const hasAccessToActions = useMemo(() => {
-    if (chat.customerSupportId === userInfo?.idCode) return true;
-    return false;
-  }, [chat, userInfo]);
-
   const endUserFullName = chat.endUserFirstName !== '' && chat.endUserLastName !== ''
     ? `${chat.endUserFirstName} ${chat.endUserLastName}` : t('global.anonymous');
+
+  const getUserName = (message: Message) => {
+    if(message.authorRole === 'end-user')
+      return endUserFullName;
+    else if(message.authorRole === 'backoffice-user')
+      return `${message.authorFirstName} ${message.authorLastName}`;
+    return message.authorRole;
+  }
 
   useEffect(() => {
     if (!messages) return;
@@ -65,11 +65,7 @@ const Chat: FC<ChatProps> = ({ chat, onChatEnd, onForwardToColleauge, onForwardT
         }
       } else {
         groupedMessages.push({
-          name: message.authorRole === 'end-user'
-            ? endUserFullName
-            : message.authorRole === 'backoffice-user'
-              ? `${message.authorFirstName} ${message.authorLastName}`
-              : message.authorRole,
+          name: getUserName(message),
           type: message.authorRole,
           messages: [message],
         });
@@ -98,8 +94,8 @@ const Chat: FC<ChatProps> = ({ chat, onChatEnd, onForwardToColleauge, onForwardT
         </div>
 
         <div className='active-chat__group-wrapper'>
-          {messageGroups && messageGroups.map((group, index) => (
-            <div className={clsx(['active-chat__group', `active-chat__group--${group.type}`])} key={`group-${index}`}>
+          {messageGroups?.map((group) => (
+            <div className={clsx(['active-chat__group', `active-chat__group--${group.type}`])} key={`group-${group.type}-${group.name}`}>
               {group.type === 'event' ? (
                 <ChatEvent message={group.messages[0]} />
               ) : (
@@ -116,7 +112,7 @@ const Chat: FC<ChatProps> = ({ chat, onChatEnd, onForwardToColleauge, onForwardT
                     {group.messages.map((message, i) => (
                       <ChatMessage
                         message={message}
-                        key={`message-${i}`}
+                        key={`message-${message.id}-${message.created}-${message.authorTimestamp}`}
                         onSelect={onMessageSelect}
                       />
                     ))}
