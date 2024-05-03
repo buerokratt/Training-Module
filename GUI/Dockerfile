@@ -3,11 +3,6 @@ ARG nginx_version=nginx:1.25.4-alpine
 
 FROM $node_version AS image
 
-RUN addgroup -S nonroot \
-    && adduser -S nonroot -G nonroot
-
-USER nonroot
-
 WORKDIR /usr/training-module
 COPY ./package*.json ./
 
@@ -17,6 +12,11 @@ COPY . .
 RUN ./node_modules/.bin/vite build --mode=development
 
 FROM $nginx_version AS web
+
+RUN addgroup -S nonroot \
+    && adduser -S nonroot -G nonroot
+USER nonroot
+
 COPY ./nginx/http-nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build ./usr/training-module/burokratt /usr/share/nginx/html/training-module
 EXPOSE 3001
