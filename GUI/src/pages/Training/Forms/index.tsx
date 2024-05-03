@@ -1,6 +1,6 @@
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
@@ -10,6 +10,7 @@ import { Button, Card, DataTable, Dialog, FormInput, Icon, Track } from 'compone
 import { Form } from 'types/form';
 import { useToast } from 'hooks/useToast';
 import { deleteForm } from 'services/forms';
+import i18n from '../../../../i18n';
 
 const Forms: FC = () => {
   const { t } = useTranslation();
@@ -45,53 +46,16 @@ const Forms: FC = () => {
 
   const getErrorMessage = (error: AxiosError) => {
     if(error.response && error.response.status === 409 && error.response.data) {
-      return t(error.response.data);
+      return t(`${error.response.data}`);
     }
     return error.message;
   };
 
-  const columnHelper = createColumnHelper<Form>();
-
-  const formsColumns = useMemo(() => [
-    columnHelper.accessor('form', {
-      header: t('training.forms.titleOne') || '',
-    }),
-    columnHelper.display({
-      header: '',
-      cell: (props) => (
-        <Button
-          appearance='text'
-          onClick={() => navigate(`/training/forms/${props.row.original.id}`)}
-        >
-          <Icon
-            label={t('global.edit')}
-            icon={<MdOutlineModeEditOutline color={'rgba(0,0,0,0.54)'} />}
-          />
-          {t('global.edit')}
-        </Button>
-      ),
-      id: 'edit',
-      meta: {
-        size: '1%',
-      },
-    }),
-    columnHelper.display({
-      header: '',
-      cell: (props) => (
-        <Button appearance='text' onClick={() => setDeletableForm(props.row.original.id)}>
-          <Icon
-            label={t('global.delete')}
-            icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />}
-          />
-          {t('global.delete')}
-        </Button>
-      ),
-      id: 'delete',
-      meta: {
-        size: '1%',
-      },
-    }),
-  ], [columnHelper, navigate, t]);
+  const formsColumns = useMemo(() => getColumns(
+    navigate,
+    setDeletableForm,
+  ), []);
+  
   setTimeout(() => refetch(), 1000);
 
   if (!forms) return <>Loading...</>;
@@ -137,5 +101,53 @@ const Forms: FC = () => {
     </>
   );
 };
+
+const getColumns = (
+  navigate: NavigateFunction,
+  setDeletableForm: (id: number) => void,
+) => {
+  const columnHelper = createColumnHelper<Form>();
+
+  return [
+    columnHelper.accessor('form', {
+      header: i18n.t('training.forms.titleOne') || '',
+    }),
+    columnHelper.display({
+      header: '',
+      cell: (props) => (
+        <Button
+          appearance='text'
+          onClick={() => navigate(`/training/forms/${props.row.original.id}`)}
+        >
+          <Icon
+            label={i18n.t('global.edit')}
+            icon={<MdOutlineModeEditOutline color={'rgba(0,0,0,0.54)'} />}
+          />
+          {i18n.t('global.edit')}
+        </Button>
+      ),
+      id: 'edit',
+      meta: {
+        size: '1%',
+      },
+    }),
+    columnHelper.display({
+      header: '',
+      cell: (props) => (
+        <Button appearance='text' onClick={() => setDeletableForm(props.row.original.id)}>
+          <Icon
+            label={i18n.t('global.delete')}
+            icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />}
+          />
+          {i18n.t('global.delete')}
+        </Button>
+      ),
+      id: 'delete',
+      meta: {
+        size: '1%',
+      },
+    }),
+  ]
+}
 
 export default Forms;
