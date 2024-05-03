@@ -1,5 +1,5 @@
 import api from './api';
-import { Story, StoryDTO } from 'types/story';
+import { StoryDTO } from 'types/story';
 import {RuleDTO} from "../types/rule";
 
 export async function addStoryOrRule(storyData: StoryDTO | RuleDTO, category: string) {

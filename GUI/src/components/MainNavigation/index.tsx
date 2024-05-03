@@ -24,7 +24,7 @@ const MainNavigation: FC = () => {
   const renderMenuTree = (menuItems: MenuItem[]) => {
     return menuItems.map((menuItem) => (
       <li key={menuItem.label}>
-        {!!menuItem.children ? (
+        {menuItem.children ? (
           <>
             <button
               className={clsx('nav__toggle', { 'nav__toggle--icon': !!menuItem.id })}
@@ -43,7 +43,7 @@ const MainNavigation: FC = () => {
             </ul>
           </>
         ) : (
-          <NavLink to={menuItem.path || '#'}>{menuItem.label}</NavLink>
+          <NavLink to={menuItem.path ?? '#'}>{menuItem.label}</NavLink>
         )}
       </li>),
     );

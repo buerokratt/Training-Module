@@ -2,7 +2,6 @@ import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { format } from 'date-fns';
 import { createColumnHelper } from '@tanstack/react-table';
 import { AxiosError } from 'axios';
 import Papa from "papaparse";
@@ -257,7 +256,7 @@ const RegexDetail: FC = () => {
               input: {
                 regex: regex!.name,
                 example: props.row.original.value,
-                newExample: updatedExampleName ? updatedExampleName : props.row.original.value
+                newExample: updatedExampleName ?? props.row.original.value
               },
             })}>
               <Icon

@@ -7,7 +7,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { MdCheckCircleOutline } from 'react-icons/md';
 
 import { Button, Card, FormInput, FormSelect, Icon, Switch, Tooltip, Track } from 'components';
-import { Config, PipelineComponent, Policy } from 'types/config';
+import { Config } from 'types/config';
 import { editConfig } from 'services/config';
 import { useToast } from 'hooks/useToast';
 
@@ -16,8 +16,6 @@ const Configuration: FC = () => {
   const toast = useToast();
   const queryClient = useQueryClient();
   const [initialConfig, setInitialConfig] = useState<Config | null>(null);
-  const [, setSelectedComponent] = useState<PipelineComponent | null>(null);
-  const [, setSelectedPolicy] = useState<Policy | null>(null);
   const { register, control, reset, handleSubmit, formState: { isDirty } } = useForm<Config>();
   const { data: configurationData } = useQuery<Config>({
     queryKey: ['active-configuration'],
@@ -46,21 +44,11 @@ const Configuration: FC = () => {
     },
   });
 
-  if (!configurationData) return <>Loading...</>;
-
-  const handleTabsValueChange = (value: string) => {
-    const selectedPolicy = configurationData.policies.find((policy) => policy.name === value);
-    if (selectedPolicy) setSelectedPolicy(selectedPolicy);
-  };
-
-  const handlePipelineTabsValueChange = (value: string) => {
-    const selectedPipelineComponent = configurationData.pipeline.find((comp) => comp.name === value);
-    if (selectedPipelineComponent) setSelectedComponent(selectedPipelineComponent);
-  };
-
   const handleConfigSave = handleSubmit((data) => {
     configurationDataMutation.mutate(data);
   });
+
+  if (!configurationData) return <>Loading...</>;
 
   return (
     <>
@@ -90,7 +78,6 @@ const Configuration: FC = () => {
                     lineHeight: 1.5,
                     textDecoration: 'underline',
                   }}>
-                    {/* TODO: change kratid link url */}
                     <a href='#'>{t('training.configuration.moreFromKratid')}</a>
                   </p>
                 </>
@@ -116,7 +103,7 @@ const Configuration: FC = () => {
         </Track>
       </Card>
 
-      <Tabs.Root className='vertical-tabs' orientation='vertical' onValueChange={handlePipelineTabsValueChange}>
+      <Tabs.Root className='vertical-tabs' orientation='vertical'>
         <Tabs.List className='vertical-tabs__list' aria-label={t('training.configuration.pipeline') || ''}>
           {configurationData.pipeline.map((comp, index) => (
             <Tabs.Trigger key={`${comp.name}-${index}`} value={`${comp.name}-${index}`} className='vertical-tabs__trigger'>
@@ -238,7 +225,7 @@ const Configuration: FC = () => {
         ))}
       </Tabs.Root>
 
-      <Tabs.Root className='vertical-tabs' orientation='vertical' onValueChange={handleTabsValueChange}>
+      <Tabs.Root className='vertical-tabs' orientation='vertical'>
         <Tabs.List className='vertical-tabs__list' aria-label={t('training.configuration.policies') || ''}>
           {configurationData.policies.map((policy, index) => (
             <Tabs.Trigger key={`${policy.name}-${index}`} value={policy.name} className='vertical-tabs__trigger'>

@@ -17,7 +17,7 @@ const Testcases: FC = () => {
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
   const [selectedTest, setSelectedTest] = useState<TestStory | null>(null);
   const [deletableTest, setDeletableTest] = useState<string | number | null>(null);
-  const [showAddTest, setAddShowTest] = useState(false);
+  const [showAddTest, setShowAddTest] = useState(false);
   const { data: testStories } = useQuery<TestStory[]>({
     queryKey: ['test-stories'],
   });
@@ -52,7 +52,7 @@ const Testcases: FC = () => {
       if (selectedStory) {
         setSelectedTest(selectedStory);
         setSelectedTab(selectedStory.story);
-        setAddShowTest(false);
+        setShowAddTest(false);
       }
     },
     [testStories],
@@ -119,7 +119,7 @@ const Testcases: FC = () => {
 
                 <Track gap={8}>
                   {!selectedTest.activeStory &&
-                  <Button appearance='secondary' onClick={() => setAddShowTest(true)}>{t('global.add')}</Button>
+                  <Button appearance='secondary' onClick={() => setShowAddTest(true)}>{t('global.add')}</Button>
                   }
                   <Button appearance='error'
                           onClick={() => setDeletableTest(selectedTest.id)}>{t('global.delete')}</Button>

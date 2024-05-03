@@ -1,5 +1,3 @@
-import {ResponseData} from "./response";
-
 export interface Story {
   story: string;
   steps: string | string[];

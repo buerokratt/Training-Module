@@ -18,15 +18,9 @@ const Appeals: FC = () => {
   const toast = useToast();
   const [filter, setFilter] = useState('');
   const [addFormVisible, setAddFormVisible] = useState(false);
-  const [, setProcessedAppeals] = useState<Record<string, string | null> | null>(null);
   const [deletableAppeal, setDeletableAppeal] = useState<string | number | null>(null);
   const { data: appeals } = useQuery<Appeal[]>({
     queryKey: ['appeals'],
-    onSuccess: (data) => {
-      const appealsMap: Record<string, string | null> = {};
-      data.forEach((appeal) => appealsMap[appeal.appeal] = null);
-      setProcessedAppeals(appealsMap);
-    },
   });
   const { data: intents } = useQuery<Intent[]>({
     queryKey: ['intents'],

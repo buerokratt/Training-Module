@@ -337,7 +337,6 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
         }
       />
 
-      {/* TODO: Refactor dialog content */}
       {deletableRow !== null && (
         <Dialog
           title={t('training.intents.deleteExample')}

@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { format } from 'date-fns';
 
 import { Message } from 'types/message';
-import Linkifier from "../Chat/linkifier";
+import Linkifier from "./linkifier";
 
 type ChatMessageProps = {
   message: Message;

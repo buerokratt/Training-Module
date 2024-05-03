@@ -361,7 +361,6 @@ const CommonIntents: FC = () => {
                 textDecoration: 'underline',
               }}
             >
-              {/* TODO: change githubi link url */}
               <a href="#">{t('training.intents.moreFromGithub')}</a>
             </p>
           </div>

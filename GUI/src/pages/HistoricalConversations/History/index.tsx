@@ -56,7 +56,6 @@ const History: FC = () => {
   const routerLocation = useLocation();
   let passedChatId = new URLSearchParams(routerLocation.search).get('chat');
 
-  const [, setEndedChatsList] = useState<ChatType[]>([]);
   const [messagesTrigger,] = useState(false);
   const [chatMessagesList,] = useState<Message[]>([]);
   const [filteredEndedChatsList, setFilteredEndedChatsList] = useState<ChatType[]>([]);
@@ -104,7 +103,6 @@ const History: FC = () => {
       });
     },
     onSuccess: (res: any) => {
-      setEndedChatsList(res.data.response ?? []);
       filterChatsList(res.data.response ?? []);
     },
   });
