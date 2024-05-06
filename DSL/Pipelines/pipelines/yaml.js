@@ -3,9 +3,15 @@ import multer from 'multer';
 import fs from 'fs';
 import YAML from 'yaml';
 import os from 'os';
+import sanitizeFilename from "sanitize-filename";
 
 const router = express.Router();
-const upload = multer({ dest: os.tmpdir()+'/' })
+const upload = multer({ 
+  dest: os.tmpdir()+'/',
+  limits: { 
+    fileSize: 50 * 1000 * 1000
+  },
+ })
 
 export function yaml2obj(input) {
 	return YAML.parse(input);
@@ -23,7 +29,7 @@ router.post('/yaml', upload.single('input'), (req, res) => {
 	let input;
 	if (req.file) {
 		const inp = req.file.destination+req.file.filename;
-		input = fs.readFileSync(inp, 'utf8');
+		input = fs.readFileSync(sanitizeFilename(inp), 'utf8');
 	} else {
 		input = req.body.input;
 	}
@@ -41,7 +47,7 @@ router.post('/json', upload.single('input'), (req, res) => {
 	let input;
 	if (req.file) {
 		const inp = req.file.destination+req.file.filename;
-		input = fs.readFileSync(inp, 'utf8');
+		input = fs.readFileSync(sanitizeFilename(inp), 'utf8');
 	} else {
 		input = req.body.input;
 	}	

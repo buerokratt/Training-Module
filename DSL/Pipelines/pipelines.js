@@ -6,6 +6,7 @@ import opensearch from "./pipelines/opensearch.js";
 
 const PORT = process.env.PORT || 3010;
 
+app.disable('x-powered-by');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
