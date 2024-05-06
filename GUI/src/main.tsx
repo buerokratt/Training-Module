@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
-import {QueryClient, QueryClientProvider, QueryFunction} from '@tanstack/react-query';
+import {QueryClient, QueryClientProvider, QueryFunction, QueryKey} from '@tanstack/react-query';
 
 import apiInstance from 'services/api';
 import App from './App';
@@ -9,24 +9,20 @@ import { ToastProvider } from 'context/ToastContext';
 import 'styles/main.scss';
 import '../i18n';
 import auth from "./services/auth";
-import apiDevV2 from "./services/api-dev-v2";
-import apiTraining from "./services/training-api";
 import apiGeneric from "./services/apigeneric";
 import {mockedEndpoints} from "./services/mocked-endpoints";
 import apiDev from "./services/api-dev";
 
 const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
-
-  if (import.meta.env.REACT_APP_LOCAL === 'true' && queryKey.includes('prod')) {
-    const { data } = await apiGeneric.get(queryKey[0] as string);
-    return data?.response;
-  }
-  if (mockedEndpoints.some(endpoint => (queryKey[0] as string).startsWith(endpoint))) {
+  const isLocal = import.meta.env.REACT_APP_LOCAL === 'true' && queryKey.includes('prod');
+  const isMocked = mockedEndpoints.some(endpoint => (queryKey[0] as string).startsWith(endpoint));
+  
+  if (isLocal || isMocked) {
     const { data } = await apiGeneric.get(queryKey[0] as string);
     return data?.response;
   }
   if (queryKey.includes('settings')) {
-    const { data } = await apiTraining.get(queryKey[0] as string);
+    const { data } = await apiDev.get(queryKey[0] as string);
     return data;
   }
   if (queryKey.includes('prod')) {
@@ -41,10 +37,6 @@ const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
       return data;
     }
   }
-  if (queryKey[1] === 'prod-2') {
-    const { data } = await apiDevV2.get(queryKey[0] as string);
-    return data?.response;
-  }
   if(queryKey[1] === 'auth') {
     const { data } = await auth.get(queryKey[0] as string);
     return data;
@@ -57,6 +49,11 @@ const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
     const { data } = await apiInstance.post(queryKey[0] as string, request)
     return data.response;
   }
+
+  return callApiInstance(queryKey);
+};
+
+const callApiInstance = async (queryKey: QueryKey) => {
   if(queryKey.includes('slots/slotById')) {
     const request = {
       "slot": queryKey[1],
@@ -94,6 +91,7 @@ const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
   }
 
   const { data } = await apiInstance.get(queryKey[0] as string);
+  
   if (
     queryKey.includes('entities')
     || queryKey.includes('services/unassigned')
@@ -101,11 +99,13 @@ const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
   ) {
     return data.response;
   }
+  
   if (queryKey.includes('regexes')) {
     return data.response.data.regexes;
   }
+
   return data;
-};
+}
 
 const queryClient = new QueryClient({
   defaultOptions: {

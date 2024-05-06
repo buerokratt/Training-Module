@@ -16,6 +16,7 @@ type FormMultiselectProps = SelectHTMLAttributes<HTMLSelectElement> & {
   options: SelectOption[];
   selectedOptions?: SelectOption[];
   onSelectionChange?: (selection: SelectOption[] | null) => void;
+  placeholder?: string;
 }
 
 const FormMultiselect: FC<FormMultiselectProps> = (
@@ -45,16 +46,14 @@ const FormMultiselect: FC<FormMultiselectProps> = (
     items: options,
     stateReducer: (state, actionAndChanges) => {
       const { changes, type } = actionAndChanges;
-      switch (type) {
-        case useSelect.stateChangeTypes.ItemClick:
-          return {
-            ...changes,
-            isOpen: true,
-            highlightedIndex: state.highlightedIndex,
-          };
-        default:
-          return changes;
+      if(type === useSelect.stateChangeTypes.ItemClick) {
+        return {
+          ...changes,
+          isOpen: true,
+          highlightedIndex: state.highlightedIndex,
+        };
       }
+      return changes;
     },
     selectedItem: null,
     onSelectedItemChange: ({ selectedItem }) => {

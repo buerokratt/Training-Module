@@ -19,6 +19,7 @@ import { useToast } from 'hooks/useToast';
 import IntentExamplesEntry from './IntentExamplesEntry';
 import { Intent } from '../../../types/intent';
 import LoadingDialog from "../../../components/LoadingDialog";
+import i18n from '../../../../i18n';
 
 type IntentExamplesTableProps = {
   examples: string[];
@@ -190,21 +191,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
     () => [
       columnHelper.accessor('value', {
         header: t('training.intents.examples') || '',
-        cell: (props) =>
-          editableRow && editableRow.intentName === props.row.original.id ? (
-            <FormTextarea
-              name={`example-${props.row.original.id}`}
-              label=""
-              defaultValue={editableRow.value}
-              hideLabel
-              minRows={1}
-              maxLength={INTENT_EXAMPLE_LENGTH}
-              onChange={(e) => updateEditingExampleTitle(e.target.value)}
-              showMaxLength
-            />
-          ) : (
-            <IntentExamplesEntry value={props.getValue()} entities={entities} />
-          ),
+        cell: (props) => buildValueCell(editableRow, updateEditingExampleTitle, entities, props.row.original.id, props.getValue()),
       }),
       columnHelper.display({
         header: '',
@@ -212,18 +199,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
           row: {
             original: { id, value: name },
           },
-        }) => (
-          <Button
-            appearance="text"
-            onClick={() => setExampleToIntent({ intentName: id, value: name} )}
-          >
-            <Icon
-              label={t('training.intents.turnExampleIntoIntent')}
-              icon={<MdOutlineModeEditOutline color={'rgba(0,0,0,0.54)'} />}
-            />
-            {t('training.intents.turnExampleIntoIntent')}
-          </Button>
-        ),
+        }) => buildTurnExampleToIntentCell(() => setExampleToIntent({ intentName: id, value: name})),
         id: 'turnExampleIntoIntent',
         meta: {
           size: '1%',
@@ -231,44 +207,23 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
       }),
       columnHelper.display({
         header: '',
-        cell: (props) => (
-          <>
-            {editableRow && editableRow.intentName === props.row.original.id ? (
-              <Button
-                appearance="text"
-                onClick={() => {
-                  setOldExampleText(editableRow.value);
-                  setExampleText(updatedExampleTitle.trim());
-                    exampleEditMutation.mutate({
-                      intentName: selectedIntent.intent,
-                      oldExample: editableRow.value,
-                      newExample: updatedExampleTitle.trim(),
-                    })
-                  }
-              }
-              >
-                <Icon
-                  label={t('global.save')}
-                  icon={<MdOutlineSave color={'rgba(0,0,0,0.54)'} />}
-                />
-                {t('global.save')}
-              </Button>
-            ) : (
-              <Button
-                appearance="text"
-                onClick={() => handleEditableRow({
-                  intentName: props.row.original.id,
-                  value: props.row.original.value
-                })}
-              >
-                <Icon
-                  label={t('global.edit')}
-                  icon={<MdOutlineModeEditOutline color={'rgba(0,0,0,0.54)'} />}
-                />
-                {t('global.edit')}
-              </Button>
-            )}
-          </>
+        cell: (props) => buildEditCell(
+          editableRow?.intentName === props.row.original.id,
+          () => {
+            if(!editableRow)
+              return;
+            setOldExampleText(editableRow.value);
+            setExampleText(updatedExampleTitle.trim());
+              exampleEditMutation.mutate({
+                intentName: selectedIntent.intent,
+                oldExample: editableRow.value,
+                newExample: updatedExampleTitle.trim(),
+              })
+          },
+          () => handleEditableRow({
+            intentName: props.row.original.id,
+            value: props.row.original.value
+          }),
         ),
         id: 'edit',
         meta: {
@@ -277,21 +232,10 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
       }),
       columnHelper.display({
         header: '',
-        cell: (props) => (
-          <Button
-            appearance="text"
-            onClick={() => setDeletableRow({
-              intentName: props.row.original.id,
-              value: props.row.original.value
-            })}
-          >
-            <Icon
-              label={t('global.delete')}
-              icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />}
-            />
-            {t('global.delete')}
-          </Button>
-        ),
+        cell: (props) => buildDeleteCell(() => setDeletableRow({
+          intentName: props.row.original.id,
+          value: props.row.original.value
+        })),
         id: 'delete',
         meta: {
           size: '1%',
@@ -337,7 +281,6 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
         }
       />
 
-      {/* TODO: Refactor dialog content */}
       {deletableRow !== null && (
         <Dialog
           title={t('training.intents.deleteExample')}
@@ -407,5 +350,95 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
     </>
   );
 };
+
+const buildValueCell = (
+  editableRow: { intentName: string; value: string; } | null,
+  updateEditingExampleTitle: (newName: string) => void,
+  entities: Entity[],
+  id: string,
+  value: string,
+): any => {
+  if(editableRow?.intentName === id) {
+    return (
+      <FormTextarea
+        name={`example-${id}`}
+        label=""
+        defaultValue={editableRow.value}
+        hideLabel
+        minRows={1}
+        maxLength={INTENT_EXAMPLE_LENGTH}
+        onChange={(e) => updateEditingExampleTitle(e.target.value)}
+        showMaxLength />
+    );
+  }
+
+  return (
+    <IntentExamplesEntry value={value} entities={entities} />
+  );
+}
+
+const buildTurnExampleToIntentCell = (onClick: () => void) => {
+  return (
+    <Button
+      appearance="text"
+      onClick={onClick}
+    >
+      <Icon
+        label={i18n.t('training.intents.turnExampleIntoIntent')}
+        icon={<MdOutlineModeEditOutline color={'rgba(0,0,0,0.54)'} />}
+      />
+      {i18n.t('training.intents.turnExampleIntoIntent')}
+    </Button>
+  )
+}
+
+const buildEditCell = (
+  isSave: boolean,
+  onSaveClick: () => void,
+  onEditClick: () => void,
+) => {
+  if(isSave) {
+    return (
+      <Button
+        appearance="text"
+        onClick={onSaveClick}
+      >
+        <Icon
+          label={i18n.t('global.save')}
+          icon={<MdOutlineSave color={'rgba(0,0,0,0.54)'} />}
+        />
+        {i18n.t('global.save')}
+      </Button>
+    )
+  }
+
+  return (
+    <Button
+      appearance="text"
+      onClick={onEditClick}
+    >
+      <Icon
+        label={i18n.t('global.edit')}
+        icon={<MdOutlineModeEditOutline color={'rgba(0,0,0,0.54)'} />}
+      />
+      {i18n.t('global.edit')}
+    </Button>    
+  )
+}
+
+const buildDeleteCell = (onClick: () => void) => {
+  return (
+    <Button
+      appearance="text"
+      onClick={onClick}
+    >
+      <Icon
+        label={i18n.t('global.delete')}
+        icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />}
+      />
+      {i18n.t('global.delete')}
+    </Button>
+  )
+}
 
 export default IntentExamplesTable;

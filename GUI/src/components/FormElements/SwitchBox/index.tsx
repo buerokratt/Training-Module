@@ -5,7 +5,6 @@ import { ControllerRenderProps } from 'react-hook-form';
 import './SwitchBox.scss';
 
 type SwitchBoxProps = Partial<ControllerRenderProps> & {
-  name: string;
   label: string;
   checked?: boolean;
   hideLabel?: boolean;

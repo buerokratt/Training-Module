@@ -1,5 +1,5 @@
 import {FC, useEffect, useMemo, useState} from 'react';
-import { useNavigate } from 'react-router-dom';
+import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import * as Tabs from '@radix-ui/react-tabs';
 import {useMutation, useQuery} from '@tanstack/react-query';
@@ -13,6 +13,7 @@ import {deleteStoryOrRule} from "../../../services/stories";
 import {AxiosError} from "axios";
 import LoadingDialog from "../../../components/LoadingDialog";
 import { useToast } from 'hooks/useToast';
+import i18n from '../../../../i18n';
 
 
 const Stories: FC = () => {
@@ -28,8 +29,6 @@ const Stories: FC = () => {
   const [filter, setFilter] = useState('');
   const [stories, setStories] = useState<Story[]>([]);
   const [rules, setRules] = useState<Rules[]>([]);
-  const storiesColumnHelper = createColumnHelper<Story>();
-  const rulesColumnHelper = createColumnHelper<Rule>();
   const toast = useToast();
   const [deleteConfirmation, setDeleteConfirmation] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -57,92 +56,9 @@ const Stories: FC = () => {
     setDeleteId(id);
   };
 
-  const storiesColumns = useMemo(() => [
-    storiesColumnHelper.accessor('id', {
-      header: 'Story',
-    }),
-    storiesColumnHelper.display({
-      header: '',
-      cell: (props) => (
-        <Button
-          appearance='text'
-          onClick={() => navigate(`${props.row.original.id}`, { state: { storyTitle: filter, category: 'stories' } })}
-        >
-          <Icon
-            label={t('global.edit')}
-            icon={<MdOutlineModeEditOutline color={'rgba(0,0,0,0.54)'} />}
-          />
-          {t('global.edit')}
-        </Button>
-      ),
-      id: 'edit',
-      meta: {
-        size: '1%',
-      },
-    }),
-    storiesColumnHelper.display({
-      header: '',
-      cell: (props) => (
-        <Button appearance='text'
-                onClick={() => handleDelete(props.row.original.id)}
-        >
-          <Icon
-            label={t('global.delete')}
-            icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />}
-          />
-          {t('global.delete')}
-        </Button>
-      ),
-      id: 'delete',
-      meta: {
-        size: '1%',
-      },
-    }),
-  ], [navigate, storiesColumnHelper, t]);
+  const storiesColumns = useMemo(() => getStoriesColumns(handleDelete, navigate, filter), []);
 
-  const rulesColumns = useMemo(() => [
-    rulesColumnHelper.accessor('id', {
-      header: 'Rule',
-    }),
-    rulesColumnHelper.display({
-      header: '',
-      cell: (props) => (
-        <Button
-          appearance='text'
-          onClick={() => navigate(`rules/${props.row.original.id}`, { state: { category: 'rules' } })}
-        >
-          <Icon
-            label={t('global.edit')}
-            icon={<MdOutlineModeEditOutline color={'rgba(0,0,0,0.54)'} />}
-          />
-          {t('global.edit')}
-        </Button>
-      ),
-      id: 'edit',
-      meta: {
-        size: '1%',
-      },
-    }),
-    rulesColumnHelper.display({
-      header: '',
-      cell: (props) => (
-        <Button
-            appearance='text'
-            onClick={() => handleDelete(props.row.original.id)}
-        >
-          <Icon
-              label={t('global.delete')}
-              icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />}
-          />
-          {t('global.delete')}
-        </Button>
-      ),
-      id: 'delete',
-      meta: {
-        size: '1%',
-      },
-    }),
-  ], [navigate, rulesColumnHelper, t]);
+  const rulesColumns = useMemo(() => getRulesColumns(handleDelete, navigate), []);
 
   const handleTabChange = (value: string) => {
     setFilter('');
@@ -283,5 +199,106 @@ const Stories: FC = () => {
     </>
   );
 };
+
+const getStoriesColumns = (
+  handleDelete: (id: string) => void,
+  navigate: NavigateFunction,
+  filter: string,
+) => {
+  const storiesColumnHelper = createColumnHelper<Story>();
+
+  return [
+    storiesColumnHelper.accessor('id', {
+      header: 'Story',
+    }),
+    storiesColumnHelper.display({
+      header: '',
+      cell: (props) => (
+        <Button
+          appearance='text'
+          onClick={() => navigate(`${props.row.original.id}`, { state: { storyTitle: filter, category: 'stories' } })}
+        >
+          <Icon
+            label={i18n.t('global.edit')}
+            icon={<MdOutlineModeEditOutline color={'rgba(0,0,0,0.54)'} />}
+          />
+          {i18n.t('global.edit')}
+        </Button>
+      ),
+      id: 'edit',
+      meta: {
+        size: '1%',
+      },
+    }),
+    storiesColumnHelper.display({
+      header: '',
+      cell: (props) => (
+        <Button appearance='text'
+                onClick={() => handleDelete(props.row.original.id)}
+        >
+          <Icon
+            label={i18n.t('global.delete')}
+            icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />}
+          />
+          {i18n.t('global.delete')}
+        </Button>
+      ),
+      id: 'delete',
+      meta: {
+        size: '1%',
+      },
+    }),
+  ]
+}
+
+const getRulesColumns = (
+  handleDelete: (id: string) => void,
+  navigate: NavigateFunction,
+) => {
+  const rulesColumnHelper = createColumnHelper<Rule>();
+  return [
+    rulesColumnHelper.accessor('id', {
+      header: 'Rule',
+    }),
+    rulesColumnHelper.display({
+      header: '',
+      cell: (props) => (
+        <Button
+          appearance='text'
+          onClick={() => navigate(`rules/${props.row.original.id}`, { state: { category: 'rules' } })}
+        >
+          <Icon
+            label={i18n.t('global.edit')}
+            icon={<MdOutlineModeEditOutline color={'rgba(0,0,0,0.54)'} />}
+          />
+          {i18n.t('global.edit')}
+        </Button>
+      ),
+      id: 'edit',
+      meta: {
+        size: '1%',
+      },
+    }),
+    rulesColumnHelper.display({
+      header: '',
+      cell: (props) => (
+        <Button
+            appearance='text'
+            onClick={() => handleDelete(props.row.original.id)}
+        >
+          <Icon
+              label={i18n.t('global.delete')}
+              icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />}
+          />
+          {i18n.t('global.delete')}
+        </Button>
+      ),
+      id: 'delete',
+      meta: {
+        size: '1%',
+      },
+    }),
+  ]
+}
 
 export default Stories;

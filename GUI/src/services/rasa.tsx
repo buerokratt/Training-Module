@@ -38,7 +38,7 @@ export const generateStoryStepsFromNodes = (nodes: Node[]) =>
                 return checkpoint
                     ? { action: payload?.value || label }
                     : { action: label };
-            case 'conditionNode':
+            case 'conditionNode': {
                 let conditions: { active_loop?: any; slot?: any; value?: any; }[] = [];
 
                 payload.conditions.forEach((condition: { active_loop: { value: any; }; slot: { value: any; }; value: any; }) => {
@@ -54,7 +54,7 @@ export const generateStoryStepsFromNodes = (nodes: Node[]) =>
                 return {
                     condition: conditions,
                 };
-
+            }
             default:
                 return null;
         }
@@ -113,11 +113,6 @@ export const generateNodesFromStorySteps = (steps): Node[] =>
             const [slotLabel, value] = Object.entries(step.slot_was_set)[0];
             label = slotLabel;
             payload = { value };
-        } else if (step.action) {
-            type = 'actionNode';
-            className = 'action';
-            label = step.action;
-            payload = { value: step.action };
         } else {
             return null;
         }

@@ -55,7 +55,7 @@ const TrainAndTest = () => {
     }, [reset, settingsData]);
 
     useEffect(() => {
-        if(trainedData && trainedData.trainedDate) {
+        if(trainedData?.trainedDate) {
             setLlmFailed(trainedData.state === 'Failed');
             setLastTrainedTime(format(new Date(trainedData.trainedDate),TIME_FORMAT));
             setLastTrainedDay(format(new Date(trainedData.trainedDate),DATE_FORMAT));

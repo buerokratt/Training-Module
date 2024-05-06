@@ -8,3 +8,5 @@ export interface IntentsReportResult {
 
 export interface IntentsReport extends Record<string, IntentsReportResult> {
 }
+
+export type IntentReport = IntentsReportResult & { intent: string };

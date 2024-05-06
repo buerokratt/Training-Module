@@ -1,8 +1,14 @@
-FROM node:lts AS image
+FROM node:22-alpine AS image
+
 WORKDIR /app
 COPY ./package.json .
 
 FROM image AS build
+
+RUN addgroup -S nonroot \
+    && adduser -S nonroot -G nonroot
+USER nonroot
+
 RUN npm install --legacy-peer-deps --mode=development
 COPY . .
 RUN ./node_modules/.bin/vite build --mode=development

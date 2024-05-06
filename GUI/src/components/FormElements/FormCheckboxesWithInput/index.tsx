@@ -64,7 +64,8 @@ const FormCheckboxesWithInput = forwardRef<HTMLInputElement, FormCheckboxesType>
         const handleCheckboxChange = (e: ChangeEvent<HTMLInputElement>) => {
             items.map((element) => {
                 if(element.label === e.target.value) {
-                    return element.checked = !element.checked;
+                  element.checked = !element.checked;
+                  return element.checked;
                 }
                 return element;
             })
@@ -99,7 +100,7 @@ const FormCheckboxesWithInput = forwardRef<HTMLInputElement, FormCheckboxesType>
         );
 
         return (
-            <div className={clsx('checkboxes', type === CheckboxType.DAYS && 'checkboxes__days')} role='group' {...rest}>
+            <div className={clsx('checkboxes', type === CheckboxType.DAYS && 'checkboxes__days')} {...rest}>
                 {label && !hideLabel && <label className='checkboxes__label'>{label}</label>}
                 <div className='checkboxes__wrapper'>
                     {filteredItems.map((item, index) => (

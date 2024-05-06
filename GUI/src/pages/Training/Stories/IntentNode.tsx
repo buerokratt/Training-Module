@@ -3,15 +3,11 @@ import { useTranslation } from 'react-i18next';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import { useQuery } from '@tanstack/react-query';
 import {
-  MdAlarmOn,
-  MdAppBlocking,
-  MdCheckCircleOutline,
-  MdOutlineCheck,
   MdOutlineDelete,
   MdWarning
 } from 'react-icons/md';
 
-import {Button, FormSelect, Icon, Tooltip, Track} from 'components';
+import {Button, FormSelect, Icon, Track} from 'components';
 import { Entity } from 'types/entity';
 import ToolTipWarning from "../../../components/ToolTipWarning";
 
@@ -30,7 +26,7 @@ type IntentPayload = {
   entities?: ({
     label: string;
     value: string;
-  } | undefined)[] | undefined;
+  } | undefined)[];
 }
 
 type EntityPayload = (string | undefined)[] | undefined;
@@ -91,13 +87,13 @@ const IntentNode: FC<NodeDataProps> = ({ data }) => {
             />
           </div>
           {entityWarning && (
-              <><ToolTipWarning content={t('training.stories.entityWarning')}>
+              <ToolTipWarning content={t('training.stories.entityWarning')}>
                       <span style={{display: 'flex', alignItems: 'center'}}>
                           <Icon
                               icon={<MdWarning
                                   color={'rgba(255, 0, 0, 1)'}/>}/>
                       </span>
-              </ToolTipWarning></>
+              </ToolTipWarning>
           )}
           <Button appearance='icon' onClick={() => remove(index)}>
             <Icon icon={<MdOutlineDelete fontSize={24} />} size='medium' />

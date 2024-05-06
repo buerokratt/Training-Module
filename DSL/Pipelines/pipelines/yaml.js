@@ -20,16 +20,15 @@ export function json2yaml(input) {
 }
 
 router.post('/yaml', upload.single('input'), (req, res) => {	
-	var input;
+	let input;
 	if (req.file) {
-		var inp = req.file.destination+req.file.filename;
-		var out = req.file.originalname.replace(/ya?ml/, "json")
+		const inp = req.file.destination+req.file.filename;
 		input = fs.readFileSync(inp, 'utf8');
 	} else {
 		input = req.body.input;
 	}
 
-	var output = yaml2obj(input);
+	let output = yaml2obj(input);
 	if (output.nlu)
 		output = output.nlu;
 
@@ -39,10 +38,9 @@ router.post('/yaml', upload.single('input'), (req, res) => {
 });
 
 router.post('/json', upload.single('input'), (req, res) => {
-	var input;
+	let input;
 	if (req.file) {
-		var inp = req.file.destination+req.file.filename;
-		var out = req.file.originalname.replace(/json/, "yaml")
+		const inp = req.file.destination+req.file.filename;
 		input = fs.readFileSync(inp, 'utf8');
 	} else {
 		input = req.body.input;

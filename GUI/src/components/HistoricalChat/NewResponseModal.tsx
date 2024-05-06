@@ -13,7 +13,7 @@ type NewResponseModalProps = {
 
 const NewResponseModal: FC<NewResponseModalProps> = ({ message, setMessage, onSubmitResponse }) => {
   const { t } = useTranslation();
-  const { register, control, handleSubmit } = useForm<{ name: string; text: string; }>({
+  const { register, handleSubmit } = useForm<{ name: string; text: string; }>({
     mode: 'onChange',
   });
 

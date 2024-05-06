@@ -14,7 +14,6 @@ class ActionDealWithAffirmationAnswer(Action):
 
     def __init__(self) -> None:
         self.affirm_list = get_kinnitamine_intent_examples("kinnitamine")
-        # self.next_action = get_next_action(intent_name)
 
     def run(self,
             dispatcher: CollectingDispatcher,
@@ -22,7 +21,6 @@ class ActionDealWithAffirmationAnswer(Action):
             domain: Dict[Text, Any]
             ) -> List['Event']:
 	
-        affirmdeny_value = tracker.get_slot("affirm_deny")
         intent = tracker.latest_message['intent'].get('name')
 
         events = tracker.events_after_latest_restart()[-25:]
@@ -42,6 +40,5 @@ class ActionDealWithAffirmationAnswer(Action):
                     return [FollowupAction(name=response), SlotSet("affirm_deny",None)]
             
         else:
-            response = "utter_"+events_with_utterances[-2]["parse_data"]["intent_ranking"][0]["name"]
             return[FollowupAction(name = "utter_ei_pakkunud_õigesti"), SlotSet("affirm_deny",None)]
         return [SlotSet("affirm_deny",None)]

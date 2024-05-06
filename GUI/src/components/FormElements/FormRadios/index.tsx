@@ -16,7 +16,7 @@ const FormRadios: FC<FormRadiosType> = ({ label, name, hideLabel, items }) => {
   const id = useId();
 
   return (
-    <div className='radios' role='group'>
+    <div className='radios'>
       {label && !hideLabel && <label className='radios__label'>{label}</label>}
       <div className='radios__wrapper'>
         {items.map((item, index) => (

@@ -7,6 +7,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { Service } from "types/service";
 import { requestServiceIntentConnection } from "services/requests";
 import { useToast } from "hooks/useToast";
+import i18n from "../../../i18n";
 
 type ConnectServiceToIntentModalProps = {
   onModalClose: () => void;
@@ -61,34 +62,11 @@ const ConnectServiceToIntentModal: FC<ConnectServiceToIntentModalProps> = ({
     }
   }, [isError]);
 
-  const columnHelper = createColumnHelper<Service>();
-
   const serviceColumns = useMemo(
-    () => [
-      columnHelper.accessor("name", {
-        header: t("connectionRequests.service") || "",
-      }),
-      columnHelper.display({
-        id: "connect",
-        cell: (props) => (
-          <Button
-            appearance="text"
-            onClick={() => {
-              setSelectedService(props.row.original);
-              setShowConfirmationModal(true);
-            }}
-          >
-            <Icon icon={<MdOutlineArrowForward color="rgba(0, 0, 0, 0.54)" />} />
-            {t("connectionRequests.connect")}
-          </Button>
-        ),
-        meta: {
-          size: "1%",
-        },
-      }),
-    ],
-    []
-  );
+    () => getColumns((service) => {
+      setSelectedService(service);
+      setShowConfirmationModal(true);
+    }), []);
 
   const handleConnect = () => {
     if (!selectedService) return;
@@ -157,5 +135,30 @@ const ConnectServiceToIntentModal: FC<ConnectServiceToIntentModalProps> = ({
     </Dialog>
   );
 };
+
+const getColumns = (onClick: (service: Service) => void) => {
+  const columnHelper = createColumnHelper<Service>();
+
+  return [
+    columnHelper.accessor("name", {
+      header: i18n.t("connectionRequests.service") || "",
+    }),
+    columnHelper.display({
+      id: "connect",
+      cell: (props) => (
+        <Button
+          appearance="text"
+          onClick={() => onClick(props.row.original)}
+        >
+          <Icon icon={<MdOutlineArrowForward color="rgba(0, 0, 0, 0.54)" />} />
+          {i18n.t("connectionRequests.connect")}
+        </Button>
+      ),
+      meta: {
+        size: "1%",
+      },
+    }),
+  ];
+}
 
 export default ConnectServiceToIntentModal;

@@ -27,24 +27,24 @@ import TrainAndTest from 'pages/Training/TrainAndTest';
 import ConnectionRequests from 'pages/ConnectionRequests';
 
 const App: FC = () => {
-  if (import.meta.env.REACT_APP_LOCAL === "true") {
-    useQuery<{
-      data: { custom_jwt_userinfo: UserInfo };
-    }>({
-      queryKey: ["userinfo", "prod"],
-      onSuccess: (res: any) => {
-        return useStore.getState().setUserInfo(res.data)
-      },
-    });
-  } else {
-    const { data: userInfo } = useQuery<UserInfo>({
-      queryKey: [import.meta.env.REACT_APP_AUTH_PATH, 'auth'],
-      onSuccess: (res: { response: UserInfo }) => {
-        localStorage.setItem("exp", res.response.JWTExpirationTimestamp);
-        return useStore.getState().setUserInfo(res.response);
-      },
-    });
-  }
+  useQuery<{
+    data: { custom_jwt_userinfo: UserInfo };
+  }>({
+    queryKey: ["userinfo", "prod"],
+    onSuccess: (res: any) => {
+      return useStore.getState().setUserInfo(res.data)
+    },
+    enabled: import.meta.env.REACT_APP_LOCAL === "true",
+  });
+
+  useQuery({
+    queryKey: [import.meta.env.REACT_APP_AUTH_PATH, 'auth'],
+    onSuccess: (res: { response: UserInfo }) => {
+      localStorage.setItem("exp", res.response.JWTExpirationTimestamp);
+      return useStore.getState().setUserInfo(res.response);
+    },
+    enabled: import.meta.env.REACT_APP_LOCAL !== "true",
+  });
 
   return (
     <Routes>

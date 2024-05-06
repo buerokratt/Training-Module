@@ -1,4 +1,3 @@
-import os from "node:os";
 import express from "express";
 const app = express();
 

@@ -2,7 +2,6 @@ import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { format } from 'date-fns';
 import { createColumnHelper } from '@tanstack/react-table';
 import { AxiosError } from 'axios';
 import Papa from "papaparse";
@@ -26,6 +25,7 @@ import {
   editRegexExample
 } from 'services/regex';
 import { Entity } from 'types/entity';
+import i18n from '../../../../i18n';
 
 type Regex = {
   readonly id: string;
@@ -74,7 +74,7 @@ const RegexDetail: FC = () => {
   });
 
   let regexData = useMemo(
-    () => regex && regex.examples.map((e, index) => ({ id: index, value: e })),
+    () => regex?.examples.map((e, index) => ({ id: index, value: e })),
     [regex],
   );
 
@@ -83,7 +83,7 @@ const RegexDetail: FC = () => {
   }).map((e) => ({ label: e.name, value: String(e.id) })), [entities, regexList]);
 
   useEffect(() => {
-    const result = regex && regex.examples.map((e, index) => ({ id: index, value: e }));
+    const result = regex?.examples.map((e, index) => ({ id: index, value: e }));
     setRegexList(result ?? []);
     setEditRegexName((availableEntities && availableEntities.length > 0) ? availableEntities[0].label : '');
   }, [regex?.examples, regex?.name, availableEntities?.length,regex])
@@ -215,7 +215,6 @@ const RegexDetail: FC = () => {
     onSettled: () => { },
   });
 
-  const columnHelper = createColumnHelper<{ id: number; value: string }>();
 
   const handleEditableRow = (example: { id: number; value: string }) => {
     setEditableRow(example);
@@ -232,109 +231,51 @@ const RegexDetail: FC = () => {
     updatedExampleName = newName;
   }
 
-  const regexColumns = useMemo(() => [
-    columnHelper.accessor('value', {
-      header: t('training.intents.examples') || '',
-      cell: (props) => (
-        editableRow && editableRow.id === props.row.original.id ? (
-          <FormInput
-            name={`example-${props.row.original.id}`}
-            label=''
-            defaultValue={editableRow.value}
-            hideLabel
-            onChange={(e) => newExampleName(e.target.value)}
-          />
-        ) : props.getValue()
-      ),
-    }),
-    columnHelper.display({
-      header: '',
-      cell: (props) => (
-        <>
-          {editableRow && editableRow.id === props.row.original.id ? (
-            <Button appearance='text' onClick={() => regexExampleEditMutation.mutate({
-              regex_name: regex!.name,
-              input: {
-                regex: regex!.name,
-                example: props.row.original.value,
-                newExample: updatedExampleName ? updatedExampleName : props.row.original.value
-              },
-            })}>
-              <Icon
-                label={t('global.save')}
-                icon={<MdOutlineSave color={'rgba(0,0,0,0.54)'} />}
-              />
-              {t('global.save')}
-            </Button>
-          ) : (
-            <Button
-              appearance='text'
-              onClick={() => handleEditableRow(props.row.original)}
-            >
-              <Icon
-                label={t('global.edit')}
-                icon={<MdOutlineModeEditOutline color={'rgba(0,0,0,0.54)'} />}
-              />
-              {t('global.edit')}
-            </Button>
-          )}
-        </>
-      ),
-      id: 'edit',
-      meta: {
-        size: '1%',
+  const regexColumns = useMemo(() => getColumns(
+    editableRow,
+    setDeletableRow,
+    (value) => regexExampleEditMutation.mutate({
+      regex_name: regex!.name,
+      input: {
+        regex: regex!.name,
+        example: value,
+        newExample: updatedExampleName ?? value
       },
     }),
-    columnHelper.display({
-      header: '',
-      cell: (props) => (
-        <Button appearance='text' onClick={() => setDeletableRow(props.row.original.value)}>
-          <Icon
-            label={t('global.delete')}
-            icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />}
-          />
-          {t('global.delete')}
-        </Button>
-      ),
-      id: 'delete',
-      meta: {
-        size: '1%',
-      },
-    }),
-  ], [columnHelper, editableRow, t]);
+    handleEditableRow,
+    newExampleName,
+  ), [editableRow]);
 
-  const inputRef = useRef<HTMLInputElement | null>(null);
-
-  const handleRegexExamplesUpload = (regexId: string | number) => {
+  const handleRegexExamplesUpload = () => {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = '.csv';
     input.onchange = ((e) => {
-      const files = (e.target as HTMLInputElement).files ?? [];
-
-      if (!files) {
-        return;
-      }
-      const file: File = files[0];
-      if (file) {
-        const fileReader = new FileReader();
-        fileReader.onload = function (event) {
-          const csvOutput: string = event?.target?.result as string ?? '';
-          let result = Papa.parse(csvOutput);
-          const data: string[] = result.data as string[] ?? []
-          data.splice(0,1);
-          const res = data.map((e) => (e[1]));
-          if(res.length !== 0 && regex) {
-            regexExampleAddMutation.mutate({ regex_name: regex.name,examples: res });
-          }
-        };
-
-        fileReader.readAsText(file);
-      }
-
+      const files = (e.target as HTMLInputElement).files;
+      if (files && files.length > 0)
+        uploadFiles(files);
     });
     input.click();
   };
+
+  const uploadFiles = (files: FileList) => {
+    const file: File = files[0];
+    if (file) {
+      const fileReader = new FileReader();
+      fileReader.onload = (event) => {
+        const csvOutput: string = event?.target?.result as string ?? '';
+        let result = Papa.parse(csvOutput);
+        const data: string[] = result.data as string[] ?? []
+        data.splice(0,1);
+        const res = data.map((e) => (e[1]));
+        if(res.length !== 0 && regex) {
+          regexExampleAddMutation.mutate({ regex_name: regex.name,examples: res });
+        }
+      };
+
+      fileReader.readAsText(file);
+    }
+  }
 
   const handleRegexExamplesDownload = (regexId: string | number) => {
     downloadExamplesMutation.mutate({
@@ -397,19 +338,11 @@ const RegexDetail: FC = () => {
                     </Button>
                   )}
                 </Track>
-                {/*<p style={{ color: '#4D4F5D' }}>*/}
-                {/*  {`${t('global.modifiedAt')} ${format(*/}
-                {/*    new Date(regex.modifiedAt),*/}
-                {/*    'dd.MM.yyyy',*/}
-                {/*  )}`}*/}
-                {/*</p>*/}
               </Track>
               <Track justify='end' gap={8}>
                 <Button
                   appearance='secondary'
-                  onClick={() =>
-                    handleRegexExamplesUpload(regex.id)
-                  }
+                  onClick={handleRegexExamplesUpload}
                 >
                   {t('training.intents.upload')}
                 </Button>
@@ -506,5 +439,80 @@ const RegexDetail: FC = () => {
     </>
   );
 };
+
+const getColumns = (
+  editableRow: { id: number; value: string } | null,
+  setDeletableRow: (id: string) => void,
+  onSaveClick: (value: string) => void,
+  handleEditableRow: (row: { id: number; value: string }) => void,
+  newExampleName: (value: string) => void,
+) => {
+  const columnHelper = createColumnHelper<{ id: number; value: string }>();
+  
+  return [
+    columnHelper.accessor('value', {
+      header: i18n.t('training.intents.examples') || '',
+      cell: (props) => (
+        editableRow?.id === props.row.original.id ? (
+          <FormInput
+            name={`example-${props.row.original.id}`}
+            label=''
+            defaultValue={editableRow.value}
+            hideLabel
+            onChange={(e) => newExampleName(e.target.value)}
+          />
+        ) : props.getValue()
+      ),
+    }),
+    columnHelper.display({
+      header: '',
+      cell: (props) => (
+        <>
+          {editableRow && editableRow.id === props.row.original.id ? (
+            <Button appearance='text' onClick={() => onSaveClick(props.row.original.value)}>
+              <Icon
+                label={i18n.t('global.save')}
+                icon={<MdOutlineSave color={'rgba(0,0,0,0.54)'} />}
+              />
+              {i18n.t('global.save')}
+            </Button>
+          ) : (
+            <Button
+              appearance='text'
+              onClick={() => handleEditableRow(props.row.original)}
+            >
+              <Icon
+                label={i18n.t('global.edit')}
+                icon={<MdOutlineModeEditOutline color={'rgba(0,0,0,0.54)'} />}
+              />
+              {i18n.t('global.edit')}
+            </Button>
+          )}
+        </>
+      ),
+      id: 'edit',
+      meta: {
+        size: '1%',
+      },
+    }),
+    columnHelper.display({
+      header: '',
+      cell: (props) => (
+        <Button appearance='text' onClick={() => setDeletableRow(props.row.original.value)}>
+          <Icon
+            label={i18n.t('global.delete')}
+            icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />}
+          />
+          {i18n.t('global.delete')}
+        </Button>
+      ),
+      id: 'delete',
+      meta: {
+        size: '1%',
+      },
+    }),
+  
+  ];
+}
 
 export default RegexDetail;

@@ -14,6 +14,7 @@ import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import {useToast} from 'hooks/useToast';
 import {deleteResponse, editResponse} from 'services/responses';
 import LoadingDialog from "../../../components/LoadingDialog";
+import i18n from '../../../../i18n';
 
 type NewResponse = {
   name: string;
@@ -156,13 +157,13 @@ const Responses: FC = () => {
   const columnHelper = createColumnHelper<typeof formattedResponses[0]>();
 
   const getRules = (responseId: string) => {
-    const dependency = dependencies && dependencies.response.find(d => d.name === responseId);
-    return dependency ? dependency.rules.map((name, i) => <p key={i}>{name}</p>) : null;
+    const dependency = dependencies?.response.find(d => d.name === responseId);
+    return dependency?.rules.map((name, i) => <p key={name}>{name}</p>);
   };
 
   const getStories = (responseId: string) => {
-    const dependency = dependencies && dependencies.response.find(d => d.name === responseId);
-    return dependency ? dependency.stories.map((name, i) => <p key={i}>{name}</p>) : null;
+    const dependency = dependencies?.response.find(d => d.name === responseId);
+    return dependency?.stories.map((name, i) => <p key={name}>{name}</p>);
   };
 
   const responsesColumns = useMemo(() => [
@@ -174,16 +175,9 @@ const Responses: FC = () => {
     }),
     columnHelper.display({
       id: 'dependencies',
-      cell: (props) => (
-        <Label tooltip={
-          <>
-            <strong>{t('global.dependencies')}</strong>
-            {getRules(props.row.original.response)}
-            {getStories(props.row.original.response)}
-          </>
-        }>
-          {t('global.dependencies')}
-        </Label>
+      cell: (props) => buildDependenciesCell(
+        getRules(props.row.original.response),
+        getStories(props.row.original.response)
       ),
       meta: {
         size: '167px',
@@ -191,47 +185,22 @@ const Responses: FC = () => {
     }),
     columnHelper.accessor('text', {
       header: '',
-      cell: (props) => editableRow && editableRow.id === props.row.original.response ? (
-        <FormTextarea
-          label='label'
-          name='name'
-          defaultValue={props.getValue()}
-          hideLabel
-          minRows={1}
-          maxLength={RESPONSE_TEXT_LENGTH}
-          showMaxLength
-          onChange={(e) =>
-            setEditingTrainingTitle(e.target.value)
-          }
-        />
-      ) : (
-        <p>{props.getValue()}</p>
+      cell: (props) => buildTextCell(
+        props.getValue(),
+        editableRow?.id === props.row.original.response,
+        setEditingTrainingTitle,
       ),
       enableSorting: false,
     }),
     columnHelper.display({
       header: '',
-      cell: (props) => (
-        <>
-          {editableRow && editableRow.id === props.row.original.response ? (
-            <Button appearance='text'
-                    onClick={() => responseSaveMutation.mutate({id: editableRow.id, text: editingTrainingTitle ?? props.row.original.text})}>
-              <Icon label={t('global.save')} icon={<MdOutlineSave color={'rgba(0,0,0,0.54)'} />} />
-              {t('global.save')}
-            </Button>
-          ) : (
-            <Button
-              appearance='text'
-              onClick={() => {
-                setEditingTrainingTitle(props.row.original.text);
-                handleEditableRow({ id: props.row.original.response, text: props.row.original.text });
-              } }
-            >
-              <Icon label={t('global.edit')} icon={<MdOutlineModeEditOutline color={'rgba(0,0,0,0.54)'} />} />
-              {t('global.edit')}
-            </Button>
-          )}
-        </>
+      cell: (props) => buildSaveCell(
+        editableRow?.id === props.row.original.response,
+        () => editableRow && responseSaveMutation.mutate({id: editableRow.id , text: editingTrainingTitle ?? props.row.original.text}),
+        () => {
+          setEditingTrainingTitle(props.row.original.text);
+          handleEditableRow({ id: props.row.original.response, text: props.row.original.text });
+        },
       ),
       id: 'edit',
       meta: {
@@ -240,12 +209,7 @@ const Responses: FC = () => {
     }),
     columnHelper.display({
       id: 'delete',
-      cell: (props) => (
-        <Button appearance='text' onClick={() => setDeletableRow(props.row.original.response)}>
-          <Icon label={t('global.delete')} icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />} />
-          {t('global.delete')}
-        </Button>
-      ),
+      cell: (props) => buildDeleteCell(() => setDeletableRow(props.row.original.response)),
       meta: {
         size: '1%',
       },
@@ -319,7 +283,7 @@ const Responses: FC = () => {
         />
       </Card>
 
-      {/* TODO: Refactor dialog content */}
+      {/* Refactor dialog content later */}
       {deletableRow !== null && (
         <Dialog
           title={t('training.responses.deleteResponse')}
@@ -348,5 +312,74 @@ const Responses: FC = () => {
     </>
   );
 };
+
+const buildDependenciesCell = (rules: JSX.Element[] | undefined, stories: JSX.Element[] | undefined) => {
+  return (
+    <Label tooltip={
+      <>
+        <strong>{i18n.t('global.dependencies')}</strong>
+        {rules}
+        {stories}
+      </>
+    }>
+      {i18n.t('global.dependencies')}
+    </Label>
+  )
+}
+
+const buildTextCell = (value: string, isEditable: boolean, onEdit: (value: string) => void) => {
+  if(isEditable) {
+    return (
+      <FormTextarea
+        label='label'
+        name='name'
+        defaultValue={value}
+        hideLabel
+        minRows={1}
+        maxLength={RESPONSE_TEXT_LENGTH}
+        showMaxLength
+        onChange={(e) => onEdit(e.target.value)}
+      />
+    )
+  }
+  
+  return (
+    <p>{value}</p> 
+  )
+}
+
+const buildSaveCell = (
+  isEditable: boolean,
+  onSave: () => void,
+  onEdit: () => void,
+) => {
+  if(isEditable){
+    return (
+      <Button appearance='text' onClick={onSave}>
+        <Icon label={i18n.t('global.save')} icon={<MdOutlineSave color={'rgba(0,0,0,0.54)'} />} />
+        {i18n.t('global.save')}
+      </Button>
+    )
+  }
+
+  return (
+    <Button
+      appearance='text'
+      onClick={onEdit}
+    >
+      <Icon label={i18n.t('global.edit')} icon={<MdOutlineModeEditOutline color={'rgba(0,0,0,0.54)'} />} />
+      {i18n.t('global.edit')}
+    </Button>
+  )
+}
+
+const buildDeleteCell = (onClick: () => void) => {
+  return (
+    <Button appearance='text' onClick={onClick}>
+      <Icon label={i18n.t('global.delete')} icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />} />
+      {i18n.t('global.delete')}
+    </Button>
+  )
+}
 
 export default Responses;

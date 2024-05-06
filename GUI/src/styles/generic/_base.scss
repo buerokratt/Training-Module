@@ -17,12 +17,6 @@ body {
   font-size: $veera-font-size-100;
   line-height: $veera-line-height-500;
   background-color: get-color(black-coral-0);
-
-  & {
-    @include veera-breakpoint-down(sm) {
-      background-color: get-color(black-coral-0);
-    }
-  }
 }
 
 a,

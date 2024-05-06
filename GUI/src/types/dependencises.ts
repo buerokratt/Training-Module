@@ -3,7 +3,7 @@ export interface Dependencies {
 }
 
 export interface Dependency {
-    name: String;
+    name: string;
     rules: string[];
     stories: string [];
 }

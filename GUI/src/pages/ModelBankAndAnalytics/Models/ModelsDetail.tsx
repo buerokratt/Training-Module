@@ -98,7 +98,7 @@ const ModelsDetail: FC = () => {
                       {selectedFile.fileUri.endsWith('.png') ? (
                         <img src={selectedFile.fileUri} width='100%' alt='' />
                       ) : (
-                        <iframe width='100%' height={500} src={selectedFile.fileUri} />
+                        <iframe width='100%' height={500} src={selectedFile.fileUri} title={selectedFile.fileName} />
                       )}
                     </Card>
                   )}
@@ -120,7 +120,7 @@ const ModelsDetail: FC = () => {
                       {selectedFile.fileUri.endsWith('.png') ? (
                         <img src={selectedFile.fileUri} width='100%' alt='' />
                       ) : (
-                        <iframe width='100%' height={500} src={selectedFile.fileUri} />
+                        <iframe width='100%' height={500} src={selectedFile.fileUri} title={selectedFile.fileName} />
                       )}
                     </Card>
                   )}

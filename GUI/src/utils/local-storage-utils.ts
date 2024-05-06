@@ -1,7 +1,7 @@
 export const getFromLocalStorage = (
   key: string,
-  initialValue: any | null = null
-): any | null => {
+  initialValue?: any
+): any => {
   try {
     const item = localStorage.getItem(key);
     return item ? JSON.parse(item) : initialValue;

@@ -2,7 +2,6 @@ import { FC, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
-
 import { Button, FormInput, FormSelect, Icon, Track } from 'components';
 import { Form } from 'types/form';
 import { MdOutlineDelete } from 'react-icons/md';
@@ -21,10 +20,10 @@ type NodeDataProps = {
 
 type Conditions = {
   conditions?: ({
-    active_loop?: string | undefined;
-    slot?: string | undefined;
-    value?: string | undefined;
-  }| undefined)[] | undefined;
+    active_loop?: string;
+    slot?: string;
+    value?: string;
+  }| undefined)[];
 };
 
 const ConditionNode: FC<NodeDataProps> = ({ data }) => {
@@ -35,7 +34,7 @@ const ConditionNode: FC<NodeDataProps> = ({ data }) => {
   const { data: slots } = useQuery<Slot[]>({
     queryKey: ['slots'],
   });
-  const { control, watch, reset} = useForm<Conditions>({
+  const { control, watch } = useForm<Conditions>({
     defaultValues: {
       conditions: [{ active_loop: '' }, { slot: '', value: 'null' }],
     },
@@ -137,9 +136,7 @@ const ConditionNode: FC<NodeDataProps> = ({ data }) => {
                             render={({ field }) => (
                                 <FormInput
                                     {...field}
-                                    // onChange={(value) => field.onChange(value)}
                                     label={t('training.value')}
-                                    // value={field.value}
                                 />
                             )}
                         />

@@ -1,5 +1,4 @@
 import api from './api';
-import localDevApi from './local-dev-api';
 import fileApi from './file.api';
 import { Intent } from 'types/intent';
 
@@ -72,11 +71,11 @@ export async function turnExampleIntoIntent(data: {
   exampleName: string;
   intentName: string;
 }): Promise<void> {
-  await localDevApi.post('/rasa/intents/add', {
+  await api.post('intents/add', {
     intent: data.exampleName,
   });
-  await localDevApi.post(
-    '/rasa/intents/examples/delete',
+  await api.post(
+    'intents/examples/delete',
     { intent: data.intentName, example: data.exampleName }
   );
 }
@@ -84,7 +83,7 @@ export async function turnExampleIntoIntent(data: {
 export async function turnIntentIntoService(
   intent: Intent
 ): Promise<void> {
-  await localDevApi.post('/rasa/intents/turn-into-service', {
+  await api.post('intents/turn-into-service', {
     intentName: intent.intent
   });
 }
