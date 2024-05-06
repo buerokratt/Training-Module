@@ -72,6 +72,7 @@ function getInput(req) {
 router.post(
   "/put/:index_name/:index_type",
   upload.single("input"),
+  rateLimitMiddleware,
   (req, res) => {
     let input = getInput(req);
 
@@ -102,7 +103,7 @@ router.post(
 /*
 	For config and domain - many different types of entities in one list 
 */
-router.post("/bulk/:index_name", upload.single("input"), (req, res) => {
+router.post("/bulk/:index_name", upload.single("input"), rateLimitMiddleware, (req, res) => {
   const input = getInput(req);
 
   const index_name = req.params.index_name;
@@ -123,6 +124,7 @@ router.post("/bulk/:index_name", upload.single("input"), (req, res) => {
 router.post(
   "/bulk/:index_name/:index_type",
   upload.single("input"),
+  rateLimitMiddleware,
   (req, res) => {
     const input = getInput(req);
 
