@@ -14,6 +14,12 @@ export default defineConfig({
     target: 'es2015',
     emptyOutDir: true,
   },
+  server: {
+      headers: {
+        "Content-Security-Policy":
+          "upgrade-insecure-requests; default-src 'self'; font-src 'self' data:; img-src 'self' data:; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; object-src 'none'; connect-src 'self' http://localhost:8080 http://localhost:8085 https://admin.dev.buerokratt.ee/chat/menu.json;",
+      },
+    },
   resolve: {
     alias: {
       '~@fontsource': path.resolve(__dirname, 'node_modules/@fontsource'),
