@@ -116,7 +116,7 @@ const IntentExamplesEntry: FC<IntentExamplesEntryProps> = ({ value, entities, on
 
 const getRegexifiedString = (entities: Entity[], value: string, onClick: () => void) => {
   return regexifyString({
-    pattern: /\[(.{1,512}?)\]\((.{1,512?)\)/gmu,
+    pattern: /\[(.+?)\]\((.+?)\)/gmu,
     decorator: (match, index, result) => (
       <Tooltip content={<Track direction='vertical' gap={4} align='left' style={{ padding: 8 }}>
         <h4>{result?.[1]}</h4>
