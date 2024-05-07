@@ -4,9 +4,8 @@ import fs from "fs";
 import os from "os";
 import YAML from "yaml";
 import sanitize from "string-sanitizer";
-import sanitizeFilename from "sanitize-filename";
-
 import { Client } from "@opensearch-project/opensearch";
+import setRateLimit from "express-rate-limit";
 
 const router = express.Router();
 const upload = multer({ 
@@ -15,6 +14,22 @@ const upload = multer({
     fileSize: 50 * 1000 * 1000
   },
  })
+
+ const rateLimit = setRateLimit({
+  windowMs: 60 * 1000,
+  max: 30,
+  message: "Too many requests",
+  headers: true,
+  statusCode: 429,
+})
+
+ const sanitizeFilename = (filename) => {
+  if(filename.includes('../')) {
+    throw new Error('relative paths are not allowed')
+  }
+  
+  return filename.replace('..', '');
+ }
 
 const HOST = process.env.OPENSEARCH_HOST || "host.docker.internal";
 const PORT = process.env.OPENSEARCH_PORT || "9200";
@@ -72,7 +87,7 @@ function getInput(req) {
 router.post(
   "/put/:index_name/:index_type",
   upload.single("input"),
-  rateLimitMiddleware,
+  rateLimit,
   (req, res) => {
     let input = getInput(req);
 
@@ -83,8 +98,9 @@ router.post(
     const index_name = req.params.index_name;
     const index_type = req.params.index_type;
 
+    const obj = input[0];
+
     if (index_type) {
-      const obj = input[0];
       obj.id = obj[index_type].replaceAll(/\s+/g, "_");
     }
 
@@ -103,7 +119,7 @@ router.post(
 /*
 	For config and domain - many different types of entities in one list 
 */
-router.post("/bulk/:index_name", upload.single("input"), rateLimitMiddleware, (req, res) => {
+router.post("/bulk/:index_name", upload.single("input"), rateLimit, (req, res) => {
   const input = getInput(req);
 
   const index_name = req.params.index_name;
@@ -124,7 +140,7 @@ router.post("/bulk/:index_name", upload.single("input"), rateLimitMiddleware, (r
 router.post(
   "/bulk/:index_name/:index_type",
   upload.single("input"),
-  rateLimitMiddleware,
+  rateLimit,
   (req, res) => {
     const input = getInput(req);
 
