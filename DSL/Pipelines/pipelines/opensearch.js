@@ -111,7 +111,7 @@ router.post(
       })
       .catch((e) => {
         res.status(500);
-        console.log(e);
+        console.error(e);
       });
   }
 );
@@ -129,7 +129,7 @@ router.post("/bulk/:index_name", upload.single("input"), rateLimit, (req, res) =
     const inp = {};
     inp[key] = input[key];
     inp.id = key;
-    osPut(index_name, inp);
+    osPut(index_name, inp).catch(console.error);
   }
   res.end();
 });
@@ -152,7 +152,7 @@ router.post(
       osPut(index_name, obj).catch((e) => {
         res.status(500);
         res.end();
-        console.log(e);
+        console.error(e);
       });
     });
     res.status(200);
