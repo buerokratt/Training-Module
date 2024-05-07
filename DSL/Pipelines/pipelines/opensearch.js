@@ -4,11 +4,17 @@ import fs from "fs";
 import os from "os";
 import YAML from "yaml";
 import sanitize from "string-sanitizer";
+import sanitizeFilename from "sanitize-filename";
 
 import { Client } from "@opensearch-project/opensearch";
 
 const router = express.Router();
-const upload = multer({ dest: os.tmpdir() + "/" });
+const upload = multer({ 
+  dest: os.tmpdir()+'/',
+  limits: { 
+    fileSize: 50 * 1000 * 1000
+  },
+ })
 
 const HOST = process.env.OPENSEARCH_HOST || "host.docker.internal";
 const PORT = process.env.OPENSEARCH_PORT || "9200";
@@ -54,7 +60,7 @@ export async function osDeleteObject(index_name, obj_id) {
 function getInput(req) {
   if (req.file) {
     const inp = req.file.destination + req.file.filename;
-    return YAML.parse(fs.readFileSync(inp, "utf8"));
+    return YAML.parse(fs.readFileSync(sanitizeFilename(inp), "utf8"));
   } else {
     return YAML.parse(req.body.input);
   }
@@ -66,6 +72,7 @@ function getInput(req) {
 router.post(
   "/put/:index_name/:index_type",
   upload.single("input"),
+  rateLimitMiddleware,
   (req, res) => {
     let input = getInput(req);
 
@@ -84,7 +91,7 @@ router.post(
     osPut(index_name, obj)
       .then((ret) => {
         res.status(200);
-        res.end(JSON.stringify(ret));
+        res.json(JSON.stringify(ret)).end();
       })
       .catch((e) => {
         res.status(500);
@@ -96,7 +103,7 @@ router.post(
 /*
 	For config and domain - many different types of entities in one list 
 */
-router.post("/bulk/:index_name", upload.single("input"), (req, res) => {
+router.post("/bulk/:index_name", upload.single("input"), rateLimitMiddleware, (req, res) => {
   const input = getInput(req);
 
   const index_name = req.params.index_name;
@@ -117,6 +124,7 @@ router.post("/bulk/:index_name", upload.single("input"), (req, res) => {
 router.post(
   "/bulk/:index_name/:index_type",
   upload.single("input"),
+  rateLimitMiddleware,
   (req, res) => {
     const input = getInput(req);
 
@@ -141,7 +149,7 @@ router.post("/delete/:index_name", (req, res) => {
   osDeleteIndex(index_name)
     .then((ret) => {
       res.status(200);
-      res.end(JSON.stringify(ret));
+      res.json(JSON.stringify(ret)).end();
     })
     .catch((e) => {
       res.status(500);
@@ -157,7 +165,7 @@ router.post("/delete/object/:index_name", (req, res) => {
   osDeleteObject(index_name, obj_id)
     .then((ret) => {
       res.status(200);
-      res.end(JSON.stringify(ret));
+      res.json(JSON.stringify(ret)).end();
     })
     .catch((e) => {
       res.status(500);
@@ -173,7 +181,7 @@ router.post("/delete/:index_name/:obj_id", (req, res) => {
   osDeleteObject(index_name, obj_id)
     .then((ret) => {
       res.status(200);
-      res.end(JSON.stringify(ret));
+      res.json(JSON.stringify(ret)).end();
     })
     .catch((e) => {
       res.status(500);
