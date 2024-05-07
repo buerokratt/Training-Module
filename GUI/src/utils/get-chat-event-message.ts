@@ -1,6 +1,6 @@
 import { CHAT_EVENTS } from "types/chat";
 import { Message } from "types/message";
-import { format } from "util";
+import { format } from 'date-fns';
 import i18n from "../../i18n";
 
 export const getChatEventMessage = (message: Message) => {
