@@ -78,3 +78,9 @@ curl -X POST -H "Content-Type: application/json" -d '{
   "password": ""
 }' http://localhost:8080/login-user
 ```
+
+### Notes
+
+##### Ruuter Internal Requests
+
+- When running ruuter either on local or in an environment make sure to adjust `- application.internalRequests.allowedIPs=127.0.0.1,{YOUR_IPS}` under ruuter environments

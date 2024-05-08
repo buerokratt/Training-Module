@@ -10,14 +10,11 @@ FROM image AS build
 RUN npm i --legacy-peer-deps --mode=development
 COPY . .
 RUN ./node_modules/.bin/vite build --mode=development
+RUN chown -R node /usr/training-module/node_modules
 
 FROM $nginx_version AS web
-
-RUN addgroup -S nonroot \
-    && adduser -S nonroot -G nonroot
-USER nonroot
-
+USER node
 COPY ./nginx/http-nginx.conf /etc/nginx/conf.d/default.conf
-COPY --from=build ./usr/training-module/burokratt /usr/share/nginx/html/training-module
+COPY --from=build ./usr/training-module /usr/share/nginx/html/training-module
 EXPOSE 3001
 CMD ["nginx", "-g", "daemon off;"]
