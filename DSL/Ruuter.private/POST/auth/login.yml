@@ -1,11 +1,11 @@
 declaration:
   call: declare
   version: 0.1
-  description: "Decription placeholder for 'LOGIN-USER'"
+  description: "Decription placeholder for 'LOGIN'"
   method: post
   accepts: json
   returns: json
-  namespace: training
+  namespace: service
   allowlist:
     body:
       - field: login

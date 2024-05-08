@@ -68,7 +68,7 @@ checkIntentFileYaml:
 
 validateFileExists:
   switch:
-    - condition: ${fileExists.response.body}
+    - condition: ${fileExists.response.body.error === false}
       next: getRulesFile
   next: assignTmpFilePath
 
@@ -176,7 +176,7 @@ checkIntentFileTmp:
 
 validateTmpFileExists:
   switch:
-    - condition: ${tmpFileExists.response.body}
+    - condition: ${tmpFileExists.response.body.error === false}
       next: getIntentFile
   next: returnIntentFileMissing
 
