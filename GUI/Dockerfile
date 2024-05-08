@@ -10,6 +10,8 @@ FROM image AS build
 RUN npm i --legacy-peer-deps --mode=development
 COPY . .
 RUN ./node_modules/.bin/vite build --mode=development
+RUN chown -R node /app/node_modules
+USER node
 
 FROM $nginx_version AS web
 COPY ./nginx/http-nginx.conf /etc/nginx/conf.d/default.conf
