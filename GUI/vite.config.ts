@@ -16,8 +16,7 @@ export default defineConfig({
   },
   server: {
       headers: {
-        "Content-Security-Policy":
-          "upgrade-insecure-requests; default-src 'self'; font-src 'self' data:; img-src 'self' data:; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; object-src 'none'; connect-src 'self' http://localhost:8080 http://localhost:8085 https://admin.dev.buerokratt.ee/chat/menu.json;",
+        "Content-Security-Policy": process.env.REACT_APP_CSP
       },
     },
   resolve: {
