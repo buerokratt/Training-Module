@@ -11,9 +11,9 @@ RUN npm i --legacy-peer-deps --mode=development
 COPY . .
 RUN ./node_modules/.bin/vite build --mode=development
 RUN chown -R node /app/node_modules
-USER node
 
 FROM $nginx_version AS web
+USER node
 COPY ./nginx/http-nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build ./usr/training-module/burokratt /usr/share/nginx/html/training-module
 EXPOSE 3001
