@@ -1,0 +1,20 @@
+version: "3.0"
+nlu:
+- intent: rahvaarv
+  examples: |
+    - palju rahvast eestis elab
+    - kui palju elanikke meil on
+    - mitu inimest harjumaal on
+    - inimeste arv
+    - rahvaarv
+    - eesti rahvastik
+    - mitu inimest [tallinn](asukoht) elab
+    - palju inimesi [rakvere](asukoht)
+    - rahvaarv [pealinnas](asukoht)
+    - rahvastiku suurus
+    - kui suur on rahvastik
+    - meie inimeste statistika
+    - palju inimesi [rakveres](asukoht) elab
+    - mitu inimest on [põltsamaal](asukoht)
+    - rahvaarv [narvas](asukoht)
+    - rahvaarv [pärnus](asukoht)

@@ -1,6 +1,6 @@
 version: "3.0"
 intents:
-  - rahvaaarv
+  - rahvaarv
   - common_tervitus
   - kompliment
   - common_hüvasti_jätmine
