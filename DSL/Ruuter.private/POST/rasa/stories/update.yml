@@ -50,7 +50,7 @@ getStoriesWithName:
 
 validateStoryExists:
   switch:
-    - condition: ${storiesResult.response.body.response.data.id == id}
+    - condition: ${storiesResult.response.body.response.id == id}
       next: returnStoryIsMissing
   next: getFileLocations
 

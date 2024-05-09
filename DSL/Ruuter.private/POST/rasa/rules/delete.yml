@@ -32,7 +32,7 @@ getRuleWithName:
 
 validateRules:
   switch:
-    - condition: ${ruleResult.response.body.response.data.rule == rule}
+    - condition: ${ruleResult.response.body.response.rule == rule}
       next: getFileLocations
   next: returnRulesIsMissing
 

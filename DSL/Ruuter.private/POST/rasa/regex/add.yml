@@ -32,7 +32,7 @@ validateRegexExists:
   switch:
     - condition: ${!regexes.response.body}
       next: returnRegexesError
-    - condition: ${regexes.response.body.response.data.regexes.some(reg => reg.name === regex)}
+    - condition: ${regexes.response.body.response.regexes.some(reg => reg.name === regex)}
       next: returnRegexExists
   next: getFileLocations
 

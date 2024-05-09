@@ -1,0 +1,24 @@
+version: "3.0"
+nlu:
+  - intent: andmekaitse_kusimused
+    examples: |
+      - kes tagab andmete konfidentsiaalsuse
+      - kuidas ma tean et minu andmed on kaitsud
+      - kas mu andmed on kaitstud
+      - kuidas toimub andmete kaitsmine
+      - minu andmete kaitsimine
+      - andmete organisatsiooniline kaitse
+      - andmete infotehnoloogiline kaitse
+      - andmete füüsiline kaitse
+      - kuidas toimib isikuandmete kaitse
+      - kas minu isiku andmed on kaitstud
+      - Kas minu andmed on ikka kaitstud?
+      - kuidas tagatakse andmete konfidentsiaalsus
+      - kas mu andmeid hoitakse turvaliselt
+      - kuidas on andmete turvalisus garanteeritud
+      - soovin infot enda andmete kaitsmise kohta
+      - Ega andmed ei leki?
+      - kellel on juurdepääs andmetele
+      - kuidas töötab õigus andmetele
+      - kes mu andmeid vaadanud on
+      - kas isikuandmete kasutamisel peab küsima mu nõusolekut

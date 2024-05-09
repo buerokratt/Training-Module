@@ -48,7 +48,7 @@ getStoryNames:
 
 validateStoryName:
   switch:
-    - condition: ${!storiesResult.response.body.response.data.names.includes(body.story)}
+    - condition: ${!storiesResult.response.body.response.names.includes(body.story)}
       next: getFileLocations
   next: returnStoryExists
 

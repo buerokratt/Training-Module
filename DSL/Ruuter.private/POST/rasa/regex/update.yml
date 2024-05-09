@@ -33,7 +33,7 @@ getRegexesList:
 
 validateNewRegexNotExists:
   switch:
-    - condition: ${regexes.response.body.response.data.regexes.some(reg => reg.name === regex.newName)}
+    - condition: ${regexes.response.body.response.regexes.some(reg => reg.name === regex.newName)}
       next: returnRegexExists
   next: getFileLocations
 

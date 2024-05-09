@@ -32,7 +32,7 @@ getStoriesWithName:
 
 validateStories:
   switch:
-    - condition: ${storiesResult.response.body.response.data.story == story}
+    - condition: ${storiesResult.response.body.response.story == story}
       next: getFileLocations
   next: returnStoryIsMissing
 

@@ -48,7 +48,7 @@ getRuleNames:
 
 validateRuleName:
   switch:
-    - condition: ${!ruleResult.response.body.response.data.names.includes(body.id)}
+    - condition: ${!ruleResult.response.body.response.names.includes(body.id)}
       next: getFileLocations
   next: returnStoryExists
 

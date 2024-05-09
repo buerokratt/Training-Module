@@ -19,11 +19,11 @@ rules:
       - action: utter_common_hüvasti_jätmine
   - rule: rahvaarv_olemas
     steps:
-      - intent: rahvaarv
+      - intent: rahvaaarv
       - action: utter_rahvaarv_puudu
   - rule: rahvaarv_puudu
     steps:
-      - intent: rahvaarv
+      - intent: rahvaaarv
         entities:
           - asukoht: tallinn
       - action: utter_rahvaarv_olemas
