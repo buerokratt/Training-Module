@@ -71,7 +71,7 @@ mapRegexesData:
   args:
     url: "[#TRAINING_DMAPPER]/hbs/training/new_regex_file"
     headers:
-      type: 'json'
+      type: "json"
     body:
       examples: ${JSON.stringify(regexData.response.body.nlu[0].examples)}
       regex: ${regex.newName}
@@ -83,7 +83,7 @@ convertJsonToYaml:
     url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
     body:
       version: "3.0"
-      nlu: ${regexesData.response.body.data}
+      nlu: ${regexesData.response.body}
   result: regexYaml
   next: saveRegexFile
 

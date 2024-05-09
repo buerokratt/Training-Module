@@ -65,7 +65,7 @@ deleteStory:
   args:
     url: "[#TRAINING_DMAPPER]/hbs/training/delete_story"
     headers:
-      type: 'json'
+      type: "json"
     body:
       stories: ${storiesData.response.body.stories}
       story_name: ${story}
@@ -78,7 +78,7 @@ convertJsonToYaml:
     headers:
       content-type: "application/json"
     body:
-      stories: ${deleteStoriesData.response.body.data}
+      stories: ${deleteStoriesData.response.body}
   result: storiesYaml
 
 saveStoriesFile:
