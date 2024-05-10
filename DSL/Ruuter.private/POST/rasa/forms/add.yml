@@ -91,9 +91,9 @@ convertJsonToYaml:
       intents: ${domainData.response.body.response.intents}
       entities: ${domainData.response.body.response.entities}
       slots: ${domainData.response.body.response.slots}
-      forms: ${mergedForms.response.body.array}
+      forms: ${mergedForms.response.body}
       actions: ${domainData.response.body.response.actions}
-      responses: ${mergedResponses.response.body.array}
+      responses: ${mergedResponses.response.body}
       session_config: ${domainData.response.body.response.session_config}
   result: domainYaml
 
