@@ -47,7 +47,7 @@ getStoriesFile:
     url: "[#TRAINING_DMAPPER]/file-manager/read-file"
     body:
       file_path: ${fileLocations.response.body.response.test_stories_location}
-  result: testStoriesFile 
+  result: testStoriesFile
 
 convertYamlToJson:
   call: http.post
@@ -72,7 +72,7 @@ convertJsonToYaml:
   args:
     url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
     body:
-      stories: ${mergedTestStories.response.body}
+      stories: ${mergedTestStories.response.body.array}
   result: testStoriesYaml
 
 saveFile:
@@ -97,4 +97,3 @@ returnTestStoryExists:
 returnUnauthorized:
   return: "error: unauthorized"
   next: end
-

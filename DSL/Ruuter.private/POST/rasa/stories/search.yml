@@ -94,14 +94,14 @@ mapStoriesData:
   args:
     url: "[#TRAINING_DMAPPER]/hbs/training/get_stories"
     headers:
-      type: 'json'
+      type: "json"
     body:
       hits: ${getStoriesResult.response.body.hits.hits}
   result: storiesData
   next: returnSuccess
 
 returnSuccess:
-  return: ${storiesData.response.body.data.stories}
+  return: ${storiesData.response.body.stories}
   next: end
 
 returnNoSearchSpecified:

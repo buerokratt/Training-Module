@@ -57,7 +57,7 @@ convertResponseInput:
   args:
     url: "[#TRAINING_DMAPPER]/hbs/training/get_form_responses"
     headers:
-      type: 'json'
+      type: "json"
     body:
       responses: ${form.responses}
       form_name: ${parameters.form_name}
@@ -69,7 +69,7 @@ mergeResponses:
     url: "[#TRAINING_DMAPPER]/merge/objects"
     body:
       object1: ${domainData.response.body.response.responses}
-      object2: ${mappedResponses.response.body.data}
+      object2: ${mappedResponses.response.body}
   result: mergedResponses
 
 convertJsonToYaml:
@@ -83,10 +83,9 @@ convertJsonToYaml:
       slots: ${domainData.response.body.response.slots}
       forms: ${updatedForms.response.body}
       actions: ${domainData.response.body.response.actions}
-      responses: ${mergedResponses.response.body}
+      responses: ${mergedResponses.response.body.array}
       session_config: ${domainData.response.body.response.session_config}
   result: domainYaml
-
 
 getFileLocations:
   call: http.get

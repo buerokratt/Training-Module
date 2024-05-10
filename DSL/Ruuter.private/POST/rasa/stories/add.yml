@@ -93,7 +93,7 @@ convertJsonToYaml:
     headers:
       content-type: "application/json"
     body:
-      stories: ${mergedStories.response.body}
+      stories: ${mergedStories.response.body.array}
   result: storiesYaml
 
 saveStoriesFile:

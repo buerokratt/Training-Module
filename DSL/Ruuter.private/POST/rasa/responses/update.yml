@@ -59,7 +59,7 @@ convertJsonToYaml:
       slots: ${domainData.response.body.response.slots}
       forms: ${domainData.response.body.response.forms}
       actions: ${domainData.response.body.response.actions}
-      responses: ${mergedResponses.response.body}
+      responses: ${mergedResponses.response.body.array}
       session_config: ${domainData.response.body.response.session_config}
   result: domainYaml
 

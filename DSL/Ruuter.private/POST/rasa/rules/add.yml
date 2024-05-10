@@ -93,7 +93,7 @@ convertJsonToYaml:
     headers:
       content-type: "application/json"
     body:
-      rules: ${mergedRules.response.body}
+      rules: ${mergedRules.response.body.array}
   result: rulesYaml
 
 saveRulesFile:

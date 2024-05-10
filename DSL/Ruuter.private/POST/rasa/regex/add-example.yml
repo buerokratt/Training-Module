@@ -97,7 +97,7 @@ mapUpdatedRegexesData:
       type: "json"
     body:
       regex: ${parameters.regex_name}
-      examples: ${mergedExamples.response.body}
+      examples: ${mergedExamples.response.body.array}
   result: mappedUpdatedExamples
 
 convertJsonToYaml:

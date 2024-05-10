@@ -41,7 +41,7 @@ mapRegexesData:
   args:
     url: "[#TRAINING_DMAPPER]/hbs/training/get_regex_details"
     headers:
-      type: 'json'
+      type: "json"
     body:
       hits: ${getRegexesResult.response.body.hits.hits}
       examplesArray: ${examplesArray}
@@ -50,7 +50,7 @@ mapRegexesData:
   next: returnSuccess
 
 returnSuccess:
-  return: ${regexesData.response.body.data}
+  return: ${regexesData.response.body}
   next: end
 
 returnUnauthorized:
