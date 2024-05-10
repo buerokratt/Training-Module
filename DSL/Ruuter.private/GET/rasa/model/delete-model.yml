@@ -73,8 +73,9 @@ updateInDatabase:
       state: "Removed"
       file_name: ${model.fileName}
       version_number: ${model.versionNumber}
-      image_version: ${model.imageVersion}
+      model_version: ${model.modelVersion}
       test_report: ${model.testReport}
+      cross_validation_report: ${model.crossValidationReport}
   result: dbResult
   next: returnSuccess
 

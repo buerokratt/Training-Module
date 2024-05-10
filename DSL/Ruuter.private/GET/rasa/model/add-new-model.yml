@@ -31,7 +31,8 @@ assignDefaultValues:
     state: "Trained"
     modelType: "RASA"
     test_report: {}
-    imageVersion: ${dockerData.response.body.services['train-bot'].image}
+    cross_validation_report: {}
+    modelVersion: ${dockerData.response.body.services['train-bot'].image}
 
 getTrainedVersion:
   call: http.post
@@ -57,7 +58,7 @@ validateDbVersion:
 increaseVersion:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/util/increase-double-digit-version"
+    url: "[#TRAINING_DMAPPER]/utils/increase-double-digit-version"
     body:
       version: ${dbResult.response.body[0].versionNumber}
   result: updatedVersion
@@ -115,7 +116,7 @@ updateInDatabase:
       state: ${state}
       file_name: ${name + trainedVersion.response.body + modelExtension}
       version_number: ${trainedVersion.response.body}
-      image_version: ${imageVersion}
+      model_version: ${modelVersion}
       test_report: ${JSON.stringify(test_report)}
   result: dbResult
 

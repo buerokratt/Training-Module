@@ -1,0 +1,37 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Adds a new model to the database with ERROR status"
+  method: get
+  accepts: json
+  returns: json
+  namespace: training
+
+getLatestProcessingModelFromDb:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/get-last-processing-model"
+  result: dbModelResult
+
+reAssignState:
+  assign:
+    state: "ERROR"
+
+updateInDatabase:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/add-llm-trainings"
+    body:
+      model_type: ${dbModelResult.response.body[0].modelType}
+      state: ${state}
+      file_name: ${dbModelResult.response.body[0].fileName}
+      version_number: ${dbModelResult.response.body[0].versionNumber}
+      model_version: ${dbModelResult.response.body[0].modelVersion}
+      test_report: ${dbModelResult.response.body[0].testReport}
+      cross_validation_report: ${dbModelResult.response.body[0].crossValidationReport}
+  result: dbModelResult
+
+returnSuccess:
+  return: "Inserted model with ERROR status. "
+  wrapper: false
+  next: end
