@@ -1,4 +1,4 @@
-SELECT file_name, test_report , created, state, trained_date
+SELECT file_name, test_report, cross_validation_report, created, state, trained_date
 FROM llm_trainings lt
 WHERE file_name = :fileName
   AND created = (

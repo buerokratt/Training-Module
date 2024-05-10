@@ -1,0 +1,73 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Adds a new model to the database with PROCESSING status"
+  method: get
+  accepts: json
+  returns: json
+  namespace: training
+
+assignDefaultValues:
+  assign:
+    version: "1_0"
+    state: "PROCESSING"
+    modelType: "RASA"
+    modelVersion: "3.0"
+
+getLatestVersionFromDb:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/get-latest-llm-version"
+  result: dbResult
+
+validateDbVersion:
+  switch:
+    - condition: ${dbResult.response.body.length > 0}
+      next: increaseVersion
+  next: insertToDatabase
+
+increaseVersion:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/utils/increase-double-digit-version"
+    body:
+      version: ${dbResult.response.body[0].versionNumber}
+  result: updatedVersion
+
+reAssignVersion:
+  assign:
+    version: ${updatedVersion.response.body}
+
+updateInDatabase:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/add-llm-trainings"
+    body:
+      model_type: ${modelType}
+      state: ${state}
+      file_name: ""
+      version_number: ${version}
+      model_version: ${modelVersion}
+      test_report: ""
+      cross_validation_report: ""
+  result: dbResult
+  next: returnSuccess
+
+insertToDatabase:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/add-llm-trainings"
+    body:
+      model_type: ${modelType}
+      state: ${state}
+      file_name: ""
+      version_number: ${version}
+      model_version: ${modelVersion}
+      test_report: ""
+      cross_validation_report: ""
+  result: dbResult
+
+returnSuccess:
+  return: "Inserted model with PROCESSING status. "
+  wrapper: false
+  next: end

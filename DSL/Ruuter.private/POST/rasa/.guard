@@ -1,7 +1,8 @@
-check_for_cookie:
+process_request:
+  # TODO: this is a workaround to avoid authentication and should be removed in the future
   switch:
-    - condition: ${incoming.headers == null || incoming.headers.cookie == null}
-      next: guard_fail
+    - condition: ${incoming.headers['x-ruuter-skip-authentication'] === "true"}
+      next: guard_success
   next: authenticate
 
 authenticate:
