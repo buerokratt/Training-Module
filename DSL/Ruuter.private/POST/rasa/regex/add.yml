@@ -32,7 +32,7 @@ validateRegexExists:
   switch:
     - condition: ${!regexes.response.body}
       next: returnRegexesError
-    - condition: ${regexes.response.body.response.data.regexes.some(reg => reg.name === regex)}
+    - condition: ${regexes.response.body.response.regexes.some(reg => reg.name === regex)}
       next: returnRegexExists
   next: getFileLocations
 
@@ -49,7 +49,7 @@ mapRegexData:
   args:
     url: "[#TRAINING_DMAPPER]/hbs/training/new_regex_file"
     headers:
-      type: 'json'
+      type: "json"
     body:
       regex: ${regex}
       examples: ""
@@ -61,7 +61,7 @@ convertJsonToYaml:
     url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
     body:
       version: "3.0"
-      nlu: ${regexFileJson.response.body.data}
+      nlu: ${regexFileJson.response.body}
   result: regexYaml
 
 saveRegexFile:

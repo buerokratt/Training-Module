@@ -36,7 +36,7 @@ getRuleWithName:
 
 validateRules:
   switch:
-    - condition: ${ruleResult.response.body.response.data.rule == body.id}
+    - condition: ${ruleResult.response.body.response.rule == body.id}
       next: getFileLocations
   next: returnRulesIsMissing
 
@@ -69,7 +69,7 @@ deleteRule:
   args:
     url: "[#TRAINING_DMAPPER]/hbs/training/delete_rule"
     headers:
-      type: 'json'
+      type: "json"
     body:
       rules: ${rulesData.response.body}
       rule_name: ${body.id}
@@ -80,7 +80,7 @@ mergeRules:
   args:
     url: "[#TRAINING_DMAPPER]/file-manager/merge"
     body:
-      array1: ${deleteRulesData.response.body.data[1]}
+      array1: ${deleteRulesData.response.body[1]}
       array2: ${[ruleData]}
       iteratee: "rule"
   result: mergedRules
@@ -92,7 +92,7 @@ convertJsonToYaml:
     headers:
       content-type: "application/json"
     body:
-      rules: ${mergedRules.response.body}
+      rules: ${mergedRules.response.body.array}
   result: rulesYaml
 
 saveRulesFile:

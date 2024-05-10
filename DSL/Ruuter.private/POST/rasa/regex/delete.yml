@@ -42,7 +42,7 @@ checkFileExists:
 
 removeFileIfExists:
   switch:
-    - condition: ${fileExists.response.body}
+    - condition: ${fileExists.response.body.error === false}
       next: deleteRegexFile
   next: updateRegexOpenSearch
 

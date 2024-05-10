@@ -32,7 +32,7 @@ getRuleWithName:
 
 validateRules:
   switch:
-    - condition: ${ruleResult.response.body.response.data.rule == rule}
+    - condition: ${ruleResult.response.body.response.rule == rule}
       next: getFileLocations
   next: returnRulesIsMissing
 
@@ -65,7 +65,7 @@ deleteRule:
   args:
     url: "[#TRAINING_DMAPPER]/hbs/training/delete_rule"
     headers:
-      type: 'json'
+      type: "json"
     body:
       rules: ${rulesData.response.body.rules}
       rule_name: ${rule}
@@ -78,7 +78,7 @@ convertJsonToYaml:
     headers:
       content-type: "application/json"
     body:
-      rules: ${deleteRulesData.response.body.data}
+      rules: ${deleteRulesData.response.body}
   result: rulesYaml
 
 saveRulesFile:

@@ -15,12 +15,9 @@ intents:
   - affirm
   - deny
 entities:
-  error: false
-  message: Merged Successfully
-  array:
-    - ss
-    - weather
-    - asukoht
+  - ss
+  - weather
+  - asukoht
 slots:
   affirm_deny:
     influence_conversation: false

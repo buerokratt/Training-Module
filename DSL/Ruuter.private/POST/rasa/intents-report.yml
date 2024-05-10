@@ -170,7 +170,7 @@ mock_data_1:
           recall: 1
           f1-score: 0.9571428571428571
           support: 67
-          confused_with: { }
+          confused_with: {}
         common_kinnitamine:
           precision: 0.863013698630137
           recall: 0.8873239436619719
@@ -259,6 +259,6 @@ mock_data_4:
             common_kompliment_botile: 1
   result: reflected_request
   next: returnData
-  
+
 returnData:
-  return: ${reflected_request.response.body.data}
+  return: ${reflected_request.response.body}

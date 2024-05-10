@@ -47,7 +47,7 @@ ruleForms:
 
 validateRuleForms:
   switch:
-    - condition: ${ruleForms.response.body.response.data.rules.length == 0}
+    - condition: ${ruleForms.response.body.response.rules.length == 0}
       next: storiesForms
   next: returnFormHasDependencyToRules
 

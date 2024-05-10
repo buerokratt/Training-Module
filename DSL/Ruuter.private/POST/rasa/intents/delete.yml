@@ -59,7 +59,7 @@ checkIntentFileYaml:
 
 validateFileExists:
   switch:
-    - condition: ${fileExists.response.body}
+    - condition: ${fileExists.response.body.error === false}
       next: getRulesFile
   next: assignTmpFilePath
 
@@ -77,7 +77,7 @@ checkIntentFileTmp:
 
 validateTmpFileExists:
   switch:
-    - condition: ${tmpFileExists.response.body}
+    - condition: ${tmpFileExists.response.body.error === false}
       next: getRulesFile
   next: returnIntentFileMissing
 
@@ -166,7 +166,7 @@ checkIfIntentEmpty:
 
 assignEmptyExamples:
   assign:
-    examplesToWriteIntoYml: [ ]
+    examplesToWriteIntoYml: []
   next: mapIntentsData
 
 replaceString:
@@ -197,7 +197,7 @@ mapIntentsData:
   args:
     url: "[#TRAINING_DMAPPER]/hbs/training/get_intent_file"
     headers:
-      type: 'json'
+      type: "json"
     body:
       intent: ${parameters.name}
       examples: ${examplesToWriteIntoYml}
@@ -234,6 +234,15 @@ validateExistsInDomain:
     - condition: ${domainData.response.body.response.intents.includes(intent)}
       next: mergeIntents
   next: deleteOldIntentFile
+
+mergeIntents:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file-manager/merge"
+    body:
+      array1: ${domainData.response.body.response.intents}
+      array2: ${[intent]}
+  result: mergedIntents
 
 removeFromDomainArray:
   call: http.post

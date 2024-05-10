@@ -55,7 +55,7 @@ mapIntentsData:
   args:
     url: "[#TRAINING_DMAPPER]/hbs/training/get_intent_file"
     headers:
-      type: 'json'
+      type: "json"
     body:
       intent: ${intent}
   result: intentFileJson
@@ -66,7 +66,7 @@ convertJsonToYaml:
     url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
     body:
       version: "3.0"
-      nlu: ${intentFileJson.response.body.data}
+      nlu: ${intentFileJson.response.body}
   result: intentYaml
 
 saveIntentFile:

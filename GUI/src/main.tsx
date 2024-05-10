@@ -101,7 +101,7 @@ const callApiInstance = async (queryKey: QueryKey) => {
   }
   
   if (queryKey.includes('regexes')) {
-    return data.response.data.regexes;
+    return data.response.regexes;
   }
 
   return data;

@@ -76,7 +76,7 @@ https://admin.play.buerokratt.ee/training
 curl -X POST -H "Content-Type: application/json" -d '{
   "login": "EE30303039914",
   "password": ""
-}' http://localhost:8080/login-user
+}' http://localhost:8080/auth/login
 ```
 
 ### Notes

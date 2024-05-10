@@ -132,7 +132,7 @@ mapRegexesData:
   args:
     url: "[#TRAINING_DMAPPER]/hbs/training/get_regex_file"
     headers:
-      type: 'json'
+      type: "json"
     body:
       regex: ${parameters.entity}
       examples: ${intentData.response.body.nlu[0].examples}
@@ -144,7 +144,7 @@ mapIntentsData:
   args:
     url: "[#TRAINING_DMAPPER]/hbs/training/get_intent_file"
     headers:
-      type: 'json'
+      type: "json"
     body:
       intent: ${parameters.entity}
       examples: ${splitExamples.response.body}

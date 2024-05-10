@@ -39,7 +39,7 @@ checkModelExists:
 
 validateModelExists:
   switch:
-    - condition: ${modelExists.response.body}
+    - condition: ${modelExists.response.body.error === false}
       next: getTrainedModel
   next: returnTrainedModelMissing
 

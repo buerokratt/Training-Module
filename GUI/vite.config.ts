@@ -6,29 +6,31 @@ import path from 'path';
 
 // https://vitejs.dev/config/
 export default ({ mode }) => {
-  process.env = Object.assign(process.env, loadEnv(mode, process.cwd(), ""));
+  process.env = Object.assign(process.env, loadEnv(mode, process.cwd(), ''));
 
   return defineConfig({
-    envPrefix: "REACT_APP_",
+    envPrefix: 'REACT_APP_',
     plugins: [react(), tsconfigPaths(), svgr()],
     base: '/training/', //Change this according to your reverse proxy subpath
     define: {
-      "process.env": process.env,
+      'process.env': process.env,
     },
     server: {
       headers: {
-        "Content-Security-Policy": process.env.REACT_APP_CSP,
+        ...(process.env.REACT_APP_CSP && {
+          'Content-Security-Policy': process.env.REACT_APP_CSP,
+        }),
       },
     },
     build: {
-      outDir: "./build",
-      target: "es2015",
+      outDir: './build',
+      target: 'es2015',
       emptyOutDir: true,
     },
     resolve: {
       alias: {
-        "~@fontsource": path.resolve(__dirname, "node_modules/@fontsource"),
-        "@": `${path.resolve(__dirname, "./src")}`,
+        '~@fontsource': path.resolve(__dirname, 'node_modules/@fontsource'),
+        '@': `${path.resolve(__dirname, './src')}`,
       },
     },
   });
