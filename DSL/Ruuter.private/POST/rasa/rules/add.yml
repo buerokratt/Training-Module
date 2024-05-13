@@ -26,7 +26,7 @@ assign_values:
 validateRules:
   call: http.post
   args:
-  url: "[#TRAINING_DMAPPER]/validate/validate-stories-rules"
+    url: "[#TRAINING_DMAPPER]/validate/validate-stories-rules"
     body:
       story: ${body}
       category: "rules"
@@ -48,7 +48,7 @@ getRuleNames:
 
 validateRuleName:
   switch:
-    - condition: ${!ruleResult.response.body.response.data.names.includes(body.id)}
+    - condition: ${!ruleResult.response.body.response.names.includes(body.id)}
       next: getFileLocations
   next: returnStoryExists
 
@@ -93,7 +93,7 @@ convertJsonToYaml:
     headers:
       content-type: "application/json"
     body:
-      rules: ${mergedRules.response.body}
+      rules: ${mergedRules.response.body.array}
   result: rulesYaml
 
 saveRulesFile:

@@ -45,8 +45,8 @@ const Forms: FC = () => {
   });
 
   const getErrorMessage = (error: AxiosError) => {
-    if(error.response && error.response.status === 409 && error.response.data) {
-      return t(`${error.response.data}`);
+    if(error.response && error.response.status === 409 && error.response) {
+      return t(`${error.response}`);
     }
     return error.message;
   };

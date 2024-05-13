@@ -50,7 +50,7 @@ getStoriesWithName:
 
 validateStoryExists:
   switch:
-    - condition: ${storiesResult.response.body.response.data.id == id}
+    - condition: ${storiesResult.response.body.response.id == id}
       next: returnStoryIsMissing
   next: getFileLocations
 
@@ -83,7 +83,7 @@ deleteStory:
   args:
     url: "[#TRAINING_DMAPPER]/hbs/training/delete_story"
     headers:
-      type: 'json'
+      type: "json"
     body:
       stories: ${storiesData.response.body}
       story_name: ${id}
@@ -94,7 +94,7 @@ mergeStories:
   args:
     url: "[#TRAINING_DMAPPER]/file-manager/merge"
     body:
-      array1: ${deleteStoriesData.response.body.data[1]}
+      array1: ${deleteStoriesData.response.body[1]}
       array2: ${[storyData]}
       iteratee: "story"
   result: mergedStories
@@ -104,7 +104,7 @@ convertJsonToYaml:
   args:
     url: "[#TRAINING_DMAPPER]/conversion/json-to-yaml-stories"
     body:
-      stories: ${mergedStories.response.body}
+      stories: ${mergedStories.response.body.array}
   result: storiesYaml
 
 saveStoriesFile:
@@ -146,4 +146,3 @@ returnDuplicateIntentOrEntity:
   return: "Story may not have duplicate consecutive intents or entities"
   status: 406
   next: end
-

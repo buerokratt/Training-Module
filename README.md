@@ -76,5 +76,11 @@ https://admin.play.buerokratt.ee/training
 curl -X POST -H "Content-Type: application/json" -d '{
   "login": "EE30303039914",
   "password": ""
-}' http://localhost:8080/login-user
+}' http://localhost:8080/auth/login
 ```
+
+### Notes
+
+##### Ruuter Internal Requests
+
+- When running ruuter either on local or in an environment make sure to adjust `- application.internalRequests.allowedIPs=127.0.0.1,{YOUR_IPS}` under ruuter environments

@@ -56,7 +56,7 @@ mapRegexesData:
   args:
     url: "[#TRAINING_DMAPPER]/hbs/training/get_regex_with_regex"
     headers:
-      type: 'json'
+      type: "json"
     body:
       regexes: ${regexData.response.body.nlu}
       regex_name: ${parameters.regex_name}
@@ -94,10 +94,10 @@ mapUpdatedRegexesData:
   args:
     url: "[#TRAINING_DMAPPER]/hbs/training/get_regex_examples"
     headers:
-      type: 'json'
+      type: "json"
     body:
       regex: ${parameters.regex_name}
-      examples: ${mergedExamples.response.body}
+      examples: ${mergedExamples.response.body.array}
   result: mappedUpdatedExamples
 
 convertJsonToYaml:
@@ -106,7 +106,7 @@ convertJsonToYaml:
     url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
     body:
       version: "3.0"
-      nlu: ${mappedUpdatedExamples.response.body.data}
+      nlu: ${mappedUpdatedExamples.response.body}
   result: regexYaml
   next: saveRegexFile
 

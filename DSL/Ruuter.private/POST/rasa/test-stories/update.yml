@@ -76,7 +76,7 @@ convertJsonToYaml:
   args:
     url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
     body:
-      stories: ${mergedTestStories.response.body}
+      stories: ${mergedTestStories.response.body.array}
   result: testStoriesYaml
 
 saveFile:
@@ -100,4 +100,3 @@ returnTestStoryIsMissing:
 returnUnauthorized:
   return: "error: unauthorized"
   next: end
-

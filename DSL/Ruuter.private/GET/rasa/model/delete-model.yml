@@ -15,7 +15,7 @@ declaration:
 assignValue:
   assign:
     fileName: ${incoming.params.fileName}
-    modelPath: '/DSL/DMapper/locations/models/'
+    modelPath: "/DSL/DMapper/locations/models/"
 
 validateName:
   switch:
@@ -33,7 +33,7 @@ checkFileExists:
 
 validateFileExists:
   switch:
-    - condition: ${modelCreated.response.body}
+    - condition: ${modelCreated.response.body.error === false}
       next: removeModel
   next: getModelDataFromDb
 
@@ -70,21 +70,22 @@ updateInDatabase:
     body:
       model_type: ${model.modelType}
       trained_date: ${model.trainedDate}
-      state: 'Removed'
+      state: "Removed"
       file_name: ${model.fileName}
       version_number: ${model.versionNumber}
-      image_version: ${model.imageVersion}
+      model_version: ${model.modelVersion}
       test_report: ${model.testReport}
+      cross_validation_report: ${model.crossValidationReport}
   result: dbResult
   next: returnSuccess
 
 returnSuccess:
-  return: 'Model deleted.'
+  return: "Model deleted."
   wrapper: true
   next: end
 
 returnError:
-  return: 'Model not found.'
+  return: "Model not found."
   wrapper: true
   code: 409
   next: end

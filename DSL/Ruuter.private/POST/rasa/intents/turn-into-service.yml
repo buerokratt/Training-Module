@@ -98,7 +98,7 @@ get_new_service_intent_file:
   args:
     url: "[#TRAINING_DMAPPER]/hbs/training/get_intent_file"
     headers:
-      type: 'json'
+      type: "json"
     body:
       intent: ${"service_" + intentName}
       examples: ${splitedExamples.response.body}
@@ -157,7 +157,7 @@ convert_domain_json_to_yaml:
     url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
     body:
       version: ${domainData.response.body.response.version}
-      intents: ${mergedIntents.response.body}
+      intents: ${mergedIntents.response.body.array}
       entities: ${domainData.response.body.response.entities}
       slots: ${domainData.response.body.response.slots}
       forms: ${domainData.response.body.response.forms}
@@ -205,7 +205,7 @@ rules_json_to_yaml:
   call: http.post
   args:
     url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
-    body: 
+    body:
       version: "3.0"
       rules: ${rulesResult.response.body}
   result: rulesYaml

@@ -9,7 +9,7 @@ declaration:
 
 assignCronFileLocation:
   assign:
-    cronFileLocation: '/DSL/CronManager/train-bot.yml'
+    cronFileLocation: "/DSL/CronManager/train-bot.yml"
 
 getFromDatabase:
   call: http.post
@@ -40,9 +40,9 @@ assignValues:
 
 checkForDeletion:
   switch:
-    - condition: ${fileExists && !scheduled}
+    - condition: ${fileExists.response.body.error === false && !scheduled}
       next: deleteCronTask
-    - condition: ${!fileExists && !scheduled}
+    - condition: ${fileExists.response.body.error === true && !scheduled}
       next: returnSuccess
   next: generateCronExpression
 
@@ -69,7 +69,7 @@ createCronJson:
   args:
     url: "[#TRAINING_DMAPPER]/hbs/training/get_cron_file"
     headers:
-      type: 'json'
+      type: "json"
     body:
       cronExpression: ${cronExpression.response.body.expression}
       type: "http"
@@ -83,7 +83,7 @@ convertJsonToYaml:
   args:
     url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
     body:
-      train_bot: ${cronJson.response.body.data}
+      train_bot: ${cronJson.response.body}
   result: cronYaml
 
 saveCronFile:

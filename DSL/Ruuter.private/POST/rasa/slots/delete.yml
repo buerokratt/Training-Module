@@ -47,7 +47,7 @@ formSlots:
 
 validateFormSlots:
   switch:
-    - condition: ${formSlots.response.body.response.data.forms.length == 0}
+    - condition: ${formSlots.response.body.response.forms.length == 0}
       next: ruleSlots
   next: returnSlotHasDependencyToForms
 
@@ -64,7 +64,7 @@ ruleSlots:
 
 validateRuleSlots:
   switch:
-    - condition: ${ruleSlots.response.body.response.data.rules.length == 0}
+    - condition: ${ruleSlots.response.body.response.rules.length == 0}
       next: storiesSlots
   next: returnSlotHasDependencyToRules
 

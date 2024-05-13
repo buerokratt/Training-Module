@@ -1,4 +1,4 @@
-SELECT t.file_name, t.version_number, t.state, t.image_version, t.trained_date, t.created
+SELECT t.file_name, t.version_number, t.state, t.model_version, t.trained_date, t.created
 FROM llm_trainings t
          INNER JOIN (
     SELECT file_name, MAX(created) AS latest_created

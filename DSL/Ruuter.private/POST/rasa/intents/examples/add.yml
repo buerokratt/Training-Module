@@ -65,7 +65,7 @@ checkIntentFileYaml:
 
 validateFileExists:
   switch:
-    - condition: ${fileExists.response.body}
+    - condition: ${fileExists.response.body.error === false}
       next: getIntentFile
   next: assignTmpFilePath
 
@@ -83,7 +83,7 @@ checkIntentFileTmp:
 
 validateTmpFileExists:
   switch:
-    - condition: ${tmpFileExists.response.body}
+    - condition: ${tmpFileExists.response.body.error === false}
       next: getIntentFile
   next: returnIntentFileMissing
 
@@ -150,10 +150,10 @@ mapIntentsData:
   args:
     url: "[#TRAINING_DMAPPER]/hbs/training/get_intent_file"
     headers:
-      type: 'json'
+      type: "json"
     body:
       intent: ${intentName}
-      examples: ${mergedExamples.response.body}
+      examples: ${mergedExamples.response.body.array}
   result: intentFileJson
 
 convertJsonToYaml:
@@ -162,7 +162,7 @@ convertJsonToYaml:
     url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
     body:
       version: "3.0"
-      nlu: ${intentFileJson.response.body.data}
+      nlu: ${intentFileJson.response.body}
   result: intentYaml
 
 saveIntentFile:

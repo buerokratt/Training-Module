@@ -42,7 +42,7 @@ checkModelFileExists:
 
 validateFileExists:
   switch:
-    - condition: ${fileExists.response.body}
+    - condition: ${fileExists.response.body.error === false}
       next: getTrainedModelFile
   next: returnTrainedModelMissing
 

@@ -25,12 +25,12 @@ mapRulesData:
   args:
     url: "[#TRAINING_DMAPPER]/hbs/training/get_rule_with_name"
     headers:
-      type: 'json'
+      type: "json"
     body:
       hits: ${getRulesResult.response.body.hits.hits}
   result: rulesData
   next: returnSuccess
 
 returnSuccess:
-  return: ${rulesData.response.body.data}
+  return: ${rulesData.response.body}
   next: end

@@ -48,7 +48,7 @@ mapForm:
   args:
     url: "[#TRAINING_DMAPPER]/hbs/training/get_form"
     headers:
-      type: 'json'
+      type: "json"
     body:
       form: ${parameters.form}
   result: mappedForm
@@ -59,7 +59,7 @@ mergeForms:
     url: "[#TRAINING_DMAPPER]/merge/objects"
     body:
       object1: ${domainData.response.body.response.forms}
-      object2: ${mappedForm.response.body.data}
+      object2: ${mappedForm.response.body}
   result: mergedForms
 
 convertResponseInput:
@@ -67,7 +67,7 @@ convertResponseInput:
   args:
     url: "[#TRAINING_DMAPPER]/hbs/training/get_form_responses"
     headers:
-      type: 'json'
+      type: "json"
     body:
       responses: ${parameters.responses}
       form_name: ${parameters.form.name}
@@ -79,7 +79,7 @@ mergeResponses:
     url: "[#TRAINING_DMAPPER]/merge/objects"
     body:
       object1: ${domainData.response.body.response.responses}
-      object2: ${mappedResponses.response.body.data}
+      object2: ${mappedResponses.response.body}
   result: mergedResponses
 
 convertJsonToYaml:

@@ -17,21 +17,22 @@ getDockerFile:
   args:
     url: "[#TRAINING_PUBLIC_RUUTER]/internal/docker-file"
     headers:
-      cookie: ${incoming.headers.cookie}  
+      cookie: ${incoming.headers.cookie}
   result: dockerData
 
 assignDefaultValues:
   assign:
-    version: '1_0'
-    name: 'rasa_'
-    modelPath: '/DSL/DMapper/locations/models/'
-    reportPath: '/DSL/DMapper/locations/results/'
-    modelExtension: '.tar.gz'
-    reportEnding: '/intent_report.json'
-    state: 'Trained'
-    modelType: 'RASA'
+    version: "1_0"
+    name: "rasa_"
+    modelPath: "/DSL/DMapper/locations/models/"
+    reportPath: "/DSL/DMapper/locations/results/"
+    modelExtension: ".tar.gz"
+    reportEnding: "/intent_report.json"
+    state: "Trained"
+    modelType: "RASA"
     test_report: {}
-    imageVersion: ${dockerData.response.body.services['train-bot'].image}
+    cross_validation_report: {}
+    modelVersion: ${dockerData.response.body.services['train-bot'].image}
 
 getTrainedVersion:
   call: http.post
@@ -57,7 +58,7 @@ validateDbVersion:
 increaseVersion:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/util/increase-double-digit-version"
+    url: "[#TRAINING_DMAPPER]/utils/increase-double-digit-version"
     body:
       version: ${dbResult.response.body[0].versionNumber}
   result: updatedVersion
@@ -76,13 +77,13 @@ checkModelCreated:
 
 decideState:
   switch:
-    - condition: ${modelCreated.response.body}
+    - condition: ${modelCreated.response.body.error === false}
       next: getIntentsReport
   next: reAssignState
 
 reAssignState:
   assign:
-    state: 'Failed'
+    state: "Failed"
   next: updateInDatabase
 
 getIntentsReport:
@@ -115,7 +116,7 @@ updateInDatabase:
       state: ${state}
       file_name: ${name + trainedVersion.response.body + modelExtension}
       version_number: ${trainedVersion.response.body}
-      image_version: ${imageVersion}
+      model_version: ${modelVersion}
       test_report: ${JSON.stringify(test_report)}
   result: dbResult
 
@@ -125,7 +126,7 @@ updateDockerCompose:
     url: "[#TRAINING_DMAPPER]/docker/update-version-for-bot"
     body:
       object: ${dockerData.response.body}
-      servicesArray: ['train-bot','test-bot','test-bot-cv']
+      servicesArray: ["train-bot", "test-bot", "test-bot-cv"]
       newVersion: ${name + version}
   result: updatedDocker
 
@@ -156,6 +157,6 @@ saveDockerFile:
   next: returnSuccess
 
 returnSuccess:
-  return: 'New model added Successfully.'
+  return: "New model added Successfully."
   wrapper: false
   next: end

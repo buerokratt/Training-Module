@@ -23,7 +23,7 @@ getSlots:
     body:
       query:
         match:
-          _id: 'slots'
+          _id: "slots"
   result: getSlotsResult
 
 assignResponse:
@@ -47,7 +47,7 @@ mapSlotsData:
   args:
     url: "[#TRAINING_DMAPPER]/hbs/training/get_slot_details"
     headers:
-      type: 'json'
+      type: "json"
     body:
       name: ${slot}
       hits: ${slotResponse[0]._source.slots[slot]}
@@ -55,7 +55,7 @@ mapSlotsData:
   next: returnSuccess
 
 returnSuccess:
-  return: ${slotsData.response.body.data}
+  return: ${slotsData.response.body}
   wrapper: false
   next: end
 
