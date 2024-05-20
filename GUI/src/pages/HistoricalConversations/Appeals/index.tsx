@@ -12,6 +12,7 @@ import { Intent } from 'types/intent';
 import { addAppeal, deleteAppeal } from 'services/appeals';
 import { useToast } from 'hooks/useToast';
 import i18n from '../../../../i18n';
+import withAuthorization, { ROLES } from 'hoc/with-authorization';
 
 const Appeals: FC = () => {
   const { t } = useTranslation();
@@ -215,4 +216,8 @@ const getColumns = (
   ]
 }
 
-export default Appeals;
+export default withAuthorization(Appeals, [
+  ROLES.ROLE_ADMINISTRATOR,
+  ROLES.ROLE_CHATBOT_TRAINER,
+  ROLES.ROLE_SERVICE_MANAGER,
+]);

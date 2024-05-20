@@ -25,6 +25,7 @@ import {
 import { CHAT_HISTORY_PREFERENCES_KEY } from 'constants/config';
 import { useToast } from '../../../hooks/useToast';
 import { getColumns } from './columns';
+import withAuthorization, { ROLES } from 'hoc/with-authorization';
 
 const History: FC = () => {
   const { t } = useTranslation();
@@ -261,4 +262,8 @@ const History: FC = () => {
   );
 };
 
-export default History;
+export default withAuthorization(History, [
+  ROLES.ROLE_ADMINISTRATOR,
+  ROLES.ROLE_CHATBOT_TRAINER,
+  ROLES.ROLE_SERVICE_MANAGER,
+]);

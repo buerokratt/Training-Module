@@ -8,6 +8,7 @@ import { Trigger } from "types/trigger";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useToast } from "hooks/useToast";
 import { updateConnectionRequest } from "services/requests";
+import withAuthorization, { ROLES } from "hoc/with-authorization";
 
 const ConnectionRequests: React.FC = () => {
   const { t } = useTranslation();
@@ -144,4 +145,8 @@ const getColumns = (
   ];
 }
 
-export default ConnectionRequests;
+export default withAuthorization(ConnectionRequests, [
+  ROLES.ROLE_ADMINISTRATOR,
+  ROLES.ROLE_CHATBOT_TRAINER,
+  ROLES.ROLE_SERVICE_MANAGER,
+]);

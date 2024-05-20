@@ -13,6 +13,7 @@ import { activateModel, deleteModel } from 'services/models';
 import { useToast } from 'hooks/useToast';
 import { DATETIME_FORMAT } from 'utils/datetime-fromat';
 import i18n from '../../../../i18n';
+import withAuthorization, { ROLES } from 'hoc/with-authorization';
 
 const Models: FC = () => {
   const { t } = useTranslation();
@@ -227,4 +228,8 @@ const getColumns = (
   ]
 }
 
-export default Models;
+export default withAuthorization(Models, [
+  ROLES.ROLE_ADMINISTRATOR,
+  ROLES.ROLE_CHATBOT_TRAINER,
+  ROLES.ROLE_SERVICE_MANAGER,
+]);

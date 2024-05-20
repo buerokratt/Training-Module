@@ -7,6 +7,7 @@ import {Card, DataTable, FormInput, FormSelect, Icon, Track} from 'components';
 import {IntentsReport} from 'types/intentsReport';
 import {Model} from 'types/model';
 import { getColumns } from './columns';
+import withAuthorization, { ROLES } from 'hoc/with-authorization';
 
 const IntentsOverview: FC = () => {
     const {t} = useTranslation();
@@ -121,4 +122,8 @@ const IntentsOverview: FC = () => {
     );
 };
 
-export default IntentsOverview;
+export default withAuthorization(IntentsOverview, [
+  ROLES.ROLE_ADMINISTRATOR,
+  ROLES.ROLE_CHATBOT_TRAINER,
+  ROLES.ROLE_SERVICE_MANAGER,
+]);

@@ -9,6 +9,7 @@ import { Button, Card, FormSelect, Icon, Track } from 'components';
 import { ResultBundle, ResultFile } from 'types/result';
 import { format } from 'date-fns';
 import { Model } from 'types/model';
+import withAuthorization, { ROLES } from 'hoc/with-authorization';
 
 const ModelsDetail: FC = () => {
   const { t } = useTranslation();
@@ -134,4 +135,8 @@ const ModelsDetail: FC = () => {
   );
 };
 
-export default ModelsDetail;
+export default withAuthorization(ModelsDetail, [
+  ROLES.ROLE_ADMINISTRATOR,
+  ROLES.ROLE_CHATBOT_TRAINER,
+  ROLES.ROLE_SERVICE_MANAGER,
+]);
