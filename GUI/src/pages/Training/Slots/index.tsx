@@ -11,6 +11,7 @@ import { Slot } from 'types/slot';
 import { useToast } from 'hooks/useToast';
 import { deleteSlot } from 'services/slots';
 import i18n from '../../../../i18n';
+import withAuthorization, { ROLES } from 'hoc/with-authorization';
 
 const Slots: FC = () => {
   const { t } = useTranslation();
@@ -143,4 +144,8 @@ const getColumns = (
   ]
 }
 
-export default Slots;
+export default withAuthorization(Slots, [
+  ROLES.ROLE_ADMINISTRATOR,
+  ROLES.ROLE_CHATBOT_TRAINER,
+  ROLES.ROLE_SERVICE_MANAGER,
+]);

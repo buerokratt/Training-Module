@@ -14,6 +14,7 @@ import { createForm, editForm } from 'services/forms';
 import { useToast } from 'hooks/useToast';
 import { RESPONSE_TEXT_LENGTH } from 'constants/config';
 import {FormCheckboxesWithInput} from "../../../components/FormElements";
+import withAuthorization, { ROLES } from 'hoc/with-authorization';
 
 type FormsDetailProps = {
   mode: 'new' | 'edit';
@@ -259,4 +260,8 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
   );
 };
 
-export default FormsDetail;
+export default withAuthorization(FormsDetail, [
+  ROLES.ROLE_ADMINISTRATOR,
+  ROLES.ROLE_CHATBOT_TRAINER,
+  ROLES.ROLE_SERVICE_MANAGER,
+]);

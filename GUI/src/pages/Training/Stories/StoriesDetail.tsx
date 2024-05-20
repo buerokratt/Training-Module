@@ -34,6 +34,7 @@ import { GRID_UNIT, generateNewEdge, generateNewNode } from 'services/nodes';
 import './StoriesDetail.scss';
 import LoadingDialog from "../../../components/LoadingDialog";
 import {Rule, RuleDTO} from "../../../types/rule";
+import withAuthorization, { ROLES } from 'hoc/with-authorization';
 
 const nodeTypes = {
   customNode: CustomNode,
@@ -623,4 +624,8 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   );
 };
 
-export default StoriesDetail;
+export default withAuthorization(StoriesDetail, [
+  ROLES.ROLE_ADMINISTRATOR,
+  ROLES.ROLE_CHATBOT_TRAINER,
+  ROLES.ROLE_SERVICE_MANAGER,
+]);

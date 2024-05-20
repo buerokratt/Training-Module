@@ -31,6 +31,7 @@ import {
 import IntentExamplesTable from './IntentExamplesTable';
 import LoadingDialog from '../../../components/LoadingDialog';
 import ConnectServiceToIntentModal from 'pages/ConnectServiceToIntentModal';
+import withAuthorization, { ROLES } from 'hoc/with-authorization';
 
 const CommonIntents: FC = () => {
   const { t } = useTranslation();
@@ -589,4 +590,8 @@ const CommonIntents: FC = () => {
   );
 };
 
-export default CommonIntents;
+export default withAuthorization(CommonIntents, [
+  ROLES.ROLE_ADMINISTRATOR,
+  ROLES.ROLE_CHATBOT_TRAINER,
+  ROLES.ROLE_SERVICE_MANAGER,
+]);

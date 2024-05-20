@@ -26,6 +26,7 @@ import {
 } from 'services/regex';
 import { Entity } from 'types/entity';
 import i18n from '../../../../i18n';
+import withAuthorization, { ROLES } from 'hoc/with-authorization';
 
 type Regex = {
   readonly id: string;
@@ -515,4 +516,8 @@ const getColumns = (
   ];
 }
 
-export default RegexDetail;
+export default withAuthorization(RegexDetail, [
+  ROLES.ROLE_ADMINISTRATOR,
+  ROLES.ROLE_CHATBOT_TRAINER,
+  ROLES.ROLE_SERVICE_MANAGER,
+]);

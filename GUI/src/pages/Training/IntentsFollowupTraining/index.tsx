@@ -5,6 +5,7 @@ import { useSearchParams } from 'react-router-dom';
 
 import Entities from './Entities';
 import Regex from './Regex';
+import withAuthorization, { ROLES } from 'hoc/with-authorization';
 
 const IntentsFollowupTraining: FC = () => {
   const { t } = useTranslation();
@@ -53,4 +54,8 @@ const IntentsFollowupTraining: FC = () => {
   );
 };
 
-export default IntentsFollowupTraining;
+export default withAuthorization(IntentsFollowupTraining, [
+  ROLES.ROLE_ADMINISTRATOR,
+  ROLES.ROLE_CHATBOT_TRAINER,
+  ROLES.ROLE_SERVICE_MANAGER,
+]);
