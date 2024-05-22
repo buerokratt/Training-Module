@@ -11,7 +11,7 @@ export default ({ mode }) => {
   return defineConfig({
     envPrefix: 'REACT_APP_',
     plugins: [react(), tsconfigPaths(), svgr()],
-    base: '/training/', //Change this according to your reverse proxy subpath
+    base: '/training', //Change this according to your reverse proxy subpath
     define: {
       'process.env': process.env,
     },
