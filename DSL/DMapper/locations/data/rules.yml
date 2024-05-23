@@ -90,5 +90,4 @@ rules:
 - rule: Activate confidence check up
   steps:
   - intent: nlu_fallback
-  - action: utter_not_confident
-  - action: utter_ask_direct_to_customer_support_form_affirm_deny
+  - action: utter_nlu_fallback
