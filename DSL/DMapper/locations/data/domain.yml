@@ -57,6 +57,9 @@ actions:
 
 responses:
   #  Final response
+  utter_nlu_fallback:
+    - text: "UNKNOWN"
+    
   utter_custom_fallback_form:
     - text: "rain"
 
