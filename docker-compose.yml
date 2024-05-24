@@ -38,7 +38,7 @@ services:
       - database
     environment:
       - sqlms.datasources.[0].name=training
-#      - sqlms.datasources.[0].jdbcUrl=jdbc:postgresql://database:5432/training_db # For Local Use
+      #      - sqlms.datasources.[0].jdbcUrl=jdbc:postgresql://database:5432/training_db # For Local Use
       - sqlms.datasources.[0].jdbcUrl=jdbc:postgresql://171.22.247.13:5434/train_db
       - sqlms.datasources.[0].username=byk
       - sqlms.datasources.[0].password=01234
@@ -58,7 +58,7 @@ services:
       - database
     environment:
       - sqlms.datasources.[0].name=services
-#      - sqlms.datasources.[0].jdbcUrl=jdbc:postgresql://database:5432/services_db # For Local Use
+      #      - sqlms.datasources.[0].jdbcUrl=jdbc:postgresql://database:5432/services_db # For Local Use
       - sqlms.datasources.[0].jdbcUrl=jdbc:postgresql://171.22.247.13:5435/services_db
       - sqlms.datasources.[0].username=byk
       - sqlms.datasources.[0].password=01234
@@ -79,7 +79,7 @@ services:
     environment:
       - server.port=8088
       - sqlms.datasources.[0].name=users
-#      - sqlms.datasources.[0].jdbcUrl=jdbc:postgresql://database:5432/users_db # For Local Use
+      #      - sqlms.datasources.[0].jdbcUrl=jdbc:postgresql://database:5432/users_db # For Local Use
       - sqlms.datasources.[0].jdbcUrl=jdbc:postgresql://171.22.247.13:5433/byk
       - sqlms.datasources.[0].username=byk
       - sqlms.datasources.[0].password=2nH09n6Gly
@@ -111,9 +111,33 @@ services:
 
   training_gui:
     container_name: training_gui
+    environment:
+      - PORT§=3001
+      - REACT_APP_API_URL=http://localhost:8080
+      - REACT_APP_RUUTER_API_URL=http://localhost:8080
+      - REACT_APP_RUUTER_PRIVATE_API_URL=http://localhost:8080
+      - REACT_APP_RUUTER_V2_ANALYTICS_API_URL=http://localhost:3002/training/api
+      - REACT_APP_BUEROKRATT_CHATBOT_URL=http://buerokratt-chat:8080
+      - REACT_APP_OPENSEARCH_DASHBOARD_URL=https://opensearch.org/
+      - REACT_APP_OPENDATAPORT_URL=https://avaandmedtest.eesti.ee
+      - REACT_APP_MENU_URL=https://admin.dev.buerokratt.ee
+      - REACT_APP_MENU_PATH=/chat/menu.json
+      - REACT_APP_APP_PORT=3001
+      - REACT_APP_LOCAL=true
+      - REACT_APP_BASE_API_PATH=/al
+      - REACT_APP_AUTH_BASE_URL=http://localhost:3002/training/api
+      - REACT_APP_AUTH_PATH=/cs-custom-jwt-userinfo
+      - REACT_APP_CUSTOMER_SERVICE_LOGIN=http://localhost:3004/et/dev-auth
+      - REACT_APP_CONVERSATIONS_BASE_URL=http://localhost:8080/chat
+      - REACT_APP_TRAINING_BASE_URL=http://localhost:8080/training
+      - REACT_APP_ANALYTICS_BASE_URL=http://localhost:8080/analytics
+      - REACT_APP_SERVICES_BASE_URL=http://localhost:8080/services
+      - REACT_APP_SETTINGS_BASE_URL=http://localhost:8080/settings
+      - REACT_APP_MONITORING_BASE_URL=http://localhost:8080/monitoring
+      - REACT_APP_SERVICE_ID=training
+      - REACT_APP_CSP=upgrade-insecure-requests; default-src 'self'; font-src 'self' data:; img-src 'self' data:; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; object-src 'none'; connect-src 'self' http://localhost:8080 http://localhost:8085 https://admin.dev.buerokratt.ee/chat/menu.json;
     build:
       context: ./GUI
-      # target: web // To be used in production (Dockerfile)
       dockerfile: Dockerfile.dev
     ports:
       - 3001:3001
@@ -214,7 +238,7 @@ services:
       - rasa-training-data:/app/models
     environment:
       - SQLALCHEMY_WARN_20=1
-    command: ['run', '--enable-api']
+    command: ["run", "--enable-api"]
     ports:
       - 5005:5005
     networks:
