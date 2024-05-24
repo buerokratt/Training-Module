@@ -12,6 +12,7 @@ import { Entity } from 'types/entity';
 import { useToast } from 'hooks/useToast';
 import { createSlot, editSlot } from 'services/slots';
 import { Slot, SlotCreateDTO, SlotEditDTO } from 'types/slot';
+import withAuthorization, { ROLES } from 'hoc/with-authorization';
 
 type SlotsDetailProps = {
   mode: 'new' | 'edit';
@@ -192,4 +193,8 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
   );
 };
 
-export default SlotsDetail;
+export default withAuthorization(SlotsDetail, [
+  ROLES.ROLE_ADMINISTRATOR,
+  ROLES.ROLE_CHATBOT_TRAINER,
+  ROLES.ROLE_SERVICE_MANAGER,
+]);

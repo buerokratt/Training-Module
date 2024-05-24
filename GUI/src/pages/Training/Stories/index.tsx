@@ -14,6 +14,7 @@ import {AxiosError} from "axios";
 import LoadingDialog from "../../../components/LoadingDialog";
 import { useToast } from 'hooks/useToast';
 import i18n from '../../../../i18n';
+import withAuthorization, { ROLES } from 'hoc/with-authorization';
 
 
 const Stories: FC = () => {
@@ -301,4 +302,8 @@ const getRulesColumns = (
   ]
 }
 
-export default Stories;
+export default withAuthorization(Stories, [
+  ROLES.ROLE_ADMINISTRATOR,
+  ROLES.ROLE_CHATBOT_TRAINER,
+  ROLES.ROLE_SERVICE_MANAGER,
+]);

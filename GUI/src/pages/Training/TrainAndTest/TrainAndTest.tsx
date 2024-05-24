@@ -18,6 +18,7 @@ import {AiOutlineExclamationCircle} from "react-icons/ai";
 import useStore from "../../../store/store";
 import {format} from "date-fns";
 import {DATE_FORMAT, TIME_FORMAT} from "../../../utils/datetime-fromat";
+import withAuthorization, { ROLES } from 'hoc/with-authorization';
 
 const TrainAndTest = () => {
     const toast = useToast();
@@ -230,4 +231,8 @@ const TrainAndTest = () => {
     );
 };
 
-export default TrainAndTest;
+export default withAuthorization(TrainAndTest, [
+  ROLES.ROLE_ADMINISTRATOR,
+  ROLES.ROLE_CHATBOT_TRAINER,
+  ROLES.ROLE_SERVICE_MANAGER,
+]);

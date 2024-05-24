@@ -9,6 +9,7 @@ import { Button, Dialog, FormSelect, Icon, Tooltip, Track } from 'components';
 import { TestStory } from 'types/testStory';
 import { deleteTestStory } from 'services/testStories';
 import { useToast } from 'hooks/useToast';
+import withAuthorization, { ROLES } from 'hoc/with-authorization';
 
 const Testcases: FC = () => {
   const { t } = useTranslation();
@@ -210,4 +211,8 @@ const Testcases: FC = () => {
   );
 };
 
-export default Testcases;
+export default withAuthorization(Testcases, [
+  ROLES.ROLE_ADMINISTRATOR,
+  ROLES.ROLE_CHATBOT_TRAINER,
+  ROLES.ROLE_SERVICE_MANAGER,
+]);

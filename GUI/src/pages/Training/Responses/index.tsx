@@ -15,6 +15,7 @@ import {useToast} from 'hooks/useToast';
 import {deleteResponse, editResponse} from 'services/responses';
 import LoadingDialog from "../../../components/LoadingDialog";
 import i18n from '../../../../i18n';
+import withAuthorization, { ROLES } from 'hoc/with-authorization';
 
 type NewResponse = {
   name: string;
@@ -382,4 +383,8 @@ const buildDeleteCell = (onClick: () => void) => {
   )
 }
 
-export default Responses;
+export default withAuthorization(Responses, [
+  ROLES.ROLE_ADMINISTRATOR,
+  ROLES.ROLE_CHATBOT_TRAINER,
+  ROLES.ROLE_SERVICE_MANAGER,
+]);

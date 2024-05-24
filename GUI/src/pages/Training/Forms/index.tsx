@@ -11,6 +11,7 @@ import { Form } from 'types/form';
 import { useToast } from 'hooks/useToast';
 import { deleteForm } from 'services/forms';
 import i18n from '../../../../i18n';
+import withAuthorization, { ROLES } from 'hoc/with-authorization';
 
 const Forms: FC = () => {
   const { t } = useTranslation();
@@ -150,4 +151,8 @@ const getColumns = (
   ]
 }
 
-export default Forms;
+export default withAuthorization(Forms, [
+  ROLES.ROLE_ADMINISTRATOR,
+  ROLES.ROLE_CHATBOT_TRAINER,
+  ROLES.ROLE_SERVICE_MANAGER,
+]);

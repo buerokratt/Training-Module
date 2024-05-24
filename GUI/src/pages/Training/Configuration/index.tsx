@@ -10,6 +10,7 @@ import { Button, Card, FormInput, FormSelect, Icon, Switch, Tooltip, Track } fro
 import { Config } from 'types/config';
 import { editConfig } from 'services/config';
 import { useToast } from 'hooks/useToast';
+import withAuthorization, { ROLES } from 'hoc/with-authorization';
 
 const Configuration: FC = () => {
   const { t } = useTranslation();
@@ -359,4 +360,8 @@ const Configuration: FC = () => {
   );
 };
 
-export default Configuration;
+export default withAuthorization(Configuration, [
+  ROLES.ROLE_ADMINISTRATOR,
+  ROLES.ROLE_CHATBOT_TRAINER,
+  ROLES.ROLE_SERVICE_MANAGER,
+]);
