@@ -3,9 +3,9 @@ export interface Model {
   name: string;
   lastTrained: string;
   state: ModelStateType;
+  versionNumber: string;
 }
 
-export type ModelStateType = 'DEPLOYED' | 'Trained' | 'Failed' | 'Removed';
+export type ModelStateType = 'DEPLOYED' | 'READY' | 'Failed' | 'DELETED';
 
-export interface UpdateModelDTO extends Omit<Model, 'id' | 'lastTrained'> {
-}
+export interface UpdateModelDTO extends Pick<Model, 'versionNumber'> {}

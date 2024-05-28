@@ -1,9 +1,8 @@
-import { FC, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createColumnHelper, Row } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns';
-import { Link } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import { MdOutlineSettingsInputAntenna } from 'react-icons/md';
 
@@ -20,16 +19,21 @@ const Models: FC = () => {
   const toast = useToast();
   const queryClient = useQueryClient();
   const [selectedModel, setSelectedModel] = useState<Model>();
-  const [modelConfirmation, setModelConfirmation] = useState<string | number | null>(null);
-  const [deletableModel, setDeletableModel] = useState<string | number | null>(null);
+  const [modelConfirmation, setModelConfirmation] = useState<
+    string | number | null
+  >(null);
+  const [deletableModel, setDeletableModel] = useState<string | number | null>(
+    null
+  );
   const { data: models, refetch } = useQuery<Model[]>({
     queryKey: ['models'],
   });
 
   const activateModelMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string | number, data: UpdateModelDTO }) => activateModel(id, data),
+    mutationFn: ({ data }: { data: UpdateModelDTO }) => activateModel(data),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['models', 'selected-model']);
+      refetch();
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -69,41 +73,71 @@ const Models: FC = () => {
 
   const modelsColumns = useMemo(() => getColumns(setSelectedModel), []);
 
+  useEffect(() => {
+    setSelectedModel(models?.find((m) => m.state === 'DEPLOYED'));
+  }, [models]);
+
   return (
     <>
-      <h1>{t('training.mba.modelComparison')}</h1>
+      <h1>{t('training.mba.models')}</h1>
 
       {selectedModel && (
-        <Card header={<h2 className='h3'>{t('training.mba.selectedModel')}</h2>}>
+        <Card
+          header={<h2 className="h3">{t('training.mba.selectedModel')}</h2>}
+        >
           <Track gap={16} isMultiline>
-            <p style={{ flex: 1, whiteSpace: 'nowrap' }}>{selectedModel.name}</p>
-            <Button appearance='secondary'>{t('training.mba.downloadModel')}</Button>
-            <Button appearance='secondary'>{t('training.mba.downloadDataset')}</Button>
-            <Button appearance='secondary'>{t('training.mba.viewIntentsPrecision')}</Button>
-            <Button appearance='error'
-                    onClick={() => setDeletableModel(selectedModel.id)}>{t('global.delete')}</Button>
-            {selectedModel.state === 'DEPLOYED' ? (
+            <p style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>
+              {`${i18n.t('training.mba.version')} ${
+                selectedModel.versionNumber
+              }`}
+            </p>
+            <p style={{ whiteSpace: 'nowrap' }}>{`(${selectedModel.name})`}</p>
+
+            {selectedModel.state === 'DEPLOYED' && (
               <Track gap={8} style={{ whiteSpace: 'nowrap', color: '#308653' }}>
-                <Icon icon={<MdOutlineSettingsInputAntenna fontSize={24} />} size='medium' />
+                <Icon
+                  icon={<MdOutlineSettingsInputAntenna fontSize={24} />}
+                  size="medium"
+                />
                 <p>{t('training.mba.modelInUse')}</p>
               </Track>
-            ) : (
-              <Button appearance='success'
-                      onClick={() => setModelConfirmation(selectedModel.id)}>{t('training.mba.activateModel')}</Button>
+            )}
+
+            <Button
+              appearance="error"
+              onClick={() => setDeletableModel(selectedModel?.id ?? null)}
+              style={{ marginLeft: 'auto' }}
+            >
+              {t('global.delete')}
+            </Button>
+            {selectedModel.state !== 'DEPLOYED' && (
+              <Button
+                appearance="success"
+                onClick={() => setModelConfirmation(selectedModel.id)}
+              >
+                {t('training.mba.activateModel')}
+              </Button>
             )}
           </Track>
         </Card>
       )}
 
       {models && (
-        <Card header={<h2 className='h3'>{t('training.mba.allModels')}</h2>}>
-          <DataTable data={models} columns={modelsColumns} sortable meta={
-            {
+        <Card header={<h2 className="h3">{t('training.mba.allModels')}</h2>}>
+          <DataTable
+            data={models}
+            columns={modelsColumns}
+            sortable
+            setSelectedRow={(row: Row<Model>) => setSelectedModel(row.original)}
+            meta={{
               getRowStyles: (row: Row<Model>) => ({
-                backgroundColor: row.original.id === selectedModel?.id ? '#E1E2E5' : undefined,
+                backgroundColor:
+                  row.original.versionNumber === selectedModel?.versionNumber
+                    ? '#E1E2E5'
+                    : undefined,
               }),
-            }
-          } />
+            }}
+          />
         </Card>
       )}
 
@@ -113,10 +147,17 @@ const Models: FC = () => {
           onClose={() => setDeletableModel(null)}
           footer={
             <>
-              <Button appearance='secondary' onClick={() => setDeletableModel(null)}>{t('global.no')}</Button>
               <Button
-                appearance='error'
-                onClick={() => deleteModelMutation.mutate({ id: deletableModel })}
+                appearance="secondary"
+                onClick={() => setDeletableModel(null)}
+              >
+                {t('global.no')}
+              </Button>
+              <Button
+                appearance="error"
+                onClick={() =>
+                  deleteModelMutation.mutate({ id: deletableModel })
+                }
               >
                 {t('global.yes')}
               </Button>
@@ -133,13 +174,19 @@ const Models: FC = () => {
           onClose={() => setModelConfirmation(null)}
           footer={
             <>
-              <Button appearance='secondary' onClick={() => setModelConfirmation(null)}>{t('global.no')}</Button>
               <Button
-                appearance='error'
-                onClick={() => activateModelMutation.mutate({
-                  id: modelConfirmation,
-                  data: { name: selectedModel.name, state: 'DEPLOYED' },
-                })}
+                appearance="secondary"
+                onClick={() => setModelConfirmation(null)}
+              >
+                {t('global.no')}
+              </Button>
+              <Button
+                appearance="error"
+                onClick={() =>
+                  activateModelMutation.mutate({
+                    data: { versionNumber: selectedModel.versionNumber },
+                  })
+                }
               >
                 {t('global.yes')}
               </Button>
@@ -153,80 +200,48 @@ const Models: FC = () => {
   );
 };
 
-function getModelStatusColor(status: ModelStateType): string {
-  switch (status) {
-    case 'DEPLOYED': return '#385';
-    case 'Trained': return '#FB0';
-    case 'Failed': return '#D22';
-    case 'Removed': return '#AAA';
-    default: return '#000';
-  }
-}
-
-const getColumns = (
-  setSelectedModel: (model: Model) => void,
-) => {
+const getColumns = (setSelectedModel: (model: Model) => void) => {
   const columnHelper = createColumnHelper<Model>();
 
-  const renderState = (value: ModelStateType) => {
-    if(!value) {
-      return null;
-    }
-    return (
-      <span style={{ color: getModelStatusColor(value) }}>
-        {value}
-      </span>
-    )
-  }
-
   const renderDeployedIcon = (value: ModelStateType) => {
-    if(value !== 'DEPLOYED') {
+    if (value !== 'DEPLOYED') {
       return null;
     }
 
     return (
       <Track gap={8} style={{ whiteSpace: 'nowrap', color: '#308653' }}>
-        <Icon icon={<MdOutlineSettingsInputAntenna fontSize={24} />} size='medium' />
+        <Icon
+          icon={<MdOutlineSettingsInputAntenna fontSize={24} />}
+          size="medium"
+        />
         <p>{i18n.t('training.mba.modelInUse')}</p>
       </Track>
     );
-  }
+  };
 
   return [
-    columnHelper.accessor('name', {
-      header: i18n.t('global.name') || '',
-      cell: (props) => (
-        <Button appearance='text' onClick={() => setSelectedModel(props.row.original)}>
-          {props.getValue()}
-        </Button>
-      ),
+    columnHelper.accessor('versionNumber', {
+      header: i18n.t('training.mba.version') ?? '',
+      cell: (props) => props.getValue(),
     }),
-    columnHelper.display({
-      id: 'compare',
-      cell: (props) => (
-        <Link to={String(props.row.original.id)} style={{ color: '#005AA3' }}>
-          {i18n.t('training.mba.compareResults')}
-        </Link>
-      ),
+    columnHelper.accessor('name', {
+      header: i18n.t('global.name') ?? '',
+      cell: (props) => props.getValue(),
     }),
     columnHelper.accessor('lastTrained', {
-      header: i18n.t('training.mba.lastTrained') || '',
+      header: i18n.t('training.mba.lastTrained') ?? '',
       cell: (props) =>
         props.getValue()
           ? format(new Date(props.getValue()), DATETIME_FORMAT)
           : null,
     }),
     columnHelper.accessor('state', {
-      header: i18n.t('training.mba.state') || '',
-      cell: (props) => renderState(props.getValue()),
-    }),
-    columnHelper.accessor('state', {
-      header: i18n.t('training.mba.live') || '',
+      header: i18n.t('training.mba.live') ?? '',
       cell: (props) => renderDeployedIcon(props.getValue()),
       meta: { size: '1%' },
     }),
-  ]
-}
+  ];
+};
 
 export default withAuthorization(Models, [
   ROLES.ROLE_ADMINISTRATOR,

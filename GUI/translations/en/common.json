@@ -182,11 +182,8 @@
       "suggestion": "Suggestion",
       "addExamples": "Add new examples",
       "gotoExample": "Go to example",
-      "modelComparison": "Model comparison",
+      "models": "Models",
       "selectedModel": "Selected model",
-      "downloadModel": "Download model",
-      "downloadDataset": "Download dataset",
-      "viewIntentsPrecision": "View intents precision",
       "activateModel": "Activate model",
       "allModels": "All models",
       "lastTrained": "Last trained",
@@ -196,7 +193,8 @@
       "deleteModel": "Delete model",
       "modelResults": "Model results",
       "testStoryExists": "Test story exists",
-      "lastModified": "Last modified at {{date}}"
+      "lastModified": "Last modified at {{date}}",
+      "version": "Version"
     },
     "trainNew": {
       "title": "Traing and test",

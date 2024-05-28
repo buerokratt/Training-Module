@@ -16,7 +16,7 @@ instance.interceptors.response.use(
   },
   (error: AxiosError) => {
     import.meta.env.DEBUG_ENABLED && console.log(error);
-    return  Promise.reject(new Error(error.message));
+    return Promise.reject(new Error(error.message));
   }
 );
 
@@ -33,7 +33,7 @@ instance.interceptors.request.use(
     if (error.response?.status === 403) {
       // handle unauthorized requests
     }
-    return  Promise.reject(new Error(error.message));
+    return Promise.reject(new Error(error.message));
   }
 );
 

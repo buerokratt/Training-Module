@@ -44,12 +44,13 @@ type DataTableProps = {
   setPagination?: React.Dispatch<React.SetStateAction<PaginationState>>;
   globalFilter?: string;
   setGlobalFilter?: React.Dispatch<React.SetStateAction<string>>;
-  columnVisibility?: VisibilityState,
-  setColumnVisibility?: React.Dispatch<React.SetStateAction<VisibilityState>>,
+  columnVisibility?: VisibilityState;
+  setColumnVisibility?: React.Dispatch<React.SetStateAction<VisibilityState>>;
   disableHead?: boolean;
   showInput?: boolean;
   meta?: TableMeta<any>;
-}
+  setSelectedRow?: (row: Row<any>) => void;
+};
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -91,6 +92,7 @@ const DataTable: FC<DataTableProps> = (
     disableHead,
     showInput,
     meta,
+    setSelectedRow,
   },
 ) => {
   const id = useId();
@@ -134,24 +136,22 @@ const DataTable: FC<DataTableProps> = (
               {headerGroup.headers.map((header) => (
                 <th key={header.id} style={{ width: header.column.columnDef.size }}>
                   {header.isPlaceholder ? null : (
-                    <>
-                      <Track gap={8}>
-                        {sortable && header.column.getCanSort() && (
-                          <button onClick={header.column.getToggleSortingHandler()}>
-                            {{
-                              asc: <Icon icon={<MdExpandMore fontSize={20} />} size='medium' />,
-                              desc: <Icon icon={<MdExpandLess fontSize={20} />} size='medium' />,
-                            }[header.column.getIsSorted() as string] ?? (
-                              <Icon icon={<MdUnfoldMore fontSize={22} />} size='medium' />
-                            )}
-                          </button>
-                        )}
-                        {flexRender(header.column.columnDef.header, header.getContext())}
-                        {filterable && header.column.getCanFilter() && (
-                          <Filter column={header.column} table={table} />
-                        )}
-                      </Track>
-                    </>
+                    <Track gap={8}>
+                      {sortable && header.column.getCanSort() && (
+                        <button onClick={header.column.getToggleSortingHandler()}>
+                          {{
+                            asc: <Icon icon={<MdExpandMore fontSize={20} />} size='medium' />,
+                            desc: <Icon icon={<MdExpandLess fontSize={20} />} size='medium' />,
+                          }[header.column.getIsSorted() as string] ?? (
+                            <Icon icon={<MdUnfoldMore fontSize={22} />} size='medium' />
+                          )}
+                        </button>
+                      )}
+                      {flexRender(header.column.columnDef.header, header.getContext())}
+                      {filterable && header.column.getCanFilter() && (
+                        <Filter column={header.column} table={table} />
+                      )}
+                    </Track>
                   )}
                 </th>
               ))}
@@ -162,7 +162,11 @@ const DataTable: FC<DataTableProps> = (
         <tbody>
         {tableBodyPrefix}
         {table.getRowModel().rows.map((row) => (
-          <tr key={row.id} style={table.options.meta?.getRowStyles(row)}>
+          <tr 
+            key={row.id} 
+            onClick={() => setSelectedRow && setSelectedRow(row)}
+            style={table.options.meta?.getRowStyles(row)}
+          >
             {row.getVisibleCells().map((cell) => (
               <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
             ))}
