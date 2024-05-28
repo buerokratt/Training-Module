@@ -23,19 +23,19 @@ getData:
         - id: 3
           name: "2-potential-proton.tar.gz"
           lastTrained: "2023-10-28T10:23:41.619Z"
-          state: "TRAINED"
+          state: "READY"
         - id: 4
           name: "20220322.tar.gz"
           lastTrained: "2023-10-29T10:23:41.619Z"
-          state: "REMOVED"
+          state: "DELETED"
         - id: 5
           name: "proton.tar.gz"
           lastTrained: "2023-11-26T10:23:41.619Z"
-          state: "TRAINED"
+          state: "READY"
         - id: 6
           name: "2022tial-proton.tar.gz"
           lastTrained: "2023-12-26T10:23:41.619Z"
-          state: "REMOVED"
+          state: "DELETED"
           
   result: reflected_request
   next: returnData

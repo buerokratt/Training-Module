@@ -1,8 +1,8 @@
 import api from './api';
 import { Model, UpdateModelDTO } from 'types/model';
 
-export async function activateModel(id: string | number, modelData: UpdateModelDTO) {
-  const { data } = await api.patch<Model>(`models/${id}`, modelData);
+export async function activateModel(modelData: UpdateModelDTO) {
+  const { data } = await api.post<Model>('model/trained-model', modelData);
   return data;
 }
 

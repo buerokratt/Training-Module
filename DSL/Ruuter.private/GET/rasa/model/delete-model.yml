@@ -70,7 +70,7 @@ updateInDatabase:
     body:
       model_type: ${model.modelType}
       trained_date: ${model.trainedDate}
-      state: "Removed"
+      state: "DELETED"
       file_name: ${model.fileName}
       version_number: ${model.versionNumber}
       model_version: ${model.modelVersion}
