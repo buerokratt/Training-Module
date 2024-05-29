@@ -122,6 +122,7 @@ services:
       - REACT_APP_OPENSEARCH_DASHBOARD_URL=https://opensearch.org/
       - REACT_APP_OPENDATAPORT_URL=https://avaandmedtest.eesti.ee
       - REACT_APP_MENU_URL=https://admin.dev.buerokratt.ee
+      - REACT_APP_RUUTER_URL=http://localhost:8080
       - REACT_APP_MENU_PATH=/chat/menu.json
       - REACT_APP_APP_PORT=3001
       - REACT_APP_LOCAL=true
