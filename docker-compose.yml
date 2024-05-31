@@ -128,7 +128,6 @@ services:
       - REACT_APP_LOCAL=true
       - REACT_APP_BASE_API_PATH=/al
       - REACT_APP_AUTH_BASE_URL=http://localhost:3002/training/api
-      - REACT_APP_AUTH_PATH=/cs-custom-jwt-userinfo
       - REACT_APP_CUSTOMER_SERVICE_LOGIN=http://localhost:3004/et/dev-auth
       - REACT_APP_CONVERSATIONS_BASE_URL=http://localhost:8080/chat
       - REACT_APP_TRAINING_BASE_URL=http://localhost:8080/training
