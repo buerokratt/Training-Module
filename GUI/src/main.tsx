@@ -37,7 +37,8 @@ const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
       return data;
     }
   }
-  if(queryKey[1] === 'auth') {
+  
+  if ((queryKey[0] as string).includes('auth')) {
     const { data } = await auth.get(queryKey[0] as string);
     return data;
   }
