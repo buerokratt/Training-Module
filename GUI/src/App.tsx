@@ -38,12 +38,12 @@ const App: FC = () => {
   });
 
   useQuery({
-    queryKey: [import.meta.env.REACT_APP_AUTH_PATH, 'auth'],
+    queryKey: [(import.meta.env.REACT_APP_AUTH_BASE_URL, 'auth/jwt/userinfo')],
     onSuccess: (res: { response: UserInfo }) => {
-      localStorage.setItem("exp", res.response.JWTExpirationTimestamp);
+      localStorage.setItem('exp', res.response.JWTExpirationTimestamp);
       return useStore.getState().setUserInfo(res.response);
     },
-    enabled: import.meta.env.REACT_APP_LOCAL !== "true",
+    enabled: import.meta.env.REACT_APP_LOCAL != 'true',
   });
 
   return (
