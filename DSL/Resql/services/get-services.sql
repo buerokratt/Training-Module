@@ -1,2 +1,3 @@
 SELECT DISTINCT name, service_id
-FROM services;
+FROM services
+ORDER BY name ASC;
