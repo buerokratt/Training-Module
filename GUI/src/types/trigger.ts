@@ -6,4 +6,5 @@ export interface Trigger {
   authorRole: string;
   requestedAt: string;
   status: string;
+  totalPages?: number;
 }
