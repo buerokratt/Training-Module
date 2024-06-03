@@ -38,18 +38,22 @@ type DataTableProps = {
   data: any;
   columns: ColumnDef<any, any>[];
   tableBodyPrefix?: ReactNode;
+  isClientSide?: boolean;
   sortable?: boolean;
   filterable?: boolean;
   pagination?: PaginationState;
-  setPagination?: React.Dispatch<React.SetStateAction<PaginationState>>;
+  sorting?: SortingState;
+  setPagination?: (state: PaginationState) => void;
+  setSorting?: (state: SortingState) => void;
   globalFilter?: string;
   setGlobalFilter?: React.Dispatch<React.SetStateAction<string>>;
   columnVisibility?: VisibilityState;
   setColumnVisibility?: React.Dispatch<React.SetStateAction<VisibilityState>>;
   disableHead?: boolean;
-  showInput?: boolean;
+  pagesCount?: number;
   meta?: TableMeta<any>;
   setSelectedRow?: (row: Row<any>) => void;
+  pageSizeOptions?: number[];
 };
 
 declare module '@tanstack/table-core' {
@@ -80,24 +84,27 @@ const DataTable: FC<DataTableProps> = (
   {
     data,
     columns,
+    isClientSide = true,
     tableBodyPrefix,
     sortable,
     filterable,
+    sorting,
     pagination,
     setPagination,
+    setSorting,
     globalFilter,
     setGlobalFilter,
     columnVisibility,
     setColumnVisibility,
     disableHead,
-    showInput,
+    pagesCount,
     meta,
     setSelectedRow,
+    pageSizeOptions = [10, 20, 30, 40, 50],
   },
 ) => {
   const id = useId();
   const { t } = useTranslation();
-  const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const table = useReactTable({
     data,
@@ -117,12 +124,21 @@ const DataTable: FC<DataTableProps> = (
     onGlobalFilterChange: setGlobalFilter,
     onColumnVisibilityChange: setColumnVisibility,
     globalFilterFn: fuzzyFilter,
-    onSortingChange: setSorting,
-    onPaginationChange: setPagination,
+    onSortingChange: (updater) => {
+      if (typeof updater !== 'function') return;
+      setSorting?.(updater(table.getState().sorting));
+    },
+    onPaginationChange: (updater) => {
+      if (typeof updater !== 'function') return;
+      setPagination?.(updater(table.getState().pagination));
+    },
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     ...(pagination && { getPaginationRowModel: getPaginationRowModel() }),
     ...(sortable && { getSortedRowModel: getSortedRowModel() }),
+    manualPagination: !isClientSide,
+    manualSorting: !isClientSide,
+    pageCount: isClientSide ? undefined : pagesCount,
   });
 
   return (
@@ -225,7 +241,7 @@ const DataTable: FC<DataTableProps> = (
                 table.setPageSize(Number(e.target.value));
               }}
             >
-              {[10, 20, 30, 40, 50].map(pageSize => (
+              {pageSizeOptions.map(pageSize => (
                 <option key={pageSize} value={pageSize}>
                   {pageSize}
                 </option>
