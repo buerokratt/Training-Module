@@ -17,6 +17,9 @@ declaration:
       - field: crossValidationReport
         type: json
         description: "Trained models cross validation report"
+      - field: trainingDataChecksum
+        type: string
+        description: "Trained models training data checksum"
 
 getLatestProcessingModelFromDb:
   call: http.post
@@ -36,6 +39,7 @@ updateInDatabase:
       model_version: ${dbModelResult.response.body[0].modelVersion}
       test_report: ${incoming.body.testReport}
       cross_validation_report: ${incoming.body.crossValidationReport}
+      training_data_checksum: ${incoming.body.trainingDataChecksum}
   result: dbModelResult
 
 returnSuccess:

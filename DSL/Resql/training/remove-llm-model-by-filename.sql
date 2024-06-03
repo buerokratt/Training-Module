@@ -1,2 +1,2 @@
-INSERT INTO llm_trainings (model_type, state, trained_date, file_name, version_number, model_version, test_report, cross_validation_report, created)
-VALUES (:model_type, :state,  TO_TIMESTAMP(:trained_date,'YYYY-MM-DD"T"HH24:MI:SS'), :file_name, :version_number , :model_version, :test_report, :cross_validation_report, CURRENT_TIMESTAMP);
+INSERT INTO llm_trainings (model_type, state, trained_date, file_name, version_number, model_version, test_report, cross_validation_report, created, training_data_checksum)
+VALUES (:model_type, :state,  TO_TIMESTAMP(:trained_date,'YYYY-MM-DD"T"HH24:MI:SS'), :file_name, :version_number , :model_version, :test_report, :cross_validation_report, CURRENT_TIMESTAMP, :training_data_checksum);
