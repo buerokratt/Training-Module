@@ -33,6 +33,7 @@ updateInDatabase:
       model_version: ${incoming.body.modelVersion}
       test_report: ""
       cross_validation_report: ""
+      training_data_checksum: ""
   result: dbModelResult
 
 returnSuccess:
