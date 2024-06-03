@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation } from '@tanstack/react-query';
-import { PaginationState } from '@tanstack/react-table';
+import { PaginationState, SortingState } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import {
   Card,
@@ -36,7 +36,8 @@ const History: FC = () => {
     pageIndex: 0,
     pageSize: 10,
   });
-
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [totalPages, setTotalPages] = useState<number>(1);
   const preferences = getFromLocalStorage(
     CHAT_HISTORY_PREFERENCES_KEY
   ) as string[];
@@ -93,18 +94,32 @@ const History: FC = () => {
     getAllEndedChats.mutate({
       startDate: format(new Date(startDate), 'yyyy-MM-dd'),
       endDate: format(new Date(endDate), 'yyyy-MM-dd'),
+      pagination,
+      sorting,
     });
   }, []);
 
   const getAllEndedChats = useMutation({
-    mutationFn: (data: { startDate: string; endDate: string }) => {
+    mutationFn: (data: {
+      startDate: string;
+      endDate: string;
+      pagination: PaginationState;
+      sorting: SortingState;
+    }) => {
       return apiDev.post('agents/chats/ended', {
         startDate: data.startDate,
         endDate: data.endDate,
+        page: pagination.pageIndex + 1,
+        page_size: pagination.pageSize,
+        sorting:
+          sorting.length === 0
+            ? 'created desc'
+            : sorting[0].id + ' ' + (sorting[0].desc ? 'desc' : 'asc'),
       });
     },
     onSuccess: (res: any) => {
       filterChatsList(res.data.response ?? []);
+      setTotalPages(res?.data?.response[0]?.totalPages ?? 1);
     },
   });
 
@@ -186,6 +201,8 @@ const History: FC = () => {
                         getAllEndedChats.mutate({
                           startDate: format(new Date(v), 'yyyy-MM-dd'),
                           endDate: format(new Date(endDate), 'yyyy-MM-dd'),
+                          pagination,
+                          sorting,
                         });
                       }}
                     />
@@ -209,6 +226,8 @@ const History: FC = () => {
                         getAllEndedChats.mutate({
                           startDate: format(new Date(startDate), 'yyyy-MM-dd'),
                           endDate: format(new Date(v), 'yyyy-MM-dd'),
+                          pagination,
+                          sorting,
                         });
                       }}
                     />
@@ -223,7 +242,7 @@ const History: FC = () => {
               selectedOptions={visibleColumnOptions.filter((o) =>
                 selectedColumns.includes(o.value)
               )}
-              onSelectionChange={(selection) => {
+              onSelectionChange={(selection: any) => {
                 const columns = selection?.value ? [selection.value] : [];
                 setSelectedColumns(columns);
                 setToLocalStorage(CHAT_HISTORY_PREFERENCES_KEY, columns);
@@ -241,7 +260,32 @@ const History: FC = () => {
           globalFilter={filter}
           setGlobalFilter={setFilter}
           pagination={pagination}
-          setPagination={setPagination}
+          sorting={sorting}
+          setPagination={(state: PaginationState) => {
+            if (
+              state.pageIndex === pagination.pageIndex &&
+              state.pageSize === pagination.pageSize
+            )
+              return;
+            setPagination(state);
+            getAllEndedChats.mutate({
+              startDate: format(new Date(startDate), 'yyyy-MM-dd'),
+              endDate: format(new Date(endDate), 'yyyy-MM-dd'),
+              pagination: state,
+              sorting,
+            });
+          }}
+          setSorting={(state: SortingState) => {
+            setSorting(state);
+            getAllEndedChats.mutate({
+              startDate: format(new Date(startDate), 'yyyy-MM-dd'),
+              endDate: format(new Date(endDate), 'yyyy-MM-dd'),
+              pagination,
+              sorting: state,
+            });
+          }}
+          isClientSide={false}
+          pagesCount={totalPages}
         />
       </Card>
 

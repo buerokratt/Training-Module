@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { createColumnHelper } from "@tanstack/react-table";
+import { PaginationState, SortingState, createColumnHelper } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { AiFillCheckCircle, AiFillCloseCircle } from "react-icons/ai";
 import { Button, Card, DataTable, Icon } from "components";
@@ -9,14 +9,47 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useToast } from "hooks/useToast";
 import { updateConnectionRequest } from "services/requests";
 import withAuthorization, { ROLES } from "hoc/with-authorization";
+import api from "services/api";
 
 const ConnectionRequests: React.FC = () => {
   const { t } = useTranslation();
   const toast = useToast();
-
-  const { data: triggers, isLoading, isError, refetch } = useQuery<Trigger[]>({
-    queryKey: ['services/connection-requests'],
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
   });
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [triggers, setTriggers] = useState<Trigger[]>([]);
+
+  const getTriggers = async () => {
+    setIsLoading(true);
+    let sort = "requestedAt desc";
+    if (sorting.length > 0) 
+      sort = sorting[0].id + " " + (sorting[0].desc ? "desc" : "asc");
+
+    return api.post('/services/connection-requests', {
+      page: pagination.pageIndex + 1,
+      page_size: pagination.pageSize,
+      sorting: sort,
+    }).then(res => {
+      setTriggers(res.data.response);
+      setIsLoading(false);
+    })
+    .catch(error => {
+      setIsLoading(false);
+      toast.open({
+        type: "error",
+        title: t("connectionRequests.toast.failed.requests"),
+        message: "",
+      });
+      console.error(error);
+    });
+  }
+
+  useEffect(() => {
+    getTriggers();
+  }, [pagination, sorting]);
 
   const updateRequestStatus = useMutation({
     mutationFn: (data: { request: Trigger, status: 'approved' | 'declined' }) => 
@@ -30,7 +63,7 @@ const ConnectionRequests: React.FC = () => {
         message: "",
       });
 
-      await refetch();
+      await getTriggers();
     },
     onError: () => {
       toast.open({
@@ -40,16 +73,6 @@ const ConnectionRequests: React.FC = () => {
       });
     }
   })
-
-  useEffect(() => {
-    if(isError) {
-      toast.open({
-        type: "error",
-        title: t("connectionRequests.toast.failed.requests"),
-        message: "",
-      });
-    }
-  }, [isError]);
 
   const appRequestColumns = useMemo(
     () => getColumns(
@@ -64,10 +87,20 @@ const ConnectionRequests: React.FC = () => {
     <>
       <h1>{t("connectionRequests.title")}</h1>
       <Card>
-        <DataTable 
-          data={triggers} 
-          columns={appRequestColumns} 
+        <DataTable
+          data={triggers}
+          columns={appRequestColumns}
           sortable
+          sorting={sorting}
+          pagination={pagination}
+          setPagination={(state: PaginationState) => {
+            if (state.pageIndex === pagination.pageIndex && state.pageSize === pagination.pageSize)
+              return;
+            setPagination(state);
+          }}
+          setSorting={setSorting}
+          isClientSide={false}
+          pagesCount={triggers[triggers.length - 1]?.totalPages ?? 1}
         />
       </Card>
     </>
