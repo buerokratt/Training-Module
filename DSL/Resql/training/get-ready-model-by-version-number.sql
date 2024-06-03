@@ -7,7 +7,8 @@ SELECT
   model_version, 
   test_report,
   cross_validation_report,
-  created
+  created,
+  training_data_checksum
 FROM llm_trainings
 WHERE state = 'READY' AND version_number = :versionNumber
 LIMIT 1;

@@ -25,6 +25,7 @@ updateInDatabase:
       model_version: ${dbModelResult.response.body[0].modelVersion}
       test_report: ${dbModelResult.response.body[0].testReport}
       cross_validation_report: ${dbModelResult.response.body[0].crossValidationReport}
+      training_data_checksum: ""
   result: dbModelResult
 
 returnSuccess:
