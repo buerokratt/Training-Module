@@ -1,0 +1,41 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Adds a new model to the database with DEPLOYED status"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    body:
+      - field: fileName
+        type: string
+        description: "Trained model file name"
+      - field: modelType
+        type: string
+        description: "Trained model type"
+      - field: versionNumber
+        type: string
+        description: "Trained model version number"
+      - field: modelVersion
+        type: string
+        description: "Trained model version"
+
+updateInDatabase:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/add-llm-trainings"
+    body:
+      model_type: ${incoming.body.modelType}
+      state: "DEPLOYED"
+      file_name: ${incoming.body.fileName}
+      version_number: ${incoming.body.versionNumber}
+      model_version: ${incoming.body.modelVersion}
+      test_report: ""
+      cross_validation_report: ""
+  result: dbModelResult
+
+returnSuccess:
+  return: "Inserted model with DEPLOYED status."
+  wrapper: false
+  next: end
