@@ -23,6 +23,9 @@ declaration:
       - field: sorting
         type: string
         description: "Body field 'sorting'"
+      - field: search
+        type: string
+        description: "Body field 'search'"
 
 extractRequestData:
   assign:
@@ -39,6 +42,7 @@ getEndedChats:
       page: ${incoming.body.page}
       page_size: ${incoming.body.page_size}
       sorting: ${incoming.body.sorting}
+      search: ${incoming.body.search}
   result: res
 
 returnSuccess:

@@ -30,7 +30,7 @@ import withAuthorization, { ROLES } from 'hoc/with-authorization';
 const History: FC = () => {
   const { t } = useTranslation();
   const toast = useToast();
-  const [filter, setFilter] = useState('');
+  const [search, setSearch] = useState('');
   const [selectedChat, setSelectedChat] = useState<ChatType | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [pagination, setPagination] = useState<PaginationState>({
@@ -97,6 +97,7 @@ const History: FC = () => {
       endDate: format(new Date(endDate), 'yyyy-MM-dd'),
       pagination,
       sorting,
+      search,
     });
   }, []);
 
@@ -106,6 +107,7 @@ const History: FC = () => {
       endDate: string;
       pagination: PaginationState;
       sorting: SortingState;
+      search: string;
     }) => {
       return apiDev.post('agents/chats/ended', {
         startDate: data.startDate,
@@ -116,6 +118,7 @@ const History: FC = () => {
           sorting.length === 0
             ? 'created desc'
             : sorting[0].id + ' ' + (sorting[0].desc ? 'desc' : 'asc'),
+        search,
       });
     },
     onSuccess: (res: any) => {
@@ -183,7 +186,16 @@ const History: FC = () => {
             hideLabel
             name="searchChats"
             placeholder={t('chat.history.searchChats') + '...'}
-            onChange={(e) => setFilter(e.target.value)}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              getAllEndedChats.mutate({
+                startDate: format(new Date(startDate), 'yyyy-MM-dd'),
+                endDate: format(new Date(endDate), 'yyyy-MM-dd'),
+                pagination,
+                sorting,
+                search,
+              });
+            }}
           />
           <Track style={{ width: '100%' }} gap={16}>
             <Track gap={10}>
@@ -208,6 +220,7 @@ const History: FC = () => {
                           endDate: format(new Date(endDate), 'yyyy-MM-dd'),
                           pagination,
                           sorting,
+                          search,
                         });
                       }}
                     />
@@ -236,6 +249,7 @@ const History: FC = () => {
                           endDate: end,
                           pagination,
                           sorting,
+                          search,
                         });
                       }}
                     />
@@ -264,8 +278,8 @@ const History: FC = () => {
           data={filteredEndedChatsList}
           sortable
           columns={endedChatsColumns}
-          globalFilter={filter}
-          setGlobalFilter={setFilter}
+          // globalFilter={filter}
+          // setGlobalFilter={setFilter}
           pagination={pagination}
           sorting={sorting}
           setPagination={(state: PaginationState) => {
@@ -280,6 +294,7 @@ const History: FC = () => {
               endDate: format(new Date(endDate), 'yyyy-MM-dd'),
               pagination: state,
               sorting,
+              search,
             });
           }}
           setSorting={(state: SortingState) => {
@@ -289,6 +304,7 @@ const History: FC = () => {
               endDate: format(new Date(endDate), 'yyyy-MM-dd'),
               pagination,
               sorting: state,
+              search,
             });
           }}
           isClientSide={false}

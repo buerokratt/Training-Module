@@ -10,7 +10,7 @@ SELECT
 FROM services
 JOIN MaxServices ON maxId = id
 WHERE deleted IS NOT NULL
-AND (:search IS NULL OR name LIKE ('%' || :search || '%'))
+AND (:search IS NULL OR :search = '' OR name LIKE ('%' || :search || '%'))
 ORDER BY
   CASE WHEN :sorting = 'name asc' THEN name END ASC,
   CASE WHEN :sorting = 'name desc' THEN name END DESC

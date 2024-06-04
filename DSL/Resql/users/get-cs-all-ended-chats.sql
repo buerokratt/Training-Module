@@ -118,6 +118,16 @@ JOIN LastContentMessage ON c.base_id = LastContentMessage.chat_base_id
 JOIN FirstContentMessage ON c.base_id = FirstContentMessage.chat_base_id
 LEFT JOIN ContactsMessage ON ContactsMessage.chat_base_id = c.base_id
 CROSS JOIN TitleVisibility
+WHERE (
+  :search IS NULL OR
+  :search = '' OR
+  c.customer_support_display_name LIKE ('%' || :search || '%') OR
+  c.end_user_first_name LIKE ('%' || :search || '%') OR
+  ContactsMessage.content LIKE ('%' || :search || '%') OR
+  s.comment LIKE ('%' || :search || '%') OR
+  c.status LIKE ('%' || :search || '%') OR
+  m.event LIKE ('%' || :search || '%')
+)
 ORDER BY 
    CASE WHEN :sorting = 'created asc' THEN FirstContentMessage.created END ASC,
    CASE WHEN :sorting = 'created desc' THEN FirstContentMessage.created END DESC,
