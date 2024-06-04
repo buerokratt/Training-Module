@@ -26,6 +26,7 @@ import { CHAT_HISTORY_PREFERENCES_KEY } from 'constants/config';
 import { useToast } from '../../../hooks/useToast';
 import { getColumns } from './columns';
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
+import { useDebouncedCallback } from "use-debounce";
 
 const History: FC = () => {
   const { t } = useTranslation();
@@ -46,6 +47,16 @@ const History: FC = () => {
   const [selectedColumns, setSelectedColumns] = useState<string[]>(
     preferences ?? []
   );
+
+  const debouncedGetAllEnded = useDebouncedCallback((search) => {
+    getAllEndedChats.mutate({
+      startDate: format(new Date(startDate), 'yyyy-MM-dd'),
+      endDate: format(new Date(endDate), 'yyyy-MM-dd'),
+      pagination,
+      sorting,
+      search,
+    });
+  }, 500);
 
   const copyValueToClipboard = async (value: string) => {
     await navigator.clipboard.writeText(value);
@@ -188,13 +199,7 @@ const History: FC = () => {
             placeholder={t('chat.history.searchChats') + '...'}
             onChange={(e) => {
               setSearch(e.target.value);
-              getAllEndedChats.mutate({
-                startDate: format(new Date(startDate), 'yyyy-MM-dd'),
-                endDate: format(new Date(endDate), 'yyyy-MM-dd'),
-                pagination,
-                sorting,
-                search,
-              });
+              debouncedGetAllEnded(e.target.value);
             }}
           />
           <Track style={{ width: '100%' }} gap={16}>

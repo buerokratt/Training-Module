@@ -126,7 +126,9 @@ WHERE (
   ContactsMessage.content LIKE ('%' || :search || '%') OR
   s.comment LIKE ('%' || :search || '%') OR
   c.status LIKE ('%' || :search || '%') OR
-  m.event LIKE ('%' || :search || '%')
+  m.event LIKE ('%' || :search || '%') OR
+  LastContentMessage.content LIKE ('%' || :search || '%') OR
+  c.base_id LIKE ('%' || :search || '%')
 )
 ORDER BY 
    CASE WHEN :sorting = 'created asc' THEN FirstContentMessage.created END ASC,
