@@ -10,12 +10,14 @@ import { useToast } from "hooks/useToast";
 import { updateConnectionRequest } from "services/requests";
 import withAuthorization, { ROLES } from "hoc/with-authorization";
 import api from "services/api";
+import { useSearchParams } from "react-router-dom";
 
 const ConnectionRequests: React.FC = () => {
   const { t } = useTranslation();
   const toast = useToast();
+  const [searchParams] = useSearchParams();
   const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
+    pageIndex: searchParams.get("page") ? parseInt(searchParams.get("page") as string) - 1 : 0,
     pageSize: 10,
   });
   const [sorting, setSorting] = useState<SortingState>([]);

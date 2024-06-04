@@ -27,7 +27,7 @@ import {
   MdOutlineWest,
 } from 'react-icons/md';
 import clsx from 'clsx';
-import { Link } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { Icon, Track } from 'components';
@@ -105,6 +105,7 @@ const DataTable: FC<DataTableProps> = (
 ) => {
   const id = useId();
   const { t } = useTranslation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const table = useReactTable({
     data,
@@ -197,7 +198,13 @@ const DataTable: FC<DataTableProps> = (
             <div className='data-table__pagination'>
               <button
                 className='previous'
-                onClick={() => table.previousPage()}
+                onClick={() => {
+                  table.previousPage();
+                  setSearchParams(params => {
+                    params.set('page', String(Number(searchParams.get('page') ?? '1') - 1));
+                    return params;
+                  });
+                }}
                 disabled={!table.getCanPreviousPage()}
               >
                 <MdOutlineWest />
@@ -209,14 +216,20 @@ const DataTable: FC<DataTableProps> = (
                       key={`${id}-${index}`}
                       className={clsx({ 'active': table.getState().pagination.pageIndex === index })}
                     >
-                      <Link
-                        to={`?page=${index + 1}`}
-                        onClick={() => table.setPageIndex(index)}
+                      <span
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => {
+                          table.setPageIndex(index);
+                          setSearchParams(params => {
+                            params.set('page', String(index + 1));
+                            return params;
+                          });
+                        }}
                         aria-label={t('global.gotoPage') + index}
                         aria-current={table.getState().pagination.pageIndex === index}
                       >
                         {index + 1}
-                      </Link>
+                      </span>
                     </li>
                   ))}
                 </ul>
@@ -225,6 +238,10 @@ const DataTable: FC<DataTableProps> = (
                 className='next'
                 onClick={() => {
                   table.nextPage();
+                  setSearchParams(params => {
+                    params.set('page', String(Number(searchParams.get('page') ?? '1') + 1));
+                    return params;
+                  });
                 }}
                 disabled={!table.getCanNextPage()}
               >

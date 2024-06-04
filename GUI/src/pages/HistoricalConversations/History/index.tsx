@@ -17,7 +17,7 @@ import { Chat as ChatType } from 'types/chat';
 import { Message } from 'types/message';
 import { Controller, useForm } from 'react-hook-form';
 import apiDev from '../../../services/api-dev';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import {
   getFromLocalStorage,
   setToLocalStorage,
@@ -32,8 +32,9 @@ const History: FC = () => {
   const toast = useToast();
   const [filter, setFilter] = useState('');
   const [selectedChat, setSelectedChat] = useState<ChatType | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
   const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
+    pageIndex: searchParams.get("page") ? parseInt(searchParams.get("page") as string) - 1 : 0,
     pageSize: 10,
   });
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -67,12 +68,12 @@ const History: FC = () => {
     endDate: Date | string;
   }>({
     defaultValues: {
-      startDate: new Date(
+      startDate: searchParams.get('start') ? new Date(searchParams.get('start') as string) : new Date(
         new Date().getUTCFullYear(),
         new Date().getUTCMonth(),
         new Date().getUTCDate()
       ),
-      endDate: new Date(
+      endDate: searchParams.get('end') ? new Date(searchParams.get('end') as string) :new Date(
         new Date().getUTCFullYear(),
         new Date().getUTCMonth(),
         new Date().getUTCDate() + 1
@@ -190,24 +191,27 @@ const History: FC = () => {
               <Controller
                 name="startDate"
                 control={control}
-                render={({ field }) => {
-                  return (
+                render={({ field }) => 
                     <FormDatepicker
                       {...field}
                       label={''}
                       value={field.value ?? new Date()}
                       onChange={(v) => {
                         field.onChange(v);
+                        const start = format(new Date(v), 'yyyy-MM-dd');
+                        setSearchParams(params => { 
+                          params.set('start', start)
+                          return params;
+                        });
                         getAllEndedChats.mutate({
-                          startDate: format(new Date(v), 'yyyy-MM-dd'),
+                          startDate: start,
                           endDate: format(new Date(endDate), 'yyyy-MM-dd'),
                           pagination,
                           sorting,
                         });
                       }}
                     />
-                  );
-                }}
+                  }
               />
             </Track>
             <Track gap={10}>
@@ -215,24 +219,27 @@ const History: FC = () => {
               <Controller
                 name="endDate"
                 control={control}
-                render={({ field }) => {
-                  return (
+                render={({ field }) => 
                     <FormDatepicker
                       {...field}
                       label={''}
                       value={field.value ?? new Date()}
                       onChange={(v) => {
                         field.onChange(v);
+                        const end = format(new Date(v), 'yyyy-MM-dd');
+                        setSearchParams(params => { 
+                          params.set('end', end)
+                          return params;
+                        });
                         getAllEndedChats.mutate({
                           startDate: format(new Date(startDate), 'yyyy-MM-dd'),
-                          endDate: format(new Date(v), 'yyyy-MM-dd'),
+                          endDate: end,
                           pagination,
                           sorting,
                         });
                       }}
                     />
-                  );
-                }}
+                }
               />
             </Track>
             <FormMultiselect
