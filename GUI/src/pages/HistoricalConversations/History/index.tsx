@@ -283,8 +283,6 @@ const History: FC = () => {
           data={filteredEndedChatsList}
           sortable
           columns={endedChatsColumns}
-          // globalFilter={filter}
-          // setGlobalFilter={setFilter}
           pagination={pagination}
           sorting={sorting}
           setPagination={(state: PaginationState) => {
