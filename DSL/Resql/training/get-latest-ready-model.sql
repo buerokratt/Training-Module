@@ -10,5 +10,11 @@ SELECT
   created,
   training_data_checksum
 FROM llm_trainings
-WHERE trained_date = (SELECT max(trained_date) FROM llm_trainings WHERE state = 'READY')
+WHERE trained_date = (SELECT MAX(trained_date) FROM llm_trainings WHERE state = 'READY')
+AND NOT EXISTS (
+    SELECT 1
+    FROM llm_trainings AS lt
+    WHERE llm_trainings.version_number = lt.version_number
+    AND lt.state = 'DELETED'
+)
 LIMIT 1;
