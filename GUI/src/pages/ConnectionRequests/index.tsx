@@ -19,11 +19,9 @@ const ConnectionRequests: React.FC = () => {
     pageSize: 10,
   });
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [triggers, setTriggers] = useState<Trigger[]>([]);
 
   const getTriggers = async () => {
-    setIsLoading(true);
     let sort = "requestedAt desc";
     if (sorting.length > 0) 
       sort = sorting[0].id + " " + (sorting[0].desc ? "desc" : "asc");
@@ -32,12 +30,9 @@ const ConnectionRequests: React.FC = () => {
       page: pagination.pageIndex + 1,
       page_size: pagination.pageSize,
       sorting: sort,
-    }).then(res => {
-      setTriggers(res.data.response);
-      setIsLoading(false);
     })
+    .then(res => setTriggers(res.data.response))
     .catch(error => {
-      setIsLoading(false);
       toast.open({
         type: "error",
         title: t("connectionRequests.toast.failed.requests"),
@@ -80,8 +75,6 @@ const ConnectionRequests: React.FC = () => {
       (trigger) => updateRequestStatus.mutate({ request: trigger, status: 'declined' })),
     []
   );
-
-  if (!triggers || isLoading) return <span>Loading ... </span>;
 
   return (
     <>
