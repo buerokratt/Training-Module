@@ -26,7 +26,7 @@
     "@radix-ui/react-toast": "^1.1.2",
     "@radix-ui/react-tooltip": "^1.0.2",
     "@tanstack/match-sorter-utils": "^8.7.2",
-    "@tanstack/react-query": "^4.20.4",
+    "@tanstack/react-query": "^5.40.1",
     "@tanstack/react-table": "^8.7.4",
     "linkify-react": "^4.1.1",
     "linkifyjs": "^4.1.1",
