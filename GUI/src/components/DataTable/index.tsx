@@ -1,4 +1,4 @@
-import React, { CSSProperties, FC, ReactNode, useId, useState } from 'react';
+import React, { CSSProperties, FC, ReactNode, useId } from 'react';
 import {
   ColumnDef,
   useReactTable,
@@ -216,8 +216,7 @@ const DataTable: FC<DataTableProps> = (
                       key={`${id}-${index}`}
                       className={clsx({ 'active': table.getState().pagination.pageIndex === index })}
                     >
-                      <span
-                        style={{ cursor: 'pointer' }}
+                      <button
                         onClick={() => {
                           table.setPageIndex(index);
                           setSearchParams(params => {
@@ -229,7 +228,7 @@ const DataTable: FC<DataTableProps> = (
                         aria-current={table.getState().pagination.pageIndex === index}
                       >
                         {index + 1}
-                      </span>
+                      </button>
                     </li>
                   ))}
                 </ul>

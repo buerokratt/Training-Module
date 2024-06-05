@@ -120,15 +120,18 @@ const History: FC = () => {
       sorting: SortingState;
       search: string;
     }) => {
+      let sortBy = 'created desc';
+      if(sorting.length > 0) {
+        const sortType = sorting[0].desc ? 'desc' : 'asc';
+        sortBy = `${sorting[0].id} ${sortType}`;
+      }
+
       return apiDev.post('agents/chats/ended', {
         startDate: data.startDate,
         endDate: data.endDate,
         page: pagination.pageIndex + 1,
         page_size: pagination.pageSize,
-        sorting:
-          sorting.length === 0
-            ? 'created desc'
-            : sorting[0].id + ' ' + (sorting[0].desc ? 'desc' : 'asc'),
+        sorting: sortBy,
         search,
       });
     },

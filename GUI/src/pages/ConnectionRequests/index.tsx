@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import { AiFillCheckCircle, AiFillCloseCircle } from "react-icons/ai";
 import { Button, Card, DataTable, Icon } from "components";
 import { Trigger } from "types/trigger";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useToast } from "hooks/useToast";
 import { updateConnectionRequest } from "services/requests";
 import withAuthorization, { ROLES } from "hoc/with-authorization";

@@ -140,13 +140,14 @@
       li {
         display: block;
 
-        a, span {
+        a, span, button {
           display: flex;
           align-items: center;
           justify-content: center;
           width: 25px;
           height: 25px;
           border-radius: 50%;
+          cursor: pointer;
 
           &:hover {
             text-decoration: none;
@@ -154,7 +155,7 @@
         }
 
         &.active {
-          a, span {
+          a, span, button {
             color: get-color(white);
             background-color: get-color(sapphire-blue-10);
           }
