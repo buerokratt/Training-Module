@@ -46,7 +46,7 @@ export const getColumns = ({
         cell: (props) => (
             <ColumnContainer original={props.row.original}>{
               props.row.original.intent === 'accuracy' 
-              ? accuracyValue 
+              ? truncateNumber(accuracyValue)
               : props.getValue() &&  truncateNumber(props.getValue()) 
               }</ColumnContainer>
         ),

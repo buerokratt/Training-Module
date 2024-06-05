@@ -207,6 +207,7 @@ services:
   cron-manager:
     container_name: cron-manager
     image: cron-manager
+    # user: root # This root user is only for local development due to multi container mounted volume permissions
     volumes:
       - rasa-training-data:/data
     environment:
@@ -244,7 +245,7 @@ services:
   rasa:
     image: rasa
     container_name: rasa
-    user: root
+    # user: root # This root user is only for local development due to multi container mounted volume permissions
     volumes:
       - rasa-training-data:/app/models
     environment:
@@ -258,6 +259,7 @@ services:
   s3-ferry:
     container_name: s3-ferry
     image: s3-ferry
+    # user: root # This root user is only for local development due to multi container mounted volume permissions
     volumes:
       - rasa-training-data:/api/data
     environment:

@@ -26,13 +26,13 @@ const IntentsOverview: FC = () => {
         queryKey: [`model/get-report-by-name?fileName=${selectedModelId}`],
         enabled: false,
     });
-    const nonIntents = ['accuracy','macro avg','weighted avg'];
+    const nonIntents = ['accuracy','macro avg','weighted avg', 'micro avg'];
 
     useEffect(() => {
         if (!models) return;
         let deployed = models.find((model) => model.state === 'DEPLOYED');
         if (!deployed)
-            deployed = models.find((model) => model.state === 'TRAINED');
+            deployed = models.find((model) => model.state === 'READY');
         if (!deployed)
             deployed = models?.[0];
         setSelectedModelId(deployed?.id || 0);
@@ -49,21 +49,26 @@ const IntentsOverview: FC = () => {
         setStatesById(selectedModelId);
     }, [selectedModelId])
 
+    useEffect(() => {
+        if (intentsReport?.intent_evaluation?.report) {
+            setAccuracyValue(intentsReport?.intent_evaluation?.report['accuracy']);
+        }
+    }, [intentsReport]);
+
     const formattedIntentsReport = useMemo(
         () => intentsReport
-            ? Object.keys(intentsReport).map((intent) => ({intent, ...intentsReport[intent]}))
+            ? Object.keys(intentsReport.intent_evaluation.report).map((intent) => ({intent, ...intentsReport.intent_evaluation.report[intent]}))
             : [],
         [intentsReport],
     );
 
-    const intentsReportColumns = useMemo(() => getColumns({ accuracyValue, nonIntents}), []);
+    const intentsReportColumns = useMemo(() => getColumns({ accuracyValue, nonIntents}), [accuracyValue]);
 
     const setStatesById = (modelId: string) => {
         if (!models) {
             return;
         }
         const selectedModel = models.find((m) => m.name === modelId)
-        setAccuracyValue(intentsReport ? parseInt(intentsReport['accuracy']) : 0);
         setModelInUse(selectedModel?.state.toUpperCase() === 'DEPLOYED');
         const date = selectedModel?.lastTrained.split('T')[0] ?? '';
         const [year, month, day] = date.split("-");
