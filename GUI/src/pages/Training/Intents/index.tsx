@@ -31,6 +31,7 @@ import IntentExamplesTable from './IntentExamplesTable';
 import LoadingDialog from '../../../components/LoadingDialog';
 import ConnectServiceToIntentModal from 'pages/ConnectServiceToIntentModal';
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
+import { isHiddenFeaturesEnabled } from 'constants/config';
 
 const Intents: FC = () => {
   const { t } = useTranslation();
@@ -227,7 +228,8 @@ const Intents: FC = () => {
 
   const filteredIntents = useMemo(() => {
     if (!intents) return [];
-    return intents.filter((intent) => intent.intent?.includes(filter));
+    return intents.filter((intent) => intent.intent?.includes(filter))
+      .sort((a, b) => a.intent.localeCompare(b.intent));
   }, [intents, filter]);
 
   const handleTabsValueChange = useCallback(
@@ -568,14 +570,18 @@ const Intents: FC = () => {
                     </p>
                   </Track>
                   <Track justify="end" gap={8} isMultiline={true}>
-                    <Button
-                      appearance="secondary"
-                      onClick={() =>
-                        setTurnIntentToServiceIntent(selectedIntent)
-                      }
-                    >
-                      {t('training.intents.turnIntoService')}
-                    </Button>
+                    {
+                      isHiddenFeaturesEnabled && (
+                        <Button
+                          appearance="secondary"
+                          onClick={() =>
+                            setTurnIntentToServiceIntent(selectedIntent)
+                          }
+                        >
+                          {t('training.intents.turnIntoService')}
+                        </Button>
+                      )
+                    }
                     <Button
                       appearance="secondary"
                       onClick={() => handleIntentExamplesUpload()}
@@ -616,20 +622,24 @@ const Intents: FC = () => {
                         {t('training.intents.addToModel')}
                       </Button>
                     )}
-                    <Tooltip
-                      content={t('training.intents.connectToServiceTooltip')}
-                    >
-                      <span>
-                        <Button
-                          appearance="secondary"
-                          onClick={() => setConnectableIntent(selectedIntent)}
+                    {
+                      isHiddenFeaturesEnabled && (
+                        <Tooltip
+                          content={t('training.intents.connectToServiceTooltip')}
                         >
-                          {selectedIntent.serviceId
-                            ? t('training.intents.changeConnectedService')
-                            : t('training.intents.connectToService')}
-                        </Button>
-                      </span>
-                    </Tooltip>
+                          <span>
+                            <Button
+                              appearance="secondary"
+                              onClick={() => setConnectableIntent(selectedIntent)}
+                            >
+                              {selectedIntent.serviceId
+                                ? t('training.intents.changeConnectedService')
+                                : t('training.intents.connectToService')}
+                            </Button>
+                          </span>
+                        </Tooltip>
+                      )
+                    }
                     <Tooltip
                       content={t('training.intents.deleteTooltip')}
                       hidden={!selectedIntent.serviceId}

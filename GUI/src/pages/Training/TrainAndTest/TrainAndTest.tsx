@@ -19,6 +19,7 @@ import useStore from "../../../store/store";
 import {format} from "date-fns";
 import {DATE_FORMAT, TIME_FORMAT} from "../../../utils/datetime-fromat";
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
+import { isHiddenFeaturesEnabled } from '../../../constants/config';
 
 const TrainAndTest = () => {
     const toast = useToast();
@@ -29,7 +30,7 @@ const TrainAndTest = () => {
     const {data: trainedData} = useQuery<TrainedDataDTO>({
         queryKey: ['training/trained'],
     });
-    const [folds, setFolds] = useState<string>('0');
+    const [folds, setFolds] = useState<string>('8');
     const [scheduled, setScheduled] = useState<boolean>(false);
     const [date, setDate] = useState<string>(new Date().toISOString().split('T')[0]);
     const [time, setTime] = useState<string>('17:00:00');
@@ -146,20 +147,24 @@ const TrainAndTest = () => {
                 }}
             >
                 <div className={styles.card}>
-                    <div className={`${styles.trainingInput} ${styles.input}`}>
-                        <Controller name='rasaFolds' control={control} render={({ field }) =>
-                            <FormInput
-                                {...field}
-                                value={folds}
-                                label={t('training.trainNew.folds')}
-                                type="number"
-                                onChange={(e) => {
-                                    setFolds(e.target.value);
-                                    field.onChange(parseInt(e.target.value));
-                                }}
-                            />
-                        } />
-                    </div>
+                    {
+                      isHiddenFeaturesEnabled && (
+                        <div className={`${styles.trainingInput} ${styles.input}`}>
+                          <Controller name='rasaFolds' control={control} render={({ field }) =>
+                              <FormInput
+                                  {...field}
+                                  value={folds}
+                                  label={t('training.trainNew.folds')}
+                                  type="number"
+                                  onChange={(e) => {
+                                      setFolds(e.target.value);
+                                      field.onChange(parseInt(e.target.value));
+                                  }}
+                              />
+                          } />
+                        </div>
+                      )
+                    }
                     <div className={`${styles.trainingSwitch} ${styles.input}`}>
                         <Controller name='scheduled' control={control} render={({ field }) =>
                             <Switch
