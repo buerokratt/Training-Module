@@ -38,7 +38,7 @@ validateRecordExists:
   next: returnEmptyObject
 
 returnSuccess:
-  return: ${JSON.parse(dbResult.response.body[0].testReport)}
+  return: ${JSON.parse(dbResult.response.body[0].crossValidationReport)}
   wrapper: false
   next: end
 

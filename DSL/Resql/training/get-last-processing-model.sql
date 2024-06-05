@@ -3,7 +3,7 @@ SELECT
   state,
   trained_date,
   model_type,
-  image_version,
+  model_version,
   cross_validation_report,
   file_name,
   version_number,
