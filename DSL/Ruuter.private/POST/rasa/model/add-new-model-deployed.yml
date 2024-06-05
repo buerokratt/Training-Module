@@ -11,28 +11,28 @@ declaration:
       - field: fileName
         type: string
         description: "Trained model file name"
-      - field: modelType
-        type: string
-        description: "Trained model type"
-      - field: versionNumber
-        type: string
-        description: "Trained model version number"
-      - field: modelVersion
-        type: string
-        description: "Trained model version"
+
+getModelByFilenameFromDb:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/get-llm-model-by-filename"
+    body:
+      fileName: ${incoming.body.fileName}
+  result: dbResult
 
 updateInDatabase:
   call: http.post
   args:
     url: "[#TRAINING_RESQL]/add-llm-trainings"
     body:
-      model_type: ${incoming.body.modelType}
+      model_type: ${dbResult.response.body[0].modelType}
       state: "DEPLOYED"
-      file_name: ${incoming.body.fileName}
-      version_number: ${incoming.body.versionNumber}
-      model_version: ${incoming.body.modelVersion}
-      test_report: ""
-      cross_validation_report: ""
+      file_name: ${dbResult.response.body[0].fileName}
+      version_number: ${dbResult.response.body[0].versionNumber}
+      model_version: ${dbResult.response.body[0].modelVersion}
+      test_report: ${dbResult.response.body[0].testReport}
+      cross_validation_report: ${dbResult.response.body[0].crossValidationReport}
+      trained_date: ${dbResult.response.body[0].trainedDate}
       training_data_checksum: ""
   result: dbModelResult
 

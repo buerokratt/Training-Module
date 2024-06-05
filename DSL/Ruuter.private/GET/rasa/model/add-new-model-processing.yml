@@ -50,6 +50,7 @@ updateInDatabase:
       model_version: ${modelVersion}
       test_report: ""
       cross_validation_report: ""
+      trained_date: ${new Date().toISOString()}
       training_data_checksum: ""
   result: dbResult
   next: returnSuccess
@@ -66,6 +67,7 @@ insertToDatabase:
       model_version: ${modelVersion}
       test_report: ""
       cross_validation_report: ""
+      trained_date: ${new Date().toISOString()}
       training_data_checksum: ""
   result: dbResult
 

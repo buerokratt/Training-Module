@@ -39,6 +39,7 @@ updateInDatabase:
       model_version: ${dbModelResult.response.body[0].modelVersion}
       test_report: ${JSON.stringify(incoming.body.testReport)}
       cross_validation_report: ${JSON.stringify(incoming.body.crossValidationReport)}
+      trained_date: ${dbModelResult.response.body[0].trainedDate}
       training_data_checksum: ${incoming.body.trainingDataChecksum}
   result: dbModelResult
 
