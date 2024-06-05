@@ -37,8 +37,8 @@ updateInDatabase:
       file_name: ${incoming.body.fileName}
       version_number: ${dbModelResult.response.body[0].versionNumber}
       model_version: ${dbModelResult.response.body[0].modelVersion}
-      test_report: ${incoming.body.testReport}
-      cross_validation_report: ${incoming.body.crossValidationReport}
+      test_report: ${JSON.stringify(incoming.body.testReport)}
+      cross_validation_report: ${JSON.stringify(incoming.body.crossValidationReport)}
       training_data_checksum: ${incoming.body.trainingDataChecksum}
   result: dbModelResult
 

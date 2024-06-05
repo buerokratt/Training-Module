@@ -76,6 +76,7 @@ updateInDatabase:
       model_version: ${model.modelVersion}
       test_report: ${model.testReport}
       cross_validation_report: ${model.crossValidationReport}
+      training_data_checksum: ${model.trainingDataChecksum}
   result: dbResult
   next: returnSuccess
 
