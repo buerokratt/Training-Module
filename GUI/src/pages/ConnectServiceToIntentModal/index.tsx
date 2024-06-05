@@ -1,13 +1,15 @@
 import { FC, useEffect, useMemo, useState } from "react";
-import { createColumnHelper, PaginationState } from "@tanstack/react-table";
+import { createColumnHelper, PaginationState, SortingState } from "@tanstack/react-table";
 import { useTranslation } from "react-i18next";
 import { MdOutlineArrowForward } from "react-icons/md";
 import { Button, DataTable, Dialog, FormInput, Icon, Modal, Track } from "components";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { Service } from "types/service";
 import { requestServiceIntentConnection } from "services/requests";
 import { useToast } from "hooks/useToast";
+import { useDebounce } from "use-debounce";
 import i18n from "../../../i18n";
+import api from "services/api";
 
 type ConnectServiceToIntentModalProps = {
   onModalClose: () => void;
@@ -21,17 +23,47 @@ const ConnectServiceToIntentModal: FC<ConnectServiceToIntentModalProps> = ({
 
   const { t } = useTranslation();
   const toast = useToast();
-  const [filter, setFilter] = useState("");
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 8,
   });
   const [selectedService, setSelectedService] = useState<Service>();
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [services, setServices] = useState<Service[] | null>(null);
+  const [search, setSearch] = useState<string | null>(null);
+  const [debouncedSearch] = useDebounce(search, 500);
 
-  const { data: services, isError } = useQuery<Service[]>({
-    queryKey: ['services/unassigned'],
-  });
+  const getServices = (pagination: PaginationState, sorting: SortingState, search: string | null) => {
+    let sort = 'name asc';
+    if(sorting.length > 0)
+      sort = sorting[0].id + ' ' + (sorting[0].desc ? 'desc' : 'asc');
+    
+    api
+      .post(`services/unassigned`, {
+        page: pagination.pageIndex + 1,
+        page_size: pagination.pageSize,
+        sorting: sort,
+        search,
+      })
+      .then((res: any) => {
+        setServices(res?.data?.response ?? []);
+        setTotalPages(res?.data?.response[0]?.totalPages ?? 1);
+      })
+      .catch((error: any) => {
+        toast.open({
+          type: "error",
+          title: t("connectionRequests.toast.failed.availableServices"),
+          message: "",
+        });
+        console.error(error);
+      });
+  };
+
+  useEffect(() => {
+    getServices(pagination, sorting, debouncedSearch);
+  }, [pagination, sorting, debouncedSearch]);
 
   const connectRequest = useMutation({
     mutationFn: requestServiceIntentConnection,
@@ -51,16 +83,6 @@ const ConnectServiceToIntentModal: FC<ConnectServiceToIntentModalProps> = ({
       });
     }
   })
-
-  useEffect(() => {
-    if(isError) {
-      toast.open({
-        type: "error",
-        title: t("connectionRequests.toast.failed.availableServices"),
-        message: "",
-      })
-    }
-  }, [isError]);
 
   const serviceColumns = useMemo(
     () => getColumns((service) => {
@@ -94,7 +116,7 @@ const ConnectServiceToIntentModal: FC<ConnectServiceToIntentModalProps> = ({
           name="search"
           placeholder={t("connectionRequests.searchServices") + "..."}
           hideLabel
-          onChange={(e) => setFilter(e.target.value)}
+          onChange={(e) => setSearch(e.target.value)}
         />
       </Track>
       {!services && (
@@ -111,11 +133,17 @@ const ConnectServiceToIntentModal: FC<ConnectServiceToIntentModalProps> = ({
         <DataTable
           data={services}
           columns={serviceColumns}
-          globalFilter={filter}
-          setGlobalFilter={setFilter}
           sortable
           pagination={pagination}
           setPagination={setPagination}
+          pageSizeOptions={[6, 8, 10, 16, 20]}
+          sorting={sorting}
+          setSorting={(state: SortingState) => {
+            setSorting(state);
+            getServices(pagination, state, search);
+          }}
+          pagesCount={totalPages}
+          isClientSide={false}
         />
       )}
       {showConfirmationModal && (

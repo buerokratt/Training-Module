@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation } from '@tanstack/react-query';
-import { PaginationState } from '@tanstack/react-table';
+import { PaginationState, SortingState } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import {
   Card,
@@ -17,7 +17,7 @@ import { Chat as ChatType } from 'types/chat';
 import { Message } from 'types/message';
 import { Controller, useForm } from 'react-hook-form';
 import apiDev from '../../../services/api-dev';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import {
   getFromLocalStorage,
   setToLocalStorage,
@@ -26,17 +26,20 @@ import { CHAT_HISTORY_PREFERENCES_KEY } from 'constants/config';
 import { useToast } from '../../../hooks/useToast';
 import { getColumns } from './columns';
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
+import { useDebouncedCallback } from "use-debounce";
 
 const History: FC = () => {
   const { t } = useTranslation();
   const toast = useToast();
-  const [filter, setFilter] = useState('');
+  const [search, setSearch] = useState('');
   const [selectedChat, setSelectedChat] = useState<ChatType | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
   const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
+    pageIndex: searchParams.get("page") ? parseInt(searchParams.get("page") as string) - 1 : 0,
     pageSize: 10,
   });
-
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [totalPages, setTotalPages] = useState<number>(1);
   const preferences = getFromLocalStorage(
     CHAT_HISTORY_PREFERENCES_KEY
   ) as string[];
@@ -44,6 +47,16 @@ const History: FC = () => {
   const [selectedColumns, setSelectedColumns] = useState<string[]>(
     preferences ?? []
   );
+
+  const debouncedGetAllEnded = useDebouncedCallback((search) => {
+    getAllEndedChats.mutate({
+      startDate: format(new Date(startDate), 'yyyy-MM-dd'),
+      endDate: format(new Date(endDate), 'yyyy-MM-dd'),
+      pagination,
+      sorting,
+      search,
+    });
+  }, 500);
 
   const copyValueToClipboard = async (value: string) => {
     await navigator.clipboard.writeText(value);
@@ -66,12 +79,12 @@ const History: FC = () => {
     endDate: Date | string;
   }>({
     defaultValues: {
-      startDate: new Date(
+      startDate: searchParams.get('start') ? new Date(searchParams.get('start') as string) : new Date(
         new Date().getUTCFullYear(),
         new Date().getUTCMonth(),
         new Date().getUTCDate()
       ),
-      endDate: new Date(
+      endDate: searchParams.get('end') ? new Date(searchParams.get('end') as string) :new Date(
         new Date().getUTCFullYear(),
         new Date().getUTCMonth(),
         new Date().getUTCDate() + 1
@@ -93,18 +106,38 @@ const History: FC = () => {
     getAllEndedChats.mutate({
       startDate: format(new Date(startDate), 'yyyy-MM-dd'),
       endDate: format(new Date(endDate), 'yyyy-MM-dd'),
+      pagination,
+      sorting,
+      search,
     });
   }, []);
 
   const getAllEndedChats = useMutation({
-    mutationFn: (data: { startDate: string; endDate: string }) => {
+    mutationFn: (data: {
+      startDate: string;
+      endDate: string;
+      pagination: PaginationState;
+      sorting: SortingState;
+      search: string;
+    }) => {
+      let sortBy = 'created desc';
+      if(sorting.length > 0) {
+        const sortType = sorting[0].desc ? 'desc' : 'asc';
+        sortBy = `${sorting[0].id} ${sortType}`;
+      }
+
       return apiDev.post('agents/chats/ended', {
         startDate: data.startDate,
         endDate: data.endDate,
+        page: pagination.pageIndex + 1,
+        page_size: pagination.pageSize,
+        sorting: sortBy,
+        search,
       });
     },
     onSuccess: (res: any) => {
       filterChatsList(res.data.response ?? []);
+      setTotalPages(res?.data?.response[0]?.totalPages ?? 1);
     },
   });
 
@@ -167,7 +200,10 @@ const History: FC = () => {
             hideLabel
             name="searchChats"
             placeholder={t('chat.history.searchChats') + '...'}
-            onChange={(e) => setFilter(e.target.value)}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              debouncedGetAllEnded(e.target.value);
+            }}
           />
           <Track style={{ width: '100%' }} gap={16}>
             <Track gap={10}>
@@ -175,22 +211,28 @@ const History: FC = () => {
               <Controller
                 name="startDate"
                 control={control}
-                render={({ field }) => {
-                  return (
+                render={({ field }) => 
                     <FormDatepicker
                       {...field}
                       label={''}
                       value={field.value ?? new Date()}
                       onChange={(v) => {
                         field.onChange(v);
+                        const start = format(new Date(v), 'yyyy-MM-dd');
+                        setSearchParams(params => { 
+                          params.set('start', start)
+                          return params;
+                        });
                         getAllEndedChats.mutate({
-                          startDate: format(new Date(v), 'yyyy-MM-dd'),
+                          startDate: start,
                           endDate: format(new Date(endDate), 'yyyy-MM-dd'),
+                          pagination,
+                          sorting,
+                          search,
                         });
                       }}
                     />
-                  );
-                }}
+                  }
               />
             </Track>
             <Track gap={10}>
@@ -198,22 +240,28 @@ const History: FC = () => {
               <Controller
                 name="endDate"
                 control={control}
-                render={({ field }) => {
-                  return (
+                render={({ field }) => 
                     <FormDatepicker
                       {...field}
                       label={''}
                       value={field.value ?? new Date()}
                       onChange={(v) => {
                         field.onChange(v);
+                        const end = format(new Date(v), 'yyyy-MM-dd');
+                        setSearchParams(params => { 
+                          params.set('end', end)
+                          return params;
+                        });
                         getAllEndedChats.mutate({
                           startDate: format(new Date(startDate), 'yyyy-MM-dd'),
-                          endDate: format(new Date(v), 'yyyy-MM-dd'),
+                          endDate: end,
+                          pagination,
+                          sorting,
+                          search,
                         });
                       }}
                     />
-                  );
-                }}
+                }
               />
             </Track>
             <FormMultiselect
@@ -223,7 +271,7 @@ const History: FC = () => {
               selectedOptions={visibleColumnOptions.filter((o) =>
                 selectedColumns.includes(o.value)
               )}
-              onSelectionChange={(selection) => {
+              onSelectionChange={(selection: any) => {
                 const columns = selection?.value ? [selection.value] : [];
                 setSelectedColumns(columns);
                 setToLocalStorage(CHAT_HISTORY_PREFERENCES_KEY, columns);
@@ -238,10 +286,35 @@ const History: FC = () => {
           data={filteredEndedChatsList}
           sortable
           columns={endedChatsColumns}
-          globalFilter={filter}
-          setGlobalFilter={setFilter}
           pagination={pagination}
-          setPagination={setPagination}
+          sorting={sorting}
+          setPagination={(state: PaginationState) => {
+            if (
+              state.pageIndex === pagination.pageIndex &&
+              state.pageSize === pagination.pageSize
+            )
+              return;
+            setPagination(state);
+            getAllEndedChats.mutate({
+              startDate: format(new Date(startDate), 'yyyy-MM-dd'),
+              endDate: format(new Date(endDate), 'yyyy-MM-dd'),
+              pagination: state,
+              sorting,
+              search,
+            });
+          }}
+          setSorting={(state: SortingState) => {
+            setSorting(state);
+            getAllEndedChats.mutate({
+              startDate: format(new Date(startDate), 'yyyy-MM-dd'),
+              endDate: format(new Date(endDate), 'yyyy-MM-dd'),
+              pagination,
+              sorting: state,
+              search,
+            });
+          }}
+          isClientSide={false}
+          pagesCount={totalPages}
         />
       </Card>
 

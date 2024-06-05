@@ -1,0 +1,32 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'CONNECTION-REQUESTS'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    body:
+      - field: page
+        type: number
+        description: "Body field 'page'"
+      - field: page_size
+        type: number
+        description: "Body field 'page_size'"
+      - field: sorting
+        type: string
+        description: "Body field 'sorting'"
+
+get_connection_requests:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/get-requested-service-triggers"
+    body:
+      page: ${incoming.body.page}
+      page_size: ${incoming.body.page_size}
+      sorting: ${incoming.body.sorting}
+  result: res
+
+return_result:
+  return: ${res.response.body}

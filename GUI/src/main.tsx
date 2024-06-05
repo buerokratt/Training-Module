@@ -93,11 +93,7 @@ const callApiInstance = async (queryKey: QueryKey) => {
 
   const { data } = await apiInstance.get(queryKey[0] as string);
   
-  if (
-    queryKey.includes('entities')
-    || queryKey.includes('services/unassigned')
-    || queryKey.includes('services/connection-requests')
-  ) {
+  if (queryKey.includes('entities')) {
     return data.response;
   }
   

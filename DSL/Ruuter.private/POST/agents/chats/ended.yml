@@ -14,6 +14,18 @@ declaration:
       - field: startDate
         type: string
         description: "Body field 'startDate'"
+      - field: page
+        type: number
+        description: "Body field 'page'"
+      - field: page_size
+        type: number
+        description: "Body field 'page_size'"
+      - field: sorting
+        type: string
+        description: "Body field 'sorting'"
+      - field: search
+        type: string
+        description: "Body field 'search'"
 
 extractRequestData:
   assign:
@@ -26,7 +38,11 @@ getEndedChats:
     url: "[#TRAINING_USERS_RESQL]/get-cs-all-ended-chats"
     body:
       start: ${startDate}
-      end: ${endDate}  
+      end: ${endDate}
+      page: ${incoming.body.page}
+      page_size: ${incoming.body.page_size}
+      sorting: ${incoming.body.sorting}
+      search: ${incoming.body.search}
   result: res
 
 returnSuccess:
