@@ -36,7 +36,7 @@ checkCookieInfoResponse:
 
 checkUserAuthority:
   switch:
-    - condition: ${res.response.body.authorities.includes("ROLE_ADMINISTRATOR") || res.response.body.authorities.includes("ROLE_ANALYST") || res.response.body.authorities.includes("ROLE_TRAINER")}
+    - condition: ${res.response.body.authorities.includes("ROLE_ADMINISTRATOR") || res.response.body.authorities.includes("ROLE_ANALYST") || res.response.body.authorities.includes("ROLE_CHATBOT_TRAINER")}
       next: returnAuthorized
   next: returnUnauthorized
 
