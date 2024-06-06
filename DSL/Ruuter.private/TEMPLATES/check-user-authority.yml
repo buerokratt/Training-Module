@@ -45,6 +45,7 @@ returnAuthorized:
 
 returnUnauthorized:
   return: false
+  status: 200
   next: end
 
 returnBadRequest:
