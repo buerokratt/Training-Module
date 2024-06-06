@@ -26,5 +26,4 @@ guard_success:
 
 guard_fail:
   return: "unauthorized"
-  status: 403
   next: end
