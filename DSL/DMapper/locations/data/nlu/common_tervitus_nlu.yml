@@ -1,11 +1,7 @@
 version: "3.0"
-
 nlu:
 - intent: common_tervitus
   examples: |
-    - meeldiv tutvuda
-    - meeldiv tutvuda!
-    - tore tutvuda!
     - tere
     - tervist
     - tere!
@@ -19,10 +15,10 @@ nlu:
     - hei-hei
     - hei bürokratt
     - hei vedru
-#    - hei kah
-#    - tere-tere
-#    - tere Bürokratt
-#    - Tere hommikust!
-#    - Tere Vedru!
-#    - Tere päevast
-#    - Tere õhtust
+    - hei kah
+    - tere-tere
+    - tere Bürokratt
+    - Tere hommikust!
+    - Tere Vedru!
+    - Tere päevast
+    - Tere õhtust
