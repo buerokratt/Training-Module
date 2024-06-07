@@ -1,0 +1,14 @@
+version: "3.0"
+nlu:
+- intent: common_tänamine
+  examples: |
+    - aitäh
+    - tänud
+    - tänud!
+    - aitäh!
+    - suured tänud!
+    - aitäh :)
+    - aitüma
+    - tänan väga
+    - aitäh vastamast
+    - tnx
