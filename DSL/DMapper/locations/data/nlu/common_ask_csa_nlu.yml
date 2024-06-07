@@ -1,0 +1,17 @@
+version: "3.0"
+nlu:
+- intent: common_ask_csa
+  examples: |
+    - csa
+    - .csa
+    - csa
+    - csa s
+    - csas
+    - csacsa
+    - csa csa csa
+    - scsa csa
+    - csas csa
+    - csa csas
+    - cssa csa csa
+    - ccsa csa csa sca csa csa csa
+    - csa csa scsa c csa ccsa
