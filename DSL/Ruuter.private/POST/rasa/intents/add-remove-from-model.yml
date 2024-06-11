@@ -63,7 +63,7 @@ convertDomainJsonToYaml:
     url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
     body:
       version: ${domainData.response.body.response.version}
-      intents: ${updatedIntents.response.body}
+      intents: ${updatedIntents.response.body.array ?? updatedIntents.response.body}
       entities: ${domainData.response.body.response.entities}
       slots: ${domainData.response.body.response.slots}
       forms: ${domainData.response.body.response.forms}
