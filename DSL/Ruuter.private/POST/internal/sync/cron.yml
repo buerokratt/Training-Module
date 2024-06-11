@@ -9,7 +9,7 @@ declaration:
 
 assignCronFileLocation:
   assign:
-    cronFileLocation: "/DSL/CronManager/train-bot.yml"
+    cronFileLocation: "/CronManager/train_bot.yml"
 
 getFromDatabase:
   call: http.post
@@ -67,15 +67,14 @@ generateCronExpression:
 createCronJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/hbs/training/get_cron_file"
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_cron_shell_execution_file"
     headers:
       type: "json"
     body:
       cronExpression: ${cronExpression.response.body.expression}
-      type: "http"
-      method: "GET"
+      type: "exec"
+      command: "./scripts/train_bot.sh"
       startDate: ${cronExpression.response.body.startDate}
-      url: "[#TRAINING_PUBLIC_RUUTER]/rasa/model/init-train"
   result: cronJson
 
 convertJsonToYaml:
@@ -83,7 +82,7 @@ convertJsonToYaml:
   args:
     url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
     body:
-      train_bot: ${cronJson.response.body}
+      train_bot_now: ${cronJson.response.body}
   result: cronYaml
 
 saveCronFile:
@@ -98,7 +97,7 @@ saveCronFile:
 refreshCronManager:
   call: http.post
   args:
-    url: "[#CRON_MANAGER]/reload/CronManager"
+    url: "[#CRON_MANAGER]/reload/train_bot"
   result: cronResult
   next: returnSuccess
 

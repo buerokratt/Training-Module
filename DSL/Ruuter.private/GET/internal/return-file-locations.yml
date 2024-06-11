@@ -18,6 +18,5 @@ assign_step:
       regex_location: '/DMapper/locations/data/regex/'
       training_result_location: '/DMapper/locations/results'
       config_location: '/DMapper/locations/data/config.yml'
-      docker_location: '/docker-bot/docker-compose-bot.yml'
 return_value:
   return: ${locations}

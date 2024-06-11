@@ -1,0 +1,5 @@
+train_bot_now:
+  trigger: 53 01 08 ? * 1 *
+  type: exec
+  command: ./scripts/train_bot.sh
+  startDate: 1717920113000
