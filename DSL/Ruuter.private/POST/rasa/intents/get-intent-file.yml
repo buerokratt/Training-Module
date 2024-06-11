@@ -97,3 +97,7 @@ returnYaml:
 returnJson:
   return: ${intentData.response.body}
   next: end
+
+returnIntentFileMissing:
+  return: "Intent file is missing"
+  next: end
