@@ -48,6 +48,8 @@ getRuleNames:
 
 validateRuleName:
   switch:
+    - condition: ${ruleResult.response.body.response.names == null}
+      next: getFileLocations
     - condition: ${!ruleResult.response.body.response.names.includes(body.id)}
       next: getFileLocations
   next: returnStoryExists
@@ -81,7 +83,7 @@ mergeRules:
   args:
     url: "[#TRAINING_DMAPPER]/file-manager/merge"
     body:
-      array1: ${rulesData.response.body.rules}
+      array1: ${rulesData.response.body.rules ?? []}
       array2: ${[body]}
       iteratee: "rule"
   result: mergedRules
