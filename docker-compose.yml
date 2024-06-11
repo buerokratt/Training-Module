@@ -103,7 +103,6 @@ services:
       - ./DSL/DMapper/hbs:/workspace/app/views/training
       - ./DSL/DMapper/js:/workspace/app/js/training
       - ./DSL/DMapper/locations:/rasa/locations
-      - ./docker-compose-bot.yml:/data/docker-bot/docker-compose-bot.yml
       - ./DSL/CronManager:/DSL/CronManager
     ports:
       - 3000:3000
@@ -112,6 +111,7 @@ services:
 
   training_gui:
     container_name: training_gui
+    # user: root # This root user is only for local development due to permissions
     environment:
       - PORT§=3001
       - REACT_APP_API_URL=http://localhost:8080
@@ -213,6 +213,7 @@ services:
     # user: root # This root user is only for local development due to multi container mounted volume permissions
     volumes:
       - rasa-training-data:/data
+      - ./DSL/CronManager:/DSL
     environment:
       - server.port=9010
     ports:
