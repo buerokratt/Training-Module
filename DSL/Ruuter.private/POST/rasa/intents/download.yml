@@ -41,7 +41,9 @@ getIntentFile:
 
 checkIfIntentEmpty:
   switch:
-    - condition: ${intentFile.response.body.response.nlu[0] != undefined}
+    - condition: ${intentFile.response.body.response === 'Intent file is missing'}
+      next: returnIntentFileMissing
+    - condition: ${intentFile.response.body.response.nlu[0] != undefined && intentFile.response.body.response != 'Intent file is missing'}
       next: replaceString
   next: returnIntentExamplesMissing
 
@@ -71,7 +73,7 @@ mapIntentsData:
     body:
       examples: ${splitExamples.response.body}
     headers:
-      type: 'csv'
+      type: "csv"
   result: csvData
 
 checkResponse:
@@ -89,12 +91,10 @@ returnSuccess:
 
 returnIntentFileMissing:
   return: "Intent file is missing"
-  wrapper: false
   status: 409
   next: end
 
 returnIntentExamplesMissing:
   return: "Intent has no examples"
-  wrapper: false
   status: 409
   next: end

@@ -54,6 +54,7 @@
   "mainMenu": {
     "menuLabel": "Peamenüü",
     "closeMenu": "Kitsendan menüü",
+    "openMenu": "Ava menüü",
     "openMenuIcon": "Ava menüü ikoon",
     "closeMenuIcon": "Sulge menüü ikoon"
   },
