@@ -6,7 +6,15 @@ import { format } from 'date-fns';
 import { AxiosError } from 'axios';
 import { MdOutlineSettingsInputAntenna } from 'react-icons/md';
 
-import { Button, Card, DataTable, Dialog, Icon, Track } from 'components';
+import {
+  Button,
+  Card,
+  DataTable,
+  Dialog,
+  Icon,
+  Loader,
+  Track,
+} from 'components';
 import { Model, ModelStateType, UpdateModelDTO } from 'types/model';
 import { activateModel, deleteModel } from 'services/models';
 import { useToast } from 'hooks/useToast';
@@ -15,10 +23,16 @@ import i18n from '../../../../i18n';
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
 
 const Models: FC = () => {
+  const MODEL_FETCH_INTERVAL = 5000;
+  const MODEL_FETCH_TIMEOUT = 300000;
+
   const { t } = useTranslation();
   const toast = useToast();
   const queryClient = useQueryClient();
   const [selectedModel, setSelectedModel] = useState<Model>();
+  const [currentlyLoadedModel, setCurrentlyLoadedModel] = useState<Model>();
+  const [previouslyLoadedModel, setPreviouslyLoadedModel] = useState<Model>();
+  const [isFetching, setIsFetching] = useState(false);
   const [modelConfirmation, setModelConfirmation] = useState<
     string | number | null
   >(null);
@@ -33,7 +47,8 @@ const Models: FC = () => {
     mutationFn: ({ data }: { data: UpdateModelDTO }) => activateModel(data),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['models', 'selected-model']);
-      refetch();
+      setIsFetching(true);
+      setCurrentlyLoadedModel(selectedModel);
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -74,8 +89,33 @@ const Models: FC = () => {
   const modelsColumns = useMemo(() => getColumns(setSelectedModel), []);
 
   useEffect(() => {
-    setSelectedModel(models?.find((m) => m.state === 'DEPLOYED'));
+    const deployedModel = models?.find((m) => m.state === 'DEPLOYED');
+    setSelectedModel(deployedModel);
+    setCurrentlyLoadedModel(deployedModel);
+    setPreviouslyLoadedModel(deployedModel);
   }, [models]);
+
+  useEffect(() => {
+    if (isFetching) {
+      const intervalId = setInterval(() => {
+        refetch();
+      }, MODEL_FETCH_INTERVAL);
+
+      const timeoutId = setTimeout(() => {
+        clearInterval(intervalId);
+        setIsFetching(false);
+      }, MODEL_FETCH_TIMEOUT);
+
+      return () => {
+        clearInterval(intervalId);
+        clearTimeout(timeoutId);
+      };
+    }
+
+    if (currentlyLoadedModel?.id === previouslyLoadedModel?.id) {
+      setIsFetching(false);
+    }
+  }, [isFetching, refetch, currentlyLoadedModel, previouslyLoadedModel]);
 
   return (
     <>
@@ -105,17 +145,24 @@ const Models: FC = () => {
 
             <Button
               appearance="error"
+              disabled={selectedModel.state === 'DEPLOYED'}
               onClick={() => setDeletableModel(selectedModel?.id ?? null)}
               style={{ marginLeft: 'auto' }}
             >
               {t('global.delete')}
             </Button>
+
             {selectedModel.state !== 'DEPLOYED' && (
               <Button
                 appearance="success"
                 onClick={() => setModelConfirmation(selectedModel.id)}
               >
-                {t('training.mba.activateModel')}
+                {isFetching &&
+                currentlyLoadedModel?.id !== previouslyLoadedModel?.id ? (
+                  <Loader />
+                ) : (
+                  t('training.mba.activateModel')
+                )}
               </Button>
             )}
           </Track>
