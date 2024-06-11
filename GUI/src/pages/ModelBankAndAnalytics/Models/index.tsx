@@ -49,11 +49,6 @@ const Models: FC = () => {
       await queryClient.invalidateQueries(['models', 'selected-model']);
       setIsFetching(true);
       setCurrentlyLoadedModel(selectedModel);
-      toast.open({
-        type: 'success',
-        title: t('global.notification'),
-        message: 'Model activated',
-      });
     },
     onError: (error: AxiosError) => {
       toast.open({
@@ -106,16 +101,28 @@ const Models: FC = () => {
         setIsFetching(false);
       }, MODEL_FETCH_TIMEOUT);
 
+      if (currentlyLoadedModel?.id === previouslyLoadedModel?.id) {
+        setIsFetching(false);
+        toast.open({
+          type: 'success',
+          title: t('global.notification'),
+          message: 'Model activated',
+        });
+      }
+
       return () => {
         clearInterval(intervalId);
         clearTimeout(timeoutId);
       };
     }
-
-    if (currentlyLoadedModel?.id === previouslyLoadedModel?.id) {
-      setIsFetching(false);
-    }
-  }, [isFetching, refetch, currentlyLoadedModel, previouslyLoadedModel]);
+  }, [
+    isFetching,
+    refetch,
+    currentlyLoadedModel,
+    previouslyLoadedModel,
+    toast,
+    t,
+  ]);
 
   return (
     <>
