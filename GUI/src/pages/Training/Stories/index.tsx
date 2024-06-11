@@ -80,7 +80,7 @@ const Stories: FC = () => {
       } else {
         setRules(rules.filter(rule => rule.id !== deleteId));
       }
-      navigate(import.meta.env.BASE_URL + 'stories');
+      navigate(import.meta.env.BASE_URL + '/stories');
     },
     onError: (error: AxiosError) => {
       toast.open({
