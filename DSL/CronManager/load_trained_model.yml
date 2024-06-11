@@ -1,0 +1,5 @@
+load_trained_model_now:
+  trigger: off
+  type: exec
+  command: "./scripts/load_trained_model.sh"
+  allowedEnvs: ["versionNumber"]
