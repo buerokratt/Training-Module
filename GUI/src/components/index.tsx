@@ -27,6 +27,7 @@ import HistoricalChat from './HistoricalChat';
 import Dialog from './Dialog';
 import Section from './Section';
 import Modal from './Modal';
+import Loader from './Loader';
 
 export {
   Layout,
@@ -56,4 +57,5 @@ export {
   Dialog,
   Section,
   Modal,
+  Loader,
 };
