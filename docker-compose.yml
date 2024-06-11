@@ -10,6 +10,8 @@ services:
       - server.port=8080
       - application.logging.displayRequestContent=true
       - application.logging.displayResponseContent=true
+      - application.logging.printStackTrace=true
+      - application.internalRequests.disabled=true
     volumes:
       - ./DSL/Ruuter.private:/DSL
       - ./constants.ini:/app/constants.ini
@@ -92,8 +94,8 @@ services:
     networks:
       - bykstack
 
-  data_mapper:
-    container_name: data_mapper
+  dmapper:
+    container_name: dmapper
     image: data-mapper
     environment:
       - PORT=3000
