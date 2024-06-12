@@ -47,7 +47,7 @@ addExamples:
     body:
       intentName: ${intentName}
       intentExamples: []
-      newExamples: ${examples.response.body.data}
+      newExamples: ${examples.response.body}
   result: addResult
 
 returnSuccess:
