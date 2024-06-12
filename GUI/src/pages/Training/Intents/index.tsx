@@ -393,7 +393,17 @@ const Intents: FC = () => {
       intentName: string;
       formData: File;
     }) => uploadExamples(intentName, formData),
-    onSuccess: () => {
+    onMutate: () => {
+      setRefreshing(true);
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['intents/full']);
+      await queryClient.refetchQueries(['intents/full']);
+      getExampleArrayForIntentId().push('');
+      setRefreshing(false);
+      if (selectedIntent) {
+        setRefreshing(false);
+      }
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -406,6 +416,9 @@ const Intents: FC = () => {
         title: t('global.notificationError'),
         message: error.message,
       });
+    },
+    onSettled: () => {
+      queryRefresh(selectedIntent?.intent || '');
     },
   });
 
