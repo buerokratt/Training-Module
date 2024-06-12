@@ -96,11 +96,20 @@ const Intents: FC = () => {
   const queryRefresh = useCallback(
     function queryRefresh(selectIntent: string | null) {
       setSelectedIntent(null);
-      queryClient.fetchQuery(['intents/full']).then(() => {
+      queryClient.fetchQuery(['intents/full']).then((res: any) => {
         setRefreshing(false);
         if (intents.length > 0) {
-          const newSelectedIntent = intents.find((intent) => intent.intent === selectIntent) || null;
-          setSelectedIntent(newSelectedIntent);
+          const newSelectedIntent = res.response.intents.find((intent: any) => intent.title === selectIntent) || null;
+          if (newSelectedIntent) setSelectedIntent({
+            id: newSelectedIntent.title,
+            intent: newSelectedIntent.title.replace(/_/g, ' '),
+            description: null,
+            inModel: newSelectedIntent.inmodel,
+            modifiedAt: '',
+            examplesCount: newSelectedIntent.examples.length,
+            examples: newSelectedIntent.examples,
+            serviceId: newSelectedIntent.serviceId,
+          });
         }
       });
     },
