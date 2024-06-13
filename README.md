@@ -58,6 +58,7 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 
 - To Initialize Open Search run `./deploy-opensearch.sh <URL> <AUTH> <Is Mock Allowed - Default false>`
 - To Use Opensearch locally run `./deploy-opensearch.sh http://localhost:9200 admin:admin true`
+- To populate OpenSearch with Rasa YAML files run `./init_with_mocks.sh http://localhost:3010`
 
 # Testing
 

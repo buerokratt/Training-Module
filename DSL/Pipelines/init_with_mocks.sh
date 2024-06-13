@@ -22,7 +22,7 @@ for file in $MOCK/data/regex/* ; do
 done
 
 #domain
-curl -v -X POST $PIPELINES/bulk/domain --form input=@$MOCK/domain.yml
+curl -v -X POST $PIPELINES/bulk/domain --form input=@$MOCK/data/domain.yml
 
 #domain
-curl -v -X POST $PIPELINES/bulk/config --form input=@$MOCK/config.yml
+curl -v -X POST $PIPELINES/bulk/config --form input=@$MOCK/data/config.yml
