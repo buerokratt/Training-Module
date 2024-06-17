@@ -264,6 +264,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
                 maxLength={INTENT_EXAMPLE_LENGTH}
                 showMaxLength
                 onChange={(e) => setExampleText(e.target.value)}
+                disableHeightResize
               />
             </td>
             <td>
@@ -276,7 +277,6 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
                 {t('global.add')}
               </Button>
             </td>
-            <td></td>
           </tr>
         }
       />

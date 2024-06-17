@@ -106,6 +106,7 @@
       "searchResponse": "Otsi vastust",
       "response": "Vastus",
       "newResponseTextPlaceholder": "Lisa vastuse tekst sellele mallile",
+      "deleteIntent": "Kustuta teema",
       "deleteResponse": "Kustuta vastus",
       "deleteStory": "Kustuta vestlusvoog",
       "responseName": "Vastuse nimetus",
