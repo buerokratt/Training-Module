@@ -74,3 +74,13 @@ if $MOCK_ALLOWED; then curl -H "Content-Type: application/x-ndjson" -X PUT "$URL
 curl -XDELETE "$URL/slots?ignore_unavailable=true" -u "$AUTH" --insecure
 curl -H "Content-Type: application/x-ndjson" -X PUT "$URL/slots" -ku "$AUTH" --data-binary "@fieldMappings/slots.json"
 if $MOCK_ALLOWED; then curl -H "Content-Type: application/x-ndjson" -X PUT "$URL/slots/_bulk" -ku "$AUTH" --data-binary "@mock/slots.json"; fi
+
+#Domain
+curl -XDELETE "$URL/domain?ignore_unavailable=true" -u "$AUTH" --insecure
+curl -H "Content-Type: application/x-ndjson" -X PUT "$URL/domain" -ku "$AUTH" --data-binary "@fieldMappings/domain.json"
+if $MOCK_ALLOWED; then curl -H "Content-Type: application/x-ndjson" -X PUT "$URL/domain/_bulk" -ku "$AUTH" --data-binary "@mock/domain.json"; fi
+
+#Config
+curl -XDELETE "$URL/config?ignore_unavailable=true" -u "$AUTH" --insecure
+curl -H "Content-Type: application/x-ndjson" -X PUT "$URL/config" -ku "$AUTH" --data-binary "@fieldMappings/config.json"
+if $MOCK_ALLOWED; then curl -H "Content-Type: application/x-ndjson" -X PUT "$URL/config/_bulk" -ku "$AUTH" --data-binary "@mock/config.json"; fi
