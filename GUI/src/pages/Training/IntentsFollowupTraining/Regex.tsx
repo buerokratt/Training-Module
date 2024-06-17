@@ -44,7 +44,7 @@ const Regex: FC = () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'New regex added',
+        message: t('toast.newRegexAdded'),
       });
     },
     onError: (error: AxiosError) => {
@@ -68,7 +68,7 @@ const Regex: FC = () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Regex deleted',
+        message: t('toast.regexDeleted'),
       });
       setTimeout(() => refetch(), 800);
     },

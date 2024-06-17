@@ -64,7 +64,7 @@ const History: FC = () => {
     toast.open({
       type: 'success',
       title: t('global.notification'),
-      message: t('toast.succes.copied'),
+      message: t('toast.copied'),
     });
   };
   const routerLocation = useLocation();

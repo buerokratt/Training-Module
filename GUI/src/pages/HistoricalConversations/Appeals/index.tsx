@@ -37,7 +37,7 @@ const Appeals: FC = () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'New appeal added',
+        message: t('toast.newAppealAdded'),
       });
     },
     onError: (error: AxiosError) => {
@@ -60,7 +60,7 @@ const Appeals: FC = () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Appeal deleted',
+        message: t('toast.appealDeleted'),
       });
     },
     onError: (error: AxiosError) => {

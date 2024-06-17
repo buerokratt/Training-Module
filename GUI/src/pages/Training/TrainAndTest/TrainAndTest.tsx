@@ -71,7 +71,7 @@ const TrainAndTest = () => {
             toast.open({
                 type: 'success',
                 title: t('global.notification'),
-                message: 'Train settings changes saved',
+                message: t('toast.trainSettingsChangesSaved'),
             });
         },
         onError: (error: AxiosError) => {
@@ -97,7 +97,7 @@ const TrainAndTest = () => {
             toast.open({
                 type: 'success',
                 title: t('global.notification'),
-                message: 'Training is Initialized.',
+                message: t('toast.trainingIsInitialized'),
             });
         },
         onError: (error: AxiosError) => {

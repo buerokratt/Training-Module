@@ -68,7 +68,7 @@ const Models: FC = () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Model deleted',
+        message: t('toast.modelDeleted'),
       });
     },
     onError: (error: AxiosError) => {
@@ -106,7 +106,7 @@ const Models: FC = () => {
         toast.open({
           type: 'success',
           title: t('global.notification'),
-          message: 'Model activated',
+          message: t('toast.modelActivated'),
         });
       }
 

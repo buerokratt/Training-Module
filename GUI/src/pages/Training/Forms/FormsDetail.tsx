@@ -75,7 +75,7 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'New form added',
+        message: t('toast.newFormAdded'),
       });
     },
     onError: (error: AxiosError) => {
@@ -96,7 +96,7 @@ const FormsDetail: FC<FormsDetailProps> = ({ mode }) => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Form changes saved',
+        message: t('toast.formChangesSaved'),
       });
     },
     onError: (error: AxiosError) => {

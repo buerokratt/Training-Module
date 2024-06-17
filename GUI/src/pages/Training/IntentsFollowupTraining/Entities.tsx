@@ -45,7 +45,7 @@ const Entities: FC = () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'New entity added',
+        message: t('toast.newEntityAdded'),
       });
     },
     onError: (error: AxiosError) => {
@@ -66,7 +66,7 @@ const Entities: FC = () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Entity changes saved',
+        message: t('toast.entityChangesSaved'),
       });
     },
     onError: (error: AxiosError) => {
@@ -87,7 +87,7 @@ const Entities: FC = () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Entity deleted',
+        message: t('toast.entityDeleted'),
       });
     },
     onError: (error: AxiosError) => {

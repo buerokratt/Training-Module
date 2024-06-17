@@ -37,7 +37,7 @@ const Slots: FC = () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Slot deleted',
+        message: t('toast.slotDeleted'),
       });
     },
     onError: (error: AxiosError) => {

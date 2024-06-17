@@ -95,7 +95,7 @@ const RegexDetail: FC = () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'New regex example added',
+        message: t('toast.newRegexExampleAdded'),
       });
       refetch();
       navigate(`/training/regex/${editRegexName}`)
@@ -116,7 +116,7 @@ const RegexDetail: FC = () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Regex deleted',
+        message: t('toast.regexDeleted'),
       });
       setTimeout(() => refetch(), 1000);
       navigate(`/training/intents-followup-training`)
@@ -137,7 +137,7 @@ const RegexDetail: FC = () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Example added',
+        message: t('toast.exampleAdded'),
       });
       refetch();
     },
@@ -157,7 +157,7 @@ const RegexDetail: FC = () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Example deleted',
+        message: t('toast.exampleDeleted'),
       });
       refetch();
     },
@@ -183,7 +183,7 @@ const RegexDetail: FC = () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Example changed',
+        message: t('toast.exampleChanged'),
       });
       refetch();
     },
@@ -203,7 +203,7 @@ const RegexDetail: FC = () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Downloaded Examples',
+        message: t('toast.downloadedExamples'),
       });
     },
     onError: (error: AxiosError) => {

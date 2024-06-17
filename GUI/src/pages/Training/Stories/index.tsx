@@ -73,7 +73,7 @@ const Stories: FC = () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Story deleted',
+        message: t('toast.storyDeleted'),
       });
       if (selectedTab === 'stories') {
         setStories(stories.filter(story => story.id !== deleteId));

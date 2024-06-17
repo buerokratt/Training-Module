@@ -71,7 +71,7 @@ const Responses: FC = () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Response saved',
+        message: t('toast.responseSaved'),
       });
       setTimeout(() => refetch(), 800);
     },
@@ -100,7 +100,7 @@ const Responses: FC = () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Response deleted',
+        message: t('toast.responseDeleted'),
       });
     },
     onError: (error: AxiosError) => {
@@ -130,7 +130,7 @@ const Responses: FC = () => {
         toast.open({
           type: 'success',
           title: t('global.notification'),
-          message: 'Response saved',
+          message: t('toast.responseSaved'),
       });
     },
     onError: (error: AxiosError) => {
