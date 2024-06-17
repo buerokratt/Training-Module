@@ -15,7 +15,7 @@ declaration:
 getFileLocations:
   call: http.get
   args:
-    url: "[#TRAINING_PUBLIC_RUUTER_INTERNAL]/internal/return-file-locations"
+    url: "[#TRAINING_PUBLIC_RUUTER]/internal/return-file-locations"
     headers:
       cookie: ${incoming.headers.cookie}
   result: fileLocations
