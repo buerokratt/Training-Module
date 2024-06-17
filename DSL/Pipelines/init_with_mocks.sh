@@ -1,7 +1,7 @@
 #!/bin/bash
 # to run it - ./init_with_mocks.sh <url:port>
 
-MOCK=../rasa/locations
+MOCK=../DMapper/locations
 
 PIPELINES=${1:-"localhost:3010"}
 
