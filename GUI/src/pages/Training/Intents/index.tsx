@@ -538,6 +538,7 @@ const Intents: FC = () => {
               key={selectedIntent.intent}
               className="vertical-tabs__body"
               value={selectedIntent.intent}
+              style={{ overflowX: 'auto' }}
             >
               <div className="vertical-tabs__content-header">
                 <Track direction="vertical" align="stretch" gap={8}>
@@ -697,7 +698,7 @@ const Intents: FC = () => {
 
       {deletableIntent !== null && (
         <Dialog
-          title={t('training.responses.deleteResponse')}
+          title={t('training.responses.deleteIntent')}
           onClose={() => setDeletableIntent(null)}
           footer={
             <>

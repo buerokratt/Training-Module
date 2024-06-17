@@ -97,4 +97,10 @@
       padding-right: 70px;
     }
   }
+
+  &--disable-height-resize {
+    textarea {
+      resize: horizontal;
+    }
+  }
 }

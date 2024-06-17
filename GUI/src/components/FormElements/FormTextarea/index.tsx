@@ -9,6 +9,7 @@ type TextareaProps = TextareaAutosizeProps & {
   name: string;
   hideLabel?: boolean;
   showMaxLength?: boolean;
+  disableHeightResize?: boolean;
 };
 
 const FormTextarea = forwardRef<HTMLTextAreaElement, TextareaProps>((
@@ -21,6 +22,7 @@ const FormTextarea = forwardRef<HTMLTextAreaElement, TextareaProps>((
     disabled,
     hideLabel,
     showMaxLength,
+    disableHeightResize = false,
     defaultValue,
     onChange,
     ...rest
@@ -33,6 +35,7 @@ const FormTextarea = forwardRef<HTMLTextAreaElement, TextareaProps>((
     'textarea',
     disabled && 'textarea--disabled',
     showMaxLength && 'textarea--maxlength-shown',
+    disableHeightResize && 'textarea--disable-height-resize'
   );
 
   const handleOnChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -53,6 +56,9 @@ const FormTextarea = forwardRef<HTMLTextAreaElement, TextareaProps>((
           ref={ref}
           defaultValue={defaultValue}
           aria-label={hideLabel ? label : undefined}
+          onKeyDown={(e) => {
+            if (disableHeightResize && e.key === 'Enter') e.preventDefault();
+          }}
           onChange={(e) => {
             if (onChange) onChange(e);
             handleOnChange(e);

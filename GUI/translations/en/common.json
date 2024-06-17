@@ -106,6 +106,7 @@
       "searchResponse": "Search response",
       "response": "Response",
       "newResponseTextPlaceholder": "Add a response text for this template",
+      "deleteIntent": "Delete intent",
       "deleteResponse": "Delete response",
       "deleteStory": "Delete story",
       "responseName": "Response name",
