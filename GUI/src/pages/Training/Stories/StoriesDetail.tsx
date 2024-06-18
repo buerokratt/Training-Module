@@ -135,7 +135,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Story added',
+        message: t('toast.storyAdded'),
       });
     },
     onError: (error: AxiosError) => {
@@ -162,7 +162,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Story updated',
+        message: t('toast.storyUpdated'),
       });
     },
     onError: (error: AxiosError) => {
@@ -183,7 +183,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Story deleted',
+        message: t('toast.storyDeleted'),
       });
       navigate(import.meta.env.BASE_URL + 'treening/treening/stories');
     },
@@ -270,7 +270,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
       toast.open({
         type: 'error',
         title: t('global.notificationError'),
-        message: 'Title cannot be empty',
+        message: t('toast.titleCannotBeEmpty'),
       });
       return;
     }

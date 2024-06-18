@@ -75,7 +75,7 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'New slot added',
+        message: t('toast.newSlotAdded'),
       });
     },
     onError: (error: AxiosError) => {
@@ -95,7 +95,7 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Slot changes saved',
+        message: t('toast.slotChangesSaved'),
       });
     },
     onError: (error: AxiosError) => {

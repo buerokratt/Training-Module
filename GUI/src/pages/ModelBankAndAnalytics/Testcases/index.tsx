@@ -33,7 +33,7 @@ const Testcases: FC = () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Test story deleted',
+        message: t('toast.testStoryDeleted'),
       });
     },
     onError: (error: AxiosError) => {

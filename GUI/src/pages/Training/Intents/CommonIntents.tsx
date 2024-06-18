@@ -139,7 +139,7 @@ const CommonIntents: FC = () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'New example added',
+        message: t('toast.newExampleAdded'),
       });
     },
     onError: (error: AxiosError) => {
@@ -165,13 +165,13 @@ const CommonIntents: FC = () => {
         toast.open({
           type: 'success',
           title: t('global.notification'),
-          message: 'Intent removed from model',
+          message: t('toast.intentRemovedFromModel'),
         });
       } else {
         toast.open({
           type: 'success',
           title: t('global.notification'),
-          message: 'Intent added to model',
+          message: t('toast.intentAddedToModel'),
         });
       }
       queryRefresh(selectedIntent?.intent || '');
@@ -202,7 +202,7 @@ const CommonIntents: FC = () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Intent deleted',
+        message: t('toast.intentDeleted'),
       });
     },
     onError: (error: AxiosError) => {
@@ -283,7 +283,7 @@ const CommonIntents: FC = () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Examples sent for downloading',
+        message: t('toast.examplesSentForDownloading'),
       });
     },
     onError: (error: AxiosError) => {
@@ -333,7 +333,7 @@ const CommonIntents: FC = () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'File uploaded successfully',
+        message: t('toast.fileUploadedSuccessfully'),
       });
     },
     onError: (error: AxiosError) => {

@@ -34,7 +34,7 @@ const Configuration: FC = () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Configuration saved',
+        message: t('toast.configurationSaved'),
       });
     },
     onError: (error: AxiosError) => {

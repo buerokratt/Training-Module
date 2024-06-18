@@ -105,7 +105,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Example converted to the intent',
+        message: t('toast.exampleConvertedtoIntent'),
       });
     },
     onError: (error: AxiosError) => {
@@ -134,7 +134,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'New example added',
+        message: t('toast.newExampleAdded'),
       });
       updateExampleOnList(oldExampleText, exampleText);
     },
@@ -158,7 +158,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Example deleted',
+        message: t('toast.exampleDeleted'),
       });
       handleRefresh(selectedIntent.intent);
       deleteExampleFromList(oldExampleText);

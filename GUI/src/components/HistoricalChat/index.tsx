@@ -73,7 +73,7 @@ const HistoricalChat: FC<ChatProps> = ({ chat, trigger }) => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'New example added',
+        message: t('toast.newExampleAdded'),
       });
     },
     onError: (error: AxiosError) => {
@@ -99,7 +99,7 @@ const HistoricalChat: FC<ChatProps> = ({ chat, trigger }) => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'New response added',
+        message: t('toast.newResponseAdded'),
       });
     },
     onError: (error: AxiosError) => {
