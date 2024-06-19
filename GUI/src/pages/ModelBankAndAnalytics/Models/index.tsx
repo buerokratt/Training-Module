@@ -1,6 +1,6 @@
 import { FC, useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { createColumnHelper, Row } from '@tanstack/react-table';
+import { createColumnHelper, Row, SortingState } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns';
 import { AxiosError } from 'axios';
@@ -42,6 +42,7 @@ const Models: FC = () => {
   const { data: models, refetch } = useQuery<Model[]>({
     queryKey: ['models'],
   });
+  const [sorting, setSorting] = useState<SortingState>([]);
 
   const activateModelMutation = useMutation({
     mutationFn: ({ data }: { data: UpdateModelDTO }) => activateModel(data),
@@ -182,6 +183,8 @@ const Models: FC = () => {
             data={models}
             columns={modelsColumns}
             sortable
+            sorting={sorting}
+            setSorting={setSorting}
             setSelectedRow={(row: Row<Model>) => setSelectedModel(row.original)}
             meta={{
               getRowStyles: (row: Row<Model>) => ({
