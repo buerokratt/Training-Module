@@ -31,10 +31,10 @@ import CustomNode from './CustomNode';
 import useDocumentEscapeListener from '../../../hooks/useDocumentEscapeListener';
 import { generateStoryStepsFromNodes, generateNodesFromStorySteps } from 'services/rasa';
 import { GRID_UNIT, generateNewEdge, generateNewNode } from 'services/nodes';
-import './StoriesDetail.scss';
 import LoadingDialog from "../../../components/LoadingDialog";
 import {Rule, RuleDTO} from "../../../types/rule";
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
+import './StoriesDetail.scss';
 
 const nodeTypes = {
   customNode: CustomNode,
@@ -123,7 +123,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
 
   const addStoryMutation = useMutation({
     mutationFn: ({ data, category }: { data: StoryDTO | RuleDTO, category: string }) => {
-      if (location.state.category === 'stories') {
+      if (category === 'stories') {
         return addStoryOrRule(data as StoryDTO, category);
       } else {
         return addStoryOrRule(data as RuleDTO, category);
@@ -150,7 +150,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
 
   const editStoryMutation = useMutation({
     mutationFn: ({ id, data, category }: { id: string, data: StoryDTO | RuleDTO, category: string }) => {
-      if (location.state.category === 'stories') {
+      if (category === 'stories') {
         return editStoryOrRule(id, data as StoryDTO, category);
       } else {
         return editStoryOrRule(id, data as RuleDTO, category);
@@ -176,7 +176,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   });
 
   const deleteStoryMutation = useMutation({
-    mutationFn: ({ id }: { id: string | number }) => deleteStoryOrRule(id, location.state.category),
+    mutationFn: ({ id, category }: { id: string | number, category: string }) => deleteStoryOrRule(id, category),
     onMutate: () => setRefreshing(true),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['stories']);
@@ -185,7 +185,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
         title: t('global.notification'),
         message: t('toast.storyDeleted'),
       });
-      navigate(import.meta.env.BASE_URL + 'treening/treening/stories');
+      navigate(import.meta.env.BASE_URL + '/stories');
     },
     onError: (error: AxiosError) => {
       toast.open({
@@ -289,7 +289,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     await handleMutationLoadingAfterPopulateTable(data);
 
     if (isRename) {
-      navigate(`/training/stories/${editableTitle}`, { replace: true });
+      navigate(`/training/stories/${editableTitle}`, { replace: true, state: location.state });
       setEditableTitle(null);
       setCurrentEntity({ steps: story?.steps, story: editableTitle });
     }
@@ -590,7 +590,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
               <Button appearance='secondary' onClick={() => setDeleteConfirmation(false)}>{t('global.no')}</Button>
               <Button
                 appearance='error'
-                onClick={() => deleteStoryMutation.mutate({ id })}
+                onClick={() => deleteStoryMutation.mutate({ id, category })}
               >
                 {t('global.yes')}
               </Button>
