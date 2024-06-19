@@ -27,7 +27,7 @@ const IntentsOverview: FC = () => {
         queryKey: [`model/get-report-by-name?fileName=${selectedModelId}`],
         enabled: false,
     });
-    const nonIntents = ['accuracy','macro avg','weighted avg', 'micro avg'];
+    const nonIntents = isHiddenFeaturesEnabled ? ['accuracy','macro avg','weighted avg', 'micro avg'] : [];
 
     useEffect(() => {
         if (!models) return;
