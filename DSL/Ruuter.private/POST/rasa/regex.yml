@@ -24,16 +24,24 @@ validateRegexesResult:
   switch:
     - condition: ${getRegexesResult.response.body.hits.total.value == 0}
       next: assignEmptyResponse
-  next: assignExamples
+  next: convertStringToArray
 
 assignEmptyResponse:
   assign:
     examplesArray: ${getRegexesResult.response.body.hits.hits}
   next: mapRegexesData
 
+convertStringToArray:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/conversion/string-to-array"
+    body:
+      data: ${getRegexesResult.response.body.hits.hits[0]._source.examples}
+  result: convertedArray
+
 assignExamples:
   assign:
-    examplesArray: ${getRegexesResult.response.body.hits.hits[0]._source.examples}
+    examplesArray: ${convertedArray.response.body}
 
 mapRegexesData:
   call: http.post

@@ -67,7 +67,7 @@ updateExample:
   args:
     url: "[#TRAINING_DMAPPER]/conversion/string-replace"
     body:
-      data: ${regexesData.response.body.data.examples}
+      data: ${regexesData.response.body.examples}
       search: ${parameters.input.example}
       replace: ${parameters.input.newExample}
   result: updatedExamples
@@ -97,7 +97,7 @@ mergeRegexes:
     url: "[#TRAINING_DMAPPER]/file-manager/merge"
     body:
       array1: ${regexData.response.body.nlu}
-      array2: ${mappedUpdatedExamples.response.body.data}
+      array2: ${mappedUpdatedExamples.response.body}
       iteratee: "regex"
   result: mergedRegexes
 
