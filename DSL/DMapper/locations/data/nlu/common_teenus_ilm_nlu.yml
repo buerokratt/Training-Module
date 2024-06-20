@@ -1,0 +1,215 @@
+version: "3.0"
+nlu:
+- intent: common_teenus_ilm
+  examples: |
+    - mis ilm [Tallinn](asukoht) on
+    - mis ilm [tallinn](asukoht) täna on
+    - kas homme on [tallinnas](asukoht) ilus ilm
+    - mis ilm homme [tallinnas](asukoht) tuleb
+    - ilm [tallinn](asukoht).
+    - ilmaprognoos [tallinn](asukoht)
+    - kas [Tallinnas](asukoht) hakkab sadama?
+    - milline tuleb ilm [Tallinna](asukoht) ümbruses
+    - kas [tallinn](asukoht) ilma kohta saab infot
+    - [tallinna](asukoht) ilma ennustus
+    - mis ilm [Tartus](asukoht) on
+    - mis ilm [tartus](asukoht) täna on
+    - kas homme on [tartus](asukoht) ilus ilm
+    - mis ilm homme [Tartus](asukoht) tuleb
+    - ilm [tartus](asukoht)
+    - ilmaprognoos [tartus](asukoht)
+    - kas [Tartus](asukoht) hakkab sadama?
+    - milline tuleb ilm [Tartu](asukoht) ümbruses
+    - kas [Tartu](asukoht) ilma kohta saab infot
+    - kas [Maardu](asukoht) ilma kohta saab infot
+    - kas [Mustvee](asukoht) ilma kohta saab infot
+    - kas [Mõisaküla](asukoht) ilma kohta saab infot
+    - kas [Narva](asukoht) ilma kohta saab infot
+    - kas [Narva-Jõesuu](asukoht) ilma kohta saab infot
+    - ilm [narva jõesuus](asukoht)
+    - ilmaprognoos [narva jõesuu](asukoht)
+    - kas [Otepää](asukoht) ilma kohta saab infot
+    - kas [Paide](asukoht) ilma kohta saab infot
+    - kas [Pajusti](asukoht) ilma kohta saab infot
+    - kas [Paldiski](asukoht) ilma kohta saab infot
+    - [ida-viru](asukoht) ilmaprognoos
+    - mis ilm [ida-virumaal](asukoht) on
+    - mis ilm [ida virumaal](asukoht) täna on
+    - kas homme on [ida-virumaal](asukoht) ilus ilm
+    - ilm [ida virumaa](asukoht)
+    - ilmaprognoos [ida-virumaa](asukoht)
+    - kas [ida-virumaa](asukoht) ilma kohta saab infot
+    - [ida virumaa](asukoht) ilma ennustus
+    - mis ilm on [ida-virumaal](asukoht)
+    - mis ilm [lääne-virumaal](asukoht) on
+    - mis ilm [lääne virumaal](asukoht) täna on
+    - kas homme on [lääne-virumaal](asukoht) ilus ilm
+    - ilm [lääne virumaa](asukoht)
+    - ilmaprognoos [lääne-virumaa](asukoht)
+    - kas [lääne-virumaa](asukoht) ilma kohta saab infot
+    - [lääne virumaa](asukoht) ilma ennustus
+    - mis ilm on [lääne-virumaal](asukoht)
+    - mis ilm [karksi nuias](asukoht) on
+    - mis ilm [Karksi-Nuias](asukoht) täna on
+    - kas homme on [karksi nuias](asukoht) ilus ilm
+    - ilm [karksi-nuia](asukoht)
+    - ilmaprognoos [karksi nuia](asukoht)
+    - kas [karksi-nuia](asukoht) ilma kohta saab infot
+    - [karksi nuia](asukoht) ilma ennustus
+    - mis ilm on [karksi-nuias](asukoht)
+    - mis ilm [kilingi-nõmmes](asukoht) on
+    - mis ilm [kilingi nõmmel](asukoht) täna on
+    - kas homme on [kilingi nõmmes](asukoht) ilus ilm
+    - ilm [kilingi-nõmme](asukoht)
+    - ilmaprognoos [kilingi nõmme](asukoht)
+    - kas [kilingi-nõmme](asukoht) ilma kohta saab infot
+    - [kilingi-nõmme](asukoht) ilma ennustus
+    - mis ilm on [kilingi-nõmmel](asukoht)
+    - mis ilm [väike-maarjas](asukoht) on
+    - mis ilm [väike maarjas](asukoht) täna on
+    - kas homme on [väike-maarjas](asukoht) ilus ilm
+    - ilm [väike-maarja](asukoht)
+    - ilmaprognoos [väike maarja](asukoht)
+    - [Tartu](asukoht) ilma ennustus
+    - [Peetri](asukoht) ilma ennustus
+    - [Pärnu](asukoht) ilma ennustus
+    - [Põltsamaa](asukoht) ilma ennustus
+    - [Püssi](asukoht) ilma ennustus
+    - [rapla](asukoht) ilma ennustus
+    - mis ilm on [raplas](asukoht)
+    - [räpina](asukoht) ilma ennustus
+    - mis ilm on [räpinas](asukoht)
+    - [saaremaa](asukoht) ilma ennustus
+    - mis ilm on [saaremaal](asukoht)
+    - [saue](asukoht) ilma ennustus
+    - mis ilm on [sauel](asukoht)
+    - [saku](asukoht) ilma ennustus
+    - mis ilm on [sakus](asukoht)
+    - [sillamäe](asukoht) ilma ennustus
+    - mis ilm on [sillamäel](asukoht)
+    - [sindi](asukoht) ilma ennustus
+    - mis ilm on [sindis](asukoht)
+    - mis ilm [suure-jaanis](asukoht) on
+    - mis ilm [suure jaanis](asukoht) täna on
+    - kas homme on [suure-jaanil](asukoht) ilus ilm
+    - ilm [suure-jaani](asukoht)
+    - ilmaprognoos [suure-jaani](asukoht)
+    - kas [suure jaani](asukoht) ilma kohta saab infot
+    - [suure-jaani](asukoht) ilma ennustus
+    - mis ilm on [suure jaanil](asukoht)
+    - [sõmeru](asukoht) ilma ennustus
+    - mis ilm on [sõmerus](asukoht)
+    - [Rakvere](asukoht) ilma ennustus
+    - ilmaprognoos [Haapsalu](asukoht)
+    - [Keila](asukoht) ilma ennustus
+    - mis ilm on [keilas](asukoht)
+    - [Kilingi-Nõmme](asukoht) ilma ennustus
+    - [kilingi nõmme](asukoht) ilm?
+    - [Kiviõli](asukoht) ilma ennustus
+    - [Kohtla-Järve](asukoht) ilma ennustus
+    - [kohtla järve](asukoht) ilm?
+    - mis ilm on [kohtla-järvel](asukoht)
+    - milline on ilm [kohtla järvel](asukoht)
+    - [Kunda](asukoht) ilma ennustus
+    - [Kuressaare](asukoht) ilma ennustus
+    - ilm [kuressaare](asukoht)
+    - ilm [Kuressaares](asukoht)
+    - [värska](asukoht) ilma ennustus
+    - mis ilm on [värskas](asukoht)
+    - mis ilm on [püssis](asukoht)
+    - [Kärdla](asukoht) ilma ennustus
+    - milline on ilm [Kärdlas](asukoht)
+    - [Kõrveküla](asukoht) ilma ennustus
+    - [Lihula](asukoht) ilma ennustus
+    - [Loksa](asukoht) ilma ennustus
+    - ilm [jüris](asukoht)
+    - ilm [lihulas](asukoht)
+    - [tabasalu](asukoht) ilma ennustus
+    - [tamsalu](asukoht) ilma ennustus
+    - mis ilm on [tamsalus](asukoht)
+    - [tapa](asukoht) ilma ennustus
+    - mis ilm on [tapal](asukoht)
+    - [türi](asukoht) ilma ennustus
+    - mis ilm on [türil](asukoht)
+    - [uulu](asukoht) ilma ennustus
+    - mis ilm on [uulus](asukoht)
+    - [valga](asukoht) ilma ennustus
+    - mis ilm on [valgas](asukoht)?
+    - [viimsi](asukoht) ilma ennustus
+    - mis ilm on [viimsis](asukoht)
+    - [viljandi](asukoht) ilma ennustus
+    - mis ilm on [viljandis](asukoht)
+    - [võhma](asukoht) ilma ennustus
+    - mis ilm on [võhmas](asukoht)
+    - [võru](asukoht) ilma ennustus
+    - mis ilm on [võrus](asukoht)
+    - [Võsu](asukoht) ilma ennustus
+    - mis ilm on [võsul](asukoht)
+    - milline tuleb ilm?
+    - mis ilm tuleb
+    - mis ilm on [Põlva](asukoht)
+    - mis ilma on oodata
+    - millist ilma on oodata
+    - milline ilmake tuleb kah
+    - kuidas meil ilmaga olukord on
+    - millist ilma oodata on
+    - kas ilm tuleb sajune
+    - mis ilm on [abja paluojas](asukoht)
+    - kas ilma lubab päikest
+    - infot ilma kohta palun
+    - ilma päring
+    - ilm [abja-paluojas](asukoht)
+    - ilm ennustus [Abja-Paluoja](asukoht)
+    - ilm [Antsla](asukoht)
+    - mis ilm on [Järva](asukoht) maakonnas
+    - mis ilm on [järvamaal](asukoht)
+    - mis ilm on [Elva](asukoht)
+    - ilmaprognoos [elvas](asukoht)
+    - ilmaprognoos [haapsalu](asukoht)
+    - ilmaprognoos [Harju](asukoht) maakonnas
+    - ilmaprognoos [Hiiu](asukoht)
+    - Mis ilm on [Hiiul](asukoht)
+    - ilmaprognoos [Ida-Virumaa](asukoht)
+    - ilmaprognoos [Jõelähtme](asukoht)
+    - kas [Jõgeva](asukoht) ilma kohta saab infot
+    - kas [Jõhvi](asukoht) ilma kohta saab infot
+    - kas [Lääne](asukoht) maakonna ilma kohta saab infot
+    - kas [Lääne-Viru](asukoht) maakonna ilma kohta saab infot
+    - kas [Järva](asukoht) maakonna ilma kohta saab infot
+    - kas [Jüri](asukoht) ilma kohta saab infot
+    - [Kallaste](asukoht) ilma ennustus
+    - [Karksi-Nuia](asukoht) ilma ennustus
+    - [Kehra](asukoht) ilma ennustus
+    - milline on ilm [haapsalus](asukoht)
+    - ilm maakonna kohta
+    - ilm [abja paluoja](asukoht)
+    - ilma linna kohta
+    - kas hakkab sadama
+    - kas paistab päike
+    - kas õues on soe
+    - kas õues on külm
+    - kas täna on palav
+    - kas õues on tuuline
+    - kas tänaseks lubab päikest
+    - kas lubab vihma
+    - kas täna tuleb äikest
+    - kas võib tulla vihma
+    - kas väljas on soe
+    - kas väljas on vihmane
+    - kas väljas on tuult
+    - kas ilmateade lubab välja päikest
+    - kas ilm on väljas hea
+    - kas ilm on õues külm
+    - kas täna on rannailm
+    - mitu soojakraadi on
+    - mitu kraadi väljas on
+    - mitu kraadi ilm on
+    - mitu kraadi täna sooja on
+    - kas homme sajab
+    - millal äike tuleb
+    - millal sajab väljas vihma
+    - millal on päiksepaisteline
+    - kas täna on tormi oodata
+    - kas väljas on tormine
+    - kas ilm on tormine
+    - kas homme tuleb õues torm
