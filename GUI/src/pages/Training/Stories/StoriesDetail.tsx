@@ -289,7 +289,10 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     await handleMutationLoadingAfterPopulateTable(data);
 
     if (isRename) {
-      navigate(`/training/stories/${editableTitle}`, { replace: true, state: location.state });
+      navigate(`/training/stories/${editableTitle}`, { replace: true, state: { 
+        id: editableTitle,
+        category: location.state?.category || category,
+      }});
       setEditableTitle(null);
       setCurrentEntity({ steps: story?.steps, story: editableTitle });
     }

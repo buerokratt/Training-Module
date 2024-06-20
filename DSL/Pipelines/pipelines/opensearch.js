@@ -3,9 +3,7 @@ import multer from "multer";
 import fs from "fs";
 import os from "os";
 import YAML from "yaml";
-import sanitize from "string-sanitizer";
 import { Client } from "@opensearch-project/opensearch";
-import setRateLimit from "express-rate-limit";
 
 const router = express.Router();
 const upload = multer({ 
@@ -14,22 +12,6 @@ const upload = multer({
     fileSize: 50 * 1000 * 1000
   },
  })
-
- const rateLimit = setRateLimit({
-  windowMs: 60 * 1000,
-  max: 30,
-  message: "Too many requests",
-  headers: true,
-  statusCode: 429,
-})
-
- const sanitizeFilename = (filename) => {
-  if(filename.includes('../')) {
-    throw new Error('relative paths are not allowed')
-  }
-  
-  return filename.replace('..', '');
- }
 
 const HOST = process.env.OPENSEARCH_HOST || "host.docker.internal";
 const PORT = process.env.OPENSEARCH_PORT || "9200";
@@ -75,7 +57,7 @@ export async function osDeleteObject(index_name, obj_id) {
 function getInput(req) {
   if (req.file) {
     const inp = req.file.destination + req.file.filename;
-    return YAML.parse(fs.readFileSync(sanitizeFilename(inp), "utf8"));
+    return YAML.parse(fs.readFileSync(inp, "utf8"));
   } else {
     return YAML.parse(req.body.input);
   }
@@ -87,7 +69,6 @@ function getInput(req) {
 router.post(
   "/put/:index_name/:index_type",
   upload.single("input"),
-  rateLimit,
   (req, res) => {
     let input = getInput(req);
 
@@ -119,7 +100,7 @@ router.post(
 /*
 	For config and domain - many different types of entities in one list 
 */
-router.post("/bulk/:index_name", upload.single("input"), rateLimit, (req, res) => {
+router.post("/bulk/:index_name", upload.single("input"), (req, res) => {
   const input = getInput(req);
 
   const index_name = req.params.index_name;
@@ -140,7 +121,6 @@ router.post("/bulk/:index_name", upload.single("input"), rateLimit, (req, res) =
 router.post(
   "/bulk/:index_name/:index_type",
   upload.single("input"),
-  rateLimit,
   (req, res) => {
     const input = getInput(req);
 
@@ -148,7 +128,8 @@ router.post(
     const index_type = req.params.index_type;
 
     input[index_name].forEach((obj) => {
-      obj.id = sanitize.sanitize.addDash(obj[index_type]);
+      obj.id = obj[index_type];
+
       osPut(index_name, obj).catch((e) => {
         res.status(500);
         res.end();
