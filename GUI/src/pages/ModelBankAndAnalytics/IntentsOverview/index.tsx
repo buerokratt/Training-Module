@@ -8,6 +8,7 @@ import {IntentsReport} from 'types/intentsReport';
 import {Model} from 'types/model';
 import { getColumns } from './columns';
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
+import { isHiddenFeaturesEnabled } from 'constants/config';
 
 const IntentsOverview: FC = () => {
     const {t} = useTranslation();
@@ -26,7 +27,7 @@ const IntentsOverview: FC = () => {
         queryKey: [`model/get-report-by-name?fileName=${selectedModelId}`],
         enabled: false,
     });
-    const nonIntents = ['accuracy','macro avg','weighted avg', 'micro avg'];
+    const nonIntents = isHiddenFeaturesEnabled ? ['accuracy','macro avg','weighted avg', 'micro avg'] : [];
 
     useEffect(() => {
         if (!models) return;
@@ -121,6 +122,7 @@ const IntentsOverview: FC = () => {
                     columns={intentsReportColumns}
                     globalFilter={filter}
                     setGlobalFilter={setFilter}
+                    columnVisibility={isHiddenFeaturesEnabled ? {} : {"precision": false, "recall": false, "suggestion": false}}
                 />
             </Card>
         </>
