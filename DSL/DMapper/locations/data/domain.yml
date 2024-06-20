@@ -70,9 +70,6 @@ responses:
       text: "Hetkel oskan ma öelda ilma Eesti raames piirkonnapõhiselt. Palun sisestage korrektne piirkonna nimi."
     - text: "#weather; {common_teenus_ilm_asukoht};"
 
-  utter_not_confident:
-  - text: "Ma ei saanud päris täpselt aru."
-
   utter_fallback:
   - text: "UNKNOWN"  
   
