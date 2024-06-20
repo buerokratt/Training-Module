@@ -10,15 +10,14 @@ intents:
   - common_tänamine
   - common_tervitus
   - common_klienditeenindajale_suunamine
-  - common_teenus_ilm
   - common_teenus_rahvaalgatus
   - common_teenus_rk_isiku_kohalolu
   - common_teenus_nordpool
   - common_teenus_nordpool2
   - common_teenus_nordpool3
+
 entities:
   - asukoht
-  - koht
 slots:
   common_teenus_ilm_asukoht:
     type: text
@@ -30,8 +29,11 @@ slots:
     - type: from_entity
       entity: asukoht
       intent: nlu_fallback
+
+
   affirm_deny:
     type: text
+    influence_conversation: true
     mappings:
     - type: from_text
       conditions:
@@ -39,14 +41,7 @@ slots:
         requested_slot: affirm_deny
       - active_loop: direct_to_customer_support_form
         requested_slot: affirm_deny
-  rara_info_koht:
-    type: text
-    influence_conversation: true
-    mappings:
-    - type: from_entity
-      entity: koht
-      intent: rara_info_aeg
-    
+
 forms:
   custom_fallback_form:
     required_slots:
@@ -54,22 +49,14 @@ forms:
   direct_to_customer_support_form:
     required_slots:
         - affirm_deny
-        
+
 actions:
 - action_ask_custom_fallback_form_affirm_deny
+- action_check_confidence
 - action_react_to_affirm_deny_in_custom_fallback_form
 - action_react_to_affirm_deny_in_direct_to_customer_support_form
-- action_check_confidence
 
 responses:
-  utter_common_teenus_ilm:
-    - condition:
-        - type: slot
-          name: common_teenus_ilm_asukoht
-          value: null
-      text: "Hetkel oskan ma öelda ilma Eesti raames piirkonnapõhiselt. Palun sisestage korrektne piirkonna nimi."
-    - text: "#weather; {common_teenus_ilm_asukoht};"
-
   utter_fallback:
   - text: "UNKNOWN"  
   
