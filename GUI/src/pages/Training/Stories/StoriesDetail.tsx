@@ -185,7 +185,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
         title: t('global.notification'),
         message: t('toast.storyDeleted'),
       });
-      navigate(import.meta.env.BASE_URL + '/stories');
+      navigate(`${import.meta.env.BASE_URL}/stories`);
     },
     onError: (error: AxiosError) => {
       toast.open({
@@ -289,7 +289,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     await handleMutationLoadingAfterPopulateTable(data);
 
     if (isRename) {
-      navigate(`/training/stories/${editableTitle}`, { replace: true, state: { 
+      navigate(`${import.meta.env.BASE_URL}/stories/${editableTitle}`, { replace: true, state: { 
         id: editableTitle,
         category: location.state?.category || category,
       }});
