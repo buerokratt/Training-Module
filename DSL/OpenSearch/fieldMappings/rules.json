@@ -4,6 +4,12 @@
       "rule" : {
         "type" : "text"
       },
+      "conversation_start": {
+        "type" : "boolean"
+      },
+      "wait_for_user_input": {
+        "type" : "boolean"
+      },
       "condition": {
         "properties" : {
           "slot_was_set": {

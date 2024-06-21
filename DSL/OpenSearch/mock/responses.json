@@ -1,35 +1,35 @@
-{"index":{"_id":"1"}}
+{"index":{"_id":"utter_andmekaitse_küsimused"}}
 {"name":"utter_andmekaitse_küsimused","response": [{"text":"kõik on kaitstud"}]}
-{"index":{"_id":"2"}}
+{"index":{"_id":"utter_fallback_kontroll"}}
 {"name":"utter_fallback_kontroll","response": [{"text":"Jäi arusaamatuks, kas soovisite, et suunan edasi?"}]}
-{"index":{"_id":"3"}}
+{"index":{"_id":"utter_mille_kohta_küsimus_käis"}}
 {"name":"utter_mille_kohta_küsimus_käis","response": [{"text":"Kas küsimus käis selle teema kohta: {intent}? (Jah/Ei)"}]}
-{"index":{"_id":"4"}}
+{"index":{"_id":"utter_not_confident"}}
 {"name":"utter_not_confident","response": [{"text":"Ma ei saanud päris täpselt aru."}]}
-{"index":{"_id":"5"}}
+{"index":{"_id":"utter_ei_pakkunud_õigesti"}}
 {"name":"utter_ei_pakkunud_õigesti","response": [{"text":"Ma pean natuke juurde õppima, et oskaksin sellele vastata."}]}
-{"index":{"_id":"6"}}
+{"index":{"_id":"utter_ask_direct_to_customer_support_form_affirm_deny"}}
 {"name":"utter_ask_direct_to_customer_support_form_affirm_deny","response": [{"text":"Kas suunan teid klienditeenindajale? (Jah/Ei)"}]}
-{"index":{"_id":"7"}}
+{"index":{"_id":"utter_common_klienditeenindajale_suunamine"}}
 {"name":"utter_common_klienditeenindajale_suunamine","response": [{"text":"Suunan teid klienditeenindajale. Varuge natukene kannatust."}]}
-{"index":{"_id":"8"}}
+{"index":{"_id":"utter_common_ei_suuna_klienditeenindajale"}}
 {"name":"utter_common_ei_suuna_klienditeenindajale","response": [{"text":"Selge. Kuidas saan veel abiks olla?"}]}
-{"index":{"_id":"9"}}
+{"index":{"_id":"utter_common_kelle_loodud"}}
 {"name":"utter_common_kelle_loodud","response": [{"text":"Mind täiendab ja koolitab Bürokrati meeskond. Loe lisaks https://kratid.ee"}]}
-{"index":{"_id":"10"}}
+{"index":{"_id":"utter_common_tervitus"}}
 {"name":"utter_common_tervitus","response": [{"text":"tere"}]}
-{"index":{"_id":"11"}}
+{"index":{"_id":"utter_common_hüvasti_jätmine"}}
 {"name":"utter_common_hüvasti_jätmine","response": [{"text":"headaega"}]}
-{"index":{"_id":"12"}}
+{"index":{"_id":"utter_rahvaarv_puudu"}}
 {"name":"utter_rahvaarv_puudu","response": [{"text":"millist rahvaarvu sa täpsemalt soovid?"}]}
-{"index":{"_id":"13"}}
+{"index":{"_id":"utter_rahvaarv_olemas"}}
 {"name":"utter_rahvaarv_olemas","response": [{"text":"#rahvaarv {common_teenus_ilm_asukoht}"}]}
-{"index":{"_id":"14"}}
+{"index":{"_id":"utter_kompliment"}}
 {"name":"utter_kompliment","response": [{"text":"kena olen"}]}
-{"index":{"_id":"15"}}
+{"index":{"_id":"utter_common_teenus_ilm"}}
 {"name":"utter_common_teenus_ilm","response": [{"condition": [{"type": "slot","name": "common_teenus_ilm_asukoht","value": null}],"text":"Hetkel oskan ma öelda ilma Eesti raames piirkonnapõhiselt. Palun sisestage korrektne piirkonna nimi."},{"text":"#weather; {common_teenus_ilm_asukoht};"}]}
-{"index":{"_id":"16"}}
+{"index":{"_id":"utter_common_ilm_checkpoint"}}
 {"name":"utter_common_ilm_checkpoint","response": [{"text":""}]}
-{"index":{"_id":"17"}}
+{"index":{"_id":"utter_common_teenus_ilm_fallback"}}
 {"name":"utter_common_teenus_ilm_fallback","response": [{"condition": [{"type": "slot","name": "common_teenus_ilm_asukoht","value": null}],"text":"Kahjuks ei saanud ma praegu piirkonnast aru ja ei oska ilma kohta midagi öelda. Kuidas saan abiks olla?"}, {"text":"#weather; {common_teenus_ilm_asukoht};"}]}
 
