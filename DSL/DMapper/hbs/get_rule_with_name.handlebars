@@ -2,6 +2,8 @@
 {{#if hits}}
     "id": "{{hits.0._id}}",
     "rule": "{{hits.0._source.rule}}",
+    "conversation_start": "{{hits.0._source.conversation_start}}",
+    "wait_for_user_input": "{{hits.0._source.wait_for_user_input}}",
     "steps": [
     {{#each hits.0._source.steps as |step|}}
         {
