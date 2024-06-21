@@ -103,7 +103,6 @@ saveRulesFile:
       file_path: ${fileLocations.response.body.response.rules_location}
       content: ${rulesYaml.response.body.json}
   result: fileResult
-  next: updateOpenSearch
 
 deleteOldOpenSearchEntry:
   call: http.post

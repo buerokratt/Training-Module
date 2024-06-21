@@ -1,4 +1,5 @@
 import { Node } from 'reactflow';
+import { GenerateNewNodeConfig } from './nodes';
 
 export const generateStoryStepsFromNodes = (nodes: Node[]) =>
     nodes.map(({ data: { type, label, payload, checkpoint }}) => {
@@ -22,7 +23,7 @@ export const generateStoryStepsFromNodes = (nodes: Node[]) =>
                     };
                 }
             case 'responseNode':
-                return { response: label };
+                return { action: label };
             case 'formNode':
                 return {
                     form: label,
@@ -34,10 +35,17 @@ export const generateStoryStepsFromNodes = (nodes: Node[]) =>
                         [label]: payload.value,
                     },
                 };
-            case 'actionNode':
-                return checkpoint
-                    ? { action: payload?.value || label }
-                    : { action: label };
+            case 'actionNode': {
+                const value = checkpoint
+                  ? { action: payload?.value || label }
+                  : { action: label };
+                if (
+                  value.action === 'conversation_start: true' ||
+                  value.action === 'wait_for_user_input: false'
+                )
+                  break;
+                return value;
+            }
             case 'conditionNode': {
                 let conditions: { active_loop?: any; slot?: any; value?: any; }[] = [];
 
@@ -60,68 +68,103 @@ export const generateStoryStepsFromNodes = (nodes: Node[]) =>
         }
     }).filter(Boolean);
 
-export const generateNodesFromStorySteps = (steps): Node[] =>
-    steps?.map((step) => {
-        let type;
-        let label;
-        let payload;
-        let className;
+export const generateNodesFromStorySteps = (
+  steps,
+): Node[] =>
+  steps
+    ?.map((step) => {
+      let type;
+      let label;
+      let payload;
+      let className;
 
-        if (step.condition && Array.isArray(step.condition)) {
-            type = 'conditionNode';
-            className = 'condition';
-            payload = {
-                conditions: step.condition.map((condition) => {
-                    if (condition.active_loop) {
-                        return { active_loop: { label: condition.active_loop } };
-                    }
-                    if (condition.slot_was_set) {
-                        const [slotLabel, value] = Object.entries(condition.slot_was_set)[0];
-                        return { slot: { label: slotLabel, value } };
-                    }
-                    return null;
-                }),
-            };
-        } else if (step.intent) {
-            type = 'intentNode';
-            className = 'intent';
-            label = step.intent;
-            if (step.entities !== undefined) {
-                payload = {
-                    entities: step.entities.map((entityObj: {}) => {
-                        const key = Object.keys(entityObj)[0];
-                        return { label: key, value: key };
-                    }) || [],
-                };
-            } else {
-                payload = { entities: [] };
+      if (step.condition && Array.isArray(step.condition)) {
+        type = 'conditionNode';
+        className = 'condition';
+        payload = {
+          conditions: step.condition.map((condition) => {
+            if (condition.active_loop) {
+              return { active_loop: { label: condition.active_loop } };
             }
-        } else if (step.action) {
-            if (step.active_loop !== undefined) {
-                type = 'formNode';
-                className = 'form';
-                label = step.action;
-                payload = { active_loop: step.active_loop !== null };
-            } else {
-                type = 'responseNode';
-                className = 'response';
-                label = step.action;
+            if (condition.slot_was_set) {
+              const [slotLabel, value] = Object.entries(
+                condition.slot_was_set
+              )[0];
+              return { slot: { label: slotLabel, value } };
             }
-        } else if (step.slot_was_set) {
-            type = 'slotNode';
-            className = 'slot';
-            const [slotLabel, value] = Object.entries(step.slot_was_set)[0];
-            label = slotLabel;
-            payload = { value };
-        } else {
             return null;
-        }
-
-        return {
-            label,
-            type,
-            className,
-            payload,
+          }),
         };
-    }).filter(Boolean);
+      } else if (step.intent) {
+        type = 'intentNode';
+        className = 'intent';
+        label = step.intent;
+        if (step.entities !== undefined) {
+          payload = {
+            entities:
+              step.entities.map((entityObj: {}) => {
+                const key = Object.keys(entityObj)[0];
+                return { label: key, value: key };
+              }) || [],
+          };
+        } else {
+          payload = { entities: [] };
+        }
+      } else if (step.action) {
+        if (step.active_loop !== undefined) {
+          type = 'formNode';
+          className = 'form';
+          label = step.action;
+          payload = { active_loop: step.active_loop !== null };
+        } else if (step.action === 'action_listen' || step.action === 'action_restart') {
+          type = 'actionNode';
+          className = 'action';
+          label = step.action;
+        } else {
+          type = 'responseNode';
+          className = 'response';
+          label = step.action;
+        }
+      } else if (step.slot_was_set) {
+        type = 'slotNode';
+        className = 'slot';
+        const [slotLabel, value] = Object.entries(step.slot_was_set)[0];
+        label = slotLabel;
+        payload = { value };
+      } else {
+        return null;
+      }
 
+      return {
+        label,
+        type,
+        className,
+        payload,
+      };
+    })
+    .filter(Boolean);
+
+export const generateNodesFromRuleActions = (
+  conversationStart: string,
+  waitForUserInput: string
+): Array<Pick<GenerateNewNodeConfig, 'label' | 'type' |'className'>> => {
+  const nodes = [];
+
+  if (conversationStart.length > 0) {
+    nodes.push({
+      label: 'conversation_start: true',
+      type: 'actionNode',
+      className: 'action',
+    });
+  }
+
+  if (waitForUserInput.length > 0) {
+    nodes.push({
+      label: 'wait_for_user_input: false',
+      type: 'actionNode',
+      className: 'action',
+    });
+  }
+
+  return nodes;
+};
