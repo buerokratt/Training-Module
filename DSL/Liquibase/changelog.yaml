@@ -1,3 +1,9 @@
+## Use this in developement
 databaseChangeLog:
   - includeAll:
-      path: ./changelog/
+      path: changelog/changelog/development/
+      
+## Use this in production
+# databaseChangeLog:
+#   - include:
+#       file: changelog/changelog/production/initialize.sql
