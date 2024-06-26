@@ -29,7 +29,11 @@ import { useToast } from 'hooks/useToast';
 import { addStoryOrRule, deleteStoryOrRule, editStoryOrRule } from 'services/stories';
 import CustomNode from './CustomNode';
 import useDocumentEscapeListener from '../../../hooks/useDocumentEscapeListener';
-import { generateStoryStepsFromNodes, generateNodesFromStorySteps } from 'services/rasa';
+import {
+  generateStoryStepsFromNodes,
+  generateNodesFromRuleActions,
+  generateNodesFromStorySteps,
+} from 'services/rasa';
 import { GRID_UNIT, generateNewEdge, generateNewNode } from 'services/nodes';
 import LoadingDialog from "../../../components/LoadingDialog";
 import {Rule, RuleDTO} from "../../../types/rule";
@@ -115,6 +119,28 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
           edges.push(generateNewEdge(nodes, edges));
           nodes.push(generateNewNode({...x, nodes, handleNodeDelete, handleNodePayloadChange,}));
         });
+
+    if (
+      currentEntityData && (
+        'conversation_start' in currentEntityData ||
+          'wait_for_user_input' in currentEntityData
+      )
+    ) {
+      generateNodesFromRuleActions(
+        currentEntityData?.conversation_start ?? '',
+        currentEntityData?.wait_for_user_input ?? ''
+      ).forEach((x) => {
+        edges.push(generateNewEdge(nodes, edges));
+        nodes.push(
+          generateNewNode({
+            ...x,
+            nodes,
+            handleNodeDelete,
+            handleNodePayloadChange,
+          })
+        );
+      });
+    }
 
     setNodes(nodes);
     setEdges(edges);
@@ -277,6 +303,12 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     const data = {
       [category === 'stories' ? 'story' : 'rule']: editableTitle || id || title,
       steps: generateStoryStepsFromNodes(nodes),
+      ...(nodes.some(
+        (node) => node.data.label === 'conversation_start: true'
+      ) && { conversation_start: true }),
+      ...(nodes.some(
+        (node) => node.data.label === 'wait_for_user_input: false'
+      ) && { wait_for_user_input: false }),
     };
 
     setRefreshing(true);
@@ -289,10 +321,13 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     await handleMutationLoadingAfterPopulateTable(data);
 
     if (isRename) {
-      navigate(`${import.meta.env.BASE_URL}/stories/${editableTitle}`, { replace: true, state: { 
-        id: editableTitle,
-        category: location.state?.category || category,
-      }});
+      navigate(`${import.meta.env.BASE_URL}/stories/${editableTitle}`, {
+        replace: true,
+        state: {
+          id: editableTitle,
+          category: location.state?.category || category,
+        },
+      });
       setEditableTitle(null);
       setCurrentEntity({ steps: story?.steps, story: editableTitle });
     }
@@ -440,25 +475,33 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
 
           <Collapsible title={t('training.actions.title')}>
             <Track direction='vertical' align='stretch' gap={4}>
-              <button
-                onClick={() => handleNodeAdd({
-                  label: 'Checkpoints:',
-                  type: 'actionNode',
-                  className: 'action',
-                  checkpoint: true,
-                })}
-              >
-                <Box color='orange'>checkpoints</Box>
-              </button>
-              <button
-                onClick={() => handleNodeAdd({
-                  label: 'conversation_start: true',
-                  type: 'actionNode',
-                  className: 'action',
-                })}
-              >
-                <Box color='orange'>conversation_start</Box>
-              </button>
+              {category === 'stories' && (
+                <button
+                  onClick={() =>
+                    handleNodeAdd({
+                      label: 'Checkpoints:',
+                      type: 'actionNode',
+                      className: 'action',
+                      checkpoint: true,
+                    })
+                  }
+                >
+                  <Box color="orange">checkpoints</Box>
+                </button>
+              )}
+              {category === 'rules' && (
+                <button
+                  onClick={() =>
+                    handleNodeAdd({
+                      label: 'conversation_start: true',
+                      type: 'actionNode',
+                      className: 'action',
+                    })
+                  }
+                >
+                  <Box color="orange">conversation_start</Box>
+                </button>
+              )}
               <button
                 onClick={() => handleNodeAdd({
                   label: 'action_listen',
@@ -477,15 +520,17 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
               >
                 <Box color='orange'>action_restart</Box>
               </button>
-              <button
-                onClick={() => handleNodeAdd({
-                  label: 'wait_for_user_input: false',
-                  type: 'actionNode',
-                  className: 'action',
-                })}
-              >
-                <Box color='orange'>wait_for_user_input</Box>
-              </button>
+              {category === 'rules' && (
+                <button
+                  onClick={() => handleNodeAdd({
+                    label: 'wait_for_user_input: false',
+                    type: 'actionNode',
+                    className: 'action',
+                  })}
+                >
+                  <Box color='orange'>wait_for_user_input</Box>
+                </button>
+              )}
             </Track>
           </Collapsible>
         </Track>

@@ -1,8 +1,8 @@
-{"index":{"_id":"1"}}
+{"index":{"_id":"andmekaitse_küsimused"}}
 {"story":"andmekaitse_küsimused","steps":[{"intent":"andmekaitse_küsimused"}, {"action": "utter_andmekaitse_küsimused"}, {"active_loop": "direct_to_customer_support_form"}]}
-{"index":{"_id":"2"}}
+{"index":{"_id":"Deactivate custom fallback form"}}
 {"story":"Deactivate custom fallback form","steps":[{"action": "custom_fallback_form"}, {"slot_was_set": {"asukoht": "Tallinn", "slot": "common_teenus_ilm_asukoht"}}, {"action": "action_react_to_affirm_deny_in_custom_fallback_form"}]}
-{"index":{"_id":"3"}}
+{"index":{"_id":"test"}}
 {"story":"test","steps":[{"intent":"test"}, {"action": "utter_test"}, {"checkpoint": "check_stuff"}]}
-{"index":{"_id":"4"}}
+{"index":{"_id":"test2"}}
 {"story":"test2","steps":[{"checkpoint":"check_stuff"}, {"action": "utter_common_hüvasti_jätmine"}]}

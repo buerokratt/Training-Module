@@ -1,4 +1,4 @@
-{"index":{"_id":"1"}}
+{"index":{"_id":"affirm_deny"}}
 {"slot":"affirm_deny","type": "text","influence_conversation": "true","mappings":[{"type":"from_entity", "entity":  "asukoht", "intent":  "common_ilma_teenus"}, {"type": "from_entity", "entity":  "asukoht", "intent":  "nlufallback"}]}
-{"index":{"_id":"2"}}
+{"index":{"_id":"common_teenus_ilm_asukoht"}}
 {"slot":"common_teenus_ilm_asukoht","type": "text","influence_conversation": "true","mappings": [{"type":"from_text"}, {"conditions": [{"active_loop": "custom_fallback_form", "requested_slot":  "affirm_deny"}, {"active_loop":  "direct_to_customer_support_form", "requested_slot":  "affirm_deny"}]}]}
