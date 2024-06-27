@@ -74,7 +74,16 @@ rules:
   - intent: common_teenus_rk_isiku_kohalolu
   - action: utter_common_teenus_rk_isiku_kohalolu
 
-- rule: common_service_companies
+- rule: common_service_companies1
   steps:
   - intent: common_service_companies
-  - action: utter_common_service_companies
+  - action: common_service_companies_form
+  - active_loop: common_service_companies_form
+
+- rule: common_service_companies2
+  condition:
+  - active_loop: common_service_companies_form
+  steps:
+  - slot_was_set:
+    - requested_slot: common_service_companies
+  - action: utter_common_service_companies2
