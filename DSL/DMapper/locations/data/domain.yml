@@ -31,6 +31,14 @@ slots:
       entity: asukoht
       intent: nlu_fallback
 
+  common_service_companies:
+    type: text
+    influence_conversation: true
+    mappings: 
+    - type: from_text
+      conditions:
+      - active_loop: common_service_companies_form
+        requested_slot: common_service_companies
 
   affirm_deny:
     type: text
@@ -44,6 +52,9 @@ slots:
         requested_slot: affirm_deny
 
 forms:
+  common_service_companies_form:
+    required_slots:
+        - common_service_companies
   custom_fallback_form:
     required_slots:
         - affirm_deny
@@ -58,11 +69,11 @@ actions:
 - action_react_to_affirm_deny_in_direct_to_customer_support_form
 
 responses:
-  utter_common_service_companies:
+  utter_ask_common_service_companies:
   - text: "Mis firma kohta sa infot soovid?"
 
   utter_common_service_companies:
-  - text: "OPENSEARCH {userinput}"
+  - text: "OPENSEARCH {common_service_companies}"
 
   utter_fallback:
   - text: "UNKNOWN"  
