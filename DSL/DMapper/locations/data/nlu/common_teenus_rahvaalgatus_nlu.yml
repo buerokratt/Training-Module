@@ -1,0 +1,14 @@
+version: "3.0"
+nlu:
+- intent: common_teenus_rahvaalgatus
+  examples: |
+    - Mis on viis viimast avalikku algatust?
+    - Kas saate loetleda viis viimast avalikku algatust?
+    - Millised on viimased viis avalikku algatust?
+    - Kus ma saan näha viimaseid viit avalikku algatust?
+    - Millised olid viimased viis avalikku algatust?
+    - Kas te saaksite mulle öelda viis viimast avalikku algatust?
+    - Mis on viimasel ajal esitatud viis avalikku algatust?
+    - Kust ma leian teavet viimaste viie avaliku algatuse kohta?
+    - Kas te võiksite esitada teabe viimase viie avaliku algatuse kohta?
+    - Millised viis avalikku algatust on hiljuti algatatud?

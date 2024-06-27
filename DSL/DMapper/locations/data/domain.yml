@@ -10,6 +10,11 @@ intents:
   - common_tänamine
   - common_tervitus
   - common_klienditeenindajale_suunamine
+  - common_teenus_rahvaalgatus
+  - common_teenus_rk_isiku_kohalolu
+  - common_teenus_nordpool
+  - common_teenus_nordpool2
+  - common_teenus_nordpool3
 
 entities:
   - asukoht
@@ -72,3 +77,18 @@ responses:
 
   utter_common_tervitus:
   - text: "Kuidas saan abiks olla?"
+
+  utter_common_teenus_rahvaalgatus:
+  - text: "#rahvaAlgatus;"
+
+  utter_common_teenus_rk_isiku_kohalolu:
+  - text: "#riigikoguIsikuKohalolu;"
+
+  utter_common_teenus_nordpool:
+  - text: "#nordpool;"
+
+  utter_common_teenus_nordpool2:
+  - text: "#nordpool2;"
+
+  utter_common_teenus_nordpool3:
+  - text: "#nordpool3;"

@@ -48,4 +48,30 @@ rules:
   steps:
   - intent: common_klienditeenindajale_suunamine
   - action: utter_common_klienditeenindajale_suunamine
+
+- rule: common_teenus_nordpool
+  steps:
+  - intent: common_teenus_nordpool
+  - action: utter_common_teenus_nordpool
+
+- rule: common_teenus_nordpool2
+  steps:
+  - intent: common_teenus_nordpool2
+  - action: utter_common_teenus_nordpool2
+
+- rule: common_teenus_nordpool3
+  steps:
+  - intent: common_teenus_nordpool3
+  - action: utter_common_teenus_nordpool3
+
+- rule: common_teenus_rahvaalgatus
+  steps:
+  - intent: common_teenus_rahvaalgatus
+  - action: utter_common_teenus_rahvaalgatus
+
+- rule: common_teenus_rk_isiku_kohalolu
+  steps:
+  - intent: common_teenus_rk_isiku_kohalolu
+  - action: utter_common_teenus_rk_isiku_kohalolu
+
   

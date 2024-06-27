@@ -1,0 +1,14 @@
+version: "3.0"
+nlu:
+- intent: common_teenus_rk_isiku_kohalolu
+  examples: |
+    - Kas saate esitada parlamendiliikme kohalolekuregistri?
+    - Kuidas ma saan teada, kas parlamendiliige osales viimasel istungil?
+    - Kas on võimalik kontrollida parlamendiliikme kohalolekut?
+    - Kust ma näen parlamendiliikme kohaloleku andmeid?
+    - Kas te saaksite kontrollida, kas parlamendiliige oli hiljutisel parlamendi koosolekul kohal?
+    - Mis on parlamendiliikme kohalolekuseis viimaste istungite jaoks?
+    - Kuidas ma saan juurdepääsu parlamendiliikme kohalolekuregistrile?
+    - Kas te saate kinnitada parlamendiliikme kohalolekut viimase kuu jooksul?
+    - Kas on olemas andmeid, mis näitavad parlamendiliikme kohalolekut hiljutistel istungitel?
+    - Kust ma saan vaadata parlamendiliikme kohaloleku ajalugu?
