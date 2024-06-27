@@ -84,6 +84,9 @@ rules:
   condition:
   - active_loop: common_service_companies_form
   steps:
+  - action: common_service_companies_form
+  - active_loop: null
   - slot_was_set:
-    - requested_slot: common_service_companies
-  - action: utter_common_service_companies2
+    - requested_slot: null
+  - action: utter_common_service_companies
+  - action: action_restart
