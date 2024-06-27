@@ -74,4 +74,7 @@ rules:
   - intent: common_teenus_rk_isiku_kohalolu
   - action: utter_common_teenus_rk_isiku_kohalolu
 
-  
+- rule: common_service_companies
+  steps:
+  - intent: common_service_companies
+  - action: utter_common_service_companies
