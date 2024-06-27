@@ -15,6 +15,7 @@ intents:
   - common_teenus_nordpool
   - common_teenus_nordpool2
   - common_teenus_nordpool3
+  - common_service_companies
 
 entities:
   - asukoht
@@ -57,6 +58,12 @@ actions:
 - action_react_to_affirm_deny_in_direct_to_customer_support_form
 
 responses:
+  utter_common_service_companies:
+  - text: "Mis firma kohta sa infot soovid?"
+
+  utter_common_service_companies:
+  - text: "OPENSEARCH {userinput}"
+
   utter_fallback:
   - text: "UNKNOWN"  
   
