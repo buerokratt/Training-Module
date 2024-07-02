@@ -90,3 +90,8 @@ rules:
     - requested_slot: null
   - action: utter_common_service_companies
   - action: action_restart
+
+- rule: common_teenus_rk_isiku_kohalolu
+  steps:
+  - intent: common_teenus_rk_isiku_kohalolu
+  - action: utter_common_teenus_rk_isiku_kohalolu
