@@ -16,9 +16,12 @@ intents:
   - common_teenus_nordpool2
   - common_teenus_nordpool3
   - common_service_companies
+  - common_teenus_rk_isiku_kohalolu
 
 entities:
   - asukoht
+  - rk_liige
+  
 slots:
   common_teenus_ilm_asukoht:
     type: text
@@ -39,6 +42,14 @@ slots:
       conditions:
       - active_loop: common_service_companies_form
         requested_slot: common_service_companies
+
+  rk_liige:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: rk_liige
+      intent: common_teenus_rk_isiku_kohalolu
 
   affirm_deny:
     type: text
@@ -100,7 +111,12 @@ responses:
   - text: "#rahvaAlgatus;"
 
   utter_common_teenus_rk_isiku_kohalolu:
-  - text: "#riigikoguIsikuKohalolu;"
+    - condition:
+        - type: slot
+          name: rk_liige
+          value: null
+      text: "404. Riigikogu liikme nime ei tuvastatud. Proovige uuesti."
+    - text: "#riigikoguIsikuKohalolu, {rk_liige}"
 
   utter_common_teenus_nordpool:
   - text: "#nordpool;"
