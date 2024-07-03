@@ -11,7 +11,6 @@ intents:
   - common_tervitus
   - common_klienditeenindajale_suunamine
   - common_teenus_rahvaalgatus
-  - common_teenus_rk_isiku_kohalolu
   - common_teenus_nordpool
   - common_teenus_nordpool2
   - common_teenus_nordpool3
