@@ -69,10 +69,25 @@ rules:
   - intent: common_teenus_rahvaalgatus
   - action: utter_common_teenus_rahvaalgatus
 
+- rule: common_teenus_rahvaalgatus_populaarne
+  steps:
+  - intent: common_teenus_rahvaalgatus_populaarne
+  - action: utter_common_teenus_rahvaalgatus_populaarne
+
 - rule: common_teenus_rk_isiku_kohalolu
   steps:
   - intent: common_teenus_rk_isiku_kohalolu
   - action: utter_common_teenus_rk_isiku_kohalolu
+
+- rule: common_teenus_rk_hääletus_viimane
+  steps:
+  - intent: common_teenus_rk_hääletus_viimane
+  - action: utter_common_teenus_rk_hääletus_viimane
+
+- rule: common_teenus_rk_hääletus_viimased
+  steps:
+  - intent: common_teenus_rk_hääletus_viimased
+  - action: utter_common_teenus_rk_hääletus_viimased
 
 - rule: common_service_companies1
   steps:
