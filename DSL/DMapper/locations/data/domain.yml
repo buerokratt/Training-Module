@@ -11,11 +11,14 @@ intents:
   - common_tervitus
   - common_klienditeenindajale_suunamine
   - common_teenus_rahvaalgatus
+  - common_teenus_rahvaalgatus_populaarne
   - common_teenus_nordpool
   - common_teenus_nordpool2
   - common_teenus_nordpool3
   - common_service_companies
   - common_teenus_rk_isiku_kohalolu
+  - common_teenus_rk_hääletus_viimane
+  - common_teenus_rk_hääletus_viimased
 
 entities:
   - asukoht
@@ -109,13 +112,22 @@ responses:
   utter_common_teenus_rahvaalgatus:
   - text: "#rahvaAlgatus;"
 
+  utter_common_teenus_rahvaalgatus_populaarne:
+  - text: "#rahvaAlgatusPopulaarne"
+
   utter_common_teenus_rk_isiku_kohalolu:
     - condition:
         - type: slot
           name: rk_liige
           value: null
-      text: "404. Riigikogu liikme nime ei tuvastatud. Proovige uuesti."
+      text: "Riigikogu liikme kohaloleku nägemiseks palun proovige uuesti, kasutades Riigikogu liikme täisnime."
     - text: "#riigikoguIsikuKohalolu, {rk_liige}"
+
+  utter_common_teenus_rk_hääletus_viimane:
+  - text: "#recentVoting"
+
+  utter_common_teenus_rk_hääletus_viimased:
+  - text: "#recentFiveVoting"
 
   utter_common_teenus_nordpool:
   - text: "#nordpool;"
