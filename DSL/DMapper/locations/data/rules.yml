@@ -89,13 +89,23 @@ rules:
   - intent: common_teenus_rk_hääletus_viimased
   - action: utter_common_teenus_rk_hääletus_viimased
 
-- rule: common_service_companies1
+- rule: common_service_companies
   steps:
   - intent: common_service_companies
   - action: common_service_companies_form
   - active_loop: common_service_companies_form
+  - slot_was_set:
+    - trigger_intent: common_service_companies
 
-- rule: common_service_companies2
+- rule: common_service_companies_käive
+  steps:
+  - intent: common_service_companies_käive
+  - action: common_service_companies_form
+  - active_loop: common_service_companies_form
+  - slot_was_set:
+    - trigger_intent: common_service_companies_käive
+
+- rule: common_service_companies form submit
   condition:
   - active_loop: common_service_companies_form
   steps:
