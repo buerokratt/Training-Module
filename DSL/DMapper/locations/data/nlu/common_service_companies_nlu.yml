@@ -2,13 +2,18 @@ version: "3.0"
 nlu:
 - intent: common_service_companies
   examples: |
-    - mis on firma registrikood
-    - registrikood firma nime puhul
-    - kes on peamine kasusaada firmas
     - mitu inimest töötab firmas
     - kui palju töötajaid on firmas
-    - kui palju makse maksis firma
-    - eelmise aasta maksud firma puhul
-    - kui palju tulu teenis firma
-    - kui suurt tulu tekib firmale aastas
-    - kui palju makse maksid firma töötajad
+    - kui palju on ettevõttes töötajaid
+    - firma töötajate arv
+    - ettevõtte töötajate arv
+    - mitu töötajat on ettevõttes?
+    - kui mitu töötajat on firmas
+    - mitu inimest on ettevõttes tööl
+    - kui palju inimesi firmas töötab?
+    - kui suur on ettevõte?
+    - ettevõtte töötajate arv
+    - töötajate arv firmas
+    - mitu töötajat firmas?
+    - kui palju inimesi on ettevõtte palgal
+    - firma inimesed
