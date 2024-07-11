@@ -16,6 +16,7 @@ intents:
   - common_teenus_nordpool2
   - common_teenus_nordpool3
   - common_service_companies
+  - common_service_companies_käive
   - common_teenus_rk_isiku_kohalolu
   - common_teenus_rk_hääletus_viimane
   - common_teenus_rk_hääletus_viimased
@@ -36,15 +37,26 @@ slots:
       entity: asukoht
       intent: nlu_fallback
 
-  common_service_companies:
+  company_name:
     type: text
     influence_conversation: true
     mappings: 
     - type: from_text
       conditions:
       - active_loop: common_service_companies_form
-        requested_slot: common_service_companies
+        requested_slot: company_name
 
+  trigger_intent:
+    type: text
+    influence_conversation: false
+    mappings:
+    - type: from_intent
+      value: common_service_companies
+      intent: common_service_companies
+    - type: from_intent
+      value: common_service_companies_käive
+      intent: common_service_companies_käive
+      
   rk_liige:
     type: text
     influence_conversation: true
@@ -82,11 +94,20 @@ actions:
 - action_react_to_affirm_deny_in_direct_to_customer_support_form
 
 responses:
-  utter_ask_common_service_companies:
+  utter_ask_company_name:
   - text: "Mis firma kohta sa infot soovid?"
 
   utter_common_service_companies:
-  - text: "OPENSEARCH {common_service_companies}"
+    - condition:
+        - type: slot
+          name: trigger_intent
+          value: common_service_companies
+      text: "OPENSEARCH {company_name}"
+    - condition:
+        - type: slot
+          name: trigger_intent
+          value: common_service_companies_käive
+      text: "REVENUEOPENSEARCH {company_name}"
 
   utter_fallback:
   - text: "UNKNOWN"  
