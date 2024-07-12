@@ -110,7 +110,7 @@ responses:
         - type: slot
           name: trigger_intent
           value: common_service_companies_töötajad
-      text: "EMPLOYEESOPENSEARCH {company_name}"
+      text: "OPENSEARCH {company_name}"
     - condition:
         - type: slot
           name: trigger_intent
