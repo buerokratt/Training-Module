@@ -79,7 +79,7 @@ slots:
 forms:
   common_service_companies_form:
     required_slots:
-        - common_service_companies
+        - company_name
   custom_fallback_form:
     required_slots:
         - affirm_deny
