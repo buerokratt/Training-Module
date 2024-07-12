@@ -10,17 +10,17 @@ pipeline:
      min_ngram: 1
      max_ngram: 4
    - name: DIETClassifier
-     entity_recognition: False
+     entity_recognition: false
      epochs: 50
      random_seed: 50
    - name: RegexEntityExtractor
-     case_sensitive: False
-     use_regexes: True
+     case_sensitive: false
+     use_regexes: true
    - name: FallbackClassifier
      threshold: 0.8
      
 policies:
    - name: RulePolicy
      core_fallback_threshold: 0.8
-     restrict_rules: False
+     restrict_rules: false
 #     check_for_contradictions: false
