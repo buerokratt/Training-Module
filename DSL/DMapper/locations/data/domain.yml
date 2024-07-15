@@ -5,7 +5,7 @@ session_config:
 intents:
   - common_ask_csa
   - common_hüvasti_jätmine
-  - common_kinnitamine
+  - common_kinnitamine 
   - common_eitamine
   - common_tänamine
   - common_tervitus
@@ -15,17 +15,19 @@ intents:
   - common_teenus_nordpool
   - common_teenus_nordpool2
   - common_teenus_nordpool3
-  # - common_service_companies_töötajad
-  # - common_service_companies_käive
-  # - common_service_companies_tööjõumaksud
+  - common_service_companies_töötajad
+  - common_service_companies_käive
+  - common_service_companies_tööjõumaksud
   # - common_service_companies_riiklikud_maksud
   - common_teenus_rk_isiku_kohalolu
+  # - common_teenus_rk_hääletus
   - common_teenus_rk_hääletus_viimane
   - common_teenus_rk_hääletus_viimased
 
 entities:
   - asukoht
   - rk_liige
+  # - rk_hääletus
   
 slots:
   common_teenus_ilm_asukoht:
@@ -39,32 +41,32 @@ slots:
       entity: asukoht
       intent: nlu_fallback
 
-  # company_name:
-  #   type: text
-  #   influence_conversation: true
-  #   mappings: 
-  #   - type: from_text
-  #     conditions:
-  #     - active_loop: common_service_companies_form
-  #       requested_slot: company_name
+  company_name:
+    type: text
+    influence_conversation: true
+    mappings: 
+    - type: from_text
+      conditions:
+      - active_loop: common_service_companies_form
+        requested_slot: company_name
 
-  # trigger_intent:
-  #   type: text
-  #   influence_conversation: false
-  #   mappings:
-  #   - type: from_intent
-  #     value: common_service_companies_töötajad
-  #     intent: common_service_companies_töötajad
-  #   - type: from_intent
-  #     value: common_service_companies_käive
-  #     intent: common_service_companies_käive
-  #   - type: from_intent
-  #     value: common_service_companies_tööjõumaksud
-  #     intent: common_service_companies_tööjõumaksud
-  #   - type: from_intent
-  #     value: common_service_companies_riiklikud_maksud
-  #     intent: common_service_companies_riiklikud_maksud
-      
+  trigger_intent:
+    type: text
+    influence_conversation: false
+    mappings:
+    - type: from_intent
+      value: common_service_companies_töötajad
+      intent: common_service_companies_töötajad
+    - type: from_intent
+      value: common_service_companies_käive
+      intent: common_service_companies_käive
+    - type: from_intent
+      value: common_service_companies_tööjõumaksud
+      intent: common_service_companies_tööjõumaksud
+    # - type: from_intent
+    #   value: common_service_companies_riiklikud_maksud
+    #   intent: common_service_companies_riiklikud_maksud
+
   rk_liige:
     type: text
     influence_conversation: true
@@ -72,6 +74,14 @@ slots:
     - type: from_entity
       entity: rk_liige
       intent: common_teenus_rk_isiku_kohalolu
+
+  # rk_hääletus:
+  #   type: text
+  #   influence_conversation: true
+  #   mappings:
+  #   - type: from_entity
+  #     entity: rk_hääletus
+  #     intent: common_teenus_rk_hääletus
 
   affirm_deny:
     type: text
@@ -85,9 +95,9 @@ slots:
         requested_slot: affirm_deny
 
 forms:
-  # common_service_companies_form:
-  #   required_slots:
-  #       - company_name
+  common_service_companies_form:
+    required_slots:
+        - company_name
   custom_fallback_form:
     required_slots:
         - affirm_deny
@@ -102,33 +112,33 @@ actions:
 - action_react_to_affirm_deny_in_direct_to_customer_support_form
 
 responses:
-  # utter_ask_company_name:
-  # - text: "Mis firma kohta sa infot soovid?"
+  utter_ask_company_name:
+  - text: "Mis firma kohta sa infot soovid?"
 
-  # utter_common_service_companies:
-  #   - condition:
-  #       - type: slot
-  #         name: trigger_intent
-  #         value: common_service_companies_töötajad
-  #     text: "OPENSEARCH {company_name}"
-  #   - condition:
-  #       - type: slot
-  #         name: trigger_intent
-  #         value: common_service_companies_käive
-  #     text: "REVENUEOPENSEARCH {company_name}"
-  #   - condition:
-  #       - type: slot
-  #         name: trigger_intent
-  #         value: common_service_companies_tööjõumaksud
-  #     text: "WORKFORCETAXOPENSEARCH {company_name}"
-  #   - condition:
-  #       - type: slot
-  #         name: trigger_intent
-  #         value: common_service_companies_riiklikud_maksud
-  #     text: "NATIONALTAXOPENSEARCH {company_name}"
+  utter_common_service_companies:
+    - condition:
+        - type: slot
+          name: trigger_intent
+          value: common_service_companies_töötajad
+      text: "OPENSEARCH {company_name}"
+    - condition:
+        - type: slot
+          name: trigger_intent
+          value: common_service_companies_käive
+      text: "REVENUEOPENSEARCH {company_name}"
+    - condition:
+        - type: slot
+          name: trigger_intent
+          value: common_service_companies_tööjõumaksud
+      text: "WORKFORCETAXOPENSEARCH {company_name}"
+    # - condition:
+    #     - type: slot
+    #       name: trigger_intent
+    #       value: common_service_companies_riiklikud_maksud
+    #   text: "NATIONALTAXOPENSEARCH {company_name}"
 
   utter_fallback:
-  - text: "UNKNOWN"  
+  - text: "UNKNOWN"
   
   utter_common_ask_csa:
   - text: "Kas suunan teid klienditeenindajale? (Jah/Ei)"
@@ -167,6 +177,18 @@ responses:
 
   utter_common_teenus_rk_hääletus_viimased:
   - text: "#recentFiveVoting"
+
+  # utter_common_teenus_rk_hääletus:
+  #   - condition:
+  #       - type: slot
+  #         name: rk_hääletus
+  #         value: hääletus
+  #     text: "#recentVoting"
+  #   - condition:
+  #       - type: slot
+  #         name: rk_hääletus
+  #         value: hääletused
+  #     text: "#recentFiveVoting"
 
   utter_common_teenus_nordpool:
   - text: "#nordpool;"
