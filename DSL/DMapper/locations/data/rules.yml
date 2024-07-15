@@ -78,6 +78,7 @@ rules:
   steps:
   - intent: common_teenus_rk_isiku_kohalolu
   - action: utter_common_teenus_rk_isiku_kohalolu
+  - action: action_restart
 
 - rule: common_teenus_rk_hääletus_viimane
   steps:
@@ -89,29 +90,34 @@ rules:
   - intent: common_teenus_rk_hääletus_viimased
   - action: utter_common_teenus_rk_hääletus_viimased
 
-# - rule: common_service_companies_töötajad
+# - rule: common_teenus_rk_hääletus
 #   steps:
-#   - intent: common_service_companies_töötajad
-#   - action: common_service_companies_form
-#   - active_loop: common_service_companies_form
-#   - slot_was_set:
-#     - trigger_intent: common_service_companies_töötajad
+#   - intent: common_teenus_rk_hääletus
+#   - action: utter_common_teenus_rk_hääletus
 
-# - rule: common_service_companies_käive
-#   steps:
-#   - intent: common_service_companies_käive
-#   - action: common_service_companies_form
-#   - active_loop: common_service_companies_form
-#   - slot_was_set:
-#     - trigger_intent: common_service_companies_käive
+- rule: common_service_companies_töötajad
+  steps:
+  - intent: common_service_companies_töötajad
+  - action: common_service_companies_form
+  - active_loop: common_service_companies_form
+  - slot_was_set:
+    - trigger_intent: common_service_companies_töötajad
 
-# - rule: common_service_companies_tööjõumaksud
-#   steps:
-#   - intent: common_service_companies_tööjõumaksud
-#   - action: common_service_companies_form
-#   - active_loop: common_service_companies_form
-#   - slot_was_set:
-#     - trigger_intent: common_service_companies_tööjõumaksud
+- rule: common_service_companies_käive
+  steps:
+  - intent: common_service_companies_käive
+  - action: common_service_companies_form
+  - active_loop: common_service_companies_form
+  - slot_was_set:
+    - trigger_intent: common_service_companies_käive
+
+- rule: common_service_companies_tööjõumaksud
+  steps:
+  - intent: common_service_companies_tööjõumaksud
+  - action: common_service_companies_form
+  - active_loop: common_service_companies_form
+  - slot_was_set:
+    - trigger_intent: common_service_companies_tööjõumaksud
 
 # - rule: common_service_companies_riiklikud_maksud
 #   steps:
@@ -121,13 +127,13 @@ rules:
 #   - slot_was_set:
 #     - trigger_intent: common_service_companies_riiklikud_maksud
 
-# - rule: common_service_companies form submit
-#   condition:
-#   - active_loop: common_service_companies_form
-#   steps:
-#   - action: common_service_companies_form
-#   - active_loop: null
-#   - slot_was_set:
-#     - requested_slot: null
-#   - action: utter_common_service_companies
-#   - action: action_restart
+- rule: common_service_companies form submit
+  condition:
+  - active_loop: common_service_companies_form
+  steps:
+  - action: common_service_companies_form
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: utter_common_service_companies
+  - action: action_restart
