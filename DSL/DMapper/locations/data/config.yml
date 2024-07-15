@@ -24,3 +24,4 @@ policies:
      core_fallback_threshold: 0.8
      restrict_rules: false
 #     check_for_contradictions: false
+   assistant_id: 20240703-163744-large-fleet
