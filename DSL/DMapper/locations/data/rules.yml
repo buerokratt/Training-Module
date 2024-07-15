@@ -78,16 +78,22 @@ rules:
   steps:
   - intent: common_teenus_rk_isiku_kohalolu
   - action: utter_common_teenus_rk_isiku_kohalolu
+  - action: action_restart
 
-- rule: common_teenus_rk_hääletus_viimane
-  steps:
-  - intent: common_teenus_rk_hääletus_viimane
-  - action: utter_common_teenus_rk_hääletus_viimane
+# - rule: common_teenus_rk_hääletus_viimane
+#   steps:
+#   - intent: common_teenus_rk_hääletus_viimane
+#   - action: utter_common_teenus_rk_hääletus_viimane
 
-- rule: common_teenus_rk_hääletus_viimased
+# - rule: common_teenus_rk_hääletus_viimased
+#   steps:
+#   - intent: common_teenus_rk_hääletus_viimased
+#   - action: utter_common_teenus_rk_hääletus_viimased
+
+- rule: common_teenus_rk_hääletus
   steps:
-  - intent: common_teenus_rk_hääletus_viimased
-  - action: utter_common_teenus_rk_hääletus_viimased
+  - intent: common_teenus_rk_hääletus
+  - action: utter_common_teenus_rk_hääletus
 
 - rule: common_service_companies_töötajad
   steps:
