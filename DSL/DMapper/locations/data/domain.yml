@@ -5,7 +5,7 @@ session_config:
 intents:
   - common_ask_csa
   - common_hüvasti_jätmine
-  - common_kinnitamine
+  - common_kinnitamine 
   - common_eitamine
   - common_tänamine
   - common_tervitus
@@ -20,12 +20,14 @@ intents:
   - common_service_companies_tööjõumaksud
   - common_service_companies_riiklikud_maksud
   - common_teenus_rk_isiku_kohalolu
-  - common_teenus_rk_hääletus_viimane
-  - common_teenus_rk_hääletus_viimased
+  - common_teenus_rk_hääletus
+  # - common_teenus_rk_hääletus_viimane
+  # - common_teenus_rk_hääletus_viimased
 
 entities:
   - asukoht
   - rk_liige
+  - rk_hääletus
   
 slots:
   common_teenus_ilm_asukoht:
@@ -64,7 +66,7 @@ slots:
     - type: from_intent
       value: common_service_companies_riiklikud_maksud
       intent: common_service_companies_riiklikud_maksud
-      
+
   rk_liige:
     type: text
     influence_conversation: true
@@ -72,6 +74,14 @@ slots:
     - type: from_entity
       entity: rk_liige
       intent: common_teenus_rk_isiku_kohalolu
+
+  rk_hääletus:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: rk_hääletus
+      intent: common_teenus_rk_hääletus
 
   affirm_deny:
     type: text
@@ -128,7 +138,7 @@ responses:
       text: "NATIONALTAXOPENSEARCH {company_name}"
 
   utter_fallback:
-  - text: "UNKNOWN"  
+  - text: "UNKNOWN"
   
   utter_common_ask_csa:
   - text: "Kas suunan teid klienditeenindajale? (Jah/Ei)"
@@ -162,11 +172,23 @@ responses:
       text: "Riigikogu liikme kohaloleku nägemiseks palun proovige uuesti, kasutades Riigikogu liikme täisnime."
     - text: "#riigikoguIsikuKohalolu, {rk_liige}"
 
-  utter_common_teenus_rk_hääletus_viimane:
-  - text: "#recentVoting"
+  # utter_common_teenus_rk_hääletus_viimane:
+  # - text: "#recentVoting"
 
-  utter_common_teenus_rk_hääletus_viimased:
-  - text: "#recentFiveVoting"
+  # utter_common_teenus_rk_hääletus_viimased:
+  # - text: "#recentFiveVoting"
+
+  utter_common_teenus_rk_hääletus:
+    - condition:
+        - type: slot
+          name: rk_hääletus
+          value: hääletus
+      text: "#recentVoting"
+    - condition:
+        - type: slot
+          name: rk_hääletus
+          value: hääletused
+      text: "#recentFiveVoting"
 
   utter_common_teenus_nordpool:
   - text: "#nordpool;"
