@@ -5,7 +5,7 @@ session_config:
 intents:
   - common_ask_csa
   - common_hüvasti_jätmine
-  - common_kinnitamine 
+  - common_kinnitamine
   - common_eitamine
   - common_tänamine
   - common_tervitus
