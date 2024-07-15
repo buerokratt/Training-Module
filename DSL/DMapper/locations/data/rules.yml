@@ -95,13 +95,13 @@ rules:
 #   - intent: common_teenus_rk_hääletus
 #   - action: utter_common_teenus_rk_hääletus
 
-- rule: common_service_companies_töötajad
+- rule: common_service_companies
   steps:
-  - intent: common_service_companies_töötajad
+  - intent: common_service_companies
   - action: common_service_companies_form
   - active_loop: common_service_companies_form
   - slot_was_set:
-    - trigger_intent: common_service_companies_töötajad
+    - trigger_intent: common_service_companies
 
 - rule: common_service_companies_käive
   steps:
