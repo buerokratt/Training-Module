@@ -1,6 +1,6 @@
 version: "3.0"
 nlu:
-- intent: common_service_companies_töötajad
+- intent: common_service_companies
   examples: |
     - mitu inimest töötab firmas
     - kui palju töötajaid on firmas
