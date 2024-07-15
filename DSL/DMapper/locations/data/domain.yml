@@ -21,8 +21,6 @@ intents:
   - common_service_companies_riiklikud_maksud
   - common_teenus_rk_isiku_kohalolu
   - common_teenus_rk_hääletus
-  # - common_teenus_rk_hääletus_viimane
-  # - common_teenus_rk_hääletus_viimased
 
 entities:
   - asukoht
@@ -171,12 +169,6 @@ responses:
           value: null
       text: "Riigikogu liikme kohaloleku nägemiseks palun proovige uuesti, kasutades Riigikogu liikme täisnime."
     - text: "#riigikoguIsikuKohalolu, {rk_liige}"
-
-  # utter_common_teenus_rk_hääletus_viimane:
-  # - text: "#recentVoting"
-
-  # utter_common_teenus_rk_hääletus_viimased:
-  # - text: "#recentFiveVoting"
 
   utter_common_teenus_rk_hääletus:
     - condition:
