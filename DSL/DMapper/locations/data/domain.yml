@@ -10,6 +10,7 @@ intents:
   - common_tänamine
   - common_tervitus
   - common_klienditeenindajale_suunamine
+  - common_teenus_ilm
   - common_teenus_rahvaalgatus
   - common_teenus_rahvaalgatus_populaarne
   - common_teenus_nordpool
@@ -35,9 +36,6 @@ slots:
     - type: from_entity
       entity: asukoht
       intent: common_teenus_ilm
-    - type: from_entity
-      entity: asukoht
-      intent: nlu_fallback
 
   company_name:
     type: text
@@ -110,6 +108,14 @@ actions:
 - action_react_to_affirm_deny_in_direct_to_customer_support_form
 
 responses:
+  utter_common_teenus_ilm:
+    - condition:
+        - type: slot
+          name: common_teenus_ilm_asukoht
+          value: null
+      text: "Hetkel oskan ma öelda ilma Eesti raames piirkonnapõhiselt. Palun sisestage korrektne piirkonna nimi."
+    - text: "#weather; {common_teenus_ilm_asukoht};"
+
   utter_ask_company_name:
   - text: "Mis firma kohta sa infot soovid?"
 
