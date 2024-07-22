@@ -86,10 +86,33 @@ rules:
   - action: utter_common_teenus_rk_isiku_kohalolu
   - action: action_restart
 
-- rule: common_teenus_rk_hääletus
+- rule: common_teenus_rk_hääletus_viimane
+  condition:
+  - slot_was_set:
+    - rk_hääletus: true
   steps:
   - intent: common_teenus_rk_hääletus
-  - action: utter_common_teenus_rk_hääletus
+  - action: utter_common_teenus_rk_hääletus_viimane
+  - action: action_restart
+
+- rule: common_teenus_rk_hääletus_viimased
+  condition:
+  - slot_was_set:
+    - rk_hääletused: true
+  steps:
+  - intent: common_teenus_rk_hääletus
+  - action: utter_common_teenus_rk_hääletus_viimased
+  - action: action_restart
+
+- rule: common_teenus_rk_hääletus fallback
+  condition:
+  - slot_was_set:
+    - rk_hääletus: null
+    - rk_hääletused: null
+  steps:
+  - intent: common_teenus_rk_hääletus
+  - action: utter_common_teenus_rk_hääletus_fallback
+  - action: action_restart
 
 - rule: common_service_companies_töötajad
   steps:
