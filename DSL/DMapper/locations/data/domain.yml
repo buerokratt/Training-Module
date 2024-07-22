@@ -27,6 +27,7 @@ entities:
   - asukoht
   - rk_liige
   - rk_hääletus
+  - rk_hääletused
   
 slots:
   common_teenus_ilm_asukoht:
@@ -77,6 +78,14 @@ slots:
     mappings:
     - type: from_entity
       entity: rk_hääletus
+      intent: common_teenus_rk_hääletus
+
+  rk_hääletused:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: rk_hääletused
       intent: common_teenus_rk_hääletus
 
   affirm_deny:
@@ -176,17 +185,14 @@ responses:
       text: "Riigikogu liikme kohaloleku nägemiseks palun proovige uuesti, kasutades Riigikogu liikme täisnime."
     - text: "#riigikoguIsikuKohalolu, {rk_liige}"
 
-  utter_common_teenus_rk_hääletus:
-    - condition:
-        - type: slot
-          name: rk_hääletus
-          value: hääletus
-      text: "#recentVoting"
-    - condition:
-        - type: slot
-          name: rk_hääletus
-          value: hääletused
-      text: "#recentFiveVoting"
+  utter_common_teenus_rk_hääletus_viimane:
+  - text: "#recentVoting"
+
+  utter_common_teenus_rk_hääletus_viimased:
+  - text: "#recentFiveVoting"
+
+  utter_common_teenus_rk_hääletus_fallback:
+  - text: "Ma ei saanud täpselt aru. Palun proovige uuesti!"
 
   utter_common_teenus_nordpool:
   - text: "#nordpool;"
