@@ -49,6 +49,12 @@ rules:
   - intent: common_klienditeenindajale_suunamine
   - action: utter_common_klienditeenindajale_suunamine
 
+- rule: common_teenus_ilm
+  steps:
+  - intent: common_teenus_ilm
+  - action: utter_common_teenus_ilm
+  - action: action_restart
+
 - rule: common_teenus_nordpool
   steps:
   - intent: common_teenus_nordpool
