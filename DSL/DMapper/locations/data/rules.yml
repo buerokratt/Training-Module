@@ -37,12 +37,12 @@ rules:
 - rule: common_kinnitamine
   steps:
   - intent: common_kinnitamine
-  - action: action_listen
+  - action: utter_fallback
 
 - rule: common_eitamine
   steps:
   - intent: common_eitamine
-  - action: action_listen
+  - action: utter_fallback
 
 - rule: common_klienditeenindajale_suunamine
   steps:
@@ -145,6 +145,38 @@ rules:
   - active_loop: common_service_companies_form
   - slot_was_set:
     - trigger_intent: common_service_companies_riiklikud_maksud
+
+- rule: common_service_companies_kasusaajad
+  steps:
+  - intent: common_service_companies_kasusaajad
+  - action: common_service_companies_form
+  - active_loop: common_service_companies_form
+  - slot_was_set:
+    - trigger_intent: common_service_companies_kasusaajad
+
+- rule: common_service_companies_seotud_isikud
+  steps:
+  - intent: common_service_companies_seotud_isikud
+  - action: common_service_companies_form
+  - active_loop: common_service_companies_form
+  - slot_was_set:
+    - trigger_intent: common_service_companies_seotud_isikud
+
+- rule: common_service_companies_kontaktandmed
+  steps:
+  - intent: common_service_companies_kontaktandmed
+  - action: common_service_companies_form
+  - active_loop: common_service_companies_form
+  - slot_was_set:
+    - trigger_intent: common_service_companies_kontaktandmed
+
+- rule: common_service_companies_lihtandmed
+  steps:
+  - intent: common_service_companies_lihtandmed
+  - action: common_service_companies_form
+  - active_loop: common_service_companies_form
+  - slot_was_set:
+    - trigger_intent: common_service_companies_lihtandmed
 
 - rule: common_service_companies form submit
   condition:
