@@ -1,4 +1,4 @@
-version: '3.0'
+version: '3.1'
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true
@@ -20,6 +20,10 @@ intents:
   - common_service_companies_käive
   - common_service_companies_tööjõumaksud
   - common_service_companies_riiklikud_maksud
+  - common_service_companies_kasusaajad
+  - common_service_companies_seotud_isikud
+  - common_service_companies_kontaktandmed
+  - common_service_companies_lihtandmed
   - common_teenus_rk_isiku_kohalolu
   - common_teenus_rk_hääletus
 
@@ -63,6 +67,18 @@ slots:
     - type: from_intent
       value: common_service_companies_riiklikud_maksud
       intent: common_service_companies_riiklikud_maksud
+    - type: from_intent
+      value: common_service_companies_kasusaajad
+      intent: common_service_companies_kasusaajad
+    - type: from_intent
+      value: common_service_companies_seotud_isikud
+      intent: common_service_companies_seotud_isikud
+    - type: from_intent
+      value: common_service_companies_kontaktandmed
+      intent: common_service_companies_kontaktandmed
+    - type: from_intent
+      value: common_service_companies_lihtandmed
+      intent: common_service_companies_lihtandmed
 
   rk_liige:
     type: text
@@ -149,6 +165,26 @@ responses:
           name: trigger_intent
           value: common_service_companies_riiklikud_maksud
       text: "NATIONALTAXOPENSEARCH {company_name}"
+    - condition:
+        - type: slot
+          name: trigger_intent
+          value: common_service_companies_kasusaajad
+      text: "BENEFICIARIESOPENSEARCH {company_name}"
+    - condition:
+        - type: slot
+          name: trigger_intent
+          value: common_service_companies_seotud_isikud
+      text: "RELATEDPEOPLEOPENSEARCH {company_name}"
+    - condition:
+        - type: slot
+          name: trigger_intent
+          value: common_service_companies_kontaktandmed
+      text: "COMPANYDETAILSOPENSEARCH {company_name}"
+    - condition:
+        - type: slot
+          name: trigger_intent
+          value: common_service_companies_lihtandmed
+      text: "SIMPLECOMPANYOPENSEARCH {company_name}"
 
   utter_fallback:
   - text: "UNKNOWN"
