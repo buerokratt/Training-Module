@@ -24,6 +24,28 @@ assign_values:
     intent: ${incoming.body.name.replaceAll(/\s+/g, "_")}
     inModel: ${incoming.body.inModel}
 
+getFileLocations:
+  call: http.get
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/internal/return-file-locations"
+    headers:
+      cookie: ${incoming.headers.cookie}
+  result: fileLocations
+
+assign_filename:
+  assign:
+    intentFile: ${fileLocations.response.body.response.intents_location + intent + "_nlu.yml"}
+    intentTmpFile: ${fileLocations.response.body.response.intents_location + intent + "_nlu.yml.tmp"}
+    
+rename_tmp_file:
+  call: http.post
+  args: 
+    url: "[#TRAINING_DMAPPER]/file-manager/move"
+    body:
+      file_path: "${intentTmpFile}"
+      new_path: "${intentFile}"
+  result: moved
+
 getDomainFile:
   call: http.get
   args:
