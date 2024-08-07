@@ -249,20 +249,53 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
   return (
     <>
       {/* <Track align="left" justify="start" gap={10}> */}
-      {/* <Track align="stretch" justify="between" gap={10}> */}
-      <Track gap={10}>
-        <div style={{ width: '66%' }}>
-      <DataTable
-        data={examplesData}
-        columns={examplesColumns}
-        tableBodyPrefix={
-          <tr>
-            <td>
+      <Track align="stretch" justify="between" gap={10}>
+      {/* <Track gap={10}> */}
+        <div style={{ width: '75%' }}>
+
+          <DataTable
+            data={examplesData}
+            columns={examplesColumns}
+            tableBodyPrefix={
+              <tr>
+                <td>
+                  <FormTextarea
+                    ref={newExampleRef}
+                    label={t('global.addNew')}
+                    name="newExample"
+                    minRows={1}
+                    placeholder={t('global.addNew') + '...' || ''}
+                    hideLabel
+                    maxLength={INTENT_EXAMPLE_LENGTH}
+                    showMaxLength
+                    onChange={(e) => setExampleText(e.target.value)}
+                    disableHeightResize
+                  />
+                </td>
+                <td>
+                  <Button
+                    appearance="text"
+                    onClick={handleNewExampleSubmit}
+                    disabled={exampleText.length === 0}
+                  >
+                    <Icon icon={<MdAddCircle color={'rgba(0,0,0,0.54)'}/>}/>
+                    {t('global.add')}
+                  </Button>
+                </td>
+              </tr>
+            }
+          />
+        </div>
+        <Card>
+          <Track align="right" justify="between" direction="vertical" gap={100}>
+            <Track align="left" direction="vertical">
+              <h1>{t('intents.response.title')}</h1>
               <FormTextarea
                 ref={newExampleRef}
                 label={t('global.addNew')}
                 name="newExample"
-                minRows={1}
+                minRows={7}
+                maxRows={7}
                 placeholder={t('global.addNew') + '...' || ''}
                 hideLabel
                 maxLength={INTENT_EXAMPLE_LENGTH}
@@ -270,42 +303,13 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
                 onChange={(e) => setExampleText(e.target.value)}
                 disableHeightResize
               />
-            </td>
-            <td>
-              <Button
-                appearance="text"
-                onClick={handleNewExampleSubmit}
-                disabled={exampleText.length === 0}
-              >
-                <Icon icon={<MdAddCircle color={'rgba(0,0,0,0.54)'} />} />
-                {t('global.add')}
-              </Button>
-            </td>
-          </tr>
-        }
-      />
-        </div>
-        <Card>
-          <Track align="left" direction="vertical">
-            <h1>{t('intents-with-rule.vastus.title')}</h1>
-            <FormTextarea
-              ref={newExampleRef}
-              label={t('global.addNew')}
-              name="newExample"
-              minRows={4}
-              placeholder={t('global.addNew') + '...' || ''}
-              hideLabel
-              maxLength={INTENT_EXAMPLE_LENGTH}
-              showMaxLength
-              onChange={(e) => setExampleText(e.target.value)}
-              disableHeightResize
-            />
+            </Track>
+            <Button
+              appearance="text"
+            >
+              {t('global.save')}
+            </Button>
           </Track>
-          <Button
-            appearance="text"
-          >
-            Salvesta
-          </Button>
         </Card>
       </Track>
 
