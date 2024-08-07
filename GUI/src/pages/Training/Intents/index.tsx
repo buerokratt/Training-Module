@@ -11,7 +11,7 @@ import {
   MdOutlineSave,
 } from 'react-icons/md';
 
-import { Button, Dialog, FormInput, Icon, Tooltip, Track } from 'components';
+import { Button, Card, Dialog, FormInput, FormTextarea, Icon, Tooltip, Track } from 'components';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import { useToast } from 'hooks/useToast';
 import { Intent } from 'types/intent';
@@ -31,7 +31,14 @@ import IntentExamplesTable from './IntentExamplesTable';
 import LoadingDialog from '../../../components/LoadingDialog';
 import ConnectServiceToIntentModal from 'pages/ConnectServiceToIntentModal';
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
-import { isHiddenFeaturesEnabled } from 'constants/config';
+import { isHiddenFeaturesEnabled, RESPONSE_TEXT_LENGTH } from 'constants/config';
+import { editResponse } from '../../../services/responses';
+import { useForm } from 'react-hook-form';
+
+type NewResponse = {
+  name: string;
+  text: string;
+}
 
 const Intents: FC = () => {
   const { t } = useTranslation();
@@ -39,6 +46,7 @@ const Intents: FC = () => {
   const toast = useToast();
   const [searchParams] = useSearchParams();
   const [filter, setFilter] = useState('');
+  const { register, control, handleSubmit } = useForm<NewResponse>();
   const [refreshing, setRefreshing] = useState(false);
   const [editingIntentTitle, setEditingIntentTitle] = useState<string | null>(
     null
@@ -457,6 +465,37 @@ const Intents: FC = () => {
     input.click();
   };
 
+  const intentResponseMutation = useMutation({
+    mutationFn: ({ name, text}: { name: string, text: string}) => editResponse("utter_" + name,  text, false),
+    onMutate: async () => {
+      await queryClient.invalidateQueries(['responses-list']);
+      setRefreshing(true);
+    },
+    onSuccess: async () => {
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: t('toast.responseSaved'),
+      });
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+      setRefreshing(false)
+    },
+    onSettled: () => {
+      setTimeout(() => refetch(), 1100);
+      setRefreshing(false);
+    }
+  });
+
+  const handleIntentResponseSubmit = handleSubmit(async (data) => {
+    intentResponseMutation.mutate(data);
+  });
+
   if (isLoading) return <>Loading...</>;
 
   return (
@@ -681,6 +720,9 @@ const Intents: FC = () => {
               </div>
               <div className="vertical-tabs__content">
                 {getExampleArrayForIntentId() && (
+
+                  <Track align="stretch" justify="between" gap={10}>
+                    <div style={{ width: '75%' }}>
                   <IntentExamplesTable
                     examples={getExampleArrayForIntentId()}
                     onAddNewExample={handleNewExample}
@@ -689,6 +731,35 @@ const Intents: FC = () => {
                     queryRefresh={queryRefresh}
                     updateSelectedIntent={updateSelectedIntent}
                   />
+
+                  <Card>
+                  <Track align="right" justify="between" direction="vertical" gap={100}>
+                <Track align="left" direction="vertical">
+                  <h1>{t('intents.response.title')}</h1>
+                  <FormTextarea
+                    ref={newIntentResponseRef}
+                    label={t('global.addNew')}
+                    name="newIntentResponse"
+                    minRows={7}
+                    maxRows={7}
+                    placeholder={t('global.addNew') + '...' || ''}
+                    hideLabel
+                    maxLength={RESPONSE_TEXT_LENGTH}
+                    showMaxLength
+                    onChange={(e) => setIntentResponseText(e.target.value)}
+                    disableHeightResize
+                  />
+                </Track>
+                <Button
+                  appearance="text"
+                  onClick={handleIntentResponseSubmit}
+                >
+                  {t('global.save')}
+                </Button>
+              </Track>
+            </Card>
+                    </div>
+                  </Track>
                 )}
               </div>
             </Tabs.Content>
