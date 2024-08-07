@@ -424,13 +424,11 @@ const Intents: FC = () => {
 
   const handleNewExample = (example: string) => {
     if (!selectedIntent) return;
-    console.log(selectedIntent);
-    console.log(example)
-    // addExamplesMutation.mutate({
-    //   intentName: selectedIntent.intent,
-    //   intentExamples: selectedIntent.examples,
-    //   newExamples: example.trim(),
-    // });
+    addExamplesMutation.mutate({
+      intentName: selectedIntent.intent,
+      intentExamples: selectedIntent.examples,
+      newExamples: example.trim(),
+    });
   };
 
   const handleIntentExamplesUpload = () => {
