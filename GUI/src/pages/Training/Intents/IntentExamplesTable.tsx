@@ -10,7 +10,7 @@ import {
   MdAddCircle,
 } from 'react-icons/md';
 
-import { Button, Card, DataTable, Dialog, FormTextarea, Icon, Track } from 'components';
+import { Button, DataTable, Dialog, FormTextarea, Icon } from 'components';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import { INTENT_EXAMPLE_LENGTH } from 'constants/config';
 import type { Entity } from 'types/entity';
@@ -248,11 +248,6 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
 
   return (
     <>
-      {/* <Track align="left" justify="start" gap={10}> */}
-      <Track align="stretch" justify="between" gap={10}>
-      {/* <Track gap={10}> */}
-        <div style={{ width: '75%' }}>
-
           <DataTable
             data={examplesData}
             columns={examplesColumns}
@@ -285,33 +280,6 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
               </tr>
             }
           />
-        </div>
-        <Card>
-          <Track align="right" justify="between" direction="vertical" gap={100}>
-            <Track align="left" direction="vertical">
-              <h1>{t('intents.response.title')}</h1>
-              <FormTextarea
-                ref={newExampleRef}
-                label={t('global.addNew')}
-                name="newExample"
-                minRows={7}
-                maxRows={7}
-                placeholder={t('global.addNew') + '...' || ''}
-                hideLabel
-                maxLength={INTENT_EXAMPLE_LENGTH}
-                showMaxLength
-                onChange={(e) => setExampleText(e.target.value)}
-                disableHeightResize
-              />
-            </Track>
-            <Button
-              appearance="text"
-            >
-              {t('global.save')}
-            </Button>
-          </Track>
-        </Card>
-      </Track>
 
       {deletableRow !== null && (
         <Dialog
