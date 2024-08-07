@@ -25,6 +25,7 @@ import IntentsFollowupTraining from 'pages/Training/IntentsFollowupTraining';
 import RegexDetail from 'pages/Training/IntentsFollowupTraining/RegexDetail';
 import TrainAndTest from 'pages/Training/TrainAndTest';
 import ConnectionRequests from 'pages/ConnectionRequests';
+import IntentsWithRule from './pages/Training/IntentsWithRule';
 
 const App: FC = () => {
   useQuery<{
@@ -51,6 +52,7 @@ const App: FC = () => {
       <Route element={<Layout />}>
         <Route index element={<Navigate to='/training/intents' />} />
         <Route path='/training/intents' element={<Intents />} />
+        <Route path='/training/intents-with-rule' element={<IntentsWithRule />} />
         <Route path='/training/common-intents' element={<CommonIntents />} />
         <Route path='/training/intents-followup-training' element={<IntentsFollowupTraining />} />
         <Route path='/training/regex/:id' element={<RegexDetail />} />
