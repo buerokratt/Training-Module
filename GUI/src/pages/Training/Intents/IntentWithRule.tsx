@@ -24,14 +24,13 @@ import {
   downloadExamples,
   editIntent,
   getLastModified,
-  turnIntentIntoService,
   uploadExamples,
 } from 'services/intents';
-import IntentsWithRuleTable from './IntentsWithRuleTable';
+import IntentsWithRuleExamplesTable from './IntentWithRuleExamplesTable';
 import LoadingDialog from '../../../components/LoadingDialog';
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
 
-const IntentsWithRule: FC = () => {
+const IntentWithRule: FC = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const toast = useToast();
@@ -202,27 +201,6 @@ const IntentsWithRule: FC = () => {
 
   const intentModifiedMutation = useMutation({
     mutationFn: (data: { intentName: string }) => getLastModified(data),
-  });
-
-  const turnIntentIntoServiceMutation = useMutation({
-    mutationFn: ({ intent }: { intent: Intent }) =>
-      turnIntentIntoService(intent),
-    onSuccess: async (_, { intent }) => {
-      await queryClient.invalidateQueries(['intents']);
-      toast.open({
-        type: 'success',
-        title: t('global.notification'),
-        message: t('toast.intentToServiceSuccess'),
-      });
-      window.location.href = `${serviceModuleGuiBaseUrl}/services/newService/${intent.intent}`;
-    },
-    onError: (error: AxiosError) => {
-      toast.open({
-        type: 'error',
-        title: t('global.notificationError'),
-        message: error.message,
-      });
-    },
   });
 
   useDocumentEscapeListener(() => setEditingIntentTitle(null));
@@ -416,11 +394,13 @@ const IntentsWithRule: FC = () => {
 
   const handleNewExample = (example: string) => {
     if (!selectedIntent) return;
-    addExamplesMutation.mutate({
-      intentName: selectedIntent.intent,
-      intentExamples: selectedIntent.examples,
-      newExamples: example.trim(),
-    });
+    console.log(selectedIntent);
+    console.log(example)
+    // addExamplesMutation.mutate({
+    //   intentName: selectedIntent.intent,
+    //   intentExamples: selectedIntent.examples,
+    //   newExamples: example.trim(),
+    // });
   };
 
   const handleIntentExamplesUpload = () => {
@@ -643,7 +623,7 @@ const IntentsWithRule: FC = () => {
               </div>
               <div className="vertical-tabs__content">
                 {getExampleArrayForIntentId() && (
-                  <IntentsWithRuleTable
+                  <IntentsWithRuleExamplesTable
                     examples={getExampleArrayForIntentId()}
                     onAddNewExample={handleNewExample}
                     entities={entities ?? []}
@@ -694,7 +674,7 @@ const IntentsWithRule: FC = () => {
   );
 }
 
-export default withAuthorization(IntentsWithRule, [
+export default withAuthorization(IntentWithRule, [
   ROLES.ROLE_ADMINISTRATOR,
   ROLES.ROLE_CHATBOT_TRAINER,
   ROLES.ROLE_SERVICE_MANAGER,

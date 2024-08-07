@@ -10,7 +10,7 @@ import {
   MdAddCircle,
 } from 'react-icons/md';
 
-import { Button, DataTable, Dialog, FormTextarea, Icon } from 'components';
+import { Button, Card, DataTable, Dialog, FormTextarea, Icon, Track } from 'components';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import { INTENT_EXAMPLE_LENGTH } from 'constants/config';
 import type { Entity } from 'types/entity';
@@ -248,6 +248,10 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
 
   return (
     <>
+      {/* <Track align="left" justify="start" gap={10}> */}
+      {/* <Track align="stretch" justify="between" gap={10}> */}
+      <Track gap={10}>
+        <div style={{ width: '66%' }}>
       <DataTable
         data={examplesData}
         columns={examplesColumns}
@@ -280,6 +284,30 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
           </tr>
         }
       />
+        </div>
+        <Card>
+          <Track align="left" direction="vertical">
+            <h1>{t('intents-with-rule.vastus.title')}</h1>
+            <FormTextarea
+              ref={newExampleRef}
+              label={t('global.addNew')}
+              name="newExample"
+              minRows={4}
+              placeholder={t('global.addNew') + '...' || ''}
+              hideLabel
+              maxLength={INTENT_EXAMPLE_LENGTH}
+              showMaxLength
+              onChange={(e) => setExampleText(e.target.value)}
+              disableHeightResize
+            />
+          </Track>
+          <Button
+            appearance="text"
+          >
+            Salvesta
+          </Button>
+        </Card>
+      </Track>
 
       {deletableRow !== null && (
         <Dialog
