@@ -16,6 +16,21 @@ This repo will primarily contain
 
 ## Notes for the Developers
 
+### Docker related (local development)
+
+- Comment out training_gui in docker-comose.yml
+- Run GUI in your local machine, from GUI folder: `npm run dev`
+- Everything else `docker-compose up -d`
+
+### Open Search
+
+In ./DSL/OpenSearch
+- To Initialize Open Search run `./deploy-opensearch.sh <URL> <AUTH> <Is Mock Allowed - Default false>`
+- To Use Opensearch locally run `./deploy-opensearch.sh http://localhost:9200 admin:admin true`
+
+In ./DSL/Pipelines
+- To populate OpenSearch with Rasa YAML files run `./init_with_mocks.sh http://localhost:3010`
+
 ### TIM
 
 To be able to log in locally, manually create a cookie called `customJwtCookie` in the browser. Fill with the contents of the response:
@@ -40,21 +55,6 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 
 ....
 ```
-
-### Open Search
-
-In ./DSL/OpenSearch
-- To Initialize Open Search run `./deploy-opensearch.sh <URL> <AUTH> <Is Mock Allowed - Default false>`
-- To Use Opensearch locally run `./deploy-opensearch.sh http://localhost:9200 admin:admin true`
-
-In ./DSL/Pipelines
-- To populate OpenSearch with Rasa YAML files run `./init_with_mocks.sh http://localhost:3010`
-
-### Docker related (local development)
-
-- Comment out training_gui in docker-comose.yml
-- Run GUI in your local machine, from GUI folder: `npm run dev`
-- Everything else `docker-compose up -d`
 
 ### Use external components(Header/Main Navigation).
 
