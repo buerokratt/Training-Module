@@ -248,38 +248,38 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
 
   return (
     <>
-          <DataTable
-            data={examplesData}
-            columns={examplesColumns}
-            tableBodyPrefix={
-              <tr>
-                <td>
-                  <FormTextarea
-                    ref={newExampleRef}
-                    label={t('global.addNew')}
-                    name="newExample"
-                    minRows={1}
-                    placeholder={t('global.addNew') + '...' || ''}
-                    hideLabel
-                    maxLength={INTENT_EXAMPLE_LENGTH}
-                    showMaxLength
-                    onChange={(e) => setExampleText(e.target.value)}
-                    disableHeightResize
-                  />
-                </td>
-                <td>
-                  <Button
-                    appearance="text"
-                    onClick={handleNewExampleSubmit}
-                    disabled={exampleText.length === 0}
-                  >
-                    <Icon icon={<MdAddCircle color={'rgba(0,0,0,0.54)'}/>}/>
-                    {t('global.add')}
-                  </Button>
-                </td>
-              </tr>
-            }
-          />
+      <DataTable
+        data={examplesData}
+        columns={examplesColumns}
+        tableBodyPrefix={
+          <tr>
+            <td>
+              <FormTextarea
+                ref={newExampleRef}
+                label={t('global.addNew')}
+                name="newExample"
+                minRows={1}
+                placeholder={t('global.addNew') + '...' || ''}
+                hideLabel
+                maxLength={INTENT_EXAMPLE_LENGTH}
+                showMaxLength
+                onChange={(e) => setExampleText(e.target.value)}
+                disableHeightResize
+              />
+            </td>
+            <td>
+              <Button
+                appearance="text"
+                onClick={handleNewExampleSubmit}
+                disabled={exampleText.length === 0}
+              >
+                <Icon icon={<MdAddCircle color={'rgba(0,0,0,0.54)'}/>}/>
+                {t('global.add')}
+              </Button>
+            </td>
+          </tr>
+        }
+      />
 
       {deletableRow !== null && (
         <Dialog
