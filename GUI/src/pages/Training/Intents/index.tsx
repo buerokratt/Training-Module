@@ -11,7 +11,7 @@ import {
   MdOutlineSave,
 } from 'react-icons/md';
 
-import { Button, Card, Dialog, FormInput, FormTextarea, Icon, Tooltip, Track } from 'components';
+import { Button, Dialog, FormInput, FormTextarea, Icon, Tooltip, Track } from 'components';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import { useToast } from 'hooks/useToast';
 import { Intent } from 'types/intent';
@@ -46,13 +46,13 @@ const Intents: FC = () => {
   const queryClient = useQueryClient();
   const toast = useToast();
   const intentWithResponseRef = useRef<HTMLTextAreaElement>(null);
-  const [intentWithResponse, setIntentWithResponse] = useState<string>('');
+  const [intentResponseName, setIntentResponseName] = useState<string>('');
+  const [intentResponseText, setIntentResponseText] = useState<string>('');
   const [searchParams] = useSearchParams();
   const [filter, setFilter] = useState('');
-  // const { register, control, handleSubmit } = useForm<NewResponse>();
   const [refreshing, setRefreshing] = useState(false);
   const [refreshingResponses, setRefreshingResponses] = useState(false);
-  const [refreshingStories, setRefreshingStories] = useState(false);
+  // const [refreshingRules, setRefreshingRules] = useState(false);
   const [editingIntentTitle, setEditingIntentTitle] = useState<string | null>(
     null
   );
@@ -85,7 +85,7 @@ const Intents: FC = () => {
   let intentsFullList = intentsFullResponse?.response?.intents;
   let intents: Intent[] = [];
 
-  let intentResponsesFullList = responsesFullResponse[0].responses;
+  let intentResponsesFullList = responsesFullResponse ? responsesFullResponse[0].responses : null;
   let intentResponses: Response[] = [];
 
   if (intentsFullList) {
@@ -142,21 +142,21 @@ const Intents: FC = () => {
               examples: newSelectedIntent.examples,
               serviceId: newSelectedIntent.serviceId,
             });
+            queryClient.fetchQuery(['responses-list']).then((res: any) => {
+              setRefreshingResponses(false);
+              if (intentResponses.length > 0) {
+                const intentExistingResponse = res[0].response.find((response: any) => response.name.startsWith(`utter_${newSelectedIntent.id}`));
+                if (intentExistingResponse) {
+                  setSelectedIntentResponse({
+                    name: intentExistingResponse.name,
+                    text: intentExistingResponse.text,
+                  });
+                }
+              }
+            })
           }
         }
       });
-      queryClient.fetchQuery(['responses-list']).then((res: any) => {
-        setRefreshingResponses(false);
-        if (intentResponses.length > 0 && selectIntent) {
-          const intentExistingResponse = res[0].response.find((response: any) => response.name.startsWith(`utter_${selectedIntent!.id}_`));
-          if (intentExistingResponse) {
-            setSelectedIntentResponse({
-              name: intentExistingResponse.name,
-              text: intentExistingResponse.text,
-            });
-          }
-        }
-      })
     },
     [intents, queryClient]
   );
@@ -293,7 +293,7 @@ const Intents: FC = () => {
       if (!intents) return;
       const selectedIntent = intents.find((intent) => intent.intent === value);
       if (selectedIntent) {
-        queryRefresh(selectedIntent.intent || '');
+        queryRefresh(selectedIntent?.intent || '');
         intentModifiedMutation.mutate(
           { intentName: selectedIntent.intent },
           {
@@ -502,45 +502,25 @@ const Intents: FC = () => {
     input.click();
   };
 
-  const intentResponseMutation = useMutation({
-    mutationFn: ({ name, text}: { name: string, text: string}) => editResponse("utter_" + name,  text, false),
+  const addOrEditResponseMutation = useMutation({
+    mutationFn: (intentResponseData: {
+      id: string,
+      responseText: string,
+      update: boolean
+    }) => editResponse(intentResponseData.id, intentResponseData.responseText, intentResponseData.update),
     onMutate: async () => {
-      await queryClient.invalidateQueries(['responses-list']);
-      setRefreshing(true);
-    },
-    onSuccess: async () => {
-      toast.open({
-        type: 'success',
-        title: t('global.notification'),
-        message: t('toast.responseSaved'),
-      });
-    },
-    onError: (error: AxiosError) => {
-      toast.open({
-        type: 'error',
-        title: t('global.notificationError'),
-        message: error.message,
-      });
-      setRefreshing(false)
-    },
-    onSettled: () => {
-      setTimeout(() => refetch(), 1100);
-      setRefreshing(false);
-    }
-  });
-
-  const addResponseMutation = useMutation({
-    mutationFn: (addResponseData: {
-      intentName: string;
-      intentResponse: string;
-      storyName: string;
-    }) => addResponse(addResponseData),
-    onMutate: () => {
-      setRefreshing(true);
-    },
-    onSuccess: async () => {
       await queryClient.invalidateQueries(['intents/full']);
+      await queryClient.invalidateQueries(['response-list']);
+      await queryClient.invalidateQueries(['rules']);
+
+      setRefreshing(true);
+      setRefreshingResponses(true);
+      // setRefreshingRules(true);
+    },
+    onSuccess: async () => {
       await queryClient.refetchQueries(['intents/full']);
+      await queryClient.refetchQueries(['response-list']);
+      await queryClient.refetchQueries(['rules']);
 
       toast.open({
         type: 'success',
@@ -557,22 +537,28 @@ const Intents: FC = () => {
     },
     onSettled: () => {
       setTimeout(() => refetchResponses(), 1100);
-      queryRefresh(selectedIntent?.intent || '');
+      queryRefresh(selectedIntent?.id || '');
       setRefreshing(false);
+      setRefreshingResponses(false);
+      // setRefreshingRules(false);
     },
   });
 
   const addRuleMutation = useMutation({
-    mutationFn: ({ data, category }: { data: RuleDTO, category: string }) => {
-      return addStoryOrRule(data as RuleDTO, category);
+    mutationFn: ({ data }: {data: RuleDTO}) => addStoryOrRule(data as RuleDTO, "rules"),
+    onMutate: async () => {
+      await queryClient.invalidateQueries(['rules']);
+      setRefreshing(true);
+      setRefreshingResponses(true);
+      // setRefreshingRules(true);
     },
-    onMutate: () => setRefreshing(true),
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['stories']);
+      await queryClient.refetchQueries(['rules']);
+
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: t('toast.storyAdded'),
+        message: t('toast.newRuleAdded'),
       });
     },
     onError: (error: AxiosError) => {
@@ -582,20 +568,33 @@ const Intents: FC = () => {
         message: error.message,
       });
     },
-    onSettled: () => setRefreshing(false),
+    onSettled: () => {
+      setTimeout(() => refetchResponses(), 1100);
+      queryRefresh(selectedIntent?.id || '');
+      setRefreshing(false);
+      setRefreshingResponses(false);
+      // setRefreshingRules(false);
+    },
   });
 
   const editRuleMutation = useMutation({
-    mutationFn: ({ id, data, category }: { id: string, data: RuleDTO, category: string }) => {
-      return editStoryOrRule(id, data as RuleDTO, category);
+    mutationFn: ({id, data}: {
+      id: string | number,
+      data: RuleDTO
+    }) => editStoryOrRule(id, data as RuleDTO, "rules"),
+    onMutate: async () => {
+      await queryClient.invalidateQueries(['rules']);
+      setRefreshing(true);
+      setRefreshingResponses(true);
+      // setRefreshingRules(true);
     },
-    onMutate: () => setRefreshing(true),
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['stories']);
+      await queryClient.refetchQueries(['rules']);
+
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: t('toast.storyUpdated'),
+        message: t('toast.newRuleAdded'),
       });
     },
     onError: (error: AxiosError) => {
@@ -605,28 +604,68 @@ const Intents: FC = () => {
         message: error.message,
       });
     },
-    onSettled: () => setRefreshing(false),
+    onSettled: () => {
+      setTimeout(() => refetchResponses(), 1100);
+      queryRefresh(selectedIntent?.id || '');
+      setRefreshing(false);
+      setRefreshingResponses(false);
+      // setRefreshingRules(false);
+    },
   });
 
-  // const handleIntentResponseSubmit = handleSubmit(async (data) => {
-  //   intentResponseMutation.mutate(data);
-  // });
+  const handleEditIntent = () => {
+    // intentEditMutation.mutate({
+    //   oldName: selectedIntent!.intent,
+    //   newName: editingIntentTitle,
+    // });
+    // if (intentResponseName) {
+    //   storyEditMutation.mutate({
+    //     id: string |number,
+    //     storyData: RuleDTO,
+    //     category: string,
+    //   });
+    // }
+  }
 
   const handleIntentResponseSubmit = () => {
-    if (!intentWithResponseRef || !selectedIntent) return;
+    if (!intentResponseText || intentResponseText == '' || !selectedIntent) return;
 
-    // Praktiliselt sama sisuga, peab otsustama selle põhjal kas varem sai mingi vastuse, kui leht laetud
-    // add/edit response
-    addResponseMutation.mutate({
-      intentName: selectedIntent.intent,
-      intentResponse: intentWithResponse,
-      storyName: selectedIntent.intent + '_response',
-    })
+    addOrEditResponseMutation.mutate({
+      id: `utter_${selectedIntent.id}`,
+      responseText: intentResponseText,
+      update: !!intentResponseName
+    });
 
-    // add/edit story/rule
-    addRuleMutation.mutate({
-
-    })
+    if (intentResponseName) {
+      editRuleMutation.mutate({
+        id: `rule_${selectedIntent.id}`,
+        data: {
+          rule: `rule_${selectedIntent.id}`,
+          steps: [
+            {
+              intent: selectedIntent.id,
+            },
+            {
+              action: `utter_${selectedIntent.id}`,
+            }
+          ]
+        }
+      })
+    } else {
+      addRuleMutation.mutate({
+        data: {
+          rule: `rule_${selectedIntent.id}`,
+          steps: [
+            {
+              intent: selectedIntent.id,
+            },
+            {
+              action: `utter_${selectedIntent.id}`,
+            }
+          ]
+        }
+      })
+    }
   }
 
   if (isLoading) return <>Loading...</>;
@@ -732,12 +771,7 @@ const Intents: FC = () => {
                       {editingIntentTitle ? (
                         <Button
                           appearance="text"
-                          onClick={() =>
-                            intentEditMutation.mutate({
-                              oldName: selectedIntent.intent,
-                              newName: editingIntentTitle,
-                            })
-                          }
+                          onClick={handleEditIntent}
                         >
                           <Icon icon={<MdOutlineSave />} />
                           {t('global.save')}
@@ -746,7 +780,7 @@ const Intents: FC = () => {
                         <Button
                           appearance="text"
                           onClick={() =>
-                            setEditingIntentTitle(selectedIntent.intent)
+                            setEditingIntentTitle(selectedIntent!.intent)
                           }
                         >
                           <Icon icon={<MdOutlineModeEditOutline />} />
@@ -853,8 +887,8 @@ const Intents: FC = () => {
               </div>
               <div className="vertical-tabs__content">
                 {getExampleArrayForIntentId() && (
-                  <Track align="stretch" justify="between" gap={10}>
-                    <div style={{ width: '75%' }}>
+                  <Track align="stretch" justify="between" gap={10} style={{ width: '100%' }}>
+                    <div style={{ flex: 1 }}>
                       <IntentExamplesTable
                         examples={getExampleArrayForIntentId()}
                         onAddNewExample={handleNewExample}
@@ -865,32 +899,30 @@ const Intents: FC = () => {
                       />
                     </div>
                     <div>
-                      <Card>
-                        <Track align="right" justify="between" direction="vertical" gap={100}>
-                          <Track align="left" direction="vertical">
-                            <h1>{t('intents.response.title')}</h1>
-                            <FormTextarea
-                              ref={intentWithResponseRef}
-                              label={t('global.addNew')}
-                              name="intentResponse"
-                              minRows={7}
-                              maxRows={7}
-                              placeholder={t('global.addNew') + '...' || ''}
-                              hideLabel
-                              maxLength={RESPONSE_TEXT_LENGTH}
-                              showMaxLength
-                              onChange={(e) => setIntentWithResponse(e.target.value)}
-                              disableHeightResize
-                            />
-                          </Track>
-                          <Button
-                            appearance="text"
-                            onClick={handleIntentResponseSubmit}
-                          >
-                            {t('global.save')}
-                          </Button>
+                      <Track align="right" justify="between" direction="vertical" gap={100}>
+                        <Track align="left" direction="vertical">
+                          <h1>{t('intents.response.title')}</h1>
+                          <FormTextarea
+                            ref={intentWithResponseRef}
+                            label={t('global.addNew')}
+                            name="intentResponse"
+                            minRows={7}
+                            maxRows={7}
+                            placeholder={t('global.addNew') + '...' || ''}
+                            hideLabel
+                            maxLength={RESPONSE_TEXT_LENGTH}
+                            showMaxLength
+                            onChange={(e) => setIntentResponseText(e.target.value)}
+                            disableHeightResize
+                          />
                         </Track>
-                      </Card>
+                        <Button
+                          appearance="text"
+                          onClick={handleIntentResponseSubmit}
+                        >
+                          {t('global.save')}
+                        </Button>
+                      </Track>
                     </div>
                   </Track>
                 )}
@@ -962,7 +994,7 @@ const Intents: FC = () => {
           <p>{t('global.removeValidation')}</p>
         </Dialog>
       )}
-      {refreshing && (
+      {(refreshing || refreshingResponses) && (
         <LoadingDialog title={t('global.updatingDataHead')}>
           <p>{t('global.updatingDataBody')}</p>
         </LoadingDialog>
