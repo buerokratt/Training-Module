@@ -160,7 +160,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
         title: t('global.notification'),
         message: t('toast.exampleDeleted'),
       });
-      handleRefresh(selectedIntent.intent);
+      handleRefresh(selectedIntent.id);
       deleteExampleFromList(oldExampleText);
     },
     onError: (error: AxiosError) => {
