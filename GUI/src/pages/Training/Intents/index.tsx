@@ -33,7 +33,7 @@ import ConnectServiceToIntentModal from 'pages/ConnectServiceToIntentModal';
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
 import { isHiddenFeaturesEnabled, RESPONSE_TEXT_LENGTH } from 'constants/config';
 import { editResponse } from '../../../services/responses';
-import { RuleDTO } from '../../../types/rule';
+import { Rule, RuleDTO } from '../../../types/rule';
 import { addStoryOrRule, editStoryOrRule } from '../../../services/stories';
 
 type Response = {
@@ -45,20 +45,22 @@ const Intents: FC = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const toast = useToast();
-  const intentWithResponseRef = useRef<HTMLTextAreaElement>(null);
+
   const [intentResponseName, setIntentResponseName] = useState<string>('');
   const [intentResponseText, setIntentResponseText] = useState<string>('');
+
   const [searchParams] = useSearchParams();
   const [filter, setFilter] = useState('');
+
   const [refreshing, setRefreshing] = useState(false);
   const [refreshingResponses, setRefreshingResponses] = useState(false);
-  // const [refreshingRules, setRefreshingRules] = useState(false);
-  const [editingIntentTitle, setEditingIntentTitle] = useState<string | null>(
-    null
-  );
-  const [selectedTab, setSelectedTab] = useState<string | null>(null);
+  const [refreshingRules, setRefreshingRules] = useState(false);
+
+  const [editingIntentTitle, setEditingIntentTitle] = useState<string | null>(null);
   const [selectedIntent, setSelectedIntent] = useState<Intent | null>(null);
   const [selectedIntentResponse, setSelectedIntentResponse] = useState<Response | null>(null);
+  const [intentRule, setIntentRule] = useState<string>('');
+
   const [deletableIntent, setDeletableIntent] = useState<Intent | null>(null);
   const [connectableIntent, setConnectableIntent] = useState<Intent | null>(
     null
@@ -82,19 +84,24 @@ const Intents: FC = () => {
     queryKey: ['responses-list'],
   });
 
+  const { data: rulesFullResponse, refetch: refetchRules } = useQuery({
+    queryKey: ['rules'],
+  })
+
   let intentsFullList = intentsFullResponse?.response?.intents;
   let intents: Intent[] = [];
 
   let intentResponsesFullList = responsesFullResponse ? responsesFullResponse[0].response : null;
   let intentResponses: Response[] = [];
 
+  let rulesFullList = rulesFullResponse?.response.rules;
+  let rules: Rule[] = [];
+
   if (intentsFullList) {
     intentsFullList.forEach((intent: any) => {
-      const formattedTitle = intent.title.replace(/_/g, ' ');
       const countExamples = intent.examples.length;
       const newIntent: Intent = {
         id: intent.title,
-        intent: formattedTitle,
         description: null,
         inModel: intent.inmodel,
         modifiedAt: '',
@@ -116,6 +123,12 @@ const Intents: FC = () => {
     })
   }
 
+  if (rulesFullList) {
+    rulesFullList.forEach((rule: any) => {
+      rules.push(rule);
+    })
+  }
+
   const getExampleArrayForIntentId = (): string[] => {
     if (selectedIntent) {
       return selectedIntent.examples;
@@ -129,14 +142,16 @@ const Intents: FC = () => {
       setSelectedIntent(null);
       setIntentResponseName(null);
       setIntentResponseText(null);
+
       queryClient.fetchQuery(['intents/full']).then((res: any) => {
         setRefreshing(false);
+
         if (intents.length > 0) {
           const newSelectedIntent = res.response.intents.find((intent: any) => intent.title === selectIntent) || null;
+
           if (newSelectedIntent) {
             setSelectedIntent({
               id: newSelectedIntent.title,
-              intent: newSelectedIntent.title.replace(/_/g, ' '),
               description: null,
               inModel: newSelectedIntent.inmodel,
               modifiedAt: '',
@@ -144,6 +159,7 @@ const Intents: FC = () => {
               examples: newSelectedIntent.examples,
               serviceId: newSelectedIntent.serviceId,
             });
+
             queryClient.fetchQuery(['responses-list']).then((res: any) => {
               setRefreshingResponses(false);
               if (intentResponses.length > 0) {
@@ -151,6 +167,16 @@ const Intents: FC = () => {
                 if (intentExistingResponse) {
                   setIntentResponseText(intentExistingResponse.text);
                   setIntentResponseName(intentExistingResponse.name);
+                }
+              }
+            })
+
+            queryClient.fetchQuery(['rules']).then((res: any) => {
+              setRefreshingRules(false);
+              if (rules.length > 0) {
+                const intentExistingRule = res.find((rule: any) => rule.id === `rule_${newSelectedIntent.title}`)
+                if (intentExistingRule) {
+                  setIntentRule(intentExistingRule.id);
                 }
               }
             })
@@ -175,11 +201,10 @@ const Intents: FC = () => {
     const queryIntentName = searchParams.get('intent');
     if (intents && queryIntentName) {
       const queryIntent = intents.find(
-        (intent) => intent.intent === queryIntentName
+        (intent) => intent.id.replace(/_/g, ' ') === queryIntentName
       );
       if (queryIntent) {
         setSelectedIntent(queryIntent);
-        setSelectedTab(queryIntentName);
       }
     }
   }, [intents, searchParams]);
@@ -226,7 +251,6 @@ const Intents: FC = () => {
       setDeletableIntent(null);
       setConnectableIntent(null);
       setSelectedIntent(null);
-      setSelectedTab(null);
     },
     onSuccess: async () => {
       queryRefresh(null);
@@ -247,7 +271,7 @@ const Intents: FC = () => {
     },
     onSettled: () => {
       intents = intents.filter(
-        (intent) => intent.intent !== selectedIntent?.intent
+        (intent) => intent.id.replace(/_/g, ' ') !== selectedIntent?.id
       );
       setRefreshing(false);
     },
@@ -282,8 +306,8 @@ const Intents: FC = () => {
 
   const filteredIntents = useMemo(() => {
     if (!intents) return [];
-    return intents.filter((intent) => intent.intent?.includes(filter))
-      .sort((a, b) => a.intent.localeCompare(b.intent));
+    return intents.filter((intent) => intent.id?.replace(/_/g, ' ').includes(filter))
+      .sort((a, b) => a.id.localeCompare(b.id));
   }, [intents, filter]);
 
   const handleTabsValueChange = useCallback(
@@ -293,21 +317,22 @@ const Intents: FC = () => {
       setIntentResponseName(null);
       setIntentResponseText(null);
       if (!intents) return;
-      const selectedIntent = intents.find((intent) => intent.intent === value);
+      const selectedIntent = intents.find((intent) => intent.id === value);
+      // console.debug('handleTabsValueChange')
+      // console.debug(value)
+      // console.debug(selectedIntent?.id)
       if (selectedIntent) {
         queryRefresh(selectedIntent?.id || '');
         intentModifiedMutation.mutate(
-          { intentName: selectedIntent.intent },
+          { intentName: selectedIntent.id },
           {
             onSuccess: (data) => {
               selectedIntent.modifiedAt = data.response;
               setSelectedIntent(selectedIntent);
-              setSelectedTab(selectedIntent.intent);
             },
             onError: (error) => {
               selectedIntent.modifiedAt = '';
               setSelectedIntent(selectedIntent);
-              setSelectedTab(selectedIntent.intent);
             },
           }
         );
@@ -349,7 +374,7 @@ const Intents: FC = () => {
       setRefreshing(true);
     },
     onSuccess: async () => {
-      queryRefresh(editingIntentTitle);
+      queryRefresh(selectedIntent!.id);
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -472,7 +497,7 @@ const Intents: FC = () => {
     addExamplesMutation.mutate({
       intentName: selectedIntent.id,
       intentExamples: selectedIntent.examples,
-      newExamples: example.trim(),
+      newExamples: example.replace(/(\t|\n)+/g, ' ').trim(),
     });
   };
 
@@ -546,7 +571,7 @@ const Intents: FC = () => {
     mutationFn: ({ data }: {data: RuleDTO}) => addStoryOrRule(data as RuleDTO, "rules"),
     onMutate: async () => {
       await queryClient.invalidateQueries(['rules']);
-      setRefreshing(true);
+      // setRefreshing(true);
       setRefreshingResponses(true);
     },
     onSuccess: async () => {
@@ -567,8 +592,8 @@ const Intents: FC = () => {
     },
     onSettled: () => {
       setTimeout(() => refetchResponses(), 1100);
-      queryRefresh(selectedIntent?.id || '');
-      setRefreshing(false);
+      // queryRefresh(selectedIntent?.id || '');
+      // setRefreshing(false);
       setRefreshingResponses(false);
     },
   });
@@ -580,7 +605,7 @@ const Intents: FC = () => {
     }) => editStoryOrRule(id, data as RuleDTO, "rules"),
     onMutate: async () => {
       await queryClient.invalidateQueries(['rules']);
-      setRefreshing(true);
+      // setRefreshing(true);
       setRefreshingResponses(true);
     },
     onSuccess: async () => {
@@ -601,40 +626,50 @@ const Intents: FC = () => {
     },
     onSettled: () => {
       setTimeout(() => refetchResponses(), 1100);
-      queryRefresh(selectedIntent?.id || '');
-      setRefreshing(false);
+      // queryRefresh(selectedIntent?.id || '');
+      // setRefreshing(false);
       setRefreshingResponses(false);
     },
   });
 
   const handleEditIntent = () => {
+    if (!selectedIntent || !editingIntentTitle) return;
+
+    const newId = editingIntentTitle.replace(/\s+/g, '_');
+
     intentEditMutation.mutate({
-      oldName: selectedIntent!.id,
-      newName: editingIntentTitle,
+      oldName: selectedIntent.id,
+      newName: newId,
     });
-    if (intentResponseName) {
-      editRuleMutation.mutate({
-        id: `rule_${selectedIntent!.id}`,
-        data: {
-          rule: `rule_${editingIntentTitle}`,
-          steps: [
-            {
-              intent: editingIntentTitle,
-            },
-            {
-              action: `utter_${editingIntentTitle}`,
-            }
-          ]
-        }
-      });
-    }
+
+    handleIntentResponseSubmit(newId);
+    // if (intentResponseName) {
+    //   editRuleMutation.mutate({
+    //     id: `rule_${selectedIntent.id}`,
+    //     data: {
+    //       rule: `rule_${newId}`,
+    //       steps: [
+    //         {
+    //           intent: newId,
+    //         },
+    //         {
+    //           action: `utter_${newId}`,
+    //         }
+    //       ]
+    //     }
+    //   });
+    // }
   }
 
-  const handleIntentResponseSubmit = () => {
+  const handleIntentResponseSubmit = (newId?: string) => {
     if (!intentResponseText || intentResponseText == '' || !selectedIntent) return;
 
+    const intentId = newId || selectedIntent.id;
+
+    console.debug(intentResponseName);
+
     addOrEditResponseMutation.mutate({
-      id: `utter_${selectedIntent.id}`,
+      id: `utter_${intentId}`,
       responseText: intentResponseText,
       update: !!intentResponseName
     });
@@ -643,13 +678,13 @@ const Intents: FC = () => {
       editRuleMutation.mutate({
         id: `rule_${selectedIntent.id}`,
         data: {
-          rule: `rule_${selectedIntent.id}`,
+          rule: `rule_${intentId}`,
           steps: [
             {
-              intent: selectedIntent.id,
+              intent: intentId,
             },
             {
-              action: `utter_${selectedIntent.id}`,
+              action: `utter_${intentId}`,
             }
           ]
         }
@@ -657,13 +692,13 @@ const Intents: FC = () => {
     } else {
       addRuleMutation.mutate({
         data: {
-          rule: `rule_${selectedIntent.id}`,
+          rule: `rule_${intentId}`,
           steps: [
             {
-              intent: selectedIntent.id,
+              intent: intentId,
             },
             {
-              action: `utter_${selectedIntent.id}`,
+              action: `utter_${intentId}`,
             }
           ]
         }
@@ -681,7 +716,7 @@ const Intents: FC = () => {
           id="tabs"
           className="vertical-tabs"
           orientation="vertical"
-          value={selectedTab ?? undefined}
+          value={selectedIntent?.id ?? undefined}
           onValueChange={handleTabsValueChange}
         >
           <Tabs.List
@@ -715,11 +750,11 @@ const Intents: FC = () => {
               <Tabs.Trigger
                 key={`${intent}-${index}`}
                 className="vertical-tabs__trigger"
-                value={intent.intent}
+                value={intent.id}
               >
                 <Track gap={16}>
                   <span style={{ flex: 1 }}>
-                    {intent.intent.replace(/^common_/, '')}
+                    {intent.id.replace(/^common_/, '').replace(/_/g, ' ')}
                   </span>
                   <Tooltip content={t('training.intents.amountOfExamples')}>
                     <span style={{ color: '#5D6071' }}>
@@ -749,9 +784,9 @@ const Intents: FC = () => {
 
           {selectedIntent && (
             <Tabs.Content
-              key={selectedIntent.intent}
+              key={selectedIntent.id}
               className="vertical-tabs__body"
-              value={selectedIntent.intent}
+              value={selectedIntent.id}
               style={{ overflowX: 'auto' }}
             >
               <div className="vertical-tabs__content-header">
@@ -769,7 +804,7 @@ const Intents: FC = () => {
                           hideLabel
                         />
                       ) : (
-                        <h3>{selectedIntent.intent}</h3>
+                        <h3>{selectedIntent.id.replace(/_/g, ' ')}</h3>
                       )}
                       {editingIntentTitle ? (
                         <Button
@@ -783,7 +818,7 @@ const Intents: FC = () => {
                         <Button
                           appearance="text"
                           onClick={() =>
-                            setEditingIntentTitle(selectedIntent!.intent)
+                            setEditingIntentTitle(selectedIntent!.id.replace(/_/g, ' '))
                           }
                         >
                           <Icon icon={<MdOutlineModeEditOutline />} />
@@ -824,7 +859,7 @@ const Intents: FC = () => {
                       appearance="secondary"
                       onClick={() =>
                         intentDownloadMutation.mutate({
-                          intentName: selectedIntent.intent,
+                          intentName: selectedIntent!.id,
                         })
                       }
                     >
@@ -835,7 +870,7 @@ const Intents: FC = () => {
                         appearance="secondary"
                         onClick={() =>
                           intentModelMutation.mutate({
-                            name: selectedIntent.intent,
+                            name: selectedIntent!.id,
                             inModel: true,
                           })
                         }
@@ -846,7 +881,7 @@ const Intents: FC = () => {
                       <Button
                         onClick={() =>
                           intentModelMutation.mutate({
-                            name: selectedIntent.intent,
+                            name: selectedIntent!.id,
                             inModel: false,
                           })
                         }
@@ -906,7 +941,6 @@ const Intents: FC = () => {
                         <Track align="left" direction="vertical">
                           <h1>{t('intents.response.title')}</h1>
                           <FormTextarea
-                            ref={intentWithResponseRef}
                             label={t('global.addNew')}
                             value={intentResponseText}
                             name="intentResponse"
@@ -922,7 +956,7 @@ const Intents: FC = () => {
                         </Track>
                         <Button
                           appearance="text"
-                          onClick={handleIntentResponseSubmit}
+                          onClick={() => handleIntentResponseSubmit()}
                         >
                           {t('global.save')}
                         </Button>
@@ -951,7 +985,7 @@ const Intents: FC = () => {
               <Button
                 appearance="error"
                 onClick={() =>
-                  deleteIntentMutation.mutate({ name: deletableIntent.intent })
+                  deleteIntentMutation.mutate({ name: deletableIntent!.id })
                 }
               >
                 {t('global.yes')}
@@ -965,7 +999,7 @@ const Intents: FC = () => {
 
       {connectableIntent !== null && (
         <ConnectServiceToIntentModal
-          intent={connectableIntent.intent}
+          intent={connectableIntent.id}
           onModalClose={() => setConnectableIntent(null)}
         />
       )}
@@ -998,7 +1032,7 @@ const Intents: FC = () => {
           <p>{t('global.removeValidation')}</p>
         </Dialog>
       )}
-      {(refreshing || refreshingResponses) && (
+      {(refreshing || refreshingResponses || refreshingRules) && (
         <LoadingDialog title={t('global.updatingDataHead')}>
           <p>{t('global.updatingDataBody')}</p>
         </LoadingDialog>
