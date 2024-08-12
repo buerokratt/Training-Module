@@ -215,7 +215,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
             setOldExampleText(editableRow.value);
             setExampleText(updatedExampleTitle.trim());
               exampleEditMutation.mutate({
-                intentName: selectedIntent.intent,
+                intentName: selectedIntent.id,
                 oldExample: editableRow.value,
                 newExample: updatedExampleTitle.trim(),
               })
@@ -243,7 +243,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
       }),
     ],
     [columnHelper, t, editableRow, entities, updateEditingExampleTitle,
-          exampleEditMutation, selectedIntent.intent, updatedExampleTitle]
+          exampleEditMutation, selectedIntent.id, updatedExampleTitle]
   );
 
   return (
