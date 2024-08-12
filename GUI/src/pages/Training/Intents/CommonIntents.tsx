@@ -39,7 +39,6 @@ const CommonIntents: FC = () => {
   const toast = useToast();
   const [searchParams] = useSearchParams();
   const [commonIntentsEnabled, setCommonIntentsEnabled] = useState(true);
-  const [selectedTab, setSelectedTab] = useState<string | null>(null);
   const [selectedIntent, setSelectedIntent] = useState<Intent | null>(null);
   const [deletableIntent, setDeletableIntent] = useState<
     string | number | null
@@ -49,6 +48,8 @@ const CommonIntents: FC = () => {
   );
   const [filter, setFilter] = useState('');
   const [refreshing, setRefreshing] = useState(false);
+
+  let intentParam;
 
   const { data: intentsFullResponse, isLoading } = useQuery({
     queryKey: ['intents/common'],
@@ -63,11 +64,9 @@ const CommonIntents: FC = () => {
 
   if (intentsFullList) {
     intentsFullList.forEach((intent: any) => {
-      const formattedTitle = intent.title.replace(/_/g, ' ');
       const countExamples = intent.examples.length;
       const newIntent: Intent = {
         id: intent.title,
-        intent: formattedTitle,
         description: null,
         inModel: intent.inmodel,
         modifiedAt: '',
@@ -77,20 +76,20 @@ const CommonIntents: FC = () => {
       };
       commonIntents.push(newIntent);
     });
+    intentParam = searchParams.get('intent');
   }
 
   useEffect(() => {
-    const queryIntentName = searchParams.get('intent');
-    if (commonIntents && queryIntentName) {
-      const queryIntent = commonIntents.find(
-        (intent) => intent.intent === queryIntentName
-      );
-      if (queryIntent) {
-        setSelectedIntent(queryIntent);
-        setSelectedTab(queryIntentName);
-      }
+    if (!intentParam || intentsFullList?.length !== commonIntents?.length) return;
+
+    const queryIntent = commonIntents.find(
+      (intent) => intent.id === intentParam
+    );
+
+    if (queryIntent) {
+      setSelectedIntent(queryIntent);
     }
-  }, [commonIntents, searchParams]);
+  }, [intentParam]);
 
   const getExampleArrayForIntentId = (): string[] => {
     if (selectedIntent) {
@@ -111,7 +110,7 @@ const CommonIntents: FC = () => {
       queryClient.fetchQuery(['intents/full']).then(() => {
         setRefreshing(false);
         if (commonIntents.length > 0) {
-          const newSelectedIntent = commonIntents.find((intent) => intent.intent === selectIntent) ?? null;
+          const newSelectedIntent = commonIntents.find((intent) => intent.id === selectIntent) ?? null;
           setSelectedIntent(newSelectedIntent);
         }
       });
@@ -150,7 +149,7 @@ const CommonIntents: FC = () => {
       });
     },
     onSettled: () => {
-      queryRefresh(selectedIntent?.intent || '');
+      queryRefresh(selectedIntent?.id || '');
     },
   });
 
@@ -174,7 +173,7 @@ const CommonIntents: FC = () => {
           message: t('toast.intentAddedToModel'),
         });
       }
-      queryRefresh(selectedIntent?.intent || '');
+      queryRefresh(selectedIntent?.id || '');
     },
     onError: (error: AxiosError) => {
       toast.open({
@@ -213,8 +212,10 @@ const CommonIntents: FC = () => {
       });
     },
     onSettled: () => {
+      console.debug('deleteIntentMutation selectedIntent')
+      console.debug(selectedIntent)
       commonIntents = commonIntents.filter(
-        (intent) => intent.intent !== selectedIntent?.intent
+        (intent) => intent.id !== selectedIntent?.id
       );
       setRefreshing(false);
     },
@@ -222,7 +223,7 @@ const CommonIntents: FC = () => {
 
   const filteredIntents = useMemo(() => {
     if (!commonIntents) return [];
-    return commonIntents.filter((intent) => intent.intent?.includes(filter));
+    return commonIntents.filter((intent) => intent.id?.includes(filter));
   }, [commonIntents, filter]);
 
   const intentModifiedMutation = useMutation({
@@ -234,22 +235,20 @@ const CommonIntents: FC = () => {
       setSelectedIntent(null);
       if (!commonIntents) return;
       const selectedIntent = commonIntents.find(
-        (intent) => intent.intent === value
+        (intent) => intent.id === value
       );
       if (selectedIntent) {
-        queryRefresh(selectedIntent.intent || '');
+        queryRefresh(selectedIntent.id || '');
         intentModifiedMutation.mutate(
-          { intentName: selectedIntent.intent },
+          { intentName: selectedIntent.id },
           {
             onSuccess: (data) => {
               selectedIntent.modifiedAt = data.response;
               setSelectedIntent(selectedIntent);
-              setSelectedTab(selectedIntent.intent);
             },
             onError: () => {
               selectedIntent.modifiedAt = '';
               setSelectedIntent(selectedIntent);
-              setSelectedTab(selectedIntent.intent);
             },
           }
         );
@@ -261,7 +260,7 @@ const CommonIntents: FC = () => {
   const handleNewExample = (example: string) => {
     if (!selectedIntent) return;
     addExamplesMutation.mutate({
-      intentName: selectedIntent.intent,
+      intentName: selectedIntent.id,
       intentExamples: selectedIntent.examples,
       newExamples: example,
     });
@@ -380,7 +379,7 @@ const CommonIntents: FC = () => {
           id="tabs"
           className="vertical-tabs"
           orientation="vertical"
-          value={selectedTab ?? undefined}
+          value={selectedIntent?.id ?? undefined}
           onValueChange={handleTabsValueChange}
         >
           <Tabs.List
@@ -406,11 +405,11 @@ const CommonIntents: FC = () => {
               <Tabs.Trigger
                 key={`${intent}-${index}`}
                 className="vertical-tabs__trigger"
-                value={intent.intent}
+                value={intent.id}
               >
                 <Track gap={16}>
                   <span style={{ flex: 1 }}>
-                    {intent.intent.replace(/^common_/, '')}
+                    {intent.id.replace(/^common_/, '').replace(/_/g, ' ')}
                   </span>
                   <Tooltip content={t('training.intents.amountOfExamples')}>
                     <span style={{ color: '#5D6071' }}>
@@ -440,16 +439,16 @@ const CommonIntents: FC = () => {
 
           {selectedIntent && (
             <Tabs.Content
-              key={selectedIntent.intent}
+              key={selectedIntent.id}
               className="vertical-tabs__body"
-              value={selectedIntent.intent}
+              value={selectedIntent.id}
               style={{ overflowX: 'auto' }}
             >
               <div className="vertical-tabs__content-header">
                 <Track direction="vertical" align="stretch" gap={8}>
                   <Track justify="between">
                     <Track gap={16}>
-                      <h3>{selectedIntent.intent}</h3>
+                      <h3>{selectedIntent.id.replace(/^common_/, '').replace(/_/g, ' ')}</h3>
                     </Track>
                     <p style={{ color: '#4D4F5D' }}>
                       {t('global.modifiedAt')}:
@@ -472,7 +471,7 @@ const CommonIntents: FC = () => {
                       appearance="secondary"
                       onClick={() =>
                         intentDownloadMutation.mutate({
-                          intentName: selectedIntent.intent,
+                          intentName: selectedIntent!.id,
                         })
                       }
                     >
@@ -483,7 +482,7 @@ const CommonIntents: FC = () => {
                         appearance="secondary"
                         onClick={() =>
                           intentModelMutation.mutate({
-                            name: selectedIntent.intent,
+                            name: selectedIntent!.id,
                             inModel: true,
                           })
                         }
@@ -494,7 +493,7 @@ const CommonIntents: FC = () => {
                       <Button
                         onClick={() =>
                           intentModelMutation.mutate({
-                            name: selectedIntent.intent,
+                            name: selectedIntent!.id,
                             inModel: false,
                           })
                         }
@@ -524,7 +523,7 @@ const CommonIntents: FC = () => {
                       <span>
                         <Button
                           appearance="error"
-                          onClick={() => setDeletableIntent(selectedIntent.id)}
+                          onClick={() => setDeletableIntent(selectedIntent!.id)}
                         >
                           {t('global.delete')}
                         </Button>
@@ -551,7 +550,7 @@ const CommonIntents: FC = () => {
 
       {connectableIntent !== null && (
         <ConnectServiceToIntentModal
-          intent={connectableIntent.intent}
+          intent={connectableIntent.id}
           onModalClose={() => setConnectableIntent(null)}
         />
       )}
@@ -571,7 +570,7 @@ const CommonIntents: FC = () => {
               <Button
                 appearance="error"
                 onClick={() =>
-                  deleteIntentMutation.mutate({ name: deletableIntent.intent })
+                  deleteIntentMutation.mutate({ name: deletableIntent!.id })
                 }
               >
                 {t('global.yes')}
