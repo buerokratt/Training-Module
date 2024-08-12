@@ -1,5 +1,5 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import {useNavigate, useSearchParams} from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as Tabs from '@radix-ui/react-tabs';
@@ -36,6 +36,7 @@ import { isHiddenFeaturesEnabled } from 'constants/config';
 const Intents: FC = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const toast = useToast();
   const [searchParams] = useSearchParams();
   const [filter, setFilter] = useState('');
@@ -128,13 +129,27 @@ const Intents: FC = () => {
 
   useEffect(() => {
     const queryIntentName = searchParams.get('intent');
+    console.log('queryIntentName', queryIntentName)
+    console.log('intents', intents)
     if (intents && queryIntentName) {
       const queryIntent = intents.find(
-        (intent) => intent.intent === queryIntentName
-      );
+        (intent) => intent.id === queryIntentName || intent.intent === queryIntentName
+      )
+      console.log("Found intent by name: ", queryIntent)
       if (queryIntent) {
+        console.log('setting intent and tab', queryIntent, queryIntentName)
         setSelectedIntent(queryIntent);
         setSelectedTab(queryIntentName);
+
+        // Clear the intent parameter from the URL after setting
+        const newSearchParams = new URLSearchParams(searchParams);
+        newSearchParams.delete('intent');
+
+        navigate({
+          // eslint-disable-next-line no-restricted-globals
+          pathname: location.pathname,
+          search: newSearchParams.toString(),
+        }, { replace: true });
       }
     }
   }, [intents, searchParams]);
