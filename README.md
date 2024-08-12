@@ -18,7 +18,7 @@ This repo will primarily contain
 
 ### Docker related (local development)
 
-- Comment out training_gui in docker-comose.yml
+- Comment out training_gui in docker-compose.yml
 - Run GUI in your local machine, from GUI folder: `npm run dev`
 - Everything else `docker-compose up -d`
 
@@ -33,7 +33,7 @@ In ./DSL/Pipelines
 
 ### TIM
 
-To be able to log in locally, manually create a cookie called `customJwtCookie` in the browser. Fill with the contents of the response:
+To be able to log in locally, manually create a cookie called `customJwtCookie` in the browser. Expires / Max-Age should be a timestamp in the future: Wed, 01 Jan 3000 00:00:01 GMT. Fill with the contents of the response:
 
 ```
 curl -X POST -H "Content-Type: application/json" -d '{
