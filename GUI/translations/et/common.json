@@ -395,7 +395,8 @@
     "error": {
       "formRulesDependency": "Ankeedi kustutamine on keelatud, kuna sellel on seos reegliga.",
       "formStoriesDependency": "Ankeedi kustutamine on keelatud, kuna sellel on seos vestlusvooga.",
-      "formNotFound": "Ei leia vastavat ankeeti kustutamiseks."
+      "formNotFound": "Ei leia vastavat ankeeti kustutamiseks.",
+      "conflict": "Seda muudatust ei ole võimalik teha."
     }
   },
   "connectionRequests": {
