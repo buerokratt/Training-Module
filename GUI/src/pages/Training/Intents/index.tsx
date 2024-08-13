@@ -232,7 +232,8 @@ const Intents: FC = () => {
       setConnectableIntent(null);
       setSelectedIntent(null);
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['intents/full']);
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -247,7 +248,7 @@ const Intents: FC = () => {
       });
     },
     onSettled: () => {
-      queryRefresh(null);
+      queryRefresh('');
     },
   });
 
@@ -357,7 +358,8 @@ const Intents: FC = () => {
     onMutate: () => {
       setRefreshing(true);
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['intents/full']);
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -374,7 +376,6 @@ const Intents: FC = () => {
     onSettled: () => {
       setEditingIntentTitle(null);
       setRefreshing(false);
-      queryRefresh(selectedIntent!.id);
     },
   });
 
@@ -513,10 +514,11 @@ const Intents: FC = () => {
       responseText: string,
       update: boolean
     }) => editResponse(intentResponseData.id, intentResponseData.responseText, intentResponseData.update),
-    onMutate: async () => {
+    onMutate: () => {
       setRefreshing(true);
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['response-list']);
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -531,7 +533,7 @@ const Intents: FC = () => {
       });
     },
     onSettled: () => {
-      queryRefresh(selectedIntent?.id || '');
+      // queryRefresh(selectedIntent?.id || '');
       setRefreshing(false);
     },
   });
@@ -541,7 +543,8 @@ const Intents: FC = () => {
     onMutate: () => {
       setRefreshing(true);
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['response-list']);
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -584,39 +587,13 @@ const Intents: FC = () => {
     },
   });
 
-  const editRuleMutation = useMutation({
-    mutationFn: ({id, data}: {
-      id: string | number,
-      data: RuleDTO
-    }) => editStoryOrRule(id, data as RuleDTO, "rules"),
-    onMutate: () => {
-      setRefreshing(true);
-    },
-    onSuccess: () => {
-      toast.open({
-        type: 'success',
-        title: t('global.notification'),
-        message: t('toast.storyUpdated'),
-      });
-    },
-    onError: (error: AxiosError) => {
-      toast.open({
-        type: 'error',
-        title: t('global.notificationError'),
-        message: error.message,
-      });
-    },
-    onSettled: () => {
-      queryRefresh(selectedIntent?.id || '');
-    },
-  });
-
   const deleteRuleMutation = useMutation({
     mutationFn: (id: string | number) => deleteStoryOrRule(id, 'rules'),
     onMutate: () => {
       setRefreshing(true);
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['rules']);
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -635,12 +612,14 @@ const Intents: FC = () => {
     },
   });
 
-  const deleteRuleWithIntentAndResponseMutation = useMutation({
+  const deleteRuleWithIntentMutation = useMutation({
     mutationFn: (id: string | number) => deleteStoryOrRule(id, 'rules'),
     onMutate: () => {
       setRefreshing(true);
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['response-list']);
+      await queryClient.invalidateQueries(['rules']);
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -656,20 +635,19 @@ const Intents: FC = () => {
     },
     onSettled: () => {
       deleteIntentMutation.mutate(deletableIntent!.id);
-      deleteResponseMutation.mutate(intentResponseName);
       setRefreshing(false);
     },
   });
 
-  const handleEditIntentName = () => {
+  const prepareEditIntentName = async () => {
     if (!selectedIntent || !editingIntentTitle) return;
 
     const newId = editingIntentTitle.replace(/\s+/g, '_');
 
-    deleteResponseMutation.mutate(intentResponseName);
-    deleteRuleMutation.mutate(intentRule);
+    await deleteResponseMutation.mutateAsync(intentResponseName);
+    await deleteRuleMutation.mutateAsync(intentRule);
 
-    addRuleMutation.mutate({
+    await addRuleMutation.mutateAsync({
       data: {
         rule: `rule_${newId}`,
         steps: [
@@ -683,29 +661,24 @@ const Intents: FC = () => {
       }
     });
 
-    addOrEditResponseMutation.mutate({
+    await addOrEditResponseMutation.mutateAsync({
       id: `utter_${newId}`,
       responseText: intentResponseText,
       update: false
     });
 
-    intentEditMutation.mutate({
-      oldName: selectedIntent.id,
-      newName: newId,
-    });
-
     handleIntentResponseSubmit(newId);
   }
 
-  const handleDeleteIntent = () => {
+  const handleDeleteIntent = async () => {
     if (intentRule) {
-      deleteRuleWithIntentAndResponseMutation.mutate(intentRule);
+      await deleteRuleWithIntentMutation.mutateAsync(intentRule);
     } else {
-      deleteIntentMutation.mutate(deletableIntent!.id)
+      await deleteIntentMutation.mutateAsync(deletableIntent!.id)
     }
   }
 
-  const handleIntentResponseSubmit = (newId?: string) => {
+  const handleIntentResponseSubmit = async (newId?: string) => {
     if (!intentResponseText || intentResponseText == '' || !selectedIntent) return;
 
     const intentId = newId || selectedIntent.id;
@@ -713,14 +686,14 @@ const Intents: FC = () => {
     console.debug(`intentResponseText: ${intentResponseText}`);
     console.debug(`intentResponseName: ${intentResponseName}`);
 
-    addOrEditResponseMutation.mutate({
+    await addOrEditResponseMutation.mutate({
       id: `utter_${intentId}`,
       responseText: intentResponseText,
       update: !!intentResponseName
     });
 
     if (!intentResponseName) {
-      addRuleMutation.mutate({
+      await addRuleMutation.mutate({
         data: {
           rule: `rule_${intentId}`,
           steps: [
@@ -733,6 +706,14 @@ const Intents: FC = () => {
           ]
         }
       });
+    }
+
+    if (editingIntentTitle) {
+      await intentEditMutation.mutateAsync({
+        oldName: selectedIntent.id,
+        newName: newId,
+      });
+      queryRefresh(intentId);
     }
   }
 
@@ -839,7 +820,7 @@ const Intents: FC = () => {
                       {editingIntentTitle ? (
                         <Button
                           appearance="text"
-                          onClick={handleEditIntentName}
+                          onClick={prepareEditIntentName}
                         >
                           <Icon icon={<MdOutlineSave />} />
                           {t('global.save')}
