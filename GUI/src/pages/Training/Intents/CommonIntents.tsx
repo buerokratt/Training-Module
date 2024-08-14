@@ -91,27 +91,35 @@ const CommonIntents: FC = () => {
     }
   }, [intentParam]);
 
-  const getExampleArrayForIntentId = (): string[] => {
-    if (selectedIntent) {
-      return selectedIntent.examples;
-    } else {
-      return [];
-    }
-  };
-
   function isValidDate(dateString: string | number | Date) {
     const date = new Date(dateString);
     return !isNaN(date.getTime());
   }
 
+  const updateSelectedIntent = (updatedIntent: Intent) => {
+    setSelectedIntent(null);
+    setTimeout(() => setSelectedIntent(updatedIntent), 20);
+  };
+
   const queryRefresh = useCallback(
     function queryRefresh(selectIntent: string | null) {
       setSelectedIntent(null);
-      queryClient.fetchQuery(['intents/full']).then(() => {
+
+      queryClient.fetchQuery(['intents/common']).then((res: any) => {
         setRefreshing(false);
         if (commonIntents.length > 0) {
-          const newSelectedIntent = commonIntents.find((intent) => intent.id === selectIntent) ?? null;
-          setSelectedIntent(newSelectedIntent);
+          const newSelectedIntent = res.response.intents.find((intent) => intent.title === selectIntent) || null;
+          if (newSelectedIntent) {
+            setSelectedIntent({
+              id: newSelectedIntent.title,
+              description: null,
+              inModel: newSelectedIntent.inmodel,
+              modifiedAt: '',
+              examplesCount: newSelectedIntent.examples.length,
+              examples: newSelectedIntent.examples,
+              serviceId: newSelectedIntent.serviceId,
+            });
+          }
         }
       });
     },
@@ -127,14 +135,7 @@ const CommonIntents: FC = () => {
     onMutate: () => {
       setRefreshing(true);
     },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries(['intents/full']);
-      await queryClient.refetchQueries(['intents/full']);
-      getExampleArrayForIntentId().push('');
-      setRefreshing(false);
-      if (selectedIntent) {
-        setRefreshing(false);
-      }
+    onSuccess: () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -212,8 +213,6 @@ const CommonIntents: FC = () => {
       });
     },
     onSettled: () => {
-      console.debug('deleteIntentMutation selectedIntent')
-      console.debug(selectedIntent)
       commonIntents = commonIntents.filter(
         (intent) => intent.id !== selectedIntent?.id
       );
@@ -223,12 +222,19 @@ const CommonIntents: FC = () => {
 
   const filteredIntents = useMemo(() => {
     if (!commonIntents) return [];
-    return commonIntents.filter((intent) => intent.id?.includes(filter));
+    const formattedFilter = filter.trim().replace(/\s+/g, '_');
+    return commonIntents.filter((intent) => intent.id?.includes(formattedFilter))
+      .sort((a, b) => a.id.localeCompare(b.id));
   }, [commonIntents, filter]);
 
   const intentModifiedMutation = useMutation({
     mutationFn: (data: { intentName: string }) => getLastModified(data),
   });
+
+  const examplesData = useMemo(
+    () => selectedIntent?.examples.map((example, index) => ({id: index, value: example})),
+    [selectedIntent?.examples]
+  );
 
   const handleTabsValueChange = useCallback(
     (value: string) => {
@@ -533,13 +539,14 @@ const CommonIntents: FC = () => {
                 </Track>
               </div>
               <div className="vertical-tabs__content">
-                {getExampleArrayForIntentId() && (
+                 {selectedIntent?.examples && examplesData && (
                   <IntentExamplesTable
-                    examples={getExampleArrayForIntentId()}
+                    examples={examplesData}
                     onAddNewExample={handleNewExample}
                     entities={entities ?? []}
                     selectedIntent={selectedIntent}
                     queryRefresh={queryRefresh}
+                    updateSelectedIntent={updateSelectedIntent}
                   />
                 )}
               </div>
