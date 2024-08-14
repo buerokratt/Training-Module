@@ -65,10 +65,11 @@ const Intents: FC = () => {
   const [turnIntentToServiceIntent, setTurnIntentToServiceIntent] =
     useState<Intent | null>(null);
 
+  let intentParam;
+
   const {
     data: intentsFullResponse,
     isLoading,
-    refetch,
   } = useQuery({
     queryKey: ['intents/full'],
   });
@@ -77,11 +78,11 @@ const Intents: FC = () => {
     queryKey: ['entities'],
   });
 
-  const { data: responsesFullResponse, refetch: refetchResponses } = useQuery({
+  const { data: responsesFullResponse } = useQuery({
     queryKey: ['responses-list'],
   });
 
-  const { data: rulesFullResponse, refetch: refetchRules } = useQuery({
+  const { data: rulesFullResponse } = useQuery({
     queryKey: ['rules'],
   })
 
@@ -108,6 +109,7 @@ const Intents: FC = () => {
       };
       intents.push(newIntent);
     });
+    intentParam = searchParams.get('intent');
   }
 
   if (intentResponsesFullList) {
@@ -125,6 +127,18 @@ const Intents: FC = () => {
       rules.push(rule);
     });
   }
+
+  useEffect(() => {
+    if (!intentParam || intentsFullList?.length !== intents?.length) return;
+
+    const queryIntent = intents.find(
+      (intent) => intent.id === intentParam
+    );
+
+    if (queryIntent) {
+      setSelectedIntent(queryIntent);
+    }
+  }, [intentParam]);
 
   const queryRefresh = useCallback(
     function queryRefresh(selectIntent: string | null) {
@@ -183,18 +197,6 @@ const Intents: FC = () => {
     setSelectedIntent(null);
     setTimeout(() => setSelectedIntent(updatedIntent), 20);
   };
-
-  useEffect(() => {
-    const queryIntentName = searchParams.get('intent');
-    if (intents && queryIntentName) {
-      const queryIntent = intents.find(
-        (intent) => intent.id.replace(/_/g, ' ') === queryIntentName
-      );
-      if (queryIntent) {
-        setSelectedIntent(queryIntent);
-      }
-    }
-  }, [intents, searchParams]);
 
   const addExamplesMutation = useMutation({
     mutationFn: (addExamplesData: {
@@ -533,7 +535,6 @@ const Intents: FC = () => {
       });
     },
     onSettled: () => {
-      // queryRefresh(selectedIntent?.id || '');
       setRefreshing(false);
     },
   });
@@ -682,9 +683,6 @@ const Intents: FC = () => {
     if (!intentResponseText || intentResponseText == '' || !selectedIntent) return;
 
     const intentId = newId || selectedIntent.id;
-
-    console.debug(`intentResponseText: ${intentResponseText}`);
-    console.debug(`intentResponseName: ${intentResponseName}`);
 
     await addOrEditResponseMutation.mutate({
       id: `utter_${intentId}`,
@@ -950,7 +948,7 @@ const Intents: FC = () => {
                     <div>
                       <Track align="right" justify="between" direction="vertical" gap={100}>
                         <Track align="left" direction="vertical">
-                          <h1>{t('intents.response.title')}</h1>
+                          <h1>{t('training.intents.responseTitle')}</h1>
                           <FormTextarea
                             label={t('global.addNew')}
                             value={intentResponseText}

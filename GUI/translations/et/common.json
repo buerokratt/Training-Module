@@ -117,6 +117,7 @@
     "intents": {
       "title": "Teemad",
       "commonIntents": "Üldised teemad",
+      "responseTitle": "Vastus",
       "searchIntentPlaceholder": "Otsi teemat",
       "addToModel": "Lisa mudelisse",
       "removeFromModel": "Eemalda mudelist",
