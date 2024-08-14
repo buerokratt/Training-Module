@@ -1,0 +1,58 @@
+version: "3.0"
+nlu:
+- intent: common_teenus_ilm
+  examples: |
+    - mis ilm [asukoha nimi](asukoht) on
+    - mis ilm [asukoha nimi](asukoht) täna on
+    - kas homme on [asukoha nimi](asukoht) ilus ilm
+    - mis ilm homme [asukoha nimi](asukoht) tuleb
+    - ilm [asukoha nimi](asukoht).
+    - ilmaprognoos [asukoha nimi](asukoht)
+    - kas [asukoha nimi](asukoht) hakkab sadama?
+    - milline tuleb ilm [asukoha nimi](asukoht) ümbruses
+    - kas [asukoha nimi](asukoht) ilma kohta saab infot
+    - [asukoha nimi](asukoht) ilma ennustus
+    - mis ilm on [asukoha nimi](asukoht)
+    - milline on ilm [asukoha nimi](asukoht)
+    - milline tuleb ilm?
+    - mis ilm tuleb
+    - mis ilma on oodata
+    - millist ilma on oodata
+    - milline ilmake tuleb kah
+    - kuidas meil ilmaga olukord on
+    - millist ilma oodata on
+    - kas ilm tuleb sajune
+    - kas ilma lubab päikest
+    - infot ilma kohta palun
+    - ilma päring
+    - ilm maakonna kohta
+    - ilma linna kohta
+    - kas hakkab sadama
+    - kas paistab päike
+    - kas õues on soe
+    - kas õues on külm
+    - kas täna on palav
+    - kas õues on tuuline
+    - kas tänaseks lubab päikest
+    - kas lubab vihma
+    - kas täna tuleb äikest
+    - kas võib tulla vihma
+    - kas väljas on soe
+    - kas väljas on vihmane
+    - kas väljas on tuult
+    - kas ilmateade lubab välja päikest
+    - kas ilm on väljas hea
+    - kas ilm on õues külm
+    - kas täna on rannailm
+    - mitu soojakraadi on
+    - mitu kraadi väljas on
+    - mitu kraadi ilm on
+    - mitu kraadi täna sooja on
+    - kas homme sajab
+    - millal äike tuleb
+    - millal sajab väljas vihma
+    - millal on päiksepaisteline
+    - kas täna on tormi oodata
+    - kas väljas on tormine
+    - kas ilm on tormine
+    - kas homme tuleb õues torm

@@ -1,0 +1,21 @@
+version: "3.0"
+nlu:
+- intent: common_teenus_nordpool
+  examples: |
+    - mis bärsihind praegu on 
+    - mis börsihind praegu on 
+    - börsihind 
+    - elektri tunnihind 
+    - millal on hea börsihind 
+    - börs 
+    - elektribörs 
+    - Nordpool praegu 
+    - Nordpool hinnad praegu 
+    - Nordpool hetkel 
+    - Nordpool hind hetkel 
+    - börsihinnad 
+    - elektri tunnihind prageu 
+    - elektri tunnihind praegu 
+    - mis on 24h elektri hinnad 
+    - elektri börsihind 
+    - börsihinnad viimase päeva jooksul

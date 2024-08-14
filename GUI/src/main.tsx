@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import {QueryClient, QueryClientProvider, QueryFunction, QueryKey} from '@tanstack/react-query';
 
-import apiInstance from 'services/api';
+import apiInstance, {AxiosInterceptor} from 'services/api';
 import App from './App';
 import { ToastProvider } from 'context/ToastContext';
 import 'styles/main.scss';
@@ -116,9 +116,11 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
         <BrowserRouter basename={import.meta.env.BASE_URL}>
-          <ToastProvider>
-            <App />
-          </ToastProvider>
+          <AxiosInterceptor>
+            <ToastProvider>
+              <App />
+            </ToastProvider>
+          </AxiosInterceptor>
         </BrowserRouter>
       </QueryClientProvider>
     </React.StrictMode>,

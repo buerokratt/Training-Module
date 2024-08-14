@@ -1,0 +1,12 @@
+version: "3.0"
+nlu:
+- intent: common_teenus_nordpool3
+  examples: |
+    - mis ööpäeva kallim elektri hind oli 
+    - mis ööpäeva kalleim elektri hind oli 
+    - elektri hind päevas kalleim 
+    - kõige kallim börsi elektri hind päevas 
+    - kalleim elektri hind päevas 
+    - tahan teada halvimat elektri hinda viimase päeva jooksul 
+    - millal on kallis börsihind olnud 24 tunni sees 
+    - kulukas elekter

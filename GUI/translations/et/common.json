@@ -53,7 +53,7 @@
     }
   },
   "toast": {
-    "newExampleAdded": "Lisatud uus näide",
+    "newExampleAdded": "Uus näide lisatud",
     "newResponseAdded": "Uus vastus lisatud",
     "newAppealAdded": "Uus apellatsioon lisatud",
     "appealDeleted": "Apellatsioon kustutatud",
@@ -61,41 +61,41 @@
     "modelDeleted": "Mudel kustutatud",
     "modelActivated": "Mudel aktiveeritud",
     "testStoryDeleted": "Testlugu kustutatud",
-    "configurationSaved": "Konfiguratsioon salvestatud",
-    "newFormAdded": "Uus vorm lisatud",
-    "formChangesSaved": "Vormi muudatused on salvestatud",
-    "formDeleted": "Vorm kustutatud",
-    "intentRemovedFromModel": "Kavatsus mudelilt eemaldatud",
-    "intentAddedToModel": "Mudelile lisatud kavatsus",
-    "intentDeleted": "Kavatsus kustutatud",
-    "examplesSentForDownloading": "Näited saadeti allalaadimiseks",
+    "configurationSaved": "Seadistus salvestatud",
+    "newFormAdded": "Uus ankeet lisatud",
+    "formChangesSaved": "Ankeedi muudatused on salvestatud",
+    "formDeleted": "Ankeet kustutatud",
+    "intentRemovedFromModel": "Teema mudelist eemaldatud",
+    "intentAddedToModel": "Teema mudelisse lisatud",
+    "intentDeleted": "Teema kustutatud",
+    "examplesSentForDownloading": "Näited saadeti alla laadimiseks",
     "fileUploadedSuccessfully": "Fail on edukalt üles laaditud",
-    "intentToServiceSuccess": "Teeninduskavatsus – edu",
-    "newIntentAdded": "Uus kavatsus lisatud",
-    "intentTitleSaved": "Kavatsuse pealkiri on salvestatud",
-    "entityDeletedFromExample": "Üksus on näitest kustutatud",
-    "exampleConvertedtoIntent": "Näide teisendati kavatsuks",
+    "intentToServiceSuccess": "Teema on edukalt teenusega seotud",
+    "newIntentAdded": "Uus teema lisatud",
+    "intentTitleSaved": "Teema pealkiri on salvestatud",
+    "entityDeletedFromExample": "Olem on näitest kustutatud",
+    "exampleConvertedtoIntent": "Näide muudeti teemaks",
     "exampleDeleted": "Näide kustutatud",
-    "newEntityAdded": "Lisatud uus üksus",
+    "newEntityAdded": "Uus olem lisatud",
     "entityChangesSaved": "Olemi muudatused on salvestatud",
-    "entityDeleted": "Üksus kustutatud",
+    "entityDeleted": "Olem kustutatud",
     "newRegexAdded": "Lisati uus regex",
     "regexDeleted": "Regex kustutatud",
     "newRegexExampleAdded": "Lisati uus regexi näide",
     "exampleAdded": "Näide lisatud",
     "exampleChanged": "Näide muudetud",
-    "downloadedExamples": "Allalaaditud näited",
+    "downloadedExamples": "Alla laaditud näited",
     "responseSaved": "Vastus salvestatud",
     "responseDeleted": "Vastus kustutatud",
-    "slotDeleted": "Pilu kustutatud",
-    "newSlotAdded": "Lisatud uus pesa",
-    "slotChangesSaved": "Pesa muudatused on salvestatud",
-    "storyDeleted": "Lugu kustutatud",
-    "storyAdded": "Lugu lisatud",
-    "storyUpdated": "Lugu värskendatud",
+    "slotDeleted": "Mälukoht kustutatud",
+    "newSlotAdded": "Uus mälukoht lisatud",
+    "slotChangesSaved": "Mälukoha muudatused on salvestatud",
+    "storyDeleted": "Vestlusvoog kustutatud",
+    "storyAdded": "Vestlusvoog lisatud",
+    "storyUpdated": "Vestlusvoog värskendatud",
     "titleCannotBeEmpty": "Pealkiri ei tohi olla tühi",
-    "trainSettingsChangesSaved": "Rongiseadete muudatused on salvestatud",
-    "trainingIsInitialized": "Koolitus on initsialiseeritud"
+    "trainSettingsChangesSaved": "Seadete muudatused on salvestatud",
+    "trainingIsInitialized": "Treenimine käivitati"
   },
   "mainMenu": {
     "menuLabel": "Peamenüü",
@@ -108,7 +108,7 @@
     "intent": "Teema",
     "response": "Vastus",
     "conditions": "Tingimused",
-    "form": "Vorm",
+    "form": "Ankeet",
     "slot": "Mälukoht",
     "checkpoints": "Kontrollpunktid",
     "value": "väärtus",
@@ -124,8 +124,8 @@
       "example": "Näide",
       "amountOfExamples": "Näidete arv",
       "intentInModel": "Teema on mudelis",
-      "upload": "Lae ülesse näited",
-      "download": "Lae alla näited",
+      "upload": "Laadi ülesse näited",
+      "download": "Laadi alla näited",
       "moreFromGithub": "Rohkem infot Githubist",
       "entity": "Olem",
       "entityName": "Olemi nimetus",
@@ -142,7 +142,7 @@
       "connectToService": "Seo teenusega",
       "connectToServiceTooltip": "Teenuse ühendamiseks tuleb teenus eelnevalt luua Teenuste moodulis",
       "changeConnectedService": "Muutke teenust",
-      "deleteTooltip": "Ainult kavatsus kustutatakse ja teenus jääb alles, selle kustutamine saab toimuda teenuse moodulis",
+      "deleteTooltip": "Ainult teema kustutatakse ja teenus jääb alles, selle kustutamine saab toimuda Teenuste moodulis",
       "error": {
         "turnExampleIntoIntent": "Näidet ei saa teenuseks muuta"
       }
@@ -176,7 +176,7 @@
       "title": "Vestlusvood ja reeglid",
       "stories": "Vestlusvood",
       "rules": "Reeglid",
-      "entityWarning": "Kaks järjestikust olemit sama nimega ei ole lubatud",
+      "entityWarning": "Kaks järjestikust sama nimega olemit ei ole lubatud",
       "noEntitiesAvailable": "Olemid puuduvad"
     },
     "slots": {
@@ -190,13 +190,13 @@
       "deleteSlot": "Kustuta mälukoht"
     },
     "forms": {
-      "title": "Vormid",
-      "titleOne": "Vorm",
-      "form": "Vormi nimi",
+      "title": "Ankeedid",
+      "titleOne": "Ankeet",
+      "form": "Ankeedi nimi",
       "formName": "utter_ask_",
       "requiredSlots": "Kohustuslikud mälukohad",
       "ignoredIntents": "Eiratud teemad",
-      "deleteForm": "Kustuta vorm"
+      "deleteForm": "Kustuta ankeet"
     },
     "actions": {
       "title": "Tegevused"
@@ -273,7 +273,8 @@
       "name": "Nimi",
       "idCode": "Isikukood",
       "role": "Roll",
-      "displayName": "Tiitel",
+      "displayName": "Kuvatav nimi",
+      "userTitle": "Tiitel",
       "email": "E-post",
       "addUser": "Lisa kasutaja",
       "editUser": "Muuda kasutajat",
@@ -392,9 +393,10 @@
   },
   "axios": {
     "error": {
-      "formRulesDependency": "Vormi kustutamine on keelatud, kuna sellel on seos reegliga.",
-      "formStoriesDependency": "Vormi kustutamine on keelatud, kuna sellel on seos vestlusvooga.",
-      "formNotFound": "Ei leia vastavat vormi kustutamiseks."
+      "formRulesDependency": "Ankeedi kustutamine on keelatud, kuna sellel on seos reegliga.",
+      "formStoriesDependency": "Ankeedi kustutamine on keelatud, kuna sellel on seos vestlusvooga.",
+      "formNotFound": "Ei leia vastavat ankeeti kustutamiseks.",
+      "conflict": "Seda muudatust ei ole võimalik teha."
     }
   },
   "connectionRequests": {

@@ -272,7 +272,8 @@
       "name": "Name",
       "idCode": "ID code",
       "role": "Role",
-      "displayName": "User title",
+      "displayName": "Display name",
+      "userTitle": "User title",
       "email": "E-mail",
       "addUser": "Add user",
       "editUser": "Edit user",
@@ -392,7 +393,8 @@
     "error": {
       "formRulesDependency": "Deleting a form is forbidden because it has relation to rules",
       "formStoriesDependency": "Deleting a form is forbidden because it has relation to stories",
-      "formNotFound": "Can't find form to delete."
+      "formNotFound": "Can't find form to delete.",
+      "conflict": "This change cannot be made."
     }
   },
   "connectionRequests": {
