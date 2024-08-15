@@ -763,7 +763,7 @@ const Intents: FC = () => {
               >
                 <Track gap={16}>
                   <span style={{ flex: 1 }}>
-                    {intent.id.replace(/^common_/, '').replace(/_/g, ' ')}
+                    {intent.id.replace(/_/g, ' ')}
                   </span>
                   <Tooltip content={t('training.intents.amountOfExamples')}>
                     <span style={{ color: '#5D6071' }}>
