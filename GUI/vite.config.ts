@@ -16,6 +16,9 @@ export default ({ mode }) => {
       svgr(),
     ],
     base: '/training', //Change this according to your reverse proxy subpath
+    optimizeDeps: {
+      include: ['howler'],
+    },
     define: {
       'process.env': process.env,
     },

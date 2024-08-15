@@ -117,6 +117,7 @@
     "intents": {
       "title": "Intents",
       "commonIntents": "Common intents",
+      "responseTitle": "Response",
       "searchIntentPlaceholder": "Search for intent",
       "addToModel": "Add to model",
       "removeFromModel": "Remove from model",

@@ -22,7 +22,7 @@ import LoadingDialog from "../../../components/LoadingDialog";
 import i18n from '../../../../i18n';
 
 type IntentExamplesTableProps = {
-  examples: string[];
+  examples: { id: number, value: string }[];
   onAddNewExample: (example: string) => void;
   entities: Entity[];
   selectedIntent: Intent;
@@ -71,11 +71,6 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
     setEditableRow(null);
   });
 
-  const examplesData = useMemo(
-      () => examples.map((example, index) => ({ id: index, value: example })),
-      [examples]
-  );
-
   const handleEditableRow = (example: { intentName: string; value: string }) => {
     setEditableRow(example);
   };
@@ -98,7 +93,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
   const exampleToIntentMutation = useMutation({
     mutationFn: ({ exampleName }: {intentName: string, exampleName: string} ) =>
       turnExampleIntoIntent({
-        intentName: selectedIntent.intent,
+        intentName: selectedIntent.id,
         exampleName: exampleName,
       }),
     onSuccess: () => {
@@ -160,7 +155,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
         title: t('global.notification'),
         message: t('toast.exampleDeleted'),
       });
-      handleRefresh(selectedIntent.intent);
+      handleRefresh(selectedIntent.id);
       deleteExampleFromList(oldExampleText);
     },
     onError: (error: AxiosError) => {
@@ -215,7 +210,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
             setOldExampleText(editableRow.value);
             setExampleText(updatedExampleTitle.trim());
               exampleEditMutation.mutate({
-                intentName: selectedIntent.intent,
+                intentName: selectedIntent.id,
                 oldExample: editableRow.value,
                 newExample: updatedExampleTitle.trim(),
               })
@@ -243,13 +238,13 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
       }),
     ],
     [columnHelper, t, editableRow, entities, updateEditingExampleTitle,
-          exampleEditMutation, selectedIntent.intent, updatedExampleTitle]
+          exampleEditMutation, selectedIntent.id, updatedExampleTitle]
   );
 
   return (
     <>
       <DataTable
-        data={examplesData}
+        data={examples}
         columns={examplesColumns}
         tableBodyPrefix={
           <tr>
@@ -273,7 +268,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
                 onClick={handleNewExampleSubmit}
                 disabled={exampleText.length === 0}
               >
-                <Icon icon={<MdAddCircle color={'rgba(0,0,0,0.54)'} />} />
+                <Icon icon={<MdAddCircle color={'rgba(0,0,0,0.54)'}/>}/>
                 {t('global.add')}
               </Button>
             </td>
@@ -296,10 +291,10 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
               <Button
                 appearance="error"
                 onClick={() => {
-                    setOldExampleText(deletableRow.value);
+                    setOldExampleText(deletableRow!.value);
                     exampleDeleteMutation.mutate({
-                      intentName: selectedIntent.intent,
-                      example: deletableRow.value })
+                      intentName: selectedIntent.id,
+                      example: deletableRow!.value })
                   }
               }
               >

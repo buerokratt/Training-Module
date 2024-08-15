@@ -33,7 +33,6 @@ const AxiosInterceptor = ({ children }) => {
       return Promise.reject(new Error(error.message));
     }
 
-
     const interceptor = instance.interceptors.response.use(resInterceptor, errInterceptor);
 
     return () => instance.interceptors.response.eject(interceptor);
