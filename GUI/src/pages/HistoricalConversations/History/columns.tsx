@@ -106,10 +106,15 @@ export const getColumns = ({
     columnHelper.accessor('id', {
       id: 'id',
       header: 'ID',
-      cell: (props) => (
-        <button onClick={() => copyValueToClipboard(props.getValue())}>
-          {props.getValue()}
-        </button>
+      cell: (props: any) => (
+        <Tooltip content={props.getValue()}>
+          <span
+            onClick={() => copyValueToClipboard(props.getValue())}
+            style={{ cursor: 'pointer' }}
+          >
+            {props.getValue().split('-')[0]}
+          </span>
+        </Tooltip>
       ),
     }),
     columnHelper.display({
