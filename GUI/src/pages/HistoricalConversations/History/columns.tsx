@@ -27,13 +27,21 @@ export const getColumns = ({
       id: 'created',
       header: i18n.t('chat.history.startTime') || '',
       cell: (props) =>
-        format(new Date(props.getValue()), 'd. MMM yyyy HH:mm:ss'),
+        format(
+          new Date(props.getValue()),
+          'dd.MM.yyyy HH:mm:ss',
+          i18n.language === 'et' ? { locale: et } : undefined
+        ),
     }),
     columnHelper.accessor('ended', {
       id: 'ended',
       header: i18n.t('chat.history.endTime') || '',
       cell: (props) =>
-        format(new Date(props.getValue()), 'd. MMM yyyy HH:mm:ss'),
+        format(
+          new Date(props.getValue()),
+          'dd.MM.yyyy HH:mm:ss',
+          i18n.language === 'et' ? { locale: et } : undefined
+        ),
     }),
     columnHelper.accessor('customerSupportDisplayName', {
       id: 'customerSupportDisplayName',
