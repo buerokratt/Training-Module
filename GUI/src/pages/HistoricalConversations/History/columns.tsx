@@ -81,9 +81,9 @@ export const getColumns = ({
           </Tooltip>
         ),
     }),
-    columnHelper.accessor('labels', {
-      header: i18n.t('chat.history.label') || '',
-      cell: () => <span></span>,
+    columnHelper.accessor('rating', {
+      header: i18n.t('chat.history.rating') || '',
+      cell: (props) => props.getValue() && <span>{`${props.getValue()}/10`}</span>,
     }),
     columnHelper.accessor('status', {
       id: 'status',

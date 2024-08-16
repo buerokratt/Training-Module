@@ -66,6 +66,7 @@ export interface Chat {
   receivedFrom?: string;
   comment?: string;
   labels: string;
+  rating?: number;
 }
 export interface GroupedChat {
   myChats: Chat[];
