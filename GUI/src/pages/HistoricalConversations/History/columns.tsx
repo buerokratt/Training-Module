@@ -70,7 +70,10 @@ export const getColumns = ({
           <></>
         ) : (
           <Tooltip content={props.getValue()}>
-            <span>
+            <span
+              onClick={() => copyValueToClipboard(props.getValue())}
+              style={{ cursor: 'pointer' }}
+            >
               {props.getValue() === undefined
                 ? ''
                 : props.getValue()?.slice(0, 30) + '...'}
