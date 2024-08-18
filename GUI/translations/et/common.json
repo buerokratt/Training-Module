@@ -307,6 +307,7 @@
       "label": "Märksõna",
       "nps": "Soovitusindeks",
       "rating": "Hinnang",
+      "feedback": "Tagasiside",
       "forwarded": "Suunatud"
     },
     "plainEvents": {

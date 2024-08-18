@@ -4,6 +4,7 @@ import { format } from 'date-fns';
 import i18n from "../../../../i18n";
 import { Button, Icon, Tooltip } from "components";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
+import { et } from 'date-fns/locale';
 
 export const getColumns = ({
   copyValueToClipboard,
@@ -85,6 +86,12 @@ export const getColumns = ({
       header: i18n.t('chat.history.rating') || '',
       cell: (props) => props.getValue() && <span>{`${props.getValue()}/10`}</span>,
     }),
+    columnHelper.accessor('feedback', {
+      header: i18n.t('chat.history.feedback') || '',
+      cell: (props) => (
+        props.getValue() && <span style={{ minWidth: '250px' }}>{`${props.getValue()}`}</span>
+      ),
+    }),
     columnHelper.accessor('status', {
       id: 'status',
       header: i18n.t('global.status') || '',
@@ -133,6 +140,7 @@ export const getColumns = ({
       ),
       meta: {
         size: '1%',
+        sticksticky: 'right',
       },
     }),
   ]

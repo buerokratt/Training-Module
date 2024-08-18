@@ -305,6 +305,7 @@
       "label": "Label",
       "nps": "NPS",
       "rating": "Rating",
+      "feedback": "Feedback",
       "forwarded": "Forwarded"
     },
     "plainEvents": {

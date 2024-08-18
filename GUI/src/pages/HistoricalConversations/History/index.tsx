@@ -182,7 +182,9 @@ const History: FC = () => {
       { label: t('chat.history.comment'), value: 'comment' },
       { label: t('chat.history.label'), value: 'labels' },
       { label: t('chat.history.rating'), value: 'rating' },
+      { label: t('chat.history.feedback'), value: 'feedback' },
       { label: t('global.status'), value: 'status' },
+      { label: t('chat.history.nps'), value: 'nps' },
       { label: 'ID', value: 'id' },
     ],
     [t]
