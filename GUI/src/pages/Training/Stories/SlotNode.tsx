@@ -28,6 +28,8 @@ const SlotNode: FC<NodeDataProps> = ({ data }) => {
     return () => unsubscribe();
   }, [watch]);
 
+  const defaultValue = data.payload.value === "undefined" ? '' : data.payload.value;
+
   return (
     <>
       {'label' in data && (<p><strong>{t('training.slot')}: {data.label}</strong></p>)}
@@ -36,7 +38,7 @@ const SlotNode: FC<NodeDataProps> = ({ data }) => {
           <FormInput 
             {...register('value')} 
             label={t('training.value')}
-            defaultValue={data.payload.value || 'null'}
+            defaultValue={defaultValue}
           />
         </div>
       </Track>
