@@ -2,7 +2,7 @@ import {FC, useEffect, useMemo, useState} from 'react';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import * as Tabs from '@radix-ui/react-tabs';
-import {useMutation, useQuery} from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { MdDeleteOutline, MdOutlineModeEditOutline } from 'react-icons/md';
 
@@ -20,6 +20,7 @@ import { isHiddenFeaturesEnabled } from 'constants/config';
 
 const Stories: FC = () => {
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { data: storiesResponse } = useQuery<StoriesType>({
     queryKey: ['stories'],
@@ -72,6 +73,7 @@ const Stories: FC = () => {
     mutationFn: ({ id, category }: { id: string, category: string }) => deleteStoryOrRule(id, category),
     onMutate: () => setRefreshing(true),
     onSuccess: async () => {
+      await queryClient.invalidateQueries([selectedTab])
       toast.open({
         type: 'success',
         title: t('global.notification'),
