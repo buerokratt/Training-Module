@@ -338,8 +338,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
 
     if (!currentEntityId && editableTitle) {
       setCurrentEntityId(editableTitle);
-      await refetchCurrentEntity();
-      updatedData = refetchCurrentEntity();
+      updatedData = await refetchCurrentEntity();
     }
 
     updatedData?.then((storyOrRuleObject) => {
