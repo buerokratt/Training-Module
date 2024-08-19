@@ -74,6 +74,7 @@ export const getColumns = ({
             <span
               role="button"
               onClick={() => copyValueToClipboard(props.getValue())}
+              onKeyDown={(e) => e.preventDefault()}
               style={{ cursor: 'pointer' }}
             >
               {props.getValue() === undefined
@@ -122,6 +123,7 @@ export const getColumns = ({
           <span
             role="button"
             onClick={() => copyValueToClipboard(props.getValue())}
+            onKeyDown={(e) => e.preventDefault()}
             style={{ cursor: 'pointer' }}
           >
             {props.getValue().split('-')[0]}
