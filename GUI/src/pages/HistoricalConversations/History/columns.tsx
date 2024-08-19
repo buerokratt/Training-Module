@@ -72,6 +72,7 @@ export const getColumns = ({
         ) : (
           <Tooltip content={props.getValue()}>
             <span
+              role="button"
               onClick={() => copyValueToClipboard(props.getValue())}
               style={{ cursor: 'pointer' }}
             >
@@ -119,6 +120,7 @@ export const getColumns = ({
       cell: (props: any) => (
         <Tooltip content={props.getValue()}>
           <span
+            role="button"
             onClick={() => copyValueToClipboard(props.getValue())}
             style={{ cursor: 'pointer' }}
           >
@@ -140,7 +142,7 @@ export const getColumns = ({
       ),
       meta: {
         size: '1%',
-        sticksticky: 'right',
+        sticky: 'right',
       },
     }),
   ]
