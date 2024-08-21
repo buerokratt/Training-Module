@@ -293,6 +293,7 @@
   "chat": {
     "unanswered": "Unanswered",
     "forwarded": "Forwarded",
+    "pending": "Pending",
     "redirectedMessage": "{{from}} redirected the conversation to user {{to}} {{date}}",
     "history": {
       "title": "History",
