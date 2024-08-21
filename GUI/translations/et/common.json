@@ -37,6 +37,7 @@
     "away": "Eemal",
     "idCode": "Isikukood",
     "status": "Staatus",
+    "statusChangeQuestion": "Kas soovid muuta staatuseks \"kohal\"?",
     "anonymous": "Anonüümne",
     "title": "Pealkiri",
     "missing": "Puudub",
