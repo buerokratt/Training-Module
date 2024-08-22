@@ -1,20 +1,20 @@
-import api from './api';
+import { rasaApi } from './api';
 import { Slot, SlotCreateDTO, SlotEditDTO } from 'types/slot';
 
 export async function createSlot(formData: SlotCreateDTO) {
   const slot = validateSlot(formData);
-  const { data } = await api.post<Slot>(`slots/add`, slot);
+  const { data } = await rasaApi.post<Slot>(`slots/add`, slot);
   return data;
 }
 
 export async function editSlot(oldName: string, formData: SlotEditDTO) {
   const slot = validateSlot(formData);
-  const { data } = await api.post<Slot>(`slots/update`, {oldName,slot});
+  const { data } = await rasaApi.post<Slot>(`slots/update`, {oldName,slot});
   return data;
 }
 
 export async function deleteSlot(slot: string | number) {
-  const { data } = await api.post<void>(`slots/delete`, {slotName: slot});
+  const { data } = await rasaApi.post<void>(`slots/delete`, {slotName: slot});
   return data;
 }
 

@@ -15,7 +15,7 @@ import ChatEvent from './ChatEvent';
 import NewExampleModal from './NewExampleModal';
 import NewResponseModal from './NewResponseModal';
 import './HistoricalChat.scss';
-import apiDev from '../../services/api-dev';
+import { api } from '../../services/api';
 
 type ChatProps = {
   chat: ChatType;
@@ -46,7 +46,7 @@ const HistoricalChat: FC<ChatProps> = ({ chat, trigger }) => {
   }, [trigger]);
 
   const getMessages = async () => {
-    const { data: res } = await apiDev.post('agents/messages-by-id', {
+    const { data: res } = await api.post('agents/messages-by-id', {
       chatId: chat.id,
     });
     setMessagesList(res.response);
