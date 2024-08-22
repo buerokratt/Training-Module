@@ -32,7 +32,7 @@ export const generateStoryStepsFromNodes = (nodes: Node[]) =>
             case 'slotNode':
                 return {
                     slot_was_set: {
-                        [label]: payload.value,
+                        [label]: payload.value || null,
                     },
                 };
             case 'actionNode': {

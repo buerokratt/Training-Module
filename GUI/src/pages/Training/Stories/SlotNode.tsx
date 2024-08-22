@@ -36,7 +36,7 @@ const SlotNode: FC<NodeDataProps> = ({ data }) => {
           <FormInput 
             {...register('value')} 
             label={t('training.value')}
-            defaultValue={data.payload.value || 'null'}
+            defaultValue={data.payload.value || ''}
           />
         </div>
       </Track>
