@@ -1,5 +1,4 @@
-import { rasaApi } from './api';
-import fileApi from './file.api';
+import { fileApi, rasaApi } from './api';
 import { Intent } from 'types/intent';
 
 export async function addIntent(newIntentData: { name: string }) {

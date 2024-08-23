@@ -3,12 +3,11 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import {QueryClient, QueryClientProvider, QueryFunction, QueryKey} from '@tanstack/react-query';
 
-import { api, genericApi, rasaApi, AxiosInterceptor} from 'services/api';
+import { api, authApi, genericApi, rasaApi, AxiosInterceptor} from 'services/api';
 import App from './App';
 import { ToastProvider } from 'context/ToastContext';
 import 'styles/main.scss';
 import '../i18n';
-import auth from "./services/auth";
 import {mockedEndpoints} from "./services/mocked-endpoints";
 
 const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
@@ -37,7 +36,7 @@ const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
   }
   
   if ((queryKey[0] as string).includes('auth')) {
-    const { data } = await auth.get(queryKey[0] as string);
+    const { data } = await authApi.get(queryKey[0] as string);
     return data;
   }
   if(queryKey.includes('regex') && queryKey.includes('examples')) {
