@@ -1,14 +1,14 @@
 import {TrainConfigDataDTO} from "../types/trainSettings";
-import api from "./api";
+import { rasaApi } from "./api";
 import {DaysSelect} from "../components/FormElements/FormDaySelect/FormDaySelect";
 
 export async function updateTrainSettings(request: TrainConfigDataDTO) {
-    const { data } = await api.post<TrainConfigDataDTO>(`training/settings`, request);
+    const { data } = await rasaApi.post<TrainConfigDataDTO>(`training/settings`, request);
     return data;
 }
 
 export async function initBotTraining() {
-    const { data } = await api.get<void>(`model/init-train`);
+    const { data } = await rasaApi.get<void>(`model/init-train`);
     return data;
 }
 

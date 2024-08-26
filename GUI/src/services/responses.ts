@@ -1,4 +1,4 @@
-import api from './api';
+import { rasaApi } from './api';
 import {ResponseEdit, ResponseDataEdit} from "types/response"
 
 export async function editResponse(id: string,  responseText: string, update = true) {
@@ -10,16 +10,16 @@ export async function editResponse(id: string,  responseText: string, update = t
   responseEditData.response = responseDataEdit;
 
   if (update) {
-    const {data} = await api.post<{ response: string }>(`responses/update`, responseEditData);
+    const {data} = await rasaApi.post<{ response: string }>(`responses/update`, responseEditData);
     return data;
   } else {
-    const {data} = await api.post<{ response: string }>(`responses/add`, responseEditData);
+    const {data} = await rasaApi.post<{ response: string }>(`responses/add`, responseEditData);
     return data;
   }
 }
 
 
 export async function deleteResponse(response: {response: string}) {
-  const { data } = await api.post(`responses/delete`, response);
+  const { data } = await rasaApi.post(`responses/delete`, response);
   return data;
 }

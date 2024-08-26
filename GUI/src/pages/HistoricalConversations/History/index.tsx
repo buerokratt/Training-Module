@@ -16,7 +16,7 @@ import {
 import { Chat as ChatType } from 'types/chat';
 import { Message } from 'types/message';
 import { Controller, useForm } from 'react-hook-form';
-import apiDev from '../../../services/api-dev';
+import { api } from '../../../services/api';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import {
   getFromLocalStorage,
@@ -126,7 +126,7 @@ const History: FC = () => {
         sortBy = `${sorting[0].id} ${sortType}`;
       }
 
-      return apiDev.post('agents/chats/ended', {
+      return api.post('agents/chats/ended', {
         startDate: data.startDate,
         endDate: data.endDate,
         page: pagination.pageIndex + 1,
@@ -143,7 +143,7 @@ const History: FC = () => {
 
   const getChatById = useMutation({
     mutationFn: () => {
-      return apiDev.post('chat/chat-by-id', {
+      return api.post('chat/chat-by-id', {
         chatId: passedChatId,
       });
     },
