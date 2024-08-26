@@ -295,6 +295,7 @@
   "chat": {
     "unanswered": "Vastamata",
     "forwarded": "Suunatud",
+    "pending": "Ootel",
     "redirectedMessage": "{{from}} suunas vestluse kasutajale {{to}} {{date}}",
     "clientLeft": "Klient lahkus",
     "history": {
