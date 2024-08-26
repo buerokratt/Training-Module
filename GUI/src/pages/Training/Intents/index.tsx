@@ -755,23 +755,24 @@ const Intents: FC = () => {
               </Track>
             </div>
 
-            {filteredIntents.map((intent, index) => (
-              <Tabs.Trigger
-                key={`${intent}-${index}`}
-                className="vertical-tabs__trigger"
-                value={intent.id}
-              >
-                <Track gap={16}>
+            <div className="vertical-tabs__list-scrollable">
+              {filteredIntents.map((intent, index) => (
+                <Tabs.Trigger
+                  key={`${intent}-${index}`}
+                  className="vertical-tabs__trigger"
+                  value={intent.id}
+                >
+                  <Track gap={16}>
                   <span style={{ flex: 1 }}>
                     {intent.id.replace(/_/g, ' ')}
                   </span>
-                  <Tooltip content={t('training.intents.amountOfExamples')}>
+                    <Tooltip content={t('training.intents.amountOfExamples')}>
                     <span style={{ color: '#5D6071' }}>
                       {intent.examplesCount}
                     </span>
-                  </Tooltip>
-                  {intent.inModel ? (
-                    <Tooltip content={t('training.intents.intentInModel')}>
+                    </Tooltip>
+                    {intent.inModel ? (
+                      <Tooltip content={t('training.intents.intentInModel')}>
                       <span style={{ display: 'flex', alignItems: 'center' }}>
                         <Icon
                           icon={
@@ -782,13 +783,14 @@ const Intents: FC = () => {
                           }
                         />
                       </span>
-                    </Tooltip>
-                  ) : (
-                    <span style={{ display: 'block', width: 16 }}></span>
-                  )}
-                </Track>
-              </Tabs.Trigger>
-            ))}
+                      </Tooltip>
+                    ) : (
+                      <span style={{ display: 'block', width: 16 }}></span>
+                    )}
+                  </Track>
+                </Tabs.Trigger>
+              ))}
+            </div>
           </Tabs.List>
 
           {selectedIntent && (
