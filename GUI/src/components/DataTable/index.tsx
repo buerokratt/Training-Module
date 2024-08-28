@@ -56,6 +56,15 @@ type DataTableProps = {
   pageSizeOptions?: number[];
 };
 
+type ColumnMeta = {
+  meta: {
+    size: number | string;
+    sticky: 'left' | 'right';
+  };
+};
+
+type CustomColumnDef = ColumnDef<any> & ColumnMeta;
+
 declare module '@tanstack/table-core' {
   interface FilterFns {
     fuzzy: FilterFn<unknown>;
@@ -69,6 +78,9 @@ declare module '@tanstack/table-core' {
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
     getRowStyles: (row: Row<TData>) => CSSProperties;
+  }
+  class Column<TData extends RowData> {
+    columnDef: CustomColumnDef;
   }
 }
 
@@ -151,7 +163,14 @@ const DataTable: FC<DataTableProps> = (
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <th key={header.id} style={{ width: header.column.columnDef.size }}>
+                  <th key={header.id} style={{
+                    width: header.column.columnDef.size,
+                    position: header.column.columnDef.meta?.sticky ? 'sticky' : undefined,
+                    left: header.column.columnDef.meta?.sticky === 'left' ? `${header.column.getAfter('left') * 0.675}px` : undefined,
+                    right: header.column.columnDef.meta?.sticky === 'right' ? `${header.column.getAfter('right') * 0.675}px` : undefined,
+                    backgroundColor: 'white',
+                    zIndex: header.column.columnDef.meta?.sticky ? 1 : 0
+                  }}>
                   {header.isPlaceholder ? null : (
                     <Track gap={8}>
                       {sortable && header.column.getCanSort() && (
@@ -185,7 +204,12 @@ const DataTable: FC<DataTableProps> = (
             style={table.options.meta?.getRowStyles(row)}
           >
             {row.getVisibleCells().map((cell) => (
-              <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
+                <td key={cell.id} style={{
+                  position: cell.column.columnDef.meta?.sticky ? 'sticky' : undefined,
+                  left: cell.column.columnDef.meta?.sticky === 'left' ? `${cell.column.getAfter('left') * 0.675}px` : undefined,
+                  right: cell.column.columnDef.meta?.sticky === 'right' ? `${cell.column.getAfter('right') * 0.675}px` : undefined,
+                  backgroundColor: 'white', zIndex: cell.column.columnDef.meta?.sticky ? 1 : 0
+                }}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
             ))}
           </tr>
         ))}
