@@ -2,12 +2,21 @@ version: "3.0"
 nlu:
 - intent: common_teenus_nordpool2
   examples: |
-    - mis ööpäeva odavaim elektri hind oli 
-    - elektri hind päevas odavaim 
-    - kõige odavam börsi elektri hind päevas 
-    - odavaim elektri hind päevas 
-    - tahan teada parimat elektri hinda viimase päeva jooksul 
-    - millal on hea börsihind olnud 24 tunni sees 
-    - millal on kõige odavam elekter
-    - tahan head elektri hinda 
-    - hea elekti hind
+    - mis ööpäeva [odavaim](np_odav) elektri hind oli 
+    - elektri hind päevas [odavaim](np_odav)
+    - kõige [odavam](np_odav) börsi elektri hind päevas 
+    - [odavaim](np_odav) elektri hind päevas 
+    - tahan teada [parimat](np_odav) elektri hinda viimase päeva jooksul 
+    - millal on [hea](odav) börsihind olnud 24 tunni sees 
+    - millal on kõige [odavam](np_odav) elekter
+    - tahan [head](np_odav) elektri hinda 
+    - [hea](np_odav) elekti hind
+    - mis ööpäeva [kallim](np_kallis) elektri hind oli 
+    - mis ööpäeva [kalleim](np_kallis) elektri hind oli 
+    - elektri hind päevas [kalleim](np_kallis)
+    - kõige [kallim](np_kallis) börsi elektri hind päevas 
+    - [kalleim](np_kallis) elektri hind päevas 
+    - tahan teada [halvimat](np_kallis) elektri hinda viimase päeva jooksul 
+    - millal on [kallis](np_kallis) börsihind olnud 24 tunni sees 
+    - [kulukas](np_kallis) elekter
+    - [odav](np_odav) elekter
