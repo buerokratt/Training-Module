@@ -15,7 +15,6 @@ intents:
   - common_teenus_rahvaalgatus_populaarne
   - common_teenus_nordpool
   - common_teenus_nordpool2
-  - common_teenus_nordpool3
   - common_service_companies_töötajad
   - common_service_companies_käive
   - common_service_companies_tööjõumaksud
@@ -32,6 +31,8 @@ entities:
   - rk_liige
   - rk_hääletus
   - rk_hääletused
+  - np_odav
+  - np_kallis
   
 slots:
   common_teenus_ilm_asukoht:
@@ -103,6 +104,22 @@ slots:
     - type: from_entity
       entity: rk_hääletused
       intent: common_teenus_rk_hääletus
+
+  np_kallis:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: np_kallis
+      intent: common_teenus_nordpool2
+
+  np_odav:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: np_odav
+      intent: common_teenus_nordpool2
 
   affirm_deny:
     type: text
@@ -233,8 +250,8 @@ responses:
   utter_common_teenus_nordpool:
   - text: "#nordpool;"
 
-  utter_common_teenus_nordpool2:
+  utter_common_teenus_nordpool_odav:
   - text: "#nordpool2;"
 
-  utter_common_teenus_nordpool3:
+  utter_common_teenus_nordpool_kallis:
   - text: "#nordpool3;"
