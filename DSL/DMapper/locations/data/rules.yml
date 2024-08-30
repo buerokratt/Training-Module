@@ -60,15 +60,19 @@ rules:
   - intent: common_teenus_nordpool
   - action: utter_common_teenus_nordpool
 
-- rule: common_teenus_nordpool2
+- rule: common_teenus_nordpool_odav
   steps:
+  - slot_was_set:
+    - np_odav: true
   - intent: common_teenus_nordpool2
-  - action: utter_common_teenus_nordpool2
+  - action: utter_common_teenus_nordpool_odav
 
-- rule: common_teenus_nordpool3
+- rule: common_teenus_nordpool_kallis
   steps:
-  - intent: common_teenus_nordpool3
-  - action: utter_common_teenus_nordpool3
+  - slot_was_set:
+    - np_kallis: true
+  - intent: common_teenus_nordpool2
+  - action: utter_common_teenus_nordpool_kallis
 
 - rule: common_teenus_rahvaalgatus
   steps:
