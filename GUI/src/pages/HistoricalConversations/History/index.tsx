@@ -275,7 +275,7 @@ const History: FC = () => {
                 selectedColumns.includes(o.value)
               )}
               onSelectionChange={(selection: any) => {
-                const columns = selection?.value ? [selection.value] : [];
+                const columns = selection ? selection.map((s: any) => s.value) : [];
                 setSelectedColumns(columns);
                 setToLocalStorage(CHAT_HISTORY_PREFERENCES_KEY, columns);
               }}
@@ -288,7 +288,7 @@ const History: FC = () => {
         <DataTable
           data={filteredEndedChatsList}
           sortable
-          columns={endedChatsColumns}
+          columns={selectedColumns.length > 0 ? endedChatsColumns.filter((c) =>  selectedColumns.includes(c.id ?? '')) : endedChatsColumns}
           pagination={pagination}
           sorting={sorting}
           setPagination={(state: PaginationState) => {
