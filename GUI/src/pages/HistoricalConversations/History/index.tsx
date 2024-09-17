@@ -288,7 +288,7 @@ const History: FC = () => {
         <DataTable
           data={filteredEndedChatsList}
           sortable
-          columns={selectedColumns.length > 0 ? endedChatsColumns.filter((c) =>  selectedColumns.includes(c.id ?? '')) : endedChatsColumns}
+          columns={endedChatsColumns.filter((c) => selectedColumns.length > 0 ? selectedColumns.includes(c.id ?? '') : true)}
           pagination={pagination}
           sorting={sorting}
           setPagination={(state: PaginationState) => {
