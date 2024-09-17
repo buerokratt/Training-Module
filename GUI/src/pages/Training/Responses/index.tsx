@@ -36,7 +36,7 @@ const Responses: FC = () => {
   const [editableRow, setEditableRow] = useState<{ id: string; text: string; } | null>(null);
   const [deletableRow, setDeletableRow] = useState<string | null>(null);
   const [filter, setFilter] = useState('');
-  const { register,control, handleSubmit } = useForm<NewResponse>();
+  const { register,control, handleSubmit, resetField } = useForm<NewResponse>();
   const [formattedResponses, setFormattedResponses] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -127,11 +127,13 @@ const Responses: FC = () => {
     },
     onSuccess: async () => {
       setAddFormVisible(false);
-        toast.open({
-          type: 'success',
-          title: t('global.notification'),
-          message: t('toast.responseSaved'),
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: t('toast.responseSaved'),
       });
+      resetField('name');
+      resetField('text');
     },
     onError: (error: AxiosError) => {
       toast.open({
