@@ -120,7 +120,7 @@ const Responses: FC = () => {
   });
 
   const newResponseMutation = useMutation({
-    mutationFn: ({ name, text}: { name: string, text: string}) => editResponse("utter_" + name,  text, false),
+    mutationFn: ({ name, text}: { name: string, text: string}) => editResponse("utter_" + name.trim().replace(/\s+/g, '_'),  text, false),
     onMutate: async () => {
       await queryClient.invalidateQueries(['responses-list']);
       setRefreshing(true);
