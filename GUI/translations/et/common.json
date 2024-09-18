@@ -250,7 +250,10 @@
     "trainNew": {
       "title": "Treeni ja testi",
       "lastTrained": "Viimati treenitud {{date}}, {{time}}",
-      "trainNow": "Treeni kohe",
+      "trainAndTest": "Treeni ja testi",
+      "train": "Treeni",
+      "trainTooltip": "Treeni mudel ilma testimiseta (Sobib väiksemateks parandusteks/muudatusteks)",
+      "trainAndTestTooltip": "Treeni ja testi mudel sobib suuremateks muudatusteks (Võimaldab teemade tagasiside ja ülevaate) Testimine võtab märkimisväärselt rohkem aega.",
       "warning": "NB! Viimane treening kukkus läbi. ({{date}}, {{time}})",
       "trainingTitle": "Treenimise ja testimise andmed",
       "folds": "Folds arv",
@@ -258,7 +261,9 @@
       "planTitle": "Planeeritud treening",
       "date": "Alates",
       "days": "Nädalapäevad",
-      "time": "Treenimise kellaaeg"
+      "time": "Treenimise kellaaeg",
+      "trainingSuccess": "Treenimine õnnestus",
+      "trainingFailure": "Treenimine ebaõnnestus"
     }
   },
   "roles": {

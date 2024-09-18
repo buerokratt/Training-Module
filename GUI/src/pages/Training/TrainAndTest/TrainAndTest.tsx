@@ -1,4 +1,4 @@
-import {Box, Button, Card, FormInput, Switch} from 'components';
+import {Box, Button, Card, FormInput, Switch, Tooltip, Track} from 'components';
 import {t} from 'i18next';
 import styles from './TrainAndTest.module.scss';
 import FormDaySelect, {DAYS, DaysSelect} from 'components/FormElements/FormDaySelect/FormDaySelect';
@@ -111,128 +111,164 @@ const TrainAndTest = () => {
     });
 
     return (
-        <div className={styles.container}>
-            <div className={styles.top}>
-                <h1>{t('training.trainNew.title')}</h1>
-                <p className={styles.top__date}>
-                    {t('training.trainNew.lastTrained', {
-                        date: lastTrainedDay,
-                        time: lastTrainedTime,
-                    })}
-                </p>
-                <Button onClick={() => trainNowMutation.mutate()} appearance="primary">{t('training.trainNew.trainNow')}</Button>
-            </div>
-            {llmFailed && trainedData && (<Box
-                color="red"
-                style={{
-                    width: '100%',
-                    display: 'flex',
-                    justifyContent: 'flex-start',
-                    alignItems: 'center',
-                    gap: 8,
-                }}
-            >
-                <AiOutlineExclamationCircle/>
-                <p className={styles.warning}>
-                    {t('training.trainNew.warning', {
-                        date: lastTrainedDay,
-                        time: lastTrainedTime,
-                    })}
-                </p>
-            </Box>)}
-            <Card
-                header={t('training.trainNew.trainingTitle')}
-                style={{
-                    width: '100%',
-                }}
-            >
-                <div className={styles.card}>
-                    {
-                      isHiddenFeaturesEnabled && (
-                        <div className={`${styles.trainingInput} ${styles.input}`}>
-                          <Controller name='rasaFolds' control={control} render={({ field }) =>
-                              <FormInput
-                                  {...field}
-                                  value={folds}
-                                  label={t('training.trainNew.folds')}
-                                  type="number"
-                                  onChange={(e) => {
-                                      setFolds(e.target.value);
-                                      field.onChange(parseInt(e.target.value));
-                                  }}
-                              />
-                          } />
-                        </div>
-                      )
-                    }
-                    <div className={`${styles.trainingSwitch} ${styles.input}`}>
-                        <Controller name='scheduled' control={control} render={({ field }) =>
-                            <Switch
-                                {...field}
-                                checked={scheduled}
-                                onCheckedChange={(e) => {
-                                    setScheduled(e)
-                                    field.onChange(e)} }
-                                onLabel={t('global.yes') ?? ''}
-                                offLabel={t('global.no') ?? ''}
-                                label={t('training.trainNew.repeatTraining')}
-                            />
-                        } />
-                    </div>
-                </div>
-            </Card>
-            {scheduled && (
-                    <Card
-                        header={t('training.trainNew.planTitle')}
-                        style={{
-                            width: '100%',
-                        }}
-                    >
-                        <div className={styles.card}>
-                            <div className={`${styles.planDate} ${styles.input}`}>
-                                <FormInput
-                                    name={"date"}
-                                    value={date}
-                                    label={t('training.trainNew.date')}
-                                    type="date"
-                                    onChange={(e) => {
-                                        setDate(e.target.value);
-                                    }}
-                                 />
-                            </div>
-
-                            <div className={`${styles.planDays} ${styles.input}`}>
-                                <span>{t('training.trainNew.days')}</span>
-                                <Controller name='daysOfWeek' control={control} render={({ field }) =>
-                                    <FormDaySelect
-                                        {...field}
-                                        value={days}
-                                        onCheckedChange={(days) => {
-                                            setDays(days);
-                                            field.onChange(days);
-                                        }}
-                                    />
-                                } />
-                            </div>
-                            <div className={`${styles.planTime} ${styles.input}`}>
-                                <FormInput
-                                    name={"time"}
-                                    value={time}
-                                    label={t('training.trainNew.time')}
-                                    type="time"
-                                    step="1"
-                                    onChange={(e) => {
-                                        setTime(e.target.value);
-                                    }}
-                                />
-                            </div>
-                        </div>
-                    </Card>
-            )}
-            <div className={styles.bottom}>
-                <Button onClick={handleTrainSettingsSave} appearance="primary">{t('global.save')}</Button>
-            </div>
+      <div className={styles.container}>
+        <div className={styles.top}>
+          <h1>{t('training.trainNew.title')}</h1>
+          <p className={styles.top__date}>
+            {t('training.trainNew.lastTrained', {
+              date: lastTrainedDay,
+              time: lastTrainedTime,
+            })}
+          </p>
+          <Track gap={10}>
+            <Tooltip content={t('training.trainNew.trainTooltip')}>
+              <span style={{ display: 'flex', alignItems: 'center' }}>
+                <Button
+                  onClick={() => trainNowMutation.mutate()}
+                  appearance="primary"
+                >
+                  {t('training.trainNew.train')}
+                </Button>
+              </span>
+            </Tooltip>
+            <Tooltip content={t('training.trainNew.trainAndTestTooltip')}>
+              <span style={{ display: 'flex', alignItems: 'center' }}>
+                <Button
+                  onClick={() => trainNowMutation.mutate()}
+                  appearance="primary"
+                >
+                  {t('training.trainNew.trainAndTest')}
+                </Button>
+              </span>
+            </Tooltip>
+          </Track>
         </div>
+        {llmFailed && trainedData && (
+          <Box
+            color="red"
+            style={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'flex-start',
+              alignItems: 'center',
+              gap: 8,
+            }}
+          >
+            <AiOutlineExclamationCircle />
+            <p className={styles.warning}>
+              {t('training.trainNew.warning', {
+                date: lastTrainedDay,
+                time: lastTrainedTime,
+              })}
+            </p>
+          </Box>
+        )}
+        <Card
+          header={t('training.trainNew.trainingTitle')}
+          style={{
+            width: '100%',
+          }}
+        >
+          <div className={styles.card}>
+            {isHiddenFeaturesEnabled && (
+              <div className={`${styles.trainingInput} ${styles.input}`}>
+                <Controller
+                  name="rasaFolds"
+                  control={control}
+                  render={({ field }) => (
+                    <FormInput
+                      {...field}
+                      value={folds}
+                      label={t('training.trainNew.folds')}
+                      type="number"
+                      onChange={(e) => {
+                        setFolds(e.target.value);
+                        field.onChange(parseInt(e.target.value));
+                      }}
+                    />
+                  )}
+                />
+              </div>
+            )}
+            <div className={`${styles.trainingSwitch} ${styles.input}`}>
+              <Controller
+                name="scheduled"
+                control={control}
+                render={({ field }) => (
+                  <Switch
+                    {...field}
+                    checked={scheduled}
+                    onCheckedChange={(e) => {
+                      setScheduled(e);
+                      field.onChange(e);
+                    }}
+                    onLabel={t('global.yes') ?? ''}
+                    offLabel={t('global.no') ?? ''}
+                    label={t('training.trainNew.repeatTraining')}
+                  />
+                )}
+              />
+            </div>
+          </div>
+        </Card>
+        {scheduled && (
+          <Card
+            header={t('training.trainNew.planTitle')}
+            style={{
+              width: '100%',
+            }}
+          >
+            <div className={styles.card}>
+              <div className={`${styles.planDate} ${styles.input}`}>
+                <FormInput
+                  name={'date'}
+                  value={date}
+                  label={t('training.trainNew.date')}
+                  type="date"
+                  onChange={(e) => {
+                    setDate(e.target.value);
+                  }}
+                />
+              </div>
+
+              <div className={`${styles.planDays} ${styles.input}`}>
+                <span>{t('training.trainNew.days')}</span>
+                <Controller
+                  name="daysOfWeek"
+                  control={control}
+                  render={({ field }) => (
+                    <FormDaySelect
+                      {...field}
+                      value={days}
+                      onCheckedChange={(days) => {
+                        setDays(days);
+                        field.onChange(days);
+                      }}
+                    />
+                  )}
+                />
+              </div>
+              <div className={`${styles.planTime} ${styles.input}`}>
+                <FormInput
+                  name={'time'}
+                  value={time}
+                  label={t('training.trainNew.time')}
+                  type="time"
+                  step="1"
+                  onChange={(e) => {
+                    setTime(e.target.value);
+                  }}
+                />
+              </div>
+            </div>
+          </Card>
+        )}
+        <div className={styles.bottom}>
+          <Button onClick={handleTrainSettingsSave} appearance="primary">
+            {t('global.save')}
+          </Button>
+        </div>
+      </div>
     );
 };
 
