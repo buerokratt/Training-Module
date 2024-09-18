@@ -246,7 +246,7 @@
       "version": "Version"
     },
     "trainNew": {
-      "title": "Traing and test",
+      "title": "Training and test",
       "lastTrained": "Last trained {{date}}, {{time}}",
       "trainNow": "Train now",
       "warning": "NB! Last training failed. ({{date}}, {{time}})",
