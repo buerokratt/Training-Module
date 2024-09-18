@@ -147,6 +147,15 @@
       "deleteTooltip": "Ainult teema kustutatakse ja teenus jääb alles, selle kustutamine saab toimuda Teenuste moodulis",
       "error": {
         "turnExampleIntoIntent": "Näidet ei saa teenuseks muuta"
+      },
+      "sortingType": {
+        "label": "Sorteerimise tüüp",
+        "alphabeticalAsc": "Aasta (A-Z)",
+        "alphabeticalDesc": "Aasta (Z-A)",
+        "inModelFirst": "Mudelis esimesena",
+        "inModelLast": "Mudelis viimasena",
+        "lastModifiedAsc": "Viimati muudetud (vanimad esimesena)",
+        "lastModifiedDesc": "Viimati muudetud (uusimad esimesena)"
       }
     },
     "responses": {
