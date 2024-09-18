@@ -6,4 +6,5 @@ export interface Intent {
   examplesCount: number | null;
   examples: string[];
   serviceId: string;
+  isCommon?: boolean;
 }
