@@ -111,7 +111,7 @@ const IntentTabList: FC<IntentTabListProps> = ({ filter, intents, onDismiss }) =
       </div>
       <div className="divider" />
       {nonCommonIntents.map(renderTab)}
-      <div className="divider" />
+      {showCommons && <div className="divider" />}
       {showCommons && commonIntents.map(renderTab)}
     </div>
   )
