@@ -35,6 +35,7 @@ import { isHiddenFeaturesEnabled, RESPONSE_TEXT_LENGTH } from 'constants/config'
 import { deleteResponse, editResponse } from '../../../services/responses';
 import { Rule, RuleDTO } from '../../../types/rule';
 import { addStoryOrRule, deleteStoryOrRule, editStoryOrRule } from '../../../services/stories';
+import IntentTabList from './IntentTabList';
 
 type Response = {
   name: string;
@@ -106,6 +107,7 @@ const Intents: FC = () => {
         examplesCount: countExamples,
         examples: intent.examples,
         serviceId: intent.serviceId,
+        isCommon: intent.id.startsWith('common_'),
       };
       intents.push(newIntent);
     });
@@ -287,12 +289,6 @@ const Intents: FC = () => {
 
   useDocumentEscapeListener(() => setEditingIntentTitle(null));
 
-  const filteredIntents = useMemo(() => {
-    if (!intents) return [];
-    const formattedFilter = filter.trim().replace(/\s+/g, '_');
-    return intents.filter((intent) => intent.id?.includes(formattedFilter))
-      .sort((a, b) => a.id.localeCompare(b.id));
-  }, [intents, filter]);
 
   const examplesData = useMemo(
     () => selectedIntent?.examples.map((example, index) => ({ id: index, value: example })),
@@ -755,42 +751,17 @@ const Intents: FC = () => {
               </Track>
             </div>
 
-            <div className="vertical-tabs__list-scrollable">
-              {filteredIntents.map((intent, index) => (
-                <Tabs.Trigger
-                  key={`${intent}-${index}`}
-                  className="vertical-tabs__trigger"
-                  value={intent.id}
-                >
-                  <Track gap={16}>
-                  <span style={{ flex: 1 }}>
-                    {intent.id.replace(/_/g, ' ')}
-                  </span>
-                    <Tooltip content={t('training.intents.amountOfExamples')}>
-                    <span style={{ color: '#5D6071' }}>
-                      {intent.examplesCount}
-                    </span>
-                    </Tooltip>
-                    {intent.inModel ? (
-                      <Tooltip content={t('training.intents.intentInModel')}>
-                      <span style={{ display: 'flex', alignItems: 'center' }}>
-                        <Icon
-                          icon={
-                            <MdCheckCircleOutline
-                              color={'rgba(0, 0, 0, 0.54)'}
-                              opacity={intent.inModel ? 1 : 0}
-                            />
-                          }
-                        />
-                      </span>
-                      </Tooltip>
-                    ) : (
-                      <span style={{ display: 'block', width: 16 }}></span>
-                    )}
-                  </Track>
-                </Tabs.Trigger>
-              ))}
-            </div>
+            <IntentTabList
+              intents={intents}
+              filter={filter}
+              onDismiss={() => {
+                if(!selectedIntent?.isCommon) return;
+                setSelectedIntent(null);
+                setEditingIntentTitle(null);
+                setIntentResponseName(null);
+                setIntentResponseText(null);
+              }}
+            />
           </Tabs.List>
 
           {selectedIntent && (
@@ -1012,7 +983,6 @@ const Intents: FC = () => {
           onModalClose={() => setConnectableIntent(null)}
         />
       )}
-
       {turnIntentToServiceIntent !== null && (
         <Dialog
           title={t('training.intents.turnIntoService')}
