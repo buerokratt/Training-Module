@@ -1,10 +1,9 @@
 import { FC, useMemo, useState } from "react";
-import * as Tabs from '@radix-ui/react-tabs';
-import { Icon, SwitchBox, Tooltip, Track } from 'components';
-import { MdCheckCircleOutline } from 'react-icons/md';
+import { SwitchBox } from 'components';
 import { useTranslation } from "react-i18next";
 import { Intent } from "types/intent";
 import { compareInModel, compareInModelReversed } from "utils/compare";
+import IntentList from "./IntentList";
 import "./IntentTabList.scss";
 
 interface IntentTabListProps {
@@ -44,41 +43,6 @@ const IntentTabList: FC<IntentTabListProps> = ({ filter, intents, onDismiss }) =
   const nonCommonIntents = sortedIntents.filter((intent) => !intent.isCommon);
   const commonIntents = sortedIntents.filter((intent) => intent.isCommon);
 
-  const renderTab = (intent: Intent, index: number) => (
-    <Tabs.Trigger
-      key={`${intent}-${index}`}
-      className="vertical-tabs__trigger"
-      value={intent.id}
-    >
-      <Track gap={16}>
-      <span style={{ flex: 1 }}>
-        {intent.id.replace(/_/g, ' ')}
-      </span>
-        <Tooltip content={t('training.intents.amountOfExamples')}>
-        <span style={{ color: '#5D6071' }}>
-          {intent.examplesCount}
-        </span>
-        </Tooltip>
-        {intent.inModel ? (
-          <Tooltip content={t('training.intents.intentInModel')}>
-          <span style={{ display: 'flex', alignItems: 'center' }}>
-            <Icon
-              icon={
-                <MdCheckCircleOutline
-                  color={'rgba(0, 0, 0, 0.54)'}
-                  opacity={intent.inModel ? 1 : 0}
-                />
-              }
-            />
-          </span>
-          </Tooltip>
-        ) : (
-          <span style={{ display: 'block', width: 16 }}></span>
-        )}
-      </Track>
-    </Tabs.Trigger>
-  );
-
   return (
     <div className="vertical-tabs__list-scrollable">
       <div style={{ padding: "10px" }}>
@@ -111,9 +75,9 @@ const IntentTabList: FC<IntentTabListProps> = ({ filter, intents, onDismiss }) =
         </div>
       </div>
       <div className="divider" />
-      {nonCommonIntents.map(renderTab)}
+      <IntentList intents={nonCommonIntents} />
       {showCommons && <div className="divider" />}
-      {showCommons && commonIntents.map(renderTab)}
+      {showCommons && <IntentList intents={commonIntents} />}
     </div>
   )
 }
