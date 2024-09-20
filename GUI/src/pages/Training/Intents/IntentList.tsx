@@ -22,30 +22,30 @@ const IntentList: FC<IntentListProps> = ({ intents }) => {
           value={intent.id}
         >
           <Track gap={16}>
-          <span style={{ flex: 1 }}>
-            {intent.id.replace(/_/g, ' ')}
-          </span>
+            <span style={{ flex: 1 }}>
+              {intent.id.replace(/_/g, ' ')}
+            </span>
             <Tooltip content={t('training.intents.amountOfExamples')}>
             <span style={{ color: '#5D6071' }}>
               {intent.examplesCount}
             </span>
             </Tooltip>
-            {intent.inModel ? (
-              <Tooltip content={t('training.intents.intentInModel')}>
-              <span style={{ display: 'flex', alignItems: 'center' }}>
-                <Icon
-                  icon={
-                    <MdCheckCircleOutline
-                      color={'rgba(0, 0, 0, 0.54)'}
-                      opacity={intent.inModel ? 1 : 0}
-                    />
-                  }
-                />
-              </span>
-              </Tooltip>
-            ) : (
-              <span style={{ display: 'block', width: 16 }}></span>
-            )}
+            {!intent.inModel 
+              ? <span style={{ display: 'block', width: 16 }}></span> 
+              : (
+                <Tooltip content={t('training.intents.intentInModel')}>
+                <span style={{ display: 'flex', alignItems: 'center' }}>
+                  <Icon
+                    icon={
+                      <MdCheckCircleOutline
+                        color={'rgba(0, 0, 0, 0.54)'}
+                        opacity={intent.inModel ? 1 : 0}
+                      />
+                    }
+                  />
+                </span>
+                </Tooltip>
+              )}
           </Track>
         </Tabs.Trigger>
       ))}
