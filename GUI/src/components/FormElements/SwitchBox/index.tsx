@@ -22,7 +22,8 @@ const SwitchBox = forwardRef<HTMLButtonElement, SwitchBoxProps>((
   },
   ref,
 ) => {
-  const internalId = id || useId();
+  const randomId = useId();
+  const internalId = id || randomId;
 
   return (
     <div className='switchbox'>

@@ -4,6 +4,7 @@ import { Icon, SwitchBox, Tooltip, Track } from 'components';
 import { MdCheckCircleOutline } from 'react-icons/md';
 import { useTranslation } from "react-i18next";
 import { Intent } from "types/intent";
+import { compareInModel, compareInModelReversed } from "utils/compare";
 import "./IntentTabList.scss";
 
 interface IntentTabListProps {
@@ -29,9 +30,9 @@ const IntentTabList: FC<IntentTabListProps> = ({ filter, intents, onDismiss }) =
     } else if (order === 'alphabetically-Desc') {
       return filteredIntents.sort((a, b) => b.id.localeCompare(a.id));
     } else if (order === 'inmodel-asc') {
-      return filteredIntents.sort((a, b) => a.inModel === b.inModel ? 0 : a.inModel ? -1 : 1);
+      return filteredIntents.sort(compareInModel);
     } else if (order === 'inmodel-Desc') {
-      return filteredIntents.sort((a, b) => a.inModel === b.inModel ? 0 : a.inModel ? 1 : -1);
+      return filteredIntents.sort(compareInModelReversed);
     } else if (order === 'modified-asc') {
       return filteredIntents.sort((a, b) => a.modifiedAt.localeCompare(b.modifiedAt));
     } else if (order === 'modified-desc') {
