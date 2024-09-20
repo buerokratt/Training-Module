@@ -2,6 +2,7 @@
 "intents": [
 {{#each hits}}
     {
+    "id": "{{_source._id}}",
     "title": "{{_source.intent}}",
     "examples": [
     {{#each _source.examples}}

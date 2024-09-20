@@ -146,6 +146,15 @@
       "deleteTooltip": "Only the Intent is deleted and the service remains, its deletion can be done in the Service module",
       "error": {
         "turnExampleIntoIntent": "Unable to turn this example into intent"
+      },
+      "sortingType": {
+        "label": "Sorting type",
+        "alphabeticalAsc": "Alphabetical (A-Z)",
+        "alphabeticalDesc": "Alphabetical (Z-A)",
+        "inModelFirst": "In model first",
+        "inModelLast": "In model last",
+        "lastModifiedAsc": "Last modified (oldest first)",
+        "lastModifiedDesc": "Last modified (newest first)"
       }
     },
     "responses": {
