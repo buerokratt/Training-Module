@@ -92,7 +92,7 @@ const TrainAndTest = () => {
     });
 
     const trainNowMutation = useMutation({
-        mutationFn: () => initBotTraining(),
+        mutationFn: (test: boolean) => initBotTraining(test),
         onSuccess: async () => {
             toast.open({
                 type: 'success',
@@ -124,7 +124,7 @@ const TrainAndTest = () => {
             <Tooltip content={t('training.trainNew.trainTooltip')}>
               <span style={{ display: 'flex', alignItems: 'center' }}>
                 <Button
-                  onClick={() => trainNowMutation.mutate()}
+                  onClick={() => trainNowMutation.mutate(false)}
                   appearance="primary"
                 >
                   {t('training.trainNew.train')}
@@ -134,7 +134,7 @@ const TrainAndTest = () => {
             <Tooltip content={t('training.trainNew.trainAndTestTooltip')}>
               <span style={{ display: 'flex', alignItems: 'center' }}>
                 <Button
-                  onClick={() => trainNowMutation.mutate()}
+                  onClick={() => trainNowMutation.mutate(true)}
                   appearance="primary"
                 >
                   {t('training.trainNew.trainAndTest')}

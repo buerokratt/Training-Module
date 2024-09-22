@@ -7,8 +7,8 @@ export async function updateTrainSettings(request: TrainConfigDataDTO) {
     return data;
 }
 
-export async function initBotTraining() {
-    const { data } = await rasaApi.get<void>(`model/init-train`);
+export async function initBotTraining(test: boolean) {
+    const { data } = await rasaApi.get<void>(`model/init-train?test=${test}`);
     return data;
 }
 
