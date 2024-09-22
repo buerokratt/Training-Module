@@ -1,5 +1,5 @@
 import { Box, Button, Card, FormInput, Switch, Tooltip, Track } from 'components';
-import { t, use } from 'i18next';
+import { t } from 'i18next';
 import styles from './TrainAndTest.module.scss';
 import FormDaySelect, { DAYS, DaysSelect } from 'components/FormElements/FormDaySelect/FormDaySelect';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -13,7 +13,7 @@ import {
   initBotTraining,
   updateTrainSettings,
 } from '../../../services/train-settings';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AiOutlineExclamationCircle } from 'react-icons/ai';
 import useStore from '../../../store/store';
 import { format } from 'date-fns';
@@ -55,7 +55,7 @@ const TrainAndTest = () => {
 
   useEffect(() => {
     const events = sse(`/model-list`, async (res: any) => {
-      const state: String = res[1] ?? '';
+      const state: string = res[1] ?? '';
       if (state.toLowerCase() === 'already_trained') {
         toast.open({
           type: 'success',
