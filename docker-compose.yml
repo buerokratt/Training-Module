@@ -295,6 +295,33 @@ services:
     networks:
       - bykstack
 
+  notifications-node:
+    container_name: notifications-node
+    build:
+      context: ./notification-server
+      dockerfile: Dockerfile
+    ports:
+      - 4040:4040
+    depends_on:
+      - opensearch
+    environment:
+      OPENSEARCH_PROTOCOL: http
+      OPENSEARCH_HOST: opensearch
+      OPENSEARCH_PORT: 9200
+      OPENSEARCH_USERNAME: admin
+      OPENSEARCH_PASSWORD: admin
+      PORT: 4040
+      REFRESH_INTERVAL: 1000
+      QUEUE_REFRESH_INTERVAL: 4000
+      CORS_WHITELIST_ORIGINS: http://localhost:3001,http://localhost:8080
+      RUUTER_URL: http://ruuter:8080
+      CHAT_TERMINATION_DELAY: 5000
+    volumes:
+      - /app/node_modules
+      - ./notification-server:/app
+    networks:
+      - bykstack    
+
 volumes:
   opensearch-data:
   rasa-training-data:

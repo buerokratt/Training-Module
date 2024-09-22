@@ -84,3 +84,8 @@ if $MOCK_ALLOWED; then curl -H "Content-Type: application/x-ndjson" -X PUT "$URL
 curl -XDELETE "$URL/config?ignore_unavailable=true" -u "$AUTH" --insecure
 curl -H "Content-Type: application/x-ndjson" -X PUT "$URL/config" -ku "$AUTH" --data-binary "@fieldMappings/config.json"
 if $MOCK_ALLOWED; then curl -H "Content-Type: application/x-ndjson" -X PUT "$URL/config/_bulk" -ku "$AUTH" --data-binary "@mock/config.json"; fi
+
+# Notifications
+curl -XDELETE "$URL/notifications?ignore_unavailable=true" -u "$AUTH" --insecure
+curl -H "Content-Type: application/x-ndjson" -X PUT "$URL/notifications" -ku "$AUTH" --data-binary "@fieldMappings/notifications.json"
+if $MOCK_ALLOWED; then curl -H "Content-Type: application/x-ndjson" -X PUT "$URL/notifications/_bulk" -ku "$AUTH" --data-binary "@mock/notifications.json"; fi
