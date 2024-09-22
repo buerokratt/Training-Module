@@ -95,7 +95,10 @@
     "storyUpdated": "Story updated",
     "titleCannotBeEmpty": "Title cannot be empty",
     "trainSettingsChangesSaved": "Train settings changes saved",
-    "trainingIsInitialized": "Training is Initialized"
+    "trainingIsInitialized": "Training is Initialized",
+    "trainingSuccess": "The training was successful",
+    "alreadyTrained": "The model is already trained",
+    "trainingFailure": "Training failed"
   },
   "mainMenu": {
     "menuLabel": "Main navigation",
@@ -260,8 +263,15 @@
       "date": "Starting from",
       "days": "Days",
       "time": "Training time",
-      "trainingSuccess": "The training was successful",
-      "trainingFailure": "Training failed"
+      "trainingState": "A model is currently being trained with state: {{state}}",
+      "state": {
+        "ready": "Ready",
+        "processing": "Processing",
+        "testing": "Testing",
+        "cross_validating": "Cross validating",
+        "error": "Error",
+        "already_trained": "Already Trained"
+      }
     }
   },
   "roles": {

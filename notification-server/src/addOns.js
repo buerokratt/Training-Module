@@ -1,4 +1,4 @@
-const { searchNotification, findChatIdOrder } = require('./openSearch');
+const { searchNotification } = require('./openSearch');
 const { serverConfig } = require('./config');
 
 function buildNotificationSearchInterval({ 

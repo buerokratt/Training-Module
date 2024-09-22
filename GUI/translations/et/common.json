@@ -96,7 +96,10 @@
     "storyUpdated": "Vestlusvoog värskendatud",
     "titleCannotBeEmpty": "Pealkiri ei tohi olla tühi",
     "trainSettingsChangesSaved": "Seadete muudatused on salvestatud",
-    "trainingIsInitialized": "Treenimine käivitati"
+    "trainingIsInitialized": "Treenimine käivitati",
+    "trainingSuccess": "Treenimine õnnestus",
+    "alreadyTrained": "Modell on juba koolitatud",
+    "trainingFailure": "Treenimine ebaõnnestus"
   },
   "mainMenu": {
     "menuLabel": "Peamenüü",
@@ -262,8 +265,15 @@
       "date": "Alates",
       "days": "Nädalapäevad",
       "time": "Treenimise kellaaeg",
-      "trainingSuccess": "Treenimine õnnestus",
-      "trainingFailure": "Treenimine ebaõnnestus"
+      "trainingState": "Praegu treenitakse mudelit olekuga: {{state}}",
+      "state": {
+        "ready": "Valmis",
+        "proccessing": "Töötlemine",
+        "testing": "Testimine",
+        "cross_validating": "Risti kinnitamine",
+        "error": "Viga",
+        "already_trained": "Juba koolitatud"
+      }
     }
   },
   "roles": {

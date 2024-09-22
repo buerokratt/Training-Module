@@ -23,5 +23,11 @@ export interface TrainedDataDTO {
     trainedDate: string;
 }
 
+export interface LatestStatusDTO {
+  id: number;
+  versionNumber: string;
+  state: string;
+}
+
 export interface TrainConfigDataEditDTO extends Omit<TrainConfigData, 'id'> {
 }

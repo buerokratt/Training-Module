@@ -7,5 +7,5 @@ WITH llm_data AS (
 SELECT id, version_number, state
 FROM llm_data
 WHERE rn = 1
-ORDER BY version_number DESC, id desc
+ORDER BY id desc
 LIMIT 1;
