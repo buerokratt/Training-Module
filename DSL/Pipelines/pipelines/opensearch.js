@@ -17,7 +17,7 @@ const upload = multer({
 
  const rateLimit = setRateLimit({
   windowMs: 60 * 1000,
-  max: 100,
+  max: 2000,
   message: "Too many requests",
   headers: true,
   statusCode: 429,
