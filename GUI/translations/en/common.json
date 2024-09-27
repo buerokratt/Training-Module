@@ -95,7 +95,10 @@
     "storyUpdated": "Story updated",
     "titleCannotBeEmpty": "Title cannot be empty",
     "trainSettingsChangesSaved": "Train settings changes saved",
-    "trainingIsInitialized": "Training is Initialized"
+    "trainingIsInitialized": "Training is Initialized",
+    "trainingSuccess": "The training was successful",
+    "alreadyTrained": "The model is already trained",
+    "trainingFailure": "Training failed"
   },
   "mainMenu": {
     "menuLabel": "Main navigation",
@@ -255,9 +258,12 @@
       "version": "Version"
     },
     "trainNew": {
-      "title": "Traing and test",
+      "title": "Training and test",
       "lastTrained": "Last trained {{date}}, {{time}}",
-      "trainNow": "Train now",
+      "trainAndTest": "Train and test",
+      "train": "Train",
+      "trainTooltip": "Train model without testing (Suitable for minor corrections/modifications)",
+      "trainAndTestTooltip": "The train and test model is suitable for major changes (allows feedback and review of topics) Testing takes significantly more time.",
       "warning": "NB! Last training failed. ({{date}}, {{time}})",
       "trainingTitle": "Training and testing data",
       "folds": "Number of folds",
@@ -265,7 +271,16 @@
       "planTitle": "Planned training",
       "date": "Starting from",
       "days": "Days",
-      "time": "Training time"
+      "time": "Training time",
+      "trainingState": "A model is currently being trained with state: {{state}}",
+      "state": {
+        "ready": "Ready",
+        "processing": "Processing",
+        "testing": "Testing",
+        "cross_validating": "Cross validating",
+        "error": "Error",
+        "already_trained": "Already Trained"
+      }
     }
   },
   "roles": {

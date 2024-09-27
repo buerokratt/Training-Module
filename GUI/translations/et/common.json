@@ -97,7 +97,10 @@
     "storyUpdated": "Vestlusvoog värskendatud",
     "titleCannotBeEmpty": "Pealkiri ei tohi olla tühi",
     "trainSettingsChangesSaved": "Seadete muudatused on salvestatud",
-    "trainingIsInitialized": "Treenimine käivitati"
+    "trainingIsInitialized": "Treenimine käivitati",
+    "trainingSuccess": "Treenimine õnnestus",
+    "alreadyTrained": "Modell on juba koolitatud",
+    "trainingFailure": "Treenimine ebaõnnestus"
   },
   "mainMenu": {
     "menuLabel": "Peamenüü",
@@ -260,7 +263,10 @@
     "trainNew": {
       "title": "Treeni ja testi",
       "lastTrained": "Viimati treenitud {{date}}, {{time}}",
-      "trainNow": "Treeni kohe",
+      "trainAndTest": "Treeni ja testi",
+      "train": "Treeni",
+      "trainTooltip": "Treeni mudel ilma testimiseta (Sobib väiksemateks parandusteks/muudatusteks)",
+      "trainAndTestTooltip": "Treeni ja testi mudel sobib suuremateks muudatusteks (Võimaldab teemade tagasiside ja ülevaate) Testimine võtab märkimisväärselt rohkem aega.",
       "warning": "NB! Viimane treening kukkus läbi. ({{date}}, {{time}})",
       "trainingTitle": "Treenimise ja testimise andmed",
       "folds": "Folds arv",
@@ -268,7 +274,16 @@
       "planTitle": "Planeeritud treening",
       "date": "Alates",
       "days": "Nädalapäevad",
-      "time": "Treenimise kellaaeg"
+      "time": "Treenimise kellaaeg",
+      "trainingState": "Praegu treenitakse mudelit olekuga: {{state}}",
+      "state": {
+        "ready": "Valmis",
+        "proccessing": "Töötlemine",
+        "testing": "Testimine",
+        "cross_validating": "Risti kinnitamine",
+        "error": "Viga",
+        "already_trained": "Juba koolitatud"
+      }
     }
   },
   "roles": {

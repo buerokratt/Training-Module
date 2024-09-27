@@ -6,11 +6,16 @@ declaration:
   accepts: json
   returns: json
   namespace: training
+  allowedlist:
+   params:
+    - field: test
+      type: boolean
+      description: "Parameter 'test'"
 
 initTraining:
   call: http.post
   args:
-    url: "[#CRON_INSTANCE]/execute/train_bot/train_bot_now"
+    url: "[#CRON_INSTANCE]/execute/train_bot/train_bot_now?test=${incoming.params.test}"
   next: returnSuccess
 
 returnSuccess:
