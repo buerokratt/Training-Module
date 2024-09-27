@@ -150,10 +150,10 @@
       },
       "sortingType": {
         "label": "Sorteerimise tüüp",
-        "alphabeticalAsc": "Aasta (A-Z)",
-        "alphabeticalDesc": "Aasta (Z-A)",
-        "inModelFirst": "Mudelis esimesena",
-        "inModelLast": "Mudelis viimasena",
+        "alphabeticalAsc": "Tähestiku järjekorras (A-Z)",
+        "alphabeticalDesc": "Tähestiku järjekorras (Z-A)",
+        "inModelFirst": "Mudelis teemad esimesena",
+        "inModelLast": "Mudelis teemad viimasena",
         "lastModifiedAsc": "Viimati muudetud (vanimad esimesena)",
         "lastModifiedDesc": "Viimati muudetud (uusimad esimesena)"
       }
