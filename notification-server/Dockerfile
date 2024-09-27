@@ -6,7 +6,9 @@ COPY package.json package-lock.json /app/
 
 RUN npm install --ignore-scripts
 
-COPY . /app/
+COPY src index.js .env /app/
+
+USER node
 
 EXPOSE 4040
 
