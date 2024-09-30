@@ -156,7 +156,7 @@ responses:
           name: common_teenus_ilm_asukoht
           value: null
       text: "Hetkel oskan ma öelda ilma Eesti raames piirkonnapõhiselt. Palun sisestage korrektne piirkonna nimi."
-    - text: "#weather; {common_teenus_ilm_asukoht};"
+    - text: "#weather, {common_teenus_ilm_asukoht}"
 
   utter_ask_company_name:
   - text: "Mis firma kohta sa infot soovid?"
@@ -225,10 +225,10 @@ responses:
   - text: "Kuidas saan abiks olla?"
 
   utter_common_teenus_rahvaalgatus:
-  - text: "#rahvaAlgatus;"
+  - text: "#initiative-events-latest"
 
   utter_common_teenus_rahvaalgatus_populaarne:
-  - text: "#rahvaAlgatusPopulaarne"
+  - text: "#initiative-events-popular"
 
   utter_common_teenus_rk_isiku_kohalolu:
     - condition:
@@ -236,22 +236,22 @@ responses:
           name: rk_liige
           value: null
       text: "Riigikogu liikme kohaloleku nägemiseks palun proovige uuesti, kasutades Riigikogu liikme täisnime."
-    - text: "#riigikoguIsikuKohalolu, {rk_liige}"
+    - text: "#riigikogu-attendance, {rk_liige}"
 
   utter_common_teenus_rk_hääletus_viimane:
   - text: "#recentVoting"
 
   utter_common_teenus_rk_hääletus_viimased:
-  - text: "#recentFiveVoting"
+  - text: "#riigikogu-five-latest-votings"
 
   utter_common_teenus_rk_hääletus_fallback:
   - text: "Ma ei saanud täpselt aru. Palun proovige uuesti!"
 
   utter_common_teenus_nordpool:
-  - text: "#nordpool;"
+  - text: "#nordpool"
 
   utter_common_teenus_nordpool_odav:
-  - text: "#nordpool2;"
+  - text: "#nordpool2"
 
   utter_common_teenus_nordpool_kallis:
-  - text: "#nordpool3;"
+  - text: "#nordpool3"
