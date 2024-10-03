@@ -48,12 +48,31 @@ get_service_intent_connections:
     url: "[#TRAINING_RESQL]/get-service-intent-connections"
   result: connection_res
 
+getIntentsNames:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_intents"
+    headers:
+      type: 'json'
+    body:
+      hits: ${getIntentsResult.response.body.hits.hits}
+  result: getIntentsNamesResult
+
+getIntentsListLastChanged:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/get-intents-list-last-changed"
+    body:
+      intentsList: ${getIntentsNamesResult.response.body.intents}
+  result: getIntentsListLastChangedResult
+
 assignResults:
   assign:
     intents:
       intents: ${getIntentDataResult.response.body.intents}
       inmodel: ${getDomainDataResult.response.body.response.intents}
       connections: ${connection_res.response.body}
+      intentsModifiedAt: ${getIntentsListLastChangedResult.response.body}
 
 mapIntentsData:
   call: http.post

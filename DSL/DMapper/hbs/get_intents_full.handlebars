@@ -11,6 +11,7 @@
     ],
     "inmodel": {{isInModel title ../intents}},
     "serviceId": "{{findConnectedServiceId title ../intents}}",
+    "modifiedAt": "{{findModifiedAt title ../intents/intentsModifiedAt}}",
     "count": {{getCount title ../intents}}
     }{{#unless @last}},{{/unless}}
 {{/each}}
