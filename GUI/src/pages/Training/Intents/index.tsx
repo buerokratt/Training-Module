@@ -86,7 +86,6 @@ const Intents: FC = () => {
   const { data: rulesFullResponse } = useQuery({
     queryKey: ['rules'],
   })
-
   let intentsFullList = intentsFullResponse?.response?.intents;
   let intents: Intent[] = [];
 
@@ -103,11 +102,11 @@ const Intents: FC = () => {
         id: intent.title,
         description: null,
         inModel: intent.inmodel,
-        modifiedAt: '',
+        modifiedAt: intent.modifiedAt,
         examplesCount: countExamples,
         examples: intent.examples,
         serviceId: intent.serviceId,
-        isCommon: intent.id.startsWith('common_'),
+        isCommon: intent.title.startsWith('common_'),
       };
       intents.push(newIntent);
     });
@@ -159,7 +158,7 @@ const Intents: FC = () => {
               id: newSelectedIntent.title,
               description: null,
               inModel: newSelectedIntent.inmodel,
-              modifiedAt: '',
+              modifiedAt: newSelectedIntent.modifiedAt,
               examplesCount: newSelectedIntent.examples.length,
               examples: newSelectedIntent.examples,
               serviceId: newSelectedIntent.serviceId,
