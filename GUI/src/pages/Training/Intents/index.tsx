@@ -86,6 +86,7 @@ const Intents: FC = () => {
   const { data: rulesFullResponse } = useQuery({
     queryKey: ['rules'],
   })
+
   let intentsFullList = intentsFullResponse?.response?.intents;
   let intents: Intent[] = [];
 
