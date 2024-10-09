@@ -99,7 +99,7 @@
     "trainSettingsChangesSaved": "Seadete muudatused on salvestatud",
     "trainingIsInitialized": "Treenimine käivitati",
     "trainingSuccess": "Treenimine õnnestus",
-    "alreadyTrained": "Modell on juba koolitatud",
+    "alreadyTrained": "Praeguste andmetega on mudel juba treenitud",
     "trainingFailure": "Treenimine ebaõnnestus"
   },
   "mainMenu": {
@@ -278,9 +278,9 @@
       "trainingState": "Praegu treenitakse mudelit olekuga: {{state}}",
       "state": {
         "ready": "Valmis",
-        "proccessing": "Töötlemine",
+        "processing": "Töötlemine",
         "testing": "Testimine",
-        "cross_validating": "Risti kinnitamine",
+        "cross_validating": "Ristvalideerimine",
         "error": "Viga",
         "already_trained": "Juba koolitatud"
       }
