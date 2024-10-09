@@ -25,6 +25,7 @@ intents:
   - common_service_companies_lihtandmed
   - common_teenus_rk_isiku_kohalolu
   - common_teenus_rk_hääletus
+  - common_service_riigipyha
 
 entities:
   - asukoht
@@ -33,6 +34,8 @@ entities:
   - rk_hääletused
   - np_odav
   - np_kallis
+  - riigipühad
+  - kuu
   
 slots:
   common_teenus_ilm_asukoht:
@@ -120,6 +123,22 @@ slots:
     - type: from_entity
       entity: np_odav
       intent: common_teenus_nordpool2
+  
+  riigipühad_nimeliselt:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: riigipühad
+      intent: common_service_riigipyha/nimeliselt
+
+  riigipühad_kuu:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: kuu
+      intent: common_service_riigipyha/kuu
 
   affirm_deny:
     type: text
@@ -255,3 +274,27 @@ responses:
 
   utter_common_teenus_nordpool_kallis:
   - text: "#nordpool3"
+
+  utter_common_service_riigipyha/kõik:
+  - text: "#all_national_holidays"
+
+  utter_common_service_riigipyha/järgmised:
+  - text: "#national_holidays_eoy"
+
+  utter_common_service_riigipyha/eelmised:
+  - text: "#national_holidays_ytd"
+
+  utter_common_service_riigipyha/eelmine:
+  - text: "#prev_national_holiday"
+
+  utter_common_service_riigipyha/järgmine:
+  - text: "#next_national_holiday"
+
+  utter_common_service_riigipyha/täna:
+  - text: "#national_holidays_today"
+
+  utter_common_service_riigipyha/nimeliselt:
+  - text: "#national_holidays_by_name"
+
+  utter_common_service_riigipyha/kuu:
+  - text: "#national_holidays_by_month"
