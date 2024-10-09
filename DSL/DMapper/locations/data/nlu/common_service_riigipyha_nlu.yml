@@ -2,77 +2,77 @@ version: "3.1"
 nlu:
 - intent: common_service_riigipyha/kõik #d
   examples: |
-      - Millal on selle aasta riigipühad?
-      - Millised on selle aasta riigipühade kuupäevad?
-      - Kuidas jagunevad selle aasta riigipühad?
-      - Mis kuupäevadel on selle aasta riigipühad?
-      - Kas sa tead, millal on selle aasta riigipühad?
-      - Kuidas sel aastal riigipühad ajaliselt paiknevad?
-      - Millal sel aastal riigipühasid tähistatakse?
-      - Millised on 2024. aasta riigipühad?
-      - Millal langevad selle aasta riigipühad?
-      - Mis kuupäevad sel aastal riigipühadeks määratud on?
-      - Kuna on sel aastal riigipühad?
-      - Mis ajal on selle aasta riigipühad?
-      - Kuidas on sel aastal riigipühad jaotatud?
-      - Millisel kuupäeval on selle aasta riigipühad?
-      - Mis ajaks on selle aasta riigipühad seatud?
-      - Millal me sel aastal riigipühi tähistame?
-      - Millised kuupäevad langevad sel aastal riigipühadele?
-      - Millised on sel aastal määratud riigipühade kuupäevad?
-      - Mis ajavahemikus on selle aasta riigipühad?
-      - Millal on 2024. aasta riigipühad?
-      - Millal toimuvad selle aasta riigipühad?
-      - Kas oskad öelda, millal sel aastal riigipühad on?
-      - Millised päevad on sel aastal riigipühadeks määratud?
-      - Millal langevad sel aastal riigipühad?
-      - Kuidas jaotuvad sel aastal riigipühad?
-      - Kas tead, millal sel aastal riigipühi tähistatakse?
-      - Millisel ajal on sel aastal riigipühad?
-      - Kas oskad nimetada selle aasta riigipühade kuupäevi?
-      - Millised kuupäevad on selle aasta riigipühadeks kinnitatud?
-      - Mis kuupäevadel toimub sel aastal riigipühade tähistamine?
-      - Mis kuupäevadel langevad sel aastal riigipühad?
-      - Millal on Eestis selle aasta riigipühad?
-      - Kuidas on planeeritud sel aastal riigipühad?
-      - Mis päevad on selle aasta riigipühadeks valitud?
-      - Mis kuupäevale langevad sel aastal riigipühad?
-      - Millised riigipühad on sel aastal plaanitud?
-      - Mis kuupäevad on riigipühad sel aastal?
-      - Millal peame sel aastal riigipühi?
-      - Millal on selle aasta pühade kuupäevad?
-      - Kas on teada, millal sel aastal riigipühi tähistatakse?
-      - Millal on selle aasta riigipühad?
-      - Millised kuupäevad on selle aasta riigipühade jaoks paika pandud?
-      - Kas sa oskad öelda, millised on riigipühad sellel aastal?
-      - Kuidas on selle aasta riigipühade ajakava?
-      - Millal me sel aastal riigipühadeks valmistume?
-      - Millised on selle aasta riigipühade peamised kuupäevad?
-      - Kas tead, mis päevadel on riigipühad sel aastal?
-      - Kuidas on sel aastal riigipühad jaotatud kuude kaupa?
-      - Millal toimuvad 2024. aasta riigipühad Eestis?
-      - Millised kuupäevad on sel aastal riigipühadeks kavandatud?
-      - Millal on sel aastal riigipühade tähistamise ajad?
-      - Mis on selle aasta riigipühade ajakava?
-      - Milliseid riigipühasid tähistame sel aastal?
-      - Kas sul on teavet selle aasta riigipühade kohta?
-      - Kuidas jagunevad 2024. aasta riigipühad päevade lõikes?
-      - Millal on 2024. aastal riigipühade aeg?
-      - Millised päevad on selle aasta riigipühade tähistamiseks valitud?
-      - Millal langevad riigipühad sel aastal?
-      - Mis ajavahemikus toimuvad sel aastal riigipühad?
-      - Millal tähistame sel aastal riigipühi?
-      - Kuidas jaotuvad riigipühad 2024. aastal?
-      - Millised on selle aasta riigipühade ajad?
-      - Kas tead, mis päevadel tähistatakse sel aastal riigipühi?
-      - Millal on käesoleva aasta riigipühade ajakava?
-      - Millised on 2024. aasta riigipühade kuupäevad?
-      - Millal toimuvad sel aastal kõik riigipühad?
-      - Kas oskad öelda, millised päevad on selle aasta riigipühadeks määratud?
-      - Millal on 2024. aasta riigipühade kuupäevad?
-      - Kuidas on sel aastal riigipühad kavandatud?
-      - Mis ajavahemikus tähistatakse riigipühi sel aastal?
-      - Millal me tähistame riigipühi Eestis sel aastal?
+    - Millal on selle aasta riigipühad?
+    - Millised on selle aasta riigipühade kuupäevad?
+    - Kuidas jagunevad selle aasta riigipühad?
+    - Mis kuupäevadel on selle aasta riigipühad?
+    - Kas sa tead, millal on selle aasta riigipühad?
+    - Kuidas sel aastal riigipühad ajaliselt paiknevad?
+    - Millal sel aastal riigipühasid tähistatakse?
+    - Millised on 2024. aasta riigipühad?
+    - Millal langevad selle aasta riigipühad?
+    - Mis kuupäevad sel aastal riigipühadeks määratud on?
+    - Kuna on sel aastal riigipühad?
+    - Mis ajal on selle aasta riigipühad?
+    - Kuidas on sel aastal riigipühad jaotatud?
+    - Millisel kuupäeval on selle aasta riigipühad?
+    - Mis ajaks on selle aasta riigipühad seatud?
+    - Millal me sel aastal riigipühi tähistame?
+    - Millised kuupäevad langevad sel aastal riigipühadele?
+    - Millised on sel aastal määratud riigipühade kuupäevad?
+    - Mis ajavahemikus on selle aasta riigipühad?
+    - Millal on 2024. aasta riigipühad?
+    - Millal toimuvad selle aasta riigipühad?
+    - Kas oskad öelda, millal sel aastal riigipühad on?
+    - Millised päevad on sel aastal riigipühadeks määratud?
+    - Millal langevad sel aastal riigipühad?
+    - Kuidas jaotuvad sel aastal riigipühad?
+    - Kas tead, millal sel aastal riigipühi tähistatakse?
+    - Millisel ajal on sel aastal riigipühad?
+    - Kas oskad nimetada selle aasta riigipühade kuupäevi?
+    - Millised kuupäevad on selle aasta riigipühadeks kinnitatud?
+    - Mis kuupäevadel toimub sel aastal riigipühade tähistamine?
+    - Mis kuupäevadel langevad sel aastal riigipühad?
+    - Millal on Eestis selle aasta riigipühad?
+    - Kuidas on planeeritud sel aastal riigipühad?
+    - Mis päevad on selle aasta riigipühadeks valitud?
+    - Mis kuupäevale langevad sel aastal riigipühad?
+    - Millised riigipühad on sel aastal plaanitud?
+    - Mis kuupäevad on riigipühad sel aastal?
+    - Millal peame sel aastal riigipühi?
+    - Millal on selle aasta pühade kuupäevad?
+    - Kas on teada, millal sel aastal riigipühi tähistatakse?
+    - Millal on selle aasta riigipühad?
+    - Millised kuupäevad on selle aasta riigipühade jaoks paika pandud?
+    - Kas sa oskad öelda, millised on riigipühad sellel aastal?
+    - Kuidas on selle aasta riigipühade ajakava?
+    - Millal me sel aastal riigipühadeks valmistume?
+    - Millised on selle aasta riigipühade peamised kuupäevad?
+    - Kas tead, mis päevadel on riigipühad sel aastal?
+    - Kuidas on sel aastal riigipühad jaotatud kuude kaupa?
+    - Millal toimuvad 2024. aasta riigipühad Eestis?
+    - Millised kuupäevad on sel aastal riigipühadeks kavandatud?
+    - Millal on sel aastal riigipühade tähistamise ajad?
+    - Mis on selle aasta riigipühade ajakava?
+    - Milliseid riigipühasid tähistame sel aastal?
+    - Kas sul on teavet selle aasta riigipühade kohta?
+    - Kuidas jagunevad 2024. aasta riigipühad päevade lõikes?
+    - Millal on 2024. aastal riigipühade aeg?
+    - Millised päevad on selle aasta riigipühade tähistamiseks valitud?
+    - Millal langevad riigipühad sel aastal?
+    - Mis ajavahemikus toimuvad sel aastal riigipühad?
+    - Millal tähistame sel aastal riigipühi?
+    - Kuidas jaotuvad riigipühad 2024. aastal?
+    - Millised on selle aasta riigipühade ajad?
+    - Kas tead, mis päevadel tähistatakse sel aastal riigipühi?
+    - Millal on käesoleva aasta riigipühade ajakava?
+    - Millised on 2024. aasta riigipühade kuupäevad?
+    - Millal toimuvad sel aastal kõik riigipühad?
+    - Kas oskad öelda, millised päevad on selle aasta riigipühadeks määratud?
+    - Millal on 2024. aasta riigipühade kuupäevad?
+    - Kuidas on sel aastal riigipühad kavandatud?
+    - Mis ajavahemikus tähistatakse riigipühi sel aastal?
+    - Millal me tähistame riigipühi Eestis sel aastal?
 - intent: common_service_riigipyha/järgmised
   examples: |
     - Mis riigipühad sellel aastal veel tulevad?
