@@ -192,3 +192,8 @@ rules:
     - requested_slot: null
   - action: utter_common_service_companies
   - action: action_restart
+
+- rule: common_service_riigipyha
+  steps:
+  - intent: common_service_riigipyha
+  - action: utter_common_service_riigipyha
