@@ -1,0 +1,524 @@
+version: "3.1"
+nlu:
+- intent: common_service_riigipyha/kõik #d
+  examples: |
+      - Millal on selle aasta riigipühad?
+      - Millised on selle aasta riigipühade kuupäevad?
+      - Kuidas jagunevad selle aasta riigipühad?
+      - Mis kuupäevadel on selle aasta riigipühad?
+      - Kas sa tead, millal on selle aasta riigipühad?
+      - Kuidas sel aastal riigipühad ajaliselt paiknevad?
+      - Millal sel aastal riigipühasid tähistatakse?
+      - Millised on 2024. aasta riigipühad?
+      - Millal langevad selle aasta riigipühad?
+      - Mis kuupäevad sel aastal riigipühadeks määratud on?
+      - Kuna on sel aastal riigipühad?
+      - Mis ajal on selle aasta riigipühad?
+      - Kuidas on sel aastal riigipühad jaotatud?
+      - Millisel kuupäeval on selle aasta riigipühad?
+      - Mis ajaks on selle aasta riigipühad seatud?
+      - Millal me sel aastal riigipühi tähistame?
+      - Millised kuupäevad langevad sel aastal riigipühadele?
+      - Millised on sel aastal määratud riigipühade kuupäevad?
+      - Mis ajavahemikus on selle aasta riigipühad?
+      - Millal on 2024. aasta riigipühad?
+      - Millal toimuvad selle aasta riigipühad?
+      - Kas oskad öelda, millal sel aastal riigipühad on?
+      - Millised päevad on sel aastal riigipühadeks määratud?
+      - Millal langevad sel aastal riigipühad?
+      - Kuidas jaotuvad sel aastal riigipühad?
+      - Kas tead, millal sel aastal riigipühi tähistatakse?
+      - Millisel ajal on sel aastal riigipühad?
+      - Kas oskad nimetada selle aasta riigipühade kuupäevi?
+      - Millised kuupäevad on selle aasta riigipühadeks kinnitatud?
+      - Mis kuupäevadel toimub sel aastal riigipühade tähistamine?
+      - Mis kuupäevadel langevad sel aastal riigipühad?
+      - Millal on Eestis selle aasta riigipühad?
+      - Kuidas on planeeritud sel aastal riigipühad?
+      - Mis päevad on selle aasta riigipühadeks valitud?
+      - Mis kuupäevale langevad sel aastal riigipühad?
+      - Millised riigipühad on sel aastal plaanitud?
+      - Mis kuupäevad on riigipühad sel aastal?
+      - Millal peame sel aastal riigipühi?
+      - Millal on selle aasta pühade kuupäevad?
+      - Kas on teada, millal sel aastal riigipühi tähistatakse?
+      - Millal on selle aasta riigipühad?
+      - Millised kuupäevad on selle aasta riigipühade jaoks paika pandud?
+      - Kas sa oskad öelda, millised on riigipühad sellel aastal?
+      - Kuidas on selle aasta riigipühade ajakava?
+      - Millal me sel aastal riigipühadeks valmistume?
+      - Millised on selle aasta riigipühade peamised kuupäevad?
+      - Kas tead, mis päevadel on riigipühad sel aastal?
+      - Kuidas on sel aastal riigipühad jaotatud kuude kaupa?
+      - Millal toimuvad 2024. aasta riigipühad Eestis?
+      - Millised kuupäevad on sel aastal riigipühadeks kavandatud?
+      - Millal on sel aastal riigipühade tähistamise ajad?
+      - Mis on selle aasta riigipühade ajakava?
+      - Milliseid riigipühasid tähistame sel aastal?
+      - Kas sul on teavet selle aasta riigipühade kohta?
+      - Kuidas jagunevad 2024. aasta riigipühad päevade lõikes?
+      - Millal on 2024. aastal riigipühade aeg?
+      - Millised päevad on selle aasta riigipühade tähistamiseks valitud?
+      - Millal langevad riigipühad sel aastal?
+      - Mis ajavahemikus toimuvad sel aastal riigipühad?
+      - Millal tähistame sel aastal riigipühi?
+      - Kuidas jaotuvad riigipühad 2024. aastal?
+      - Millised on selle aasta riigipühade ajad?
+      - Kas tead, mis päevadel tähistatakse sel aastal riigipühi?
+      - Millal on käesoleva aasta riigipühade ajakava?
+      - Millised on 2024. aasta riigipühade kuupäevad?
+      - Millal toimuvad sel aastal kõik riigipühad?
+      - Kas oskad öelda, millised päevad on selle aasta riigipühadeks määratud?
+      - Millal on 2024. aasta riigipühade kuupäevad?
+      - Kuidas on sel aastal riigipühad kavandatud?
+      - Mis ajavahemikus tähistatakse riigipühi sel aastal?
+      - Millal me tähistame riigipühi Eestis sel aastal?
+- intent: common_service_riigipyha/järgmised
+  examples: |
+    - Mis riigipühad sellel aastal veel tulevad?
+    - Millised riigipühad on sel aastal veel ees?
+    - Mis pühad on sel aastal veel tulemas?
+    - Mis riigipühad on sel aastal veel oodata?
+    - Millised riigipühad on veel tulemas sel aastal?
+    - Mis riigipühad jäävad veel tulemata sel aastal?
+    - Mis on selle aasta järelejäänud riigipühad?
+    - Milliseid riigipühi veel tähistatakse sel aastal?
+    - Mis riigipühad on veel ees sel aastal?
+    - Millal tulevad selle aasta järelejäänud riigipühad?
+    - Mis kuupäevadel on selle aasta ülejäänud riigipühad?
+    - Millised riigipühad on tulemas sel aastal?
+    - Mis riigipühad on sel aastal veel ees ootamas?
+    - Mis pühad on veel ees sel aastal?
+    - Mis riigipühad on sel aastal veel planeeritud?
+    - Millised riiklikud pühad on sellel aastal veel oodata?
+    - Millised riigipühad on alles ees sellel aastal?
+    - Mis on järgmised riigipühad sel aastal?
+    - Mis pühad on veel ees selle aasta jooksul?
+    - Mis riigipühad on jäänud sel aastal veel tulemata?
+    - Millised riigipühad on selle aasta lõpuni veel ees?
+    - Milliseid riigipühi sel aastal veel tuleb?
+    - Mis riigipühad on selle aasta lõpuni veel tulemas?
+    - Mis on veel ees sel aastal riigipühadena?
+    - Millised pühad on sel aastal veel tulekul?
+    - Millised on selle aasta ülejäänud riigipühad?
+    - Kas sel aastal on veel riigipühi tulemas?
+    - Mis riigipühad on jäänud veel sel aastal?
+    - Millal tulevad selle aasta viimased riigipühad?
+    - Mis pühad on veel sel aastal riigipühadeks määratud?
+    - Mis riigipühad on oodata selle aasta lõpuni?
+    - Millal on sel aastal veel riigipühad?
+    - Milliseid riigipühi on veel ees sellel aastal?
+    - Mis on sel aastal veel riiklikult tähistatavad pühad?
+    - Kas sel aastal on veel riigipühi?
+    - Milliseid riigipühi on veel tulemas sel aastal?
+    - Mis riigipühad on tulekul selle aasta teises pooles?
+    - Millal tähistatakse selle aasta viimaseid riigipühi?
+    - Mis on sel aastal veel tähistatavad riigipühad?
+    - Millised riigipühad on jäänud veel tulema sel aastal?
+    - Millised on järgmised riigipühad sel aastal?
+    - Mis on sel aastal järgmised riigipühad?
+    - Millised järgmised pühad on tulemas sel aastal?
+    - Mis riigipühad on järgmiseks planeeritud?
+    - Millised järgmised riigipühad on veel ees?
+    - Mis kuupäevadel on järgmised riigipühad sel aastal?
+    - Millised on järgmised riiklikud pühad, mis tuleb tähistada?
+    - Millal tulevad järgmised riigipühad?
+    - Mis riigipühad on järgmiseks sel aastal?
+    - Millised riigipühad jäävad järgmisteks sel aastal?
+    - Mis on järgmised pühad, mis on veel ees?
+    - Mis riigipühad on järgmised sel aastal?
+    - Millised on järgmised riigipühad, mida veel tähistatakse?
+    - Mis pühad on sel aastal järgmised?
+    - Millised järgmised riigipühad on planeeritud?
+    - Millal tähistatakse järgmised riigipühad sel aastal?
+    - Mis on järgmised riigipühad, mida oodata?
+    - Millised on sel aastal järgmised möödunud riigipühad?
+    - Mis riigipühad on tulemas järgmiste kuude jooksul?
+    - Millised riigipühad on järgmised, mis on oodata?
+    - Mis on sel aastal järgmised riiklikud pühad?
+    - Millised on järgmised pühad, mis veel ees ootavad?
+    - Kas sel aastal on veel järgmised riigipühad tulemas?
+    - Millised järgmised riigipühad on jäänud tähistamata?
+    - Mis on järgmised riigipühad, mis on oodata?
+    - Millised on järgmised riigipühad, mis on kavas?
+    - Millal on järgmised riigipühad, mis peavad tulema?
+    - Mis pühad on järgmised sel aastal, mida tähistatakse?
+    - Mis on järgmised riigipühad, mis on plaanitud sel aastal?
+    - Millised on järgmised riigipühad selle aasta lõpuni?
+    - Mis on järgmised tähtsad riigipühad sel aastal?
+- intent: common_service_riigipyha/eelmised
+  examples: |
+    - Mis riigipühad see aasta juba ära on olnud?
+    - Millised riigipühad on sel aastal juba möödas?
+    - Mis pühad on sel aastal juba toimunud?
+    - Millised riigipühad on see aasta ära olnud?
+    - Mis riigipühad on sellel aastal juba möödunud?
+    - Mis pühad on sel aastal juba tähistatud?
+    - Millised riigipühad on sellel aastal ära olnud?
+    - Mis riigipühad on sel aastal juba läbi?
+    - Mis on selle aasta möödunud riigipühad?
+    - Millal olid selle aasta möödunud riigipühad?
+    - Mis kuupäevadel olid selle aasta riigipühad?
+    - Millised riigipühad on juba möödas sel aastal?
+    - Mis riigipühad on juba ära olnud sel aastal?
+    - Mis riigipühad on juba toimunud sellel aastal?
+    - Millised riiklikud pühad on sel aastal möödunud?
+    - Mis riigipühad on sel aastal juba läbi olnud?
+    - Millised riigipühad on selle aasta esimeses pooles olnud?
+    - Mis pühad on juba ära olnud sel aastal?
+    - Mis riigipühad on olnud sel aastal?
+    - Mis riigipühad on see aasta möödas?
+    - Mis riigipühad on juba olnud sel aastal?
+    - Mis on juba tähistatud riigipühad sel aastal?
+    - Millised riiklikud pühad on see aasta ära olnud?
+    - Mis riigipühad on sel aastal juba toimunud?
+    - Millised riigipühad on möödunud sel aastal?
+    - Millal olid selle aasta möödunud riiklikud pühad?
+    - Mis on selle aasta juba toimunud riigipühad?
+    - Mis on sel aastal olnud riigipühad?
+    - Millised riigipühad on juba ära olnud?
+    - Mis on selle aasta esimesed riigipühad olnud?
+    - Mis riigipühad olid selle aasta alguses?
+    - Mis riigipühad on olnud sel aastal möödas?
+    - Mis riigipühad on sel aastal möödunud?
+    - Millised riigipühad on sel aastal juba läbi saanud?
+    - Millised on möödunud riigipühad sel aastal?
+    - Mis riigipühad on sel aastal möödas?
+    - Millised pühad on juba ära olnud sellel aastal?
+    - Mis riiklikud pühad on sellel aastal olnud?
+    - Millal olid sel aastal riigipühad, mis on möödunud?
+    - Mis riigipühad on sel aastal juba ära peetud?
+    - Millised on eelmised riigipühad sel aastal?
+    - Mis on selle aasta eelmised riigipühad?
+    - Mis riigipühad on eelmised sel aastal?
+    - Mis kuupäevadel olid eelmised riigipühad sel aastal?
+    - Millised eelmised riigipühad on juba möödas?
+    - Mis on olnud eelmised riigipühad sel aastal?
+    - Millal toimusid eelmised riigipühad?
+    - Mis riigipühad on juba eelmised olnud sel aastal?
+    - Millised eelmised pühad on sel aastal ära olnud?
+    - Millised eelmised riiklikud pühad on sel aastal olnud?
+    - Mis on sel aastal eelmised tähistatud riigipühad?
+    - Mis on olnud selle aasta eelmised riigipühad?
+    - Millised on eelmised möödunud riigipühad sel aastal?
+    - Mis riigipühad on juba eelmised sel aastal?
+    - Millised on selle aasta eelmised riigipühad?
+    - Millised eelmised riigipühad on sel aastal möödas?
+    - Mis on sel aastal eelmised möödunud riigipühad?
+    - Mis on olnud eelmised riiklikud pühad sel aastal?
+    - Millal olid eelmised riigipühad sel aastal?
+- intent: common_service_riigipyha/eelmine
+  examples: |
+    - Mis oli eelmine riigipüha?
+    - Millal oli eelmine riigipüha?
+    - Mis kuupäeval oli eelmine riigipüha?
+    - Mis oli viimane riigipüha?
+    - Millal toimus eelmine riigipüha?
+    - Mis päev oli eelmine riigipüha?
+    - Mis oli viimati toimunud riigipüha?
+    - Milline oli eelmine riigipüha?
+    - Millal tähistati eelmist riigipüha?
+    - Mis riigipüha oli eelmine kord?
+    - Millal oli viimane riigipüha?
+    - Millal toimus viimane riigipüha?
+    - Mis oli eelmine avalik püha?
+    - Millal oli viimane avalik püha?
+    - Milline riigipüha oli viimane?
+    - Mis päev oli viimane riigipüha?
+    - Mis riigipüha oli viimati?
+    - Mis kuupäeval oli viimane riigipüha?
+    - Millal tähistati viimast riigipüha?
+    - Mis oli viimane pühade päev?
+    - Milline riigipüha oli eelmine?
+    - Mis oli eelmine rahvuspüha?
+    - Mis päev oli eelmine rahvuspüha?
+    - Millal toimus eelmine rahvuspüha?
+    - Mis kuupäeval oli eelmine rahvuspüha?
+    - Millal oli eelmine pühade päev?
+    - Mis oli viimane rahvuspüha?
+    - Mis päev oli viimati riigipüha?
+    - Millal toimus viimati riigipüha?
+    - Mis oli eelmine tähtpäev riigipühana?
+    - Mis oli viimati tähistatud riigipüha?
+    - Mis oli eelmine seaduslik püha?
+    - Millal oli eelmine tähtpäev riiklikult?
+    - Mis oli viimati määratud riigipüha?
+    - Milline oli viimane rahvuspüha?
+    - Milline oli eelmine tähtpäev riigipühana?
+    - Mis kuupäeval toimus eelmine riigipüha?
+    - Millal oli eelmine vabariiklik püha?
+    - Mis oli viimane rahvuslik püha?
+    - Milline oli eelmine ametlik püha?
+    - Mis kuupäeval oli eelmine rahvuslik püha?
+    - Millal oli eelmine seaduslik püha?
+    - Milline oli viimane ametlik püha?
+    - Mis riigipüha toimus eelmine kord?
+    - Millal toimus eelmine ametlik püha?
+    - Mis päev tähistati eelmisel riigipühal?
+    - Milline riigipüha oli viimati tähistatud?
+    - Millal toimus viimati rahvuslik püha?
+    - Mis oli viimati toimunud ametlik püha?
+    - Millal tähistati viimast rahvuslikku püha?
+    - Mis kuupäeval oli viimati tähistatud rahvuspüha?
+    - Millal tähistati eelmist rahvuspüha?
+    - Mis oli viimane seaduslik tähtpäev?
+    - Mis kuupäeval oli viimane ametlik püha?
+    - Milline oli viimati toimunud riigipüha?
+    - Millal oli viimane tähtpäev riigipüha?
+    - Millal toimus eelmine seaduslik püha?
+    - Mis kuupäeval oli viimane riigipüha?
+    - Mis päev oli eelmine vabariiklik püha?
+    - Mis kuupäeval tähistati viimati riigipüha?
+    - Millal toimus viimane riigipüha?
+    - Mis oli eelmine tähtis päev riiklikult?
+    - Millal oli viimane seaduslik tähtpäev?
+    - Millal tähistati viimast ametlikku riigipüha?
+    - Mis oli eelmine ametlik tähtpäev?
+    - Millal oli viimati tähistatud riigipüha?
+    - Mis kuupäeval oli eelmine ametlik tähtpäev?
+    - Mis oli viimati tähistatud ametlik püha?
+    - Milline tähtpäev oli eelmine kord riiklikult?
+    - Millal oli eelmine tähtpäev riigipüha?
+- intent: common_service_riigipyha/järgmine #D
+  examples: |
+    - Mis on järgmine riigipüha?
+    - Millal on järgmine riigipüha?
+    - Mis päev on järgmine riigipüha?
+    - Mis kuupäeval on järgmine riigipüha?
+    - Milline on järgmine riigipüha?
+    - Millal toimub järgmine riigipüha?
+    - Mis riigipüha on järgmine?
+    - Mis on järgmine avalik püha?
+    - Millal langeb järgmine riigipüha?
+    - Millal tähistatakse järgmist riigipüha?
+    - Milline päev on järgmine riigipüha?
+    - Mis kuupäeval toimub järgmine riigipüha?
+    - Millal on järgmine riiklik püha?
+    - Mis on järgmine tähtpäev riigipühana?
+    - Mis on järgmine rahvuspüha?
+    - Millal tuleb järgmine riigipüha?
+    - Mis päev langeb järgmisele riigipühale?
+    - Mis on järgmisel korral riigipüha?
+    - Milline riigipüha on järgmine?
+    - Mis on järgmine seaduslik püha?
+    - Millal on järgmine püha päev?
+    - Millal toimub järgmine tähtpäev riiklikult?
+    - Mis päev on järgmisel korral riigipüha?
+    - Mis on järgmine ametlik püha?
+    - Millal toimub järgmine rahvuspüha?
+    - Millal tähistame järgmist riigipüha?
+    - Millal on järgmine vabariigi püha?
+    - Millal langeb järgmine rahvuspüha?
+    - Mis on järgmisel kuupäeval riigipüha?
+    - Millal toimub järgmine vabariiklik püha?
+    - Millal toimub järgmine avalik püha?
+    - Mis kuupäeval toimub järgmine rahvuspüha?
+    - Mis on järgmine pühade päev?
+    - Millal langeb järgmine riiklik püha?
+    - Mis on järgmine riiklik tähtpäev?
+    - Millal on järgmisel korral riigipüha?
+    - Mis riigipüha on tulemas?
+    - Milline päev langeb järgmisele riigipühale?
+    - Mis kuupäeval toimub järgmine tähtpäev riigipühana?
+    - Millal on riigipühadest järgmine?
+    - Mis on järgmine riigipüha sel aastal?
+    - Millal on järgmine riigipüha pärast seda?
+    - Mis päev on järgmine riigipüha järgmisel nädalal?
+    - Mis kuupäeval on järgmine riigipüha sel kuul?
+    - Milline on järgmine riigipüha, mis tuleb?
+    - Millal toimub järgmine riigipüha järgmisel aastal?
+    - Mis riigipüha on järgmine, mida tähistatakse?
+    - Mis on järgmine avalik püha sellel aastal?
+    - Millal langeb järgmine riigipüha suvel?
+    - Millal tähistatakse järgmist riigipüha talvel?
+    - Milline päev on järgmine riigipüha järgmisel kuul?
+    - Mis kuupäeval toimub järgmine riigipüha, kas tead?
+    - Millal on järgmine riiklik püha, kas juba planeeritud?
+    - Mis on järgmine tähtpäev riigipühana, mis tuleb?
+    - Mis on järgmine rahvuspüha, mida tähistatakse?
+    - Millal tuleb järgmine riigipüha talvepuhkusel?
+    - Mis päev langeb järgmisele riigipühale sel aastal?
+    - Mis on järgmisel korral järgmine riigipüha?
+    - Milline riigipüha on järgmine, kas tead?
+    - Mis on järgmine seaduslik püha, mis tuleb?
+    - Millal on järgmine püha päev, kas juba teada?
+    - Millal toimub järgmine tähtpäev riiklikult, oled kindel?
+    - Mis päev on järgmisel korral riigipüha, tead sa?
+    - Mis on järgmine ametlik püha, mida tähistatakse?
+    - Millal toimub järgmine rahvuspüha, kas oled kuulnud?
+    - Millal tähistame järgmist riigipüha, kas see on varsti?
+    - Millal on järgmine vabariigi püha, kas see on varsti?
+    - Millal langeb järgmine rahvuspüha, kas oled kursis?
+    - Mis on järgmisel kuupäeval riigipüha, kas sa tead?
+    - Millal toimub järgmine vabariiklik püha, kas see on teada?
+    - Millal toimub järgmine avalik püha, kas oled kuulnud?
+    - Mis kuupäeval toimub järgmine rahvuspüha, kas sa tead?
+    - Mis on järgmine pühade päev, mida tähistatakse?
+    - Millal langeb järgmine riiklik püha, kas oled kuulnud?
+    - Mis on järgmine riiklik tähtpäev, kas see on varsti?
+    - Millal on järgmisel korral riigipüha, tead sa?
+    - Mis riigipüha on tulemas, kas oled kursis?
+    - Milline päev langeb järgmisele riigipühale järgmisel nädalal?
+    - Mis kuupäeval toimub järgmine tähtpäev riigipühana, kas sa tead?
+    - Millal on riigipühadest järgmine, kas sa tead?
+- intent: common_service_riigipyha/täna #D
+  examples: |
+    - Kas täna on riigipüha?
+    - On täna riigipüha?
+    - Kas tänane päev on riigipüha?
+    - Kas täna on pühade päev?
+    - Kas tänane päev on riiklik püha?
+    - On täna riiklik püha?
+    - Kas praegu on riigipüha?
+    - On täna riigipüha või mitte?
+    - Kas tänasel päeval on riigipüha?
+    - Kas täna kehtib riigipüha?
+    - On see päev täna riigipüha?
+    - Kas täna tähistatakse riigipüha?
+    - Kas täna on ametlik riigipüha?
+    - Kas täna on tähtpäev riigipühana?
+    - Kas täna on avalik püha?
+    - Kas tänane päev langeb riigipühale?
+    - On täna riigipüha Eestis?
+    - Kas tänane päev on riigipühade nimekirjas?
+    - Kas täna on püha päev riiklikult?
+    - On täna püha päev?
+    - Kas täna on mingi riiklik püha?
+    - Kas täna on pühade tähistamine?
+    - Kas täna on ametlik püha?
+    - On täna riigipüha määratud päev?
+    - Kas täna on vabariigi püha?
+    - Kas täna on riigipüha tunnistatud päev?
+    - Kas praegune päev on riigipüha?
+    - Kas tänane kuupäev on riigipüha?
+    - Kas täna loetakse riigipühaks?
+    - Kas täna on riiklikult pühade päev?
+    - Kas täna on rahvuspüha?
+    - On see päev täna riiklik püha?
+    - Kas see kuupäev täna on riigipüha?
+    - Kas täna on avalikuks pühaks määratud päev?
+    - On täna riiklik püha Eestis?
+    - Kas täna on pühade nimekirjas riigipüha?
+    - Kas täna on ametlikult pühade päev?
+    - Kas täna on seaduse järgi riigipüha?
+    - On täna rahvuspüha?
+    - Kas täna tähistame riigipüha?
+    - Kas täna on mingi eriline riigipüha?
+    - On täna pühad, mida tähistatakse?
+    - Kas täna on Eestis riigipüha?
+    - Kas täna on päev, mil tähistatakse riigipüha?
+    - Milline riigipüha on täna?
+    - On täna päev, mis on pühendatud riigipühale?
+    - Kas täna on rahvuslik püha?
+    - On täna ametlik riiklik püha?
+    - Kas täna tähistatakse midagi erilist?
+    - Kas täna on püha päev riiklikult tunnustatud?
+    - On täna riigipüha, mida peetakse?
+    - Kas täna on midagi erilist seoses riigipühaga?
+    - Kas täna on riigipüha tähistamine?
+    - On täna tähtis päev riigipühana?
+    - Kas täna on pühad ja puhkepäev?
+    - Kas täna on riigipüha tähistamiseks vajalikud tegevused?
+    - Kas täna on tähtpäev, mis on seotud riigipühaga?
+    - On täna riiklik püha, mida tähistatakse?
+    - Kas täna on päeva, mil peetakse riigipüha?
+    - Kas täna on mingi eriline päev riigipühana?
+    - Millal on täna riigipüha tähistamine?
+    - Kas täna on pühade päev, mis on riiklikult tunnustatud?
+    - On täna riigipüha, mida me tähistame?
+    - Kas täna on riiklik püha, mille puhul on vabastus?
+    - Kas täna on kehtiv riigipüha?
+    - On täna päev, mil on riigipüha?
+    - Kas täna on riigipüha, millest me räägime?
+    - Kas täna on mõni riiklik püha, mida tähistada?
+    - Kas täna tähistatakse mingit riigipüha?
+    - Kas täna on päev, mil on riiklik püha?
+    - Kas täna on mingi riigipüha, mida keegi peab?
+    - On täna riigipüha, millega on seotud eriüritused?
+    - Kas täna on kuupäev, mil tähistatakse riigipüha?
+    - Kas täna tähistatakse ametlikku riigipüha?
+    - Kas täna on riigipüha, mille tähistamiseks on vaja valmistuda?
+- intent: common_service_riigipyha/nimeliselt #D
+  examples: |
+    - Millal on [HOL2](nimeliselt)?
+    - Mis kuupäeval on [HOL2](nimeliselt)?
+    - Millal toimub [HOL2](nimeliselt)?
+    - Kuidas on [HOL2](nimeliselt) kuupäev?
+    - Millal langeb [HOL2](nimeliselt)?
+    - Kas sa tead, millal on [HOL2](nimeliselt)?
+    - Mis päev on [HOL2](nimeliselt)?
+    - Millal tähistatakse [HOL2](nimeliselt)?
+    - Millal on [HOL2](nimeliselt) sel aastal?
+    - Mis kuupäevadel on [HOL2](nimeliselt)?
+    - Kas [HOL2](nimeliselt) on lähiajal?
+    - Millised kuupäevad on [HOL2](nimeliselt)?
+    - Millal toimuvad [HOL2](nimeliselt) üritused?
+    - Millal on järgmine [HOL2](nimeliselt)?
+    - Millised päevad on [HOL2](nimeliselt)?
+    - Millal on [HOL2](nimeliselt) kuupäev?
+    - Mis kuupäev on [HOL2](nimeliselt)?
+    - Millal peetakse [HOL2](nimeliselt)?
+    - Kas [HOL2](nimeliselt) on sel kuul?
+    - Mis päev on [HOL2](nimeliselt)?
+    - Millal toimub [HOL2](nimeliselt) tähistamine?
+    - Millal langeb [HOL2](nimeliselt) sel aastal?
+    - Millised kuupäevad on [HOL2](nimeliselt)?
+    - Mis ajaks on [HOL2](nimeliselt)?
+    - Millal on [HOL2](nimeliselt) tähistamine?
+    - Mis on [HOL2](nimeliselt) kuupäev?
+    - Millal on [HOL2](nimeliselt) tähistamise päev?
+    - Millal toimub [HOL2](nimeliselt)?
+    - Millal on [HOL2](nimeliselt)?
+    - Mis päevadel on [HOL2](nimeliselt)?
+    - Kas tead, millal on [HOL2](nimeliselt)?
+    - Millal on [HOL2](nimeliselt) pidu?
+    - Millised on [HOL2](nimeliselt) kuupäevad?
+    - Millal langeb [HOL2](nimeliselt) järgmine kord?
+    - Kas [HOL2](nimeliselt) on lähikuudel?
+- intent: common_service_riigipyha/kuu #D
+  examples: |
+    - Mis riigipühad on [HOL3](kuu)?
+    - Millised riigipühad on [HOL3](kuu)?
+    - Millal toimuvad riigipühad [HOL3](kuu)?
+    - Mis riigipühad on [HOL3](kuu)?
+    - Millised riigipühad on [HOL3](kuu)?
+    - Mis kuupäevadel on riigipühad [HOL3](kuu)?
+    - Millal tähistatakse riigipühi [HOL3](kuu)?
+    - Mis riigipühad on [HOL3](kuu)?
+    - Millised riigipühad on [HOL3](kuu)?
+    - Mis kuupäevadel on riigipühad [HOL3](kuu)?
+    - Millal on riigipühad [HOL3](kuu)?
+    - Millised riigipühad on [HOL3](kuu)?
+    - Millal tähistatakse [HOL3](kuu) riigipühi?
+    - Mis riigipühad langevad [HOL3](kuu)?
+    - Millal toimuvad riigipühad [HOL3](kuu)?
+    - Kas on riigipühad [HOL3](kuu)?
+    - Milliseid riigipühi tähistatakse [HOL3](kuu)?
+    - Mis päevad on [HOL3](kuu) riigipühadeks?
+    - Millal on [HOL3](kuu) riigipühad?
+    - Millised riigipühad on [HOL3](kuu)?
+    - Kas tead, mis riigipühad on [HOL3](kuu)?
+    - Millised riigipühad on [HOL3](kuu)?
+    - Mis riigipühad on [HOL3](kuu)?
+    - Kuidas on riigipühad [HOL3](kuu)?
+    - Millised riigipühad on [HOL3](kuu)?
+    - Millal on [HOL3](kuu) riigipühad?
+    - Mis on [HOL3](kuu) riigipühade kuupäevad?
+    - Millised on [HOL3](kuu) riigipühad?
+    - Mis päevadel on [HOL3](kuu) riigipühad?
+    - Kuidas on riigipühad [HOL3](kuu)?
+    - Millised on [HOL3](kuu) riigipühade ajad?
+    - Mis riigipühad on [HOL3](kuu)?
+    - Kuidas jagunevad riigipühad [HOL3](kuu)?
+    - Millal tähistatakse riigipühi [HOL3](kuu)?
+    - Kas riigipühad on [HOL3](kuu)?
+    - Mis riigipühad on [HOL3](kuu)?
+    - Millal on [HOL3](kuu) riigipühade tähistamine?
+    - Mis kuupäevadel on riigipühad [HOL3](kuu)?
+    - Millised on [HOL3](kuu) riigipühad?
+    - Kuidas on riigipühad [HOL3](kuu)?
+    - Millised riigipühad langevad [HOL3](kuu)?
+    - Millal toimuvad riigipühad [HOL3](kuu)?
+    - Millised riigipühad on [HOL3](kuu)?
+    - Kas on riigipühad [HOL3](kuu)?
+    - Millised kuupäevad on [HOL3](kuu) riigipühadeks
