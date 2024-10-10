@@ -1,6 +1,6 @@
 version: "3.0"
 nlu:
-- intent: common_service_companies_seotud_isikud
+- intent: common_service_companies_related_persons
   examples: |
     - ettevõttega seotud isikud
     - firmaga seotud inimesed
