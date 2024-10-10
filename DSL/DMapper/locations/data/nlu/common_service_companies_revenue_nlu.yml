@@ -1,6 +1,6 @@
 version: "3.0"
 nlu:
-- intent: common_service_companies_käive
+- intent: common_service_companies_revenue
   examples: |
     - mis oli ettevõtte aasta käive
     - firma käive
