@@ -74,6 +74,7 @@ createCronJson:
       cronExpression: ${cronExpression.response.body.expression}
       type: "exec"
       command: "./scripts/train_bot.sh"
+      allowedEnvs: ["test"]
       startDate: ${cronExpression.response.body.startDate}
   result: cronJson
 
