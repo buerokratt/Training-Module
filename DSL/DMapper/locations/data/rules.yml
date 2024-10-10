@@ -74,15 +74,15 @@ rules:
   - intent: common_teenus_nordpool2
   - action: utter_common_teenus_nordpool_kallis
 
-- rule: common_teenus_rahvaalgatus
+- rule: common_teenus_citizien_initiative
   steps:
-  - intent: common_teenus_rahvaalgatus
-  - action: utter_common_teenus_rahvaalgatus
+  - intent: common_teenus_citizien_initiative
+  - action: utter_common_teenus_citizien_initiative
 
-- rule: common_teenus_rahvaalgatus_populaarne
+- rule: common_teenus_citizien_initiative_popular
   steps:
-  - intent: common_teenus_rahvaalgatus_populaarne
-  - action: utter_common_teenus_rahvaalgatus_populaarne
+  - intent: common_teenus_citizien_initiative_popular
+  - action: utter_common_teenus_citizien_initiative_popular
 
 - rule: common_teenus_rk_isiku_kohalolu
   steps:
@@ -118,61 +118,61 @@ rules:
   - action: utter_common_teenus_rk_hääletus_fallback
   - action: action_restart
 
-- rule: common_service_companies_töötajad
+- rule: common_service_companies_employees
   steps:
-  - intent: common_service_companies_töötajad
+  - intent: common_service_companies_employees
   - action: common_service_companies_form
   - active_loop: common_service_companies_form
   - slot_was_set:
-    - trigger_intent: common_service_companies_töötajad
+    - trigger_intent: common_service_companies_employees
 
-- rule: common_service_companies_käive
+- rule: common_service_companies_revenue
   steps:
-  - intent: common_service_companies_käive
+  - intent: common_service_companies_revenue
   - action: common_service_companies_form
   - active_loop: common_service_companies_form
   - slot_was_set:
-    - trigger_intent: common_service_companies_käive
+    - trigger_intent: common_service_companies_revenue
 
-- rule: common_service_companies_tööjõumaksud
+- rule: common_service_companies_workforce_taxes
   steps:
-  - intent: common_service_companies_tööjõumaksud
+  - intent: common_service_companies_workforce_taxes
   - action: common_service_companies_form
   - active_loop: common_service_companies_form
   - slot_was_set:
-    - trigger_intent: common_service_companies_tööjõumaksud
+    - trigger_intent: common_service_companies_workforce_taxes
 
-- rule: common_service_companies_riiklikud_maksud
+- rule: common_service_companies_national_taxes
   steps:
-  - intent: common_service_companies_riiklikud_maksud
+  - intent: common_service_companies_national_taxes
   - action: common_service_companies_form
   - active_loop: common_service_companies_form
   - slot_was_set:
-    - trigger_intent: common_service_companies_riiklikud_maksud
+    - trigger_intent: common_service_companies_national_taxes
 
-- rule: common_service_companies_kasusaajad
+- rule: common_service_companies_beneficiaries
   steps:
-  - intent: common_service_companies_kasusaajad
+  - intent: common_service_companies_beneficiaries
   - action: common_service_companies_form
   - active_loop: common_service_companies_form
   - slot_was_set:
-    - trigger_intent: common_service_companies_kasusaajad
+    - trigger_intent: common_service_companies_beneficiaries
 
-- rule: common_service_companies_seotud_isikud
+- rule: common_service_companies_related_persons
   steps:
-  - intent: common_service_companies_seotud_isikud
+  - intent: common_service_companies_related_persons
   - action: common_service_companies_form
   - active_loop: common_service_companies_form
   - slot_was_set:
-    - trigger_intent: common_service_companies_seotud_isikud
+    - trigger_intent: common_service_companies_related_persons
 
-- rule: common_service_companies_kontaktandmed
+- rule: common_service_companies_contactdetails
   steps:
-  - intent: common_service_companies_kontaktandmed
+  - intent: common_service_companies_contactdetails
   - action: common_service_companies_form
   - active_loop: common_service_companies_form
   - slot_was_set:
-    - trigger_intent: common_service_companies_kontaktandmed
+    - trigger_intent: common_service_companies_contactdetails
 
 - rule: common_service_companies_lihtandmed
   steps:
