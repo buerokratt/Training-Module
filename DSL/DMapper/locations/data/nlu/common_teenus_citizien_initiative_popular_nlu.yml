@@ -1,6 +1,6 @@
 version: "3.0"
 nlu:
-- intent: common_teenus_rahvaalgatus_populaarne
+- intent: common_teenus_citizien_initiative_popular
   examples: |
     - Mis on hetkel populaarsemad rahvaalgatused?
     - Millised on viimase aja populaarsed rahvaalgatused
