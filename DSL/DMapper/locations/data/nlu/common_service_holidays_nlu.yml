@@ -1,6 +1,6 @@
 version: "3.0"
 nlu:
-- intent: common_service_riigipyha/kõik #d
+- intent: common_service_holidays/all #d
   examples: |
     - Millal on selle aasta riigipühad?
     - Millised on selle aasta riigipühade kuupäevad?
@@ -73,7 +73,7 @@ nlu:
     - Kuidas on sel aastal riigipühad kavandatud?
     - Mis ajavahemikus tähistatakse riigipühi sel aastal?
     - Millal me tähistame riigipühi Eestis sel aastal?
-- intent: common_service_riigipyha/järgmised
+- intent: common_service_holidays/eoy
   examples: |
     - Mis riigipühad sellel aastal veel tulevad?
     - Millised riigipühad on sel aastal veel ees?
@@ -146,7 +146,7 @@ nlu:
     - Mis on järgmised riigipühad, mis on plaanitud sel aastal?
     - Millised on järgmised riigipühad selle aasta lõpuni?
     - Mis on järgmised tähtsad riigipühad sel aastal?
-- intent: common_service_riigipyha/eelmised
+- intent: common_service_holidays/ytd
   examples: |
     - Mis riigipühad see aasta juba ära on olnud?
     - Millised riigipühad on sel aastal juba möödas?
@@ -207,7 +207,7 @@ nlu:
     - Mis on sel aastal eelmised möödunud riigipühad?
     - Mis on olnud eelmised riiklikud pühad sel aastal?
     - Millal olid eelmised riigipühad sel aastal?
-- intent: common_service_riigipyha/eelmine
+- intent: common_service_holidays/prev
   examples: |
     - Mis oli eelmine riigipüha?
     - Millal oli eelmine riigipüha?
@@ -279,7 +279,7 @@ nlu:
     - Mis oli viimati tähistatud ametlik püha?
     - Milline tähtpäev oli eelmine kord riiklikult?
     - Millal oli eelmine tähtpäev riigipüha?
-- intent: common_service_riigipyha/järgmine #D
+- intent: common_service_holidays/next #D
   examples: |
     - Mis on järgmine riigipüha?
     - Millal on järgmine riigipüha?
@@ -361,7 +361,7 @@ nlu:
     - Milline päev langeb järgmisele riigipühale järgmisel nädalal?
     - Mis kuupäeval toimub järgmine tähtpäev riigipühana, kas sa tead?
     - Millal on riigipühadest järgmine, kas sa tead?
-- intent: common_service_riigipyha/täna #D
+- intent: common_service_holidays/today #D
   examples: |
     - Kas täna on riigipüha?
     - On täna riigipüha?
@@ -438,7 +438,7 @@ nlu:
     - Kas täna on kuupäev, mil tähistatakse riigipüha?
     - Kas täna tähistatakse ametlikku riigipüha?
     - Kas täna on riigipüha, mille tähistamiseks on vaja valmistuda?
-- intent: common_service_riigipyha/nimeliselt #D
+- intent: common_service_holidays/name #D
   examples: |
     - Millal on [HOL2](nimeliselt)?
     - Mis kuupäeval on [HOL2](nimeliselt)?
@@ -475,7 +475,7 @@ nlu:
     - Millised on [HOL2](nimeliselt) kuupäevad?
     - Millal langeb [HOL2](nimeliselt) järgmine kord?
     - Kas [HOL2](nimeliselt) on lähikuudel?
-- intent: common_service_riigipyha/kuu #D
+- intent: common_service_holidays/month #D
   examples: |
     - Mis riigipühad on [HOL3](kuu)?
     - Millised riigipühad on [HOL3](kuu)?
