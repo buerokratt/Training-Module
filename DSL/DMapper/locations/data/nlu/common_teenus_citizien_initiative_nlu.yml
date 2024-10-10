@@ -1,6 +1,6 @@
 version: "3.0"
 nlu:
-- intent: common_teenus_rahvaalgatus
+- intent: common_teenus_citizien_initiative
   examples: |
     - Mis on viis viimast avalikku algatust?
     - Kas saate loetleda viis viimast avalikku algatust?
