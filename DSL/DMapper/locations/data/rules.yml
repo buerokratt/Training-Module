@@ -193,7 +193,7 @@ rules:
   - action: utter_common_service_companies
   - action: action_restart
 
-- rule: common_service_riigipyha
+- rule: common_service_holidays
   steps:
-  - intent: common_service_riigipyha
-  - action: utter_common_service_riigipyha
+  - intent: common_service_holidays
+  - action: utter_common_service_holidays
