@@ -35,7 +35,7 @@ assignValues:
   assign:
     daysOfWeek: ${incoming.body.daysOfWeek}
     fromDate: ${incoming.body.fromDate}
-    rasaFolds: ${incoming.body.rasaFolds ?? "8"}
+    rasaFolds: ${incoming.body.rasaFolds ?? 8}
     scheduled: ${incoming.body.scheduled}
     modifierId: ${incoming.body.modifierId}
     modifierName: ${incoming.body.modifierName}
