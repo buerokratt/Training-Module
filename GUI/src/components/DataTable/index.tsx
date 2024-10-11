@@ -154,6 +154,19 @@ const DataTable: FC<DataTableProps> = (
     pageCount: isClientSide ? undefined : pagesCount,
   });
 
+  const getShownPageIndexes = () => {
+    const pageOffset = 2;
+    const currentPage = table.getState().pagination.pageIndex;
+    const startPage = Math.max(0, currentPage - pageOffset);
+    const endPage = Math.min(table.getPageCount() - 1, currentPage + pageOffset);
+    const pages = [];
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+    return pages;
+  }
+  const pageIndexes = getShownPageIndexes();
+
   return (
     <div>
       <div className='data-table__scrollWrapper'>
@@ -235,7 +248,27 @@ const DataTable: FC<DataTableProps> = (
               </button>
               <nav role='navigation' aria-label={t('global.paginationNavigation') || ''}>
                 <ul className='links'>
-                  {[...Array(table.getPageCount())].map((_, index) => (
+                  {pageIndexes[0] > 0 && (
+                    <>
+                      <li key={`${id}-0`}>
+                        <button
+                          onClick={() => {
+                            table.setPageIndex(0);
+                            setSearchParams((params) => {
+                              params.set('page', '1');
+                              return params;
+                            });
+                          }}
+                          aria-label={t('global.gotoPage') + 0}
+                          aria-current={table.getState().pagination.pageIndex === 0}
+                        >
+                          1
+                        </button>
+                      </li>
+                      {pageIndexes[0] > 1 && <li>...</li>}
+                    </>
+                  )}
+                  {pageIndexes.map((index) => (
                     <li
                       key={`${id}-${index}`}
                       className={clsx({ 'active': table.getState().pagination.pageIndex === index })}
@@ -255,6 +288,26 @@ const DataTable: FC<DataTableProps> = (
                       </button>
                     </li>
                   ))}
+                  {pageIndexes[pageIndexes.length - 1] < table.getPageCount() - 1 && (
+                    <>
+                      {pageIndexes[pageIndexes.length - 1] < table.getPageCount() - 2 && <li>...</li>}
+                      <li key={`${id}-${table.getPageCount() - 1}`}>
+                        <button
+                          onClick={() => {
+                            table.setPageIndex(table.getPageCount() - 1);
+                            setSearchParams((params) => {
+                              params.set('page', '' + table.getPageCount());
+                              return params;
+                            });
+                          }}
+                          aria-label={t('global.gotoPage') + (table.getPageCount() - 1)}
+                          aria-current={table.getState().pagination.pageIndex === table.getPageCount() - 1}
+                        >
+                          {table.getPageCount()}
+                        </button>
+                      </li>
+                    </>
+                  )}
                 </ul>
               </nav>
               <button
