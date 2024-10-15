@@ -16,7 +16,7 @@ const ChatMessage: FC<ChatMessageProps> = ({ message, onMessageClick }) => {
                 className="historical-chat__message-text"
                 onClick={onMessageClick ? () => onMessageClick(message) : undefined}
             >
-                <Linkifier message={decodeURIComponent(message.content ?? '')} />
+                <Linkifier message={message.content ?? ''} />
             </button>
             <time
                 dateTime={message.authorTimestamp}

@@ -46,7 +46,7 @@ const NewResponseModal: FC<NewResponseModalProps> = ({ message, setMessage, onSu
           minLength: {
             value: 1,
             message: 'Text cant be empty'
-          }})} label={t('training.responses.response')} defaultValue={decodeURIComponent(message.content || '')} />
+          }})} label={t('training.responses.response')} defaultValue={message.content || ''} />
       </Track>
     </Dialog>
   );
