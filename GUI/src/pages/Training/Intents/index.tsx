@@ -6,7 +6,6 @@ import * as Tabs from '@radix-ui/react-tabs';
 import { format } from 'date-fns';
 import { AxiosError } from 'axios';
 import {
-  MdCheckCircleOutline,
   MdOutlineModeEditOutline,
   MdOutlineSave,
 } from 'react-icons/md';
@@ -34,7 +33,7 @@ import withAuthorization, { ROLES } from 'hoc/with-authorization';
 import { isHiddenFeaturesEnabled, RESPONSE_TEXT_LENGTH } from 'constants/config';
 import { deleteResponse, editResponse } from '../../../services/responses';
 import { Rule, RuleDTO } from '../../../types/rule';
-import { addStoryOrRule, deleteStoryOrRule, editStoryOrRule } from '../../../services/stories';
+import { addStoryOrRule, deleteStoryOrRule } from '../../../services/stories';
 import IntentTabList from './IntentTabList';
 
 type Response = {
@@ -819,18 +818,6 @@ const Intents: FC = () => {
                     </p>
                   </Track>
                   <Track justify="end" gap={8} isMultiline={true}>
-                    {
-                      isHiddenFeaturesEnabled && (
-                        <Button
-                          appearance="secondary"
-                          onClick={() =>
-                            setTurnIntentToServiceIntent(selectedIntent)
-                          }
-                        >
-                          {t('training.intents.turnIntoService')}
-                        </Button>
-                      )
-                    }
                     <Button
                       appearance="secondary"
                       onClick={() => handleIntentExamplesUpload()}
