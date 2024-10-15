@@ -144,7 +144,6 @@
       "regexExampleTitle": "Regex näite pealkiri",
       "deleteEntity": "Kustuta olem",
       "turnExampleIntoIntent": "Muuda teemaks",
-      "turnIntoService": "Muuda teenuseks",
       "connectToService": "Seo teenusega",
       "connectToServiceTooltip": "Teenuse ühendamiseks tuleb teenus eelnevalt luua Teenuste moodulis",
       "changeConnectedService": "Muutke teenust",

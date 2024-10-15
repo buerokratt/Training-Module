@@ -819,18 +819,6 @@ const Intents: FC = () => {
                     </p>
                   </Track>
                   <Track justify="end" gap={8} isMultiline={true}>
-                    {
-                      isHiddenFeaturesEnabled && (
-                        <Button
-                          appearance="secondary"
-                          onClick={() =>
-                            setTurnIntentToServiceIntent(selectedIntent)
-                          }
-                        >
-                          {t('training.intents.turnIntoService')}
-                        </Button>
-                      )
-                    }
                     <Button
                       appearance="secondary"
                       onClick={() => handleIntentExamplesUpload()}
