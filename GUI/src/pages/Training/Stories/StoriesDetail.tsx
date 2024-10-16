@@ -372,7 +372,12 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   return (
     <Track gap={16} align='left' style={{ margin: '-16px' }}>
       <div style={{ flex: 1, maxWidth: 'calc(100% / 3)', padding: '16px 0 16px 16px' }}>
-        <Track direction='vertical' gap={16} align='stretch'>
+        <Track
+            direction="vertical"
+            gap={16}
+            align="stretch"
+            style={{ maxHeight: 'calc(100vh - 100px)', overflow: 'auto', paddingBottom: '5vh' }}
+          >
           {category === 'rules' && (
               <Collapsible title={t('training.conditions')}>
                 <Track direction='vertical' align='stretch' gap={4}>
