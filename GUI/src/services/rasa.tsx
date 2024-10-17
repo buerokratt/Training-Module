@@ -19,7 +19,7 @@ export const generateStoryStepsFromNodes = (nodes: Node[]) =>
                 } else {
                     return {
                         intent: label,
-                        entities: payload.entities.map((entity) => entity.value) || [],
+                        entities: payload.entities.map((entity) => parseValue(entity.value)) || [],
                     };
                 }
             case 'responseNode':
@@ -32,12 +32,12 @@ export const generateStoryStepsFromNodes = (nodes: Node[]) =>
             case 'slotNode':
                 return {
                     slot_was_set: {
-                        [label]: payload.value || null,
+                        [label]: parseValue(payload?.value),
                     },
                 };
             case 'actionNode': {
                 const value = checkpoint
-                  ? { action: payload?.value || label }
+                  ? { action: parseValue(payload?.value) || label }
                   : { action: label };
                 if (
                   value.action === 'conversation_start: true' ||
@@ -51,11 +51,11 @@ export const generateStoryStepsFromNodes = (nodes: Node[]) =>
 
                 payload.conditions.forEach((condition: { active_loop: { value: any; }; slot: { value: any; }; value: any; }) => {
                     if (condition.active_loop) {
-                        conditions.push({ "active_loop": condition.active_loop.value });
+                        conditions.push({ "active_loop": parseValue(condition.active_loop.value) });
                     }
                     if (condition.slot) {
                         conditions.push({ "slot": condition.slot.value });
-                        conditions.push({ "value": condition.value });
+                        conditions.push({ "value": parseValue(condition?.value) });
                     }
                 });
 
@@ -90,7 +90,7 @@ export const generateNodesFromStorySteps = (
               const [slotLabel, value] = Object.entries(
                 condition.slot_was_set
               )[0];
-              return { slot: { label: slotLabel, value } };
+              return { slot: { label: slotLabel, value: String(value) } };
             }
             return null;
           }),
@@ -104,7 +104,7 @@ export const generateNodesFromStorySteps = (
             entities:
               step.entities.map((entityObj: {}) => {
                 const key = Object.keys(entityObj)[0];
-                return { label: key, value: key };
+                return { label: key, value: String(key) };
               }) || [],
           };
         } else {
@@ -130,7 +130,7 @@ export const generateNodesFromStorySteps = (
         className = 'slot';
         const [slotLabel, value] = Object.entries(step.slot_was_set)[0];
         label = slotLabel;
-        payload = { value };
+        payload = { value: String(value) };
       } else {
         return null;
       }
@@ -168,3 +168,11 @@ export const generateNodesFromRuleActions = (
 
   return nodes;
 };
+
+const  parseValue = (value: string | null | undefined) => {
+  if (!value) return null;
+  if (value.toLowerCase() === "true") return true;
+  if (value.toLowerCase() === "false") return false;
+  
+  return value;
+}
