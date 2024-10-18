@@ -5,12 +5,9 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as Tabs from '@radix-ui/react-tabs';
 import { format } from 'date-fns';
 import { AxiosError } from 'axios';
-import {
-  MdOutlineModeEditOutline,
-  MdOutlineSave,
-} from 'react-icons/md';
+import {MdOutlineModeEditOutline, MdOutlineSave,} from 'react-icons/md';
 
-import { Button, Dialog, FormInput, FormTextarea, Icon, Tooltip, Track } from 'components';
+import {Button, Dialog, FormInput, FormTextarea, Icon, Switch, Tooltip, Track} from 'components';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import { useToast } from 'hooks/useToast';
 import { Intent } from 'types/intent';
@@ -22,7 +19,7 @@ import {
   deleteIntent,
   downloadExamples,
   editIntent,
-  getLastModified,
+  getLastModified, markForService,
   turnIntentIntoService,
   uploadExamples,
 } from 'services/intents';
@@ -35,6 +32,7 @@ import { deleteResponse, editResponse } from '../../../services/responses';
 import { Rule, RuleDTO } from '../../../types/rule';
 import { addStoryOrRule, deleteStoryOrRule } from '../../../services/stories';
 import IntentTabList from './IntentTabList';
+import useStore from "../../../store/store";
 
 type Response = {
   name: string;
@@ -51,6 +49,7 @@ const Intents: FC = () => {
 
   const [searchParams] = useSearchParams();
   const [filter, setFilter] = useState('');
+  const [isMarkedForService, setIsMarkedForService] = useState<boolean>(false);
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -66,6 +65,24 @@ const Intents: FC = () => {
     useState<Intent | null>(null);
 
   let intentParam;
+
+  const updateMarkForService = (value: boolean) => {
+    refetch().then(r => {
+      if(!r.data) {
+        markIntentServiceMutation.mutate({ name: selectedIntent?.id ?? '', isForService: value })
+      }
+    });
+  }
+
+  const { data: isPossibleToUpdateMark, refetch } = useQuery<boolean>({ queryKey: [`intents/is-service-intent?intent=${selectedIntent?.id}`]})
+
+  const serviceEligable = () => {
+    const roles = useStore.getState().userInfo?.authorities;
+    if(roles && roles.length > 0) {
+      return roles?.includes(ROLES.ROLE_ADMINISTRATOR) || (roles?.includes(ROLES.ROLE_SERVICE_MANAGER) && roles?.includes(ROLES.ROLE_CHATBOT_TRAINER))
+    }
+    return false;
+  }
 
   const {
     data: intentsFullResponse,
@@ -162,7 +179,9 @@ const Intents: FC = () => {
               examplesCount: newSelectedIntent.examples.length,
               examples: newSelectedIntent.examples,
               serviceId: newSelectedIntent.serviceId,
+              isForService: newSelectedIntent.isForService
             });
+            setIsMarkedForService(newSelectedIntent.isForService ? newSelectedIntent.isForService : false);
 
             queryClient.fetchQuery(['responses-list']).then((res: any) => {
               if (intentResponses.length > 0) {
@@ -372,6 +391,31 @@ const Intents: FC = () => {
     },
     onSettled: () => {
       setEditingIntentTitle(null);
+      setRefreshing(false);
+    },
+  });
+
+  const markIntentServiceMutation = useMutation({
+    mutationFn: (data: { name: string, isForService: boolean }) => markForService(data),
+    onMutate: () => {
+      setRefreshing(true);
+    },
+    onSuccess: () => {
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: t('toast.intentUpdated'),
+      });
+      setIsMarkedForService(!isMarkedForService);
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
+    onSettled: () => {
       setRefreshing(false);
     },
   });
@@ -817,6 +861,17 @@ const Intents: FC = () => {
                         : ` ${t('global.missing')}`}
                     </p>
                   </Track>
+                  {serviceEligable() && ( <Track direction="vertical" align="stretch" gap={5}>
+                    <Switch
+                        label={t('training.intents.markForService')}
+                        onLabel={t('global.yes') ?? 'yes'}
+                        offLabel={t('global.no') ?? 'no'}
+                        onCheckedChange={(value) => updateMarkForService(value)}
+                        checked={isMarkedForService}
+                        disabled={isPossibleToUpdateMark}
+                    />
+                  </Track>
+                  )}
                   <Track justify="end" gap={8} isMultiline={true}>
                     <Button
                       appearance="secondary"
@@ -859,7 +914,7 @@ const Intents: FC = () => {
                       </Button>
                     )}
                     {
-                      isHiddenFeaturesEnabled && (
+                      isHiddenFeaturesEnabled && serviceEligable() && (
                         <Tooltip
                           content={t('training.intents.connectToServiceTooltip')}
                         >
