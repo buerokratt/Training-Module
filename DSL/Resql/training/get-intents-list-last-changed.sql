@@ -1,4 +1,4 @@
-SELECT i.id, i.intent, i.created
+SELECT i.id, i.intent, i.created, i.isForService
 FROM intent i
 INNER JOIN (
     SELECT intent, MAX(created) AS max_created

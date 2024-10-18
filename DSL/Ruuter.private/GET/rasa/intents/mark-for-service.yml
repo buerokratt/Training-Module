@@ -1,0 +1,79 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'ADD'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    params:
+      - field: name
+        type: string
+        description: "Body field 'name'"
+      - field: isForService
+        type: boolean
+        description: "Value of isForService to mark intent for service use or not."
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie field"
+
+validateInputLength:
+  switch:
+    - condition: ${incoming.params.name.trim().length > 0}
+      next: assign_values
+  next: returnTooShortError
+
+assign_values:
+  assign:
+    intent: ${incoming.params.name.replaceAll(/\s+/g, "_")}
+    isForService: ${incoming.params.isForService === 'true'}
+
+getIntentList:
+  call: http.get
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/rasa/intents"
+    headers:
+      cookie: ${incoming.headers.cookie}
+  result: intentList
+
+validateIntentExists:
+  switch:
+    - condition: ${intentList.response.body.includes(intent)}
+      next: updateInDatabase
+    - condition: ${!intentList.response.body}
+      next: returnIntentsError
+  next: returnIntentNotExists
+
+updateInDatabase:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/mark-intent-for-service"
+    body:
+      intent: ${intent}
+      isForService: ${isForService}
+      status: "ACTIVE"
+  result: addIntentResult
+
+returnSuccess:
+  return: "Mark for service updated"
+  next: end
+
+returnTooShortError:
+  status: 409
+  wrapper: false
+  return: "Intent name is too short"
+  next: end
+
+returnIntentNotExists:
+  status: 409
+  wrapper: false
+  return: "Intent not exists"
+  next: end
+
+returnIntentsError:
+  status: 409
+  wrapper: false
+  return: "Intents parsing error"
+  next: end

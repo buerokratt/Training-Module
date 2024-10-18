@@ -6,6 +6,11 @@ export async function addIntent(newIntentData: { name: string }) {
   return data;
 }
 
+export async function markForService(markData: { name: string, isForService: boolean }) {
+  const { data } = await rasaApi.get(`/intents/mark-for-service?name=${markData.name}&isForService=${markData.isForService}`);
+  return data;
+}
+
 export async function addIntentWithExample(newIntentExample: { intentName: string,newExamples: string }) {
   const { data } = await rasaApi.post('/intents/add-with-example', newIntentExample);
   return data;

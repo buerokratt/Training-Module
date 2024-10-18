@@ -1,0 +1,39 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "This call check if intent is used for Service"
+  method: get
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    params:
+      - field: intent
+        type: string
+        description: "Parameter 'intent'"
+
+assignValues:
+  assign:
+    intent: ${incoming.params.intent}
+
+validateName:
+  switch:
+    - condition: ${intent.trim().length !== 0}
+      next: getResultFromDb
+  next: returnEmptyName
+
+getResultFromDb:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/get-service-intent-connections"
+  result: dbResult
+
+returnSuccess:
+  return: ${dbResult.response.body.length > 0 && dbResult.response.body.find(element => element.intent === intent) !== undefined}
+  wrapper: false
+  next: end
+
+returnEmptyObject:
+  return: 'Intent name cannot be empty'
+  wrapper: false
+  next: end
