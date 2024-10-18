@@ -74,7 +74,7 @@ const Intents: FC = () => {
     });
   }
 
-  const { data: isPossibleToUpdateMark, refetch } = useQuery<boolean>({ queryKey: [`intents/is-service-intent?intent=${selectedIntent?.id}`]})
+  const { data: isPossibleToUpdateMark, refetch } = useQuery<boolean>({ queryKey: [`intents/is-marked-for-service?intent=${selectedIntent?.id}`]})
 
   const serviceEligable = () => {
     const roles = useStore.getState().userInfo?.authorities;
