@@ -34,8 +34,13 @@ entities:
   - rk_hääletused
   - np_odav
   - np_kallis
-  - riigipühad
-  - kuu
+  - by_name
+  - by_month
+  - today
+  - next_holiday
+  - next_holidays
+  - last_holiday
+  - last_holidays
   
 slots:
   common_teenus_ilm_asukoht:
@@ -123,22 +128,62 @@ slots:
     - type: from_entity
       entity: np_odav
       intent: common_teenus_nordpool2
-  
-  riigipühad_nimeliselt:
-    type: text
-    influence_conversation: true
-    mappings:
-    - type: from_entity
-      entity: riigipühad
-      intent: common_service_holidays/name
 
-  riigipühad_kuu:
+  today_holiday:
     type: text
     influence_conversation: true
     mappings:
     - type: from_entity
-      entity: kuu
-      intent: common_service_holidays/month
+      entity: today
+      intent: common_service_holidays
+
+  next_holiday:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: next_holiday
+      intent: common_service_holidays
+
+  next_holidays:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: next_holidays
+      intent: common_service_holidays
+
+  last_holiday:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: last_holiday
+      intent: common_service_holidays
+
+  last_holidays:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: last_holidays
+      intent: common_service_holidays
+
+  by_name_holiday:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: by_name
+      intent: common_service_holidays
+
+  by_month_holiday:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: by_month
+      intent: common_service_holidays
 
   affirm_deny:
     type: text
@@ -275,26 +320,26 @@ responses:
   utter_common_teenus_nordpool_kallis:
   - text: "#nordpool3"
 
-  utter_common_service_holidays/all:
+  utter_common_service_holidays:
   - text: "#all_national_holidays"
 
-  utter_common_service_holidays/eoy:
+  utter_common_service_holidays_next_holidays:
   - text: "#national_holidays_eoy"
 
-  utter_common_service_holidays/ytd:
+  utter_common_service_holidays_last_holidays:
   - text: "#national_holidays_ytd"
 
-  utter_common_service_holidays/prev:
+  utter_common_service_holidays_last_holiday:
   - text: "#prev_national_holiday"
 
-  utter_common_service_holidays/next:
+  utter_common_service_holidays_next_holiday:
   - text: "#next_national_holiday"
 
-  utter_common_service_holidays/today:
+  utter_common_service_holidays_today:
   - text: "#national_holidays_today"
 
-  utter_common_service_holidays/name:
+  utter_common_service_holidays_by_name:
   - text: "#national_holidays_by_name"
 
-  utter_common_service_holidays/month:
+  utter_common_service_holidays_by_month:
   - text: "#national_holidays_by_month"
