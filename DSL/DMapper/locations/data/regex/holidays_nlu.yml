@@ -1,6 +1,6 @@
 version: "3.0"
 nlu:
-  - regex: riigipühad
+  - regex: by_name
     examples: |
      - uusaasta
      - iseseisvuspäev
@@ -16,7 +16,7 @@ nlu:
      - esimene jõulupüha
      - teine jõulupüha
 
-  - regex: kuu
+  - regex: by_month
     examples: |
      - jaanuar
      - veebruar
