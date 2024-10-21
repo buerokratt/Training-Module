@@ -17,8 +17,6 @@ pipeline:
   case_sensitive: false
   use_regexes: true
 - name: EntitySynonymMapper
-- name: ResponseSelector
-  epochs: 200
 - name: FallbackClassifier
   threshold: 0.8
 
