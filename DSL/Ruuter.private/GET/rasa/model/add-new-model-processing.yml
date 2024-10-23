@@ -53,7 +53,7 @@ updateInDatabase:
       trained_date: ${new Date().toISOString()}
       training_data_checksum: ""
   result: dbResult
-  next: returnSuccess
+  next: clearModelList
 
 insertToDatabase:
   call: http.post
@@ -70,6 +70,28 @@ insertToDatabase:
       trained_date: ${new Date().toISOString()}
       training_data_checksum: ""
   result: dbResult
+
+clearModelList:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]/notifications/_delete_by_query?conflicts=proceed"
+    body:
+      query:
+        term:
+          channelId: "model-list"
+  result: clear_chat_res
+  next: postNotificationAboutModel
+
+postNotificationAboutModel:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]/notifications/_doc"
+    body:
+      channelId: "model-list"
+      timestamp: ${new Date().toISOString()}
+      payload: { "status": "Status Changed", "state": "PROCESSING" }
+  result: notification_result
+  next: returnSuccess
 
 returnSuccess:
   return: "Inserted model with PROCESSING status. "

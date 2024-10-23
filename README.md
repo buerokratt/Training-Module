@@ -38,7 +38,7 @@ To be able to log in locally, manually create a cookie called `customJwtCookie` 
 ```
 curl -X POST -H "Content-Type: application/json" -d '{
   "login": "EE30303039914",
-  "password": ""
+  "password": "OK"
 }' http://localhost:8080/auth/login
 ```
 

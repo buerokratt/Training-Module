@@ -1,6 +1,6 @@
 version: "3.0"
 nlu:
-- intent: common_service_companies_riiklikud_maksud
+- intent: common_service_companies_national_taxes
   examples: |
     - ettevõtte tasutud riiklikud maksud
     - kui palju maksis ettevõte riiklikke makse

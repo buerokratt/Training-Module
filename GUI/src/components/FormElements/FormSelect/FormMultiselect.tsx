@@ -105,6 +105,7 @@ const FormMultiselect: FC<FormMultiselectProps> = (
                 })}
               >
                 <input
+                  className='select__checkbox'
                   type='checkbox'
                   checked={selectedItems.map((s) => s.value).includes(item.value)}
                   value={item.value}

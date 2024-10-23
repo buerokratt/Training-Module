@@ -11,20 +11,21 @@ intents:
   - common_tervitus
   - common_klienditeenindajale_suunamine
   - common_teenus_ilm
-  - common_teenus_rahvaalgatus
-  - common_teenus_rahvaalgatus_populaarne
+  - common_teenus_citizien_initiative
+  - common_teenus_citizien_initiative_popular
   - common_teenus_nordpool
   - common_teenus_nordpool2
-  - common_service_companies_töötajad
-  - common_service_companies_käive
-  - common_service_companies_tööjõumaksud
-  - common_service_companies_riiklikud_maksud
-  - common_service_companies_kasusaajad
-  - common_service_companies_seotud_isikud
-  - common_service_companies_kontaktandmed
+  - common_service_companies_employees
+  - common_service_companies_revenue
+  - common_service_companies_workforce_taxes
+  - common_service_companies_national_taxes
+  - common_service_companies_beneficiaries
+  - common_service_companies_related_persons
+  - common_service_companies_contactdetails
   - common_service_companies_lihtandmed
   - common_teenus_rk_isiku_kohalolu
   - common_teenus_rk_hääletus
+  - common_service_holidays
 
 entities:
   - asukoht
@@ -33,6 +34,13 @@ entities:
   - rk_hääletused
   - np_odav
   - np_kallis
+  - by_name
+  - by_month
+  - today
+  - next_holiday
+  - next_holidays
+  - last_holiday
+  - last_holidays
   
 slots:
   common_teenus_ilm_asukoht:
@@ -57,26 +65,26 @@ slots:
     influence_conversation: false
     mappings:
     - type: from_intent
-      value: common_service_companies_töötajad
-      intent: common_service_companies_töötajad
+      value: common_service_companies_employees
+      intent: common_service_companies_employees
     - type: from_intent
-      value: common_service_companies_käive
-      intent: common_service_companies_käive
+      value: common_service_companies_revenue
+      intent: common_service_companies_revenue
     - type: from_intent
-      value: common_service_companies_tööjõumaksud
-      intent: common_service_companies_tööjõumaksud
+      value: common_service_companies_workforce_taxes
+      intent: common_service_companies_workforce_taxes
     - type: from_intent
-      value: common_service_companies_riiklikud_maksud
-      intent: common_service_companies_riiklikud_maksud
+      value: common_service_companies_national_taxes
+      intent: common_service_companies_national_taxes
     - type: from_intent
-      value: common_service_companies_kasusaajad
-      intent: common_service_companies_kasusaajad
+      value: common_service_companies_beneficiaries
+      intent: common_service_companies_beneficiaries
     - type: from_intent
-      value: common_service_companies_seotud_isikud
-      intent: common_service_companies_seotud_isikud
+      value: common_service_companies_related_persons
+      intent: common_service_companies_related_persons
     - type: from_intent
-      value: common_service_companies_kontaktandmed
-      intent: common_service_companies_kontaktandmed
+      value: common_service_companies_contactdetails
+      intent: common_service_companies_contactdetails
     - type: from_intent
       value: common_service_companies_lihtandmed
       intent: common_service_companies_lihtandmed
@@ -121,6 +129,62 @@ slots:
       entity: np_odav
       intent: common_teenus_nordpool2
 
+  today_holiday:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: today
+      intent: common_service_holidays
+
+  next_holiday:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: next_holiday
+      intent: common_service_holidays
+
+  next_holidays:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: next_holidays
+      intent: common_service_holidays
+
+  last_holiday:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: last_holiday
+      intent: common_service_holidays
+
+  last_holidays:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: last_holidays
+      intent: common_service_holidays
+
+  by_name_holiday:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: by_name
+      intent: common_service_holidays
+
+  by_month_holiday:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: by_month
+      intent: common_service_holidays
+
   affirm_deny:
     type: text
     influence_conversation: true
@@ -156,7 +220,7 @@ responses:
           name: common_teenus_ilm_asukoht
           value: null
       text: "Hetkel oskan ma öelda ilma Eesti raames piirkonnapõhiselt. Palun sisestage korrektne piirkonna nimi."
-    - text: "#weather; {common_teenus_ilm_asukoht};"
+    - text: "#weather, {common_teenus_ilm_asukoht}"
 
   utter_ask_company_name:
   - text: "Mis firma kohta sa infot soovid?"
@@ -165,37 +229,37 @@ responses:
     - condition:
         - type: slot
           name: trigger_intent
-          value: common_service_companies_töötajad
+          value: common_service_companies_employees
       text: "OPENSEARCH {company_name}"
     - condition:
         - type: slot
           name: trigger_intent
-          value: common_service_companies_käive
+          value: common_service_companies_revenue
       text: "REVENUEOPENSEARCH {company_name}"
     - condition:
         - type: slot
           name: trigger_intent
-          value: common_service_companies_tööjõumaksud
+          value: common_service_companies_workforce_taxes
       text: "WORKFORCETAXOPENSEARCH {company_name}"
     - condition:
         - type: slot
           name: trigger_intent
-          value: common_service_companies_riiklikud_maksud
+          value: common_service_companies_national_taxes
       text: "NATIONALTAXOPENSEARCH {company_name}"
     - condition:
         - type: slot
           name: trigger_intent
-          value: common_service_companies_kasusaajad
+          value: common_service_companies_beneficiaries
       text: "BENEFICIARIESOPENSEARCH {company_name}"
     - condition:
         - type: slot
           name: trigger_intent
-          value: common_service_companies_seotud_isikud
+          value: common_service_companies_related_persons
       text: "RELATEDPEOPLEOPENSEARCH {company_name}"
     - condition:
         - type: slot
           name: trigger_intent
-          value: common_service_companies_kontaktandmed
+          value: common_service_companies_contactdetails
       text: "COMPANYDETAILSOPENSEARCH {company_name}"
     - condition:
         - type: slot
@@ -224,11 +288,11 @@ responses:
   utter_common_tervitus:
   - text: "Kuidas saan abiks olla?"
 
-  utter_common_teenus_rahvaalgatus:
-  - text: "#rahvaAlgatus;"
+  utter_common_teenus_citizien_initiative:
+  - text: "#initiative-events-latest"
 
-  utter_common_teenus_rahvaalgatus_populaarne:
-  - text: "#rahvaAlgatusPopulaarne"
+  utter_common_teenus_citizien_initiative_popular:
+  - text: "#initiative-events-popular"
 
   utter_common_teenus_rk_isiku_kohalolu:
     - condition:
@@ -236,22 +300,46 @@ responses:
           name: rk_liige
           value: null
       text: "Riigikogu liikme kohaloleku nägemiseks palun proovige uuesti, kasutades Riigikogu liikme täisnime."
-    - text: "#riigikoguIsikuKohalolu, {rk_liige}"
+    - text: "#riigikogu-attendance, {rk_liige}"
 
   utter_common_teenus_rk_hääletus_viimane:
   - text: "#recentVoting"
 
   utter_common_teenus_rk_hääletus_viimased:
-  - text: "#recentFiveVoting"
+  - text: "#riigikogu-five-latest-votings"
 
   utter_common_teenus_rk_hääletus_fallback:
   - text: "Ma ei saanud täpselt aru. Palun proovige uuesti!"
 
   utter_common_teenus_nordpool:
-  - text: "#nordpool;"
+  - text: "#nordpool"
 
   utter_common_teenus_nordpool_odav:
-  - text: "#nordpool2;"
+  - text: "#nordpool2"
 
   utter_common_teenus_nordpool_kallis:
-  - text: "#nordpool3;"
+  - text: "#nordpool3"
+
+  utter_common_service_holidays:
+  - text: "#all_national_holidays"
+
+  utter_common_service_holidays_next_holidays:
+  - text: "#national_holidays_eoy"
+
+  utter_common_service_holidays_last_holidays:
+  - text: "#national_holidays_ytd"
+
+  utter_common_service_holidays_last_holiday:
+  - text: "#prev_national_holiday"
+
+  utter_common_service_holidays_next_holiday:
+  - text: "#next_national_holiday"
+
+  utter_common_service_holidays_today:
+  - text: "#national_holidays_today"
+
+  utter_common_service_holidays_by_name:
+  - text: "#national_holidays_by_name"
+
+  utter_common_service_holidays_by_month:
+  - text: "#national_holidays_by_month"

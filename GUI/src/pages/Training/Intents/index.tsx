@@ -5,13 +5,9 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as Tabs from '@radix-ui/react-tabs';
 import { format } from 'date-fns';
 import { AxiosError } from 'axios';
-import {
-  MdCheckCircleOutline,
-  MdOutlineModeEditOutline,
-  MdOutlineSave,
-} from 'react-icons/md';
+import {MdOutlineModeEditOutline, MdOutlineSave,} from 'react-icons/md';
 
-import { Button, Dialog, FormInput, FormTextarea, Icon, Tooltip, Track } from 'components';
+import {Button, Dialog, FormInput, FormTextarea, Icon, Switch, Tooltip, Track} from 'components';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import { useToast } from 'hooks/useToast';
 import { Intent } from 'types/intent';
@@ -23,7 +19,7 @@ import {
   deleteIntent,
   downloadExamples,
   editIntent,
-  getLastModified,
+  getLastModified, markForService,
   turnIntentIntoService,
   uploadExamples,
 } from 'services/intents';
@@ -34,7 +30,9 @@ import withAuthorization, { ROLES } from 'hoc/with-authorization';
 import { isHiddenFeaturesEnabled, RESPONSE_TEXT_LENGTH } from 'constants/config';
 import { deleteResponse, editResponse } from '../../../services/responses';
 import { Rule, RuleDTO } from '../../../types/rule';
-import { addStoryOrRule, deleteStoryOrRule, editStoryOrRule } from '../../../services/stories';
+import { addStoryOrRule, deleteStoryOrRule } from '../../../services/stories';
+import IntentTabList from './IntentTabList';
+import useStore from "../../../store/store";
 
 type Response = {
   name: string;
@@ -51,6 +49,7 @@ const Intents: FC = () => {
 
   const [searchParams] = useSearchParams();
   const [filter, setFilter] = useState('');
+  const [isMarkedForService, setIsMarkedForService] = useState<boolean>(false);
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -66,6 +65,24 @@ const Intents: FC = () => {
     useState<Intent | null>(null);
 
   let intentParam;
+
+  const updateMarkForService = (value: boolean) => {
+    refetch().then(r => {
+      if(!r.data) {
+        markIntentServiceMutation.mutate({ name: selectedIntent?.id ?? '', isForService: value })
+      }
+    });
+  }
+
+  const { data: isPossibleToUpdateMark, refetch } = useQuery<boolean>({ queryKey: [`intents/is-marked-for-service?intent=${selectedIntent?.id}`]})
+
+  const serviceEligable = () => {
+    const roles = useStore.getState().userInfo?.authorities;
+    if(roles && roles.length > 0) {
+      return roles?.includes(ROLES.ROLE_ADMINISTRATOR) || (roles?.includes(ROLES.ROLE_SERVICE_MANAGER) && roles?.includes(ROLES.ROLE_CHATBOT_TRAINER))
+    }
+    return false;
+  }
 
   const {
     data: intentsFullResponse,
@@ -102,10 +119,11 @@ const Intents: FC = () => {
         id: intent.title,
         description: null,
         inModel: intent.inmodel,
-        modifiedAt: '',
+        modifiedAt: intent.modifiedAt,
         examplesCount: countExamples,
         examples: intent.examples,
         serviceId: intent.serviceId,
+        isCommon: intent.title.startsWith('common_'),
       };
       intents.push(newIntent);
     });
@@ -157,11 +175,13 @@ const Intents: FC = () => {
               id: newSelectedIntent.title,
               description: null,
               inModel: newSelectedIntent.inmodel,
-              modifiedAt: '',
+              modifiedAt: newSelectedIntent.modifiedAt,
               examplesCount: newSelectedIntent.examples.length,
               examples: newSelectedIntent.examples,
               serviceId: newSelectedIntent.serviceId,
+              isForService: newSelectedIntent.isForService
             });
+            setIsMarkedForService(newSelectedIntent.isForService ? newSelectedIntent.isForService : false);
 
             queryClient.fetchQuery(['responses-list']).then((res: any) => {
               if (intentResponses.length > 0) {
@@ -287,12 +307,6 @@ const Intents: FC = () => {
 
   useDocumentEscapeListener(() => setEditingIntentTitle(null));
 
-  const filteredIntents = useMemo(() => {
-    if (!intents) return [];
-    const formattedFilter = filter.trim().replace(/\s+/g, '_');
-    return intents.filter((intent) => intent.id?.includes(formattedFilter))
-      .sort((a, b) => a.id.localeCompare(b.id));
-  }, [intents, filter]);
 
   const examplesData = useMemo(
     () => selectedIntent?.examples.map((example, index) => ({ id: index, value: example })),
@@ -377,6 +391,31 @@ const Intents: FC = () => {
     },
     onSettled: () => {
       setEditingIntentTitle(null);
+      setRefreshing(false);
+    },
+  });
+
+  const markIntentServiceMutation = useMutation({
+    mutationFn: (data: { name: string, isForService: boolean }) => markForService(data),
+    onMutate: () => {
+      setRefreshing(true);
+    },
+    onSuccess: () => {
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: t('toast.intentUpdated'),
+      });
+      setIsMarkedForService(!isMarkedForService);
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
+    onSettled: () => {
       setRefreshing(false);
     },
   });
@@ -755,42 +794,17 @@ const Intents: FC = () => {
               </Track>
             </div>
 
-            <div className="vertical-tabs__list-scrollable">
-              {filteredIntents.map((intent, index) => (
-                <Tabs.Trigger
-                  key={`${intent}-${index}`}
-                  className="vertical-tabs__trigger"
-                  value={intent.id}
-                >
-                  <Track gap={16}>
-                  <span style={{ flex: 1 }}>
-                    {intent.id.replace(/_/g, ' ')}
-                  </span>
-                    <Tooltip content={t('training.intents.amountOfExamples')}>
-                    <span style={{ color: '#5D6071' }}>
-                      {intent.examplesCount}
-                    </span>
-                    </Tooltip>
-                    {intent.inModel ? (
-                      <Tooltip content={t('training.intents.intentInModel')}>
-                      <span style={{ display: 'flex', alignItems: 'center' }}>
-                        <Icon
-                          icon={
-                            <MdCheckCircleOutline
-                              color={'rgba(0, 0, 0, 0.54)'}
-                              opacity={intent.inModel ? 1 : 0}
-                            />
-                          }
-                        />
-                      </span>
-                      </Tooltip>
-                    ) : (
-                      <span style={{ display: 'block', width: 16 }}></span>
-                    )}
-                  </Track>
-                </Tabs.Trigger>
-              ))}
-            </div>
+            <IntentTabList
+              intents={intents}
+              filter={filter}
+              onDismiss={() => {
+                if(!selectedIntent?.isCommon) return;
+                setSelectedIntent(null);
+                setEditingIntentTitle(null);
+                setIntentResponseName(null);
+                setIntentResponseText(null);
+              }}
+            />
           </Tabs.List>
 
           {selectedIntent && (
@@ -847,19 +861,18 @@ const Intents: FC = () => {
                         : ` ${t('global.missing')}`}
                     </p>
                   </Track>
+                  {serviceEligable() && ( <Track direction="vertical" align="stretch" gap={5}>
+                    <Switch
+                        label={t('training.intents.markForService')}
+                        onLabel={t('global.yes') ?? 'yes'}
+                        offLabel={t('global.no') ?? 'no'}
+                        onCheckedChange={(value) => updateMarkForService(value)}
+                        checked={isMarkedForService}
+                        disabled={isPossibleToUpdateMark}
+                    />
+                  </Track>
+                  )}
                   <Track justify="end" gap={8} isMultiline={true}>
-                    {
-                      isHiddenFeaturesEnabled && (
-                        <Button
-                          appearance="secondary"
-                          onClick={() =>
-                            setTurnIntentToServiceIntent(selectedIntent)
-                          }
-                        >
-                          {t('training.intents.turnIntoService')}
-                        </Button>
-                      )
-                    }
                     <Button
                       appearance="secondary"
                       onClick={() => handleIntentExamplesUpload()}
@@ -901,7 +914,7 @@ const Intents: FC = () => {
                       </Button>
                     )}
                     {
-                      isHiddenFeaturesEnabled && (
+                      isHiddenFeaturesEnabled && serviceEligable() && (
                         <Tooltip
                           content={t('training.intents.connectToServiceTooltip')}
                         >
@@ -1012,7 +1025,6 @@ const Intents: FC = () => {
           onModalClose={() => setConnectableIntent(null)}
         />
       )}
-
       {turnIntentToServiceIntent !== null && (
         <Dialog
           title={t('training.intents.turnIntoService')}

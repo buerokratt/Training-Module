@@ -2,6 +2,7 @@
 "intents": [
 {{#each intents.intents}}
     {
+    "id": "{{id}}",
     "title": "{{title}}",
     "examples": [
     {{#each examples}}
@@ -10,6 +11,8 @@
     ],
     "inmodel": {{isInModel title ../intents}},
     "serviceId": "{{findConnectedServiceId title ../intents}}",
+    "isForService": "{{getObjectKeyFromObjectArray ../intents/intentsModifiedAt 'intent' title 'isforservice'}}",
+    "modifiedAt": "{{findModifiedAt title ../intents/intentsModifiedAt}}",
     "count": {{getCount title ../intents}}
     }{{#unless @last}},{{/unless}}
 {{/each}}

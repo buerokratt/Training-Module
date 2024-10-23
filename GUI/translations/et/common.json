@@ -43,6 +43,7 @@
     "missing": "Puudub",
     "updatingDataHead": "Palun oota",
     "updatingDataBody": "Andmeid uuendatakse...",
+    "chosen": "Valitud",
     "days": {
       "monday": "Esmaspäev",
       "tuesday": "Teisipäev",
@@ -67,6 +68,7 @@
     "formChangesSaved": "Ankeedi muudatused on salvestatud",
     "formDeleted": "Ankeet kustutatud",
     "intentRemovedFromModel": "Teema mudelist eemaldatud",
+    "intentUpdated": "Teema uuendatud",
     "intentAddedToModel": "Teema mudelisse lisatud",
     "intentDeleted": "Teema kustutatud",
     "examplesSentForDownloading": "Näited saadeti alla laadimiseks",
@@ -96,7 +98,10 @@
     "storyUpdated": "Vestlusvoog värskendatud",
     "titleCannotBeEmpty": "Pealkiri ei tohi olla tühi",
     "trainSettingsChangesSaved": "Seadete muudatused on salvestatud",
-    "trainingIsInitialized": "Treenimine käivitati"
+    "trainingIsInitialized": "Treenimine käivitati",
+    "trainingSuccess": "Treenimine õnnestus",
+    "alreadyTrained": "Praeguste andmetega on mudel juba treenitud",
+    "trainingFailure": "Treenimine ebaõnnestus"
   },
   "mainMenu": {
     "menuLabel": "Peamenüü",
@@ -140,13 +145,22 @@
       "regexExampleTitle": "Regex näite pealkiri",
       "deleteEntity": "Kustuta olem",
       "turnExampleIntoIntent": "Muuda teemaks",
-      "turnIntoService": "Muuda teenuseks",
       "connectToService": "Seo teenusega",
+      "markForService": "Märgi teenuse kasutamiseks",
       "connectToServiceTooltip": "Teenuse ühendamiseks tuleb teenus eelnevalt luua Teenuste moodulis",
       "changeConnectedService": "Muutke teenust",
       "deleteTooltip": "Ainult teema kustutatakse ja teenus jääb alles, selle kustutamine saab toimuda Teenuste moodulis",
       "error": {
         "turnExampleIntoIntent": "Näidet ei saa teenuseks muuta"
+      },
+      "sortingType": {
+        "label": "Sorteerimise tüüp",
+        "alphabeticalAsc": "Tähestiku järjekorras (A-Z)",
+        "alphabeticalDesc": "Tähestiku järjekorras (Z-A)",
+        "inModelFirst": "Mudelis teemad esimesena",
+        "inModelLast": "Mudelis teemad viimasena",
+        "lastModifiedAsc": "Viimati muudetud (vanimad esimesena)",
+        "lastModifiedDesc": "Viimati muudetud (uusimad esimesena)"
       }
     },
     "responses": {
@@ -250,7 +264,10 @@
     "trainNew": {
       "title": "Treeni ja testi",
       "lastTrained": "Viimati treenitud {{date}}, {{time}}",
-      "trainNow": "Treeni kohe",
+      "trainAndTest": "Treeni ja testi",
+      "train": "Treeni",
+      "trainTooltip": "Treeni mudel ilma testimiseta (Sobib väiksemateks parandusteks/muudatusteks)",
+      "trainAndTestTooltip": "Treeni ja testi mudel sobib suuremateks muudatusteks (Võimaldab teemade tagasiside ja ülevaate) Testimine võtab märkimisväärselt rohkem aega.",
       "warning": "NB! Viimane treening kukkus läbi. ({{date}}, {{time}})",
       "trainingTitle": "Treenimise ja testimise andmed",
       "folds": "Folds arv",
@@ -258,7 +275,16 @@
       "planTitle": "Planeeritud treening",
       "date": "Alates",
       "days": "Nädalapäevad",
-      "time": "Treenimise kellaaeg"
+      "time": "Treenimise kellaaeg",
+      "trainingState": "Praegu treenitakse mudelit olekuga: {{state}}",
+      "state": {
+        "ready": "Valmis",
+        "processing": "Töötlemine",
+        "testing": "Testimine",
+        "cross_validating": "Ristvalideerimine",
+        "error": "Viga",
+        "already_trained": "Juba koolitatud"
+      }
     }
   },
   "roles": {

@@ -1,0 +1,32 @@
+version: "3.0"
+nlu:
+  - regex: by_name
+    examples: |
+     - uusaasta
+     - iseseisvuspäev
+     - Eesti[- ]Vabariigi aastapäev
+     - suur reede
+     - ülestõusmispühade 1. püha
+     - kevadpüha
+     - nelipühade 1. püha
+     - võidupüha
+     - jaanipäev
+     - taasiseseisvumispäev
+     - jõululaupäev
+     - esimene jõulupüha
+     - teine jõulupüha
+
+  - regex: by_month
+    examples: |
+     - jaanuar
+     - veebruar
+     - märts
+     - aprill
+     - mai
+     - juuni
+     - juuli
+     - august
+     - september
+     - oktoober
+     - november
+     - detsember
