@@ -303,83 +303,83 @@ nlu:
     - Kas [täna](today) on kuupäev, mil tähistatakse riigipüha?
     - Kas [täna](today) tähistatakse ametlikku riigipüha?
     - Kas [täna](today) on riigipüha, mille tähistamiseks on vaja valmistuda?
-    - Millal on [HOL2](nimeliselt)?
-    - Mis kuupäeval on [HOL2](nimeliselt)?
-    - Millal toimub [HOL2](nimeliselt)?
-    - Kuidas on [HOL2](nimeliselt) kuupäev?
-    - Millal langeb [HOL2](nimeliselt)?
-    - Kas sa tead, millal on [HOL2](nimeliselt)?
-    - Mis päev on [HOL2](nimeliselt)?
-    - Millal tähistatakse [HOL2](nimeliselt)?
-    - Millal on [HOL2](nimeliselt) sel aastal?
-    - Mis kuupäevadel on [HOL2](nimeliselt)?
-    - Kas [HOL2](nimeliselt) on lähiajal?
-    - Millised kuupäevad on [HOL2](nimeliselt)?
-    - Millal toimuvad [HOL2](nimeliselt) üritused?
-    - Millal on järgmine [HOL2](nimeliselt)?
-    - Millised päevad on [HOL2](nimeliselt)?
-    - Millal on [HOL2](nimeliselt) kuupäev?
-    - Mis kuupäev on [HOL2](nimeliselt)?
-    - Millal peetakse [HOL2](nimeliselt)?
-    - Kas [HOL2](nimeliselt) on sel kuul?
-    - Mis päev on [HOL2](nimeliselt)?
-    - Millal toimub [HOL2](nimeliselt) tähistamine?
-    - Millal langeb [HOL2](nimeliselt) sel aastal?
-    - Millised kuupäevad on [HOL2](nimeliselt)?
-    - Mis ajaks on [HOL2](nimeliselt)?
-    - Millal on [HOL2](nimeliselt) tähistamine?
-    - Mis on [HOL2](nimeliselt) kuupäev?
-    - Millal on [HOL2](nimeliselt) tähistamise päev?
-    - Millal toimub [HOL2](nimeliselt)?
-    - Millal on [HOL2](nimeliselt)?
-    - Mis päevadel on [HOL2](nimeliselt)?
-    - Kas tead, millal on [HOL2](nimeliselt)?
-    - Millal on [HOL2](nimeliselt) pidu?
-    - Millised on [HOL2](nimeliselt) kuupäevad?
-    - Millal langeb [HOL2](nimeliselt) järgmine kord?
-    - Kas [HOL2](nimeliselt) on lähikuudel?
-    - Mis riigipühad on [HOL3](kuu)?
-    - Millised riigipühad on [HOL3](kuu)?
-    - Millal toimuvad riigipühad [HOL3](kuu)?
-    - Mis riigipühad on [HOL3](kuu)?
-    - Millised riigipühad on [HOL3](kuu)?
-    - Mis kuupäevadel on riigipühad [HOL3](kuu)?
-    - Millal tähistatakse riigipühi [HOL3](kuu)?
-    - Mis riigipühad on [HOL3](kuu)?
-    - Millised riigipühad on [HOL3](kuu)?
-    - Mis kuupäevadel on riigipühad [HOL3](kuu)?
-    - Millal on riigipühad [HOL3](kuu)?
-    - Millised riigipühad on [HOL3](kuu)?
-    - Millal tähistatakse [HOL3](kuu) riigipühi?
-    - Mis riigipühad langevad [HOL3](kuu)?
-    - Millal toimuvad riigipühad [HOL3](kuu)?
-    - Kas on riigipühad [HOL3](kuu)?
-    - Milliseid riigipühi tähistatakse [HOL3](kuu)?
-    - Mis päevad on [HOL3](kuu) riigipühadeks?
-    - Millal on [HOL3](kuu) riigipühad?
-    - Millised riigipühad on [HOL3](kuu)?
-    - Kas tead, mis riigipühad on [HOL3](kuu)?
-    - Millised riigipühad on [HOL3](kuu)?
-    - Mis riigipühad on [HOL3](kuu)?
-    - Kuidas on riigipühad [HOL3](kuu)?
-    - Millised riigipühad on [HOL3](kuu)?
-    - Millal on [HOL3](kuu) riigipühad?
-    - Mis on [HOL3](kuu) riigipühade kuupäevad?
-    - Millised on [HOL3](kuu) riigipühad?
-    - Mis päevadel on [HOL3](kuu) riigipühad?
-    - Kuidas on riigipühad [HOL3](kuu)?
-    - Millised on [HOL3](kuu) riigipühade ajad?
-    - Mis riigipühad on [HOL3](kuu)?
-    - Kuidas jagunevad riigipühad [HOL3](kuu)?
-    - Millal tähistatakse riigipühi [HOL3](kuu)?
-    - Kas riigipühad on [HOL3](kuu)?
-    - Mis riigipühad on [HOL3](kuu)?
-    - Millal on [HOL3](kuu) riigipühade tähistamine?
-    - Mis kuupäevadel on riigipühad [HOL3](kuu)?
-    - Millised on [HOL3](kuu) riigipühad?
-    - Kuidas on riigipühad [HOL3](kuu)?
-    - Millised riigipühad langevad [HOL3](kuu)?
-    - Millal toimuvad riigipühad [HOL3](kuu)?
-    - Millised riigipühad on [HOL3](kuu)?
-    - Kas on riigipühad [HOL3](kuu)?
-    - Millised kuupäevad on [HOL3](kuu) riigipühadeks
+    - Millal on [HOL2](by_name)?
+    - Mis kuupäeval on [HOL2](by_name)?
+    - Millal toimub [HOL2](by_name)?
+    - Kuidas on [HOL2](by_name) kuupäev?
+    - Millal langeb [HOL2](by_name)?
+    - Kas sa tead, millal on [HOL2](by_name)?
+    - Mis päev on [HOL2](by_name)?
+    - Millal tähistatakse [HOL2](by_name)?
+    - Millal on [HOL2](by_name) sel aastal?
+    - Mis kuupäevadel on [HOL2](by_name)?
+    - Kas [HOL2](by_name) on lähiajal?
+    - Millised kuupäevad on [HOL2](by_name)?
+    - Millal toimuvad [HOL2](by_name) üritused?
+    - Millal on järgmine [HOL2](by_name)?
+    - Millised päevad on [HOL2](by_name)?
+    - Millal on [HOL2](by_name) kuupäev?
+    - Mis kuupäev on [HOL2](by_name)?
+    - Millal peetakse [HOL2](by_name)?
+    - Kas [HOL2](by_name) on sel kuul?
+    - Mis päev on [HOL2](by_name)?
+    - Millal toimub [HOL2](by_name) tähistamine?
+    - Millal langeb [HOL2](by_name) sel aastal?
+    - Millised kuupäevad on [HOL2](by_name)?
+    - Mis ajaks on [HOL2](by_name)?
+    - Millal on [HOL2](by_name) tähistamine?
+    - Mis on [HOL2](by_name) kuupäev?
+    - Millal on [HOL2](by_name) tähistamise päev?
+    - Millal toimub [HOL2](by_name)?
+    - Millal on [HOL2](by_name)?
+    - Mis päevadel on [HOL2](by_name)?
+    - Kas tead, millal on [HOL2](by_name)?
+    - Millal on [HOL2](by_name) pidu?
+    - Millised on [HOL2](by_name) kuupäevad?
+    - Millal langeb [HOL2](by_name) järgmine kord?
+    - Kas [HOL2](by_name) on lähikuudel?
+    - Mis riigipühad on [HOL3](by_month)?
+    - Millised riigipühad on [HOL3](by_month)?
+    - Millal toimuvad riigipühad [HOL3](by_month)?
+    - Mis riigipühad on [HOL3](by_month)?
+    - Millised riigipühad on [HOL3](by_month)?
+    - Mis kuupäevadel on riigipühad [HOL3](by_month)?
+    - Millal tähistatakse riigipühi [HOL3](by_month)?
+    - Mis riigipühad on [HOL3](by_month)?
+    - Millised riigipühad on [HOL3](by_month)?
+    - Mis kuupäevadel on riigipühad [HOL3](by_month)?
+    - Millal on riigipühad [HOL3](by_month)?
+    - Millised riigipühad on [HOL3](by_month)?
+    - Millal tähistatakse [HOL3](by_month) riigipühi?
+    - Mis riigipühad langevad [HOL3](by_month)?
+    - Millal toimuvad riigipühad [HOL3](by_month)?
+    - Kas on riigipühad [HOL3](by_month)?
+    - Milliseid riigipühi tähistatakse [HOL3](by_month)?
+    - Mis päevad on [HOL3](by_month) riigipühadeks?
+    - Millal on [HOL3](by_month) riigipühad?
+    - Millised riigipühad on [HOL3](by_month)?
+    - Kas tead, mis riigipühad on [HOL3](by_month)?
+    - Millised riigipühad on [HOL3](by_month)?
+    - Mis riigipühad on [HOL3](by_month)?
+    - Kuidas on riigipühad [HOL3](by_month)?
+    - Millised riigipühad on [HOL3](by_month)?
+    - Millal on [HOL3](by_month) riigipühad?
+    - Mis on [HOL3](by_month) riigipühade kuupäevad?
+    - Millised on [HOL3](by_month) riigipühad?
+    - Mis päevadel on [HOL3](by_month) riigipühad?
+    - Kuidas on riigipühad [HOL3](by_month)?
+    - Millised on [HOL3](by_month) riigipühade ajad?
+    - Mis riigipühad on [HOL3](by_month)?
+    - Kuidas jagunevad riigipühad [HOL3](by_month)?
+    - Millal tähistatakse riigipühi [HOL3](by_month)?
+    - Kas riigipühad on [HOL3](by_month)?
+    - Mis riigipühad on [HOL3](by_month)?
+    - Millal on [HOL3](by_month) riigipühade tähistamine?
+    - Mis kuupäevadel on riigipühad [HOL3](by_month)?
+    - Millised on [HOL3](by_month) riigipühad?
+    - Kuidas on riigipühad [HOL3](by_month)?
+    - Millised riigipühad langevad [HOL3](by_month)?
+    - Millal toimuvad riigipühad [HOL3](by_month)?
+    - Millised riigipühad on [HOL3](by_month)?
+    - Kas on riigipühad [HOL3](by_month)?
+    - Millised kuupäevad on [HOL3](by_month) riigipühadeks
