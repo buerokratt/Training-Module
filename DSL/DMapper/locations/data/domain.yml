@@ -321,25 +321,25 @@ responses:
   - text: "#nordpool3"
 
   utter_common_service_holidays:
-  - text: "#all_national_holidays"
+  - text: "#common_service, /TEMPLATES/calendar/national-holidays/national-holidays"
 
   utter_common_service_holidays_next_holidays:
-  - text: "#national_holidays_eoy"
+  - text: "#common_service, /TEMPLATES/calendar/national-holidays/eoy"
 
   utter_common_service_holidays_last_holidays:
-  - text: "#national_holidays_ytd"
+  - text: "#common_service, /TEMPLATES/calendar/national-holidays/ytd"
 
   utter_common_service_holidays_last_holiday:
-  - text: "#prev_national_holiday"
+  - text: "#common_service, /TEMPLATES/calendar/national-holidays/previous"
 
   utter_common_service_holidays_next_holiday:
-  - text: "#next_national_holiday"
+  - text: "#common_service, /TEMPLATES/calendar/national-holidays/next"
 
   utter_common_service_holidays_today:
-  - text: "#national_holidays_today"
+  - text: "#common_service, /TEMPLATES/calendar/national-holidays/today"
 
   utter_common_service_holidays_by_name:
-  - text: "#national_holidays_by_name"
+  - text: "#common_service, /TEMPLATES/calendar/national-holidays/find/by_name, (name)"
 
   utter_common_service_holidays_by_month:
-  - text: "#national_holidays_by_month"
+  - text: "#common_service, /TEMPLATES/calendar/national-holidays/find/by_month, (month)"
