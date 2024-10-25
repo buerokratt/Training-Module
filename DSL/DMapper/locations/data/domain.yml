@@ -220,7 +220,7 @@ responses:
           name: common_teenus_ilm_asukoht
           value: null
       text: "Hetkel oskan ma öelda ilma Eesti raames piirkonnapõhiselt. Palun sisestage korrektne piirkonna nimi."
-    - text: "#weather, {common_teenus_ilm_asukoht}"
+    - text: "#common_service, /POST/weather/EE, ({common_teenus_ilm_asukoht})"
 
   utter_ask_company_name:
   - text: "Mis firma kohta sa infot soovid?"
@@ -312,13 +312,13 @@ responses:
   - text: "Ma ei saanud täpselt aru. Palun proovige uuesti!"
 
   utter_common_teenus_nordpool:
-  - text: "#nordpool"
+  - text: "#common_service, /GET/electricity/current-price"
 
   utter_common_teenus_nordpool_odav:
-  - text: "#nordpool2"
+  - text: "#common_service, /GET/electricity/lowest-price, ({np_odav})"
 
   utter_common_teenus_nordpool_kallis:
-  - text: "#nordpool3"
+  - text: "#common_service, /GET/electricity/highest-price, ({np_kallis})"
 
   utter_common_service_holidays:
   - text: "#common_service, /TEMPLATES/calendar/national-holidays/national-holidays"
