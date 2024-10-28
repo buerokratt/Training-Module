@@ -230,42 +230,42 @@ responses:
         - type: slot
           name: trigger_intent
           value: common_service_companies_employees
-      text: "#common_service, /POST/services/companies/search, (employees, {company_name})"
+      text: "#common_service, /POST/companies/search, (employees, {company_name})"
     - condition:
         - type: slot
           name: trigger_intent
           value: common_service_companies_revenue
-      text: "#common_service, /POST/services/companies/search, (revenue, {company_name})"
+      text: "#common_service, /POST/companies/search, (revenue, {company_name})"
     - condition:
         - type: slot
           name: trigger_intent
           value: common_service_companies_workforce_taxes
-      text: "#common_service, /POST/services/companies/search, (work-force-taxes, {company_name})"
+      text: "#common_service, /POST/companies/search, (work-force-taxes, {company_name})"
     - condition:
         - type: slot
           name: trigger_intent
           value: common_service_companies_national_taxes
-      text: "#common_service, /POST/services/companies/search, (national-taxes, {company_name})"
+      text: "#common_service, /POST/companies/search, (national-taxes, {company_name})"
     - condition:
         - type: slot
           name: trigger_intent
           value: common_service_companies_beneficiaries
-      text: "#common_service, /POST/services/companies/search, (company-beneficial-owners, {company_name})"
+      text: "#common_service, /POST/companies/search, (company-beneficial-owners, {company_name})"
     - condition:
         - type: slot
           name: trigger_intent
           value: common_service_companies_related_persons
-      text: "#common_service, /POST/services/companies/search, (company-related-persons, {company_name})"
+      text: "#common_service, /POST/companies/search, (company-related-persons, {company_name})"
     - condition:
         - type: slot
           name: trigger_intent
           value: common_service_companies_contactdetails
-      text: "#common_service, /POST/services/companies/search, (detailed-company-data, {company_name})"
+      text: "#common_service, /POST/companies/search, (detailed-company-data, {company_name})"
     - condition:
         - type: slot
           name: trigger_intent
           value: common_service_companies_lihtandmed
-      text: "#common_service, /POST/services/companies/search, (simple-company-data, {company_name})"
+      text: "#common_service, /POST/companies/search, (simple-company-data, {company_name})"
 
   utter_fallback:
   - text: "UNKNOWN"
@@ -339,7 +339,7 @@ responses:
   - text: "#common_service, /GET/calendar/national-holidays/today"
 
   utter_common_service_holidays_by_name:
-  - text: "#common_service, /GET/calendar/national-holidays/find/by_name, ({by_name_holiday})"
+  - text: "#common_service, /GET/calendar/national-holidays/find/by-name, ({by_name_holiday})"
 
   utter_common_service_holidays_by_month:
-  - text: "#common_service, /GET/calendar/national-holidays/find/by_month, ({by_month_holiday})"
+  - text: "#common_service, /GET/calendar/national-holidays/find/by-month, ({by_month_holiday})"
