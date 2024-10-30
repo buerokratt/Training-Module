@@ -289,10 +289,10 @@ responses:
   - text: "Kuidas saan abiks olla?"
 
   utter_common_teenus_citizien_initiative:
-  - text: "#common_service, /GET/rahvaalgatus/initiative-events-latest"
+  - text: "#common_service, /GET/public-initiatives/most-recent"
 
   utter_common_teenus_citizien_initiative_popular:
-  - text: "#common_service, /GET/rahvaalgatus/initiative-events-popular"
+  - text: "#common_service, /GET/public-initiatives/most-popular"
 
   utter_common_teenus_rk_isiku_kohalolu:
     - condition:
@@ -300,13 +300,13 @@ responses:
           name: rk_liige
           value: null
       text: "Riigikogu liikme kohaloleku nägemiseks palun proovige uuesti, kasutades Riigikogu liikme täisnime."
-    - text: "#common_service, /POST/riigikogu/riigikogu-attendance, ({rk_liige})"
+    - text: "#common_service, /GET/riigikogu/members-participation, ({rk_liige})"
 
   utter_common_teenus_rk_hääletus_viimane:
-  - text: "#common_service, /GET/riigikogu/riigikogu-latest-voting"
+  - text: "#common_service, /GET/riigikogu/recent-voting"
 
   utter_common_teenus_rk_hääletus_viimased:
-  - text: "#common_service, /GET/riigikogu/riigikogu-five-latest-votings"
+  - text: "#common_service, /GET/riigikogu/five-most-recent"
 
   utter_common_teenus_rk_hääletus_fallback:
   - text: "Ma ei saanud täpselt aru. Palun proovige uuesti!"
