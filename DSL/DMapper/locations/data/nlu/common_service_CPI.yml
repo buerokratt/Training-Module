@@ -1,0 +1,44 @@
+version: "3.0"
+nlu:
+- intent: common_service_CPI
+  examples: |
+    - kas avalikest andmebaasidest võib leida mootorikütuste hinnamuutuse statistikat?
+    - kust leida diiselkütuse hinnaindeks?
+    - kui palju kasvasid tarbija hinnad [YR0000](by_year) aastal
+    - Kuidas ma leian info tarbijahinnaindeksi kohta aastal [YR0000](by_year)?
+    - Koperdan juba tükk aega kodulehel ja ei suuda leida diiselkütuse hinnaindeksi muutust [YR0000](by_year)
+    - Kui palju on Üldine trbijahinnaindeks 10 aastag muutunud?
+    - Kuidas ma leian info tarbijahinnaindeksi kohta aastal [YR0000](by_year)?
+    - Otsin tarbijahinna kasvu alates [YR0000](by_year) kuni tänaseni.
+    - Sooviksin teada, kas kuskil on avalikku informatsiooni tarbijahinnaindeksi muutuse osas erinevate valdkondade vms kaupa?
+    - Toidu hinna statistika
+    - kui palju on Üldine trbijahinnaindeks aastaga muutunud?
+    - püüan leida tarbijahinna indeksit, et arvutada ümber eelmisel aastal määratud hüviste suurused kutsehaigete hüvitiste maksmiseks.
+    - Kuidas ma saaksin [YR0000](year) aasta [MONTH0](by_month) tarbijahinnaindeksi muutumise määra?
+    - Mis on hetkel kehtiv tarbijahinna indeks?
+    - Palun [YR0000](by_year) [MONTH0](by_month) tarbijahinna indeksit
+    - Mis on THI
+    - huvitab THIkuude keskmisena ja mis oli THI [YR0000](by_year) kuude kaupa ja keskmisena
+    - Kui palju muutus THI [YR0000](by_year) aasta [MONTH0](by_month)?
+    - THI muutus
+    - kui palju kasvas THI eelmisel aastal
+    - kui suur on THI muutus võrreldes [YR0000](by_year) aastaga
+    - kuidas leida THI muutus võrrelduna [YR0000](by_year)?
+    - mis on eesti thi
+    - mis on viimase kuu thi
+    - Kui suur oli inflatsioon aastast [YR0000](by_year)?
+    - Kui suur see inflatsioon praegu on
+    - Kus ma saaksid inflatsiooni statistikat leida?
+    - Kust ma saaksin teada, milline on olnud Eestis inflatsioon aastal [YR0000](by_year)
+    - Kust ma saan teada kui suur oli eelmine aasta inflatsioon.
+    - Kui suur on Eestis hetkel inflatsioon?
+    - inflatsioon [YR0000](by_year)
+    - kuidas ma saan leida inflatsiooni arvud alates [YR0000](by_year)?
+    - kust ma leiaksin inflatsiooni statistikat
+    - milline on [YR0000](by_year) inflatsioonimäär
+    - mis on tabija indeks
+    - tarbijahinnaindeks
+    - tarbija indeksi muutus viimase aastaga
+    - tarbija hinna indexi muutus viimase aastaga
+    - tabijahinnaindeki muutus eelneva kuuga
+    - milline on tarbijahinnaindeksi muutus
