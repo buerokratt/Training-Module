@@ -26,6 +26,7 @@ intents:
   - common_teenus_rk_isiku_kohalolu
   - common_teenus_rk_hääletus
   - common_service_holidays
+  - common_service_CPI
 
 entities:
   - asukoht
@@ -41,6 +42,7 @@ entities:
   - next_holidays
   - last_holiday
   - last_holidays
+  - by_year
   
 slots:
   common_teenus_ilm_asukoht:
@@ -128,6 +130,22 @@ slots:
     - type: from_entity
       entity: np_odav
       intent: common_teenus_nordpool2
+
+  by_year_statistics:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: by_year
+      intent: common_service_CPI
+
+  by_month_statistics:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: by_month
+      intent: common_service_CPI  
 
   today_holiday:
     type: text
@@ -319,6 +337,18 @@ responses:
 
   utter_common_teenus_nordpool_kallis:
   - text: "#common_service, /GET/electricity/highest-price"
+
+  utter_common_service_CPI_fallback:
+  - text: "#common_service, /GET/statistics-estonia/consumer-price-index"
+
+  utter_common_service_CPI_previous_year:
+  - text: "#common_service, /GET/statistics-estonia/consumer-price-index, (previous_year,,{by_year_statistics})"
+
+  utter_common_service_CPI_previous_month:
+  - text: "#common_service, /GET/statistics-estonia/consumer-price-index, (previous_month,{by_month_statistics},)"
+
+  utter_common_service_CPI_time_horizon:
+  - text: "#common_service, /GET/statistics-estonia/consumer-price-index, (previous_year,{by_month_statistics},{by_year_statistics})"
 
   utter_common_service_holidays:
   - text: "#common_service, /GET/calendar/national-holidays/national-holidays"
