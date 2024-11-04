@@ -679,35 +679,16 @@ const Intents: FC = () => {
     },
   });
 
-  const prepareEditIntentName = async () => {
+  const editIntentName = async () => {
     if (!selectedIntent || !editingIntentTitle) return;
 
-    const newId = editingIntentTitle.replace(/\s+/g, '_');
+    const newName = editingIntentTitle.replace(/\s+/g, '_');
 
-    await deleteResponseMutation.mutateAsync(intentResponseName);
-    await deleteRuleMutation.mutateAsync(intentRule);
-
-    await addRuleMutation.mutateAsync({
-      data: {
-        rule: `rule_${newId}`,
-        steps: [
-          {
-            intent: newId,
-          },
-          {
-            action: `utter_${newId}`,
-          }
-        ]
-      }
+    await intentEditMutation.mutateAsync({
+      oldName: selectedIntent.id,
+      newName,
     });
-
-    await addOrEditResponseMutation.mutateAsync({
-      id: `utter_${newId}`,
-      responseText: intentResponseText,
-      update: false
-    });
-
-    handleIntentResponseSubmit(newId);
+    queryRefresh(newName);
   }
 
   const handleDeleteIntent = async () => {
@@ -834,7 +815,7 @@ const Intents: FC = () => {
                       {editingIntentTitle ? (
                         <Button
                           appearance="text"
-                          onClick={prepareEditIntentName}
+                          onClick={editIntentName}
                         >
                           <Icon icon={<MdOutlineSave />} />
                           {t('global.save')}
