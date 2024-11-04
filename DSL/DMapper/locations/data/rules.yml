@@ -254,3 +254,39 @@ rules:
   - intent: common_service_holidays
   - action: utter_common_service_holidays_by_month
   - action: action_restart
+
+- rule: common_service_CPI_fallback
+  steps:
+  - slot_was_set:
+    - by_month_statistics: null
+    - by_year_statistics: null
+  - intent: common_service_CPI
+  - action: utter_common_service_CPI_fallback
+  - action: action_restart
+  
+- rule: common_service_CPI_previous_month
+  steps:
+  - slot_was_set:
+    - by_month_statistics: true
+    - by_year_statistics: null
+  - intent: common_service_CPI
+  - action: utter_common_service_CPI_previous_month
+  - action: action_restart
+  
+- rule: common_service_CPI_previous_year
+  steps:
+  - slot_was_set:
+    - by_month_statistics: null
+    - by_year_statistics: true
+  - intent: common_service_CPI
+  - action: utter_common_service_CPI_previous_year
+  - action: action_restart
+  
+- rule: common_service_CPI_time_horizon
+  steps:
+  - slot_was_set:
+    - by_month_statistics: true
+    - by_year_statistics: true
+  - intent: common_service_CPI
+  - action: utter_common_service_CPI_time_horizon
+  - action: action_restart
