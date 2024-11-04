@@ -28,6 +28,7 @@ intents:
   - common_service_holidays
   - common_service_CPI
   - common_service_unemployment_rate
+  - common_service_estimated_subsistence_minimum
 
 entities:
   - asukoht
@@ -359,6 +360,9 @@ responses:
 
   utter_common_service_unemployment_rate_fallback:
   - text: "#common_service, /GET/statistics-estonia/unemployment-rate"
+
+  utter_common_service_estimated_subsistence_minimum:
+  - text: "#common_service, /GET/statistics-estonia/estimated-subsistence-minimum"
 
   utter_common_service_holidays:
   - text: "#common_service, /GET/calendar/national-holidays/national-holidays"
