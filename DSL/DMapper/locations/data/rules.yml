@@ -307,3 +307,8 @@ rules:
   - action: utter_common_service_unemployment_rate_fallback
   - action: action_restart
 
+- rule: common_service_estimated_subsistence_minimum
+  steps:
+  - intent: common_service_estimated_subsistence_minimum
+  - action: utter_common_service_estimated_subsistence_minimum
+  - action: action_restart
