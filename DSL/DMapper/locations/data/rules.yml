@@ -290,3 +290,20 @@ rules:
   - intent: common_service_CPI
   - action: utter_common_service_CPI_time_horizon
   - action: action_restart
+
+- rule: common_service_unemployment_rate
+  steps:
+  - slot_was_set:
+    - by_year_statistics: true
+  - intent: common_service_unemployment_rate
+  - action: utter_common_service_unemployment_rate
+  - action: action_restart
+
+- rule: common_service_unemployment_rate_fallback
+  steps:
+  - slot_was_set:
+    - by_year_statistics: null
+  - intent: common_service_unemployment_rate
+  - action: utter_common_service_unemployment_rate_fallback
+  - action: action_restart
+
