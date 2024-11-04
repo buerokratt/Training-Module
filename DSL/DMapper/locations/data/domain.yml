@@ -27,6 +27,7 @@ intents:
   - common_teenus_rk_hääletus
   - common_service_holidays
   - common_service_CPI
+  - common_service_unemployment_rate
 
 entities:
   - asukoht
@@ -138,6 +139,9 @@ slots:
     - type: from_entity
       entity: by_year
       intent: common_service_CPI
+    - type: from_entity
+      entity: by_year
+      intent: common_service_unemployment_rate
 
   by_month_statistics:
     type: text
@@ -145,7 +149,7 @@ slots:
     mappings:
     - type: from_entity
       entity: by_month
-      intent: common_service_CPI  
+      intent: common_service_CPI
 
   today_holiday:
     type: text
@@ -349,6 +353,12 @@ responses:
 
   utter_common_service_CPI_time_horizon:
   - text: "#common_service, /GET/statistics-estonia/consumer-price-index, (previous_year,{by_month_statistics},{by_year_statistics})"
+
+  utter_common_service_unemployment_rate:
+  - text: "#common_service, /GET/statistics-estonia/unemployment-rate, ({by_year_statistics})"
+
+  utter_common_service_unemployment_rate_fallback:
+  - text: "#common_service, /GET/statistics-estonia/unemployment-rate"
 
   utter_common_service_holidays:
   - text: "#common_service, /GET/calendar/national-holidays/national-holidays"
