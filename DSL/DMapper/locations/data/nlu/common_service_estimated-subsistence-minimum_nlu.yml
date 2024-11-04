@@ -1,0 +1,57 @@
+version: "3.0"
+nlu:
+- intent: common_service_estimated_subsistence_minimum
+  examples: |
+    - 30 päeva minimaalse toidukorvi maksumus
+    - Alla elatismiinimumi elavate inimeste hulk kogu rahvaarvust
+    - Arvestuslik elatusmiinimum
+    - Arvestuslik elatusmiinimum 2022?
+    - Arvestuslik elatusmiinimum aastal 2017
+    - Elatusmiinimum 2022
+    - Kas alates 2018.aastast ei ole elatusmiinimum muutunud?
+    - Keskmine ostukorv
+    - Kui suur on praegu kehtiv elatusmiinimum?
+    - Kui suur oli suhtelise vaesuse protsent Eestis aastal 2019 ?
+    - Kui suur on 2020.a. elatusmiinimum?
+    - Kui suur on arvestuslik elatusmiinimum
+    - Kui suur on arvestuslik elatusmiinimum?
+    - Kui suur on elatusmiinimum ühe inimese kohta 2020
+    - Kui suur on statistiline elatusmiinimum sel aastal. olen kuulnud, et 215.-
+    - Kust leiab arvestusliku elatusmiinimumi?
+    - Millal avaldatakse 2019 arvestusliku elatusmiinimumi suurus?
+    - Millal saab teada arvestusliku elatusmiinimumi 2019?
+    - Milline on 2019.a arvestuslik elatusmiinimum?
+    - OTSIN EI LEIA KUSAGILT Statistikaameti poolt avaldatud arvestusliku elatusmiinimumi 2019
+    - Oleks vaja leida teie lehelt 2019 elatusmiinimumi määra
+    - Palju on arvestuslik elatusmiinimum 2020
+    - Soovin teada arvestuslikku elatusmiinimumi
+    - Mind huvitab milline on statistikaameti arvestuslik elatus-miinimumi summa
+    - Sooviksin teada, kui suur on meil praegu rahvapensioni määr ja arvestuslik elatusmiinimum.
+    - Soovin teada milline on selle aasta arvestuslik elatusmiinimum.
+    - Kust leiab Teie poolt avaldatud arvestusliku elatusmiinimumi
+    - kui suur on elatusmiinimum 2022 a
+    - kus ma leian elatusmiinimumi määr 2020?
+    - sooviksin teada mis on eesti keskmine/ umbkaudne ostukorvi suurus Eurodes.
+    - Kas 2018 arvestuslik elatusmiinimum avalikustatakse homme või on võimalik seda praegu ka teada saada.
+    - Ma otsin infot arvestusliku elatusmiinimumi, suhtelise ja absoluutse vaesuse piiri kohta
+    - keskmine ostukorvi suurus
+    - kui palju n statistikaameti poolt avaldatus arvestuslik elatusmiinimum
+    - kui palju on elatusmiinimum 2019 aastal?
+    - kui suur on elatismiinimum aastal 2020
+    - kui suur on hetkel elatusmiinimum?
+    - kui suur on minimaalse toidukorvi maksumus
+    - kui suur on mittetoidukulutuste maksumus
+    - kui suur on sel aastal arvestuslik elatusmiinimum
+    - kui suur on toidukorvi maksumus
+    - kus ma leian elatustaseme miinimumi kohta info
+    - minimaalse toidukorvi maksumus
+    - mis on elatusmiinimum sellel aastal
+    - mis on suhtelise vaesuse määr eestis
+    - mitte toidukulutuste maksumus
+    - ostukorv
+    - sissetuleku arestimisel olulise arvestuslik elatusmiinimum
+    - kust ma leian arvestusliku elatusmiinimumi
+    - toidukorvi maksumus
+    - Ühe liikmega leibkonna arvestuslik elatusmiinimum
+    - Kas alates 2018.aastast ei ole  elatusmiinimum muutunud?
+    - Ühe liikmega leibkonna arvestuslik elatusmiinimum, 30 päeva minimaalse toidukorvi maksumus ja mittetoidukulutuste maksumus
