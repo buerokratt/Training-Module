@@ -59,6 +59,7 @@ rules:
   steps:
   - intent: common_teenus_nordpool
   - action: utter_common_teenus_nordpool
+  - action: action_restart
 
 - rule: common_teenus_nordpool_odav
   steps:
@@ -66,6 +67,7 @@ rules:
     - np_odav: true
   - intent: common_teenus_nordpool2
   - action: utter_common_teenus_nordpool_odav
+  - action: action_restart
 
 - rule: common_teenus_nordpool_kallis
   steps:
@@ -73,6 +75,7 @@ rules:
     - np_kallis: true
   - intent: common_teenus_nordpool2
   - action: utter_common_teenus_nordpool_kallis
+  - action: action_restart
 
 - rule: common_teenus_citizien_initiative
   steps:
