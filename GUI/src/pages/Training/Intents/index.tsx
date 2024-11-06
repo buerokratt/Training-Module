@@ -95,22 +95,22 @@ const Intents: FC = () => {
     queryKey: ['entities'],
   });
 
-  const { data: responsesFullResponse } = useQuery({
-    queryKey: ['responses-list'],
-  });
+  // const { data: responsesFullResponse } = useQuery({
+  //   queryKey: ['responses-list'],
+  // });
 
-  const { data: rulesFullResponse } = useQuery({
-    queryKey: ['rules'],
-  })
+  // const { data: rulesFullResponse } = useQuery({
+  //   queryKey: ['rules'],
+  // })
 
   let intentsFullList = intentsFullResponse?.response?.intents;
   let intents: Intent[] = [];
 
-  let intentResponsesFullList = responsesFullResponse ? responsesFullResponse[0].response : null;
-  let intentResponses: Response[] = [];
+  // let intentResponsesFullList = responsesFullResponse ? responsesFullResponse[0].response : null;
+  // let intentResponses: Response[] = [];
 
-  let rulesFullList = rulesFullResponse?.response;
-  let rules: Rule[] = [];
+  // let rulesFullList = rulesFullResponse?.response;
+  // let rules: Rule[] = [];
 
   if (intentsFullList) {
     intentsFullList.forEach((intent: any) => {
@@ -130,21 +130,21 @@ const Intents: FC = () => {
     intentParam = searchParams.get('intent');
   }
 
-  if (intentResponsesFullList) {
-    intentResponsesFullList?.forEach((response: any) => {
-      const newIntentResponse: Response = {
-        name: response.name,
-        text: response.text,
-      }
-      intentResponses.push(newIntentResponse);
-    });
-  }
+  // if (intentResponsesFullList) {
+  //   intentResponsesFullList?.forEach((response: any) => {
+  //     const newIntentResponse: Response = {
+  //       name: response.name,
+  //       text: response.text,
+  //     }
+  //     intentResponses.push(newIntentResponse);
+  //   });
+  // }
 
-  if (rulesFullList) {
-    rulesFullList.forEach((rule: any) => {
-      rules.push(rule);
-    });
-  }
+  // if (rulesFullList) {
+  //   rulesFullList.forEach((rule: any) => {
+  //     rules.push(rule);
+  //   });
+  // }
 
   useEffect(() => {
     if (!intentParam || intentsFullList?.length !== intents?.length) return;
@@ -183,29 +183,29 @@ const Intents: FC = () => {
             });
             setIsMarkedForService(newSelectedIntent.isForService ? newSelectedIntent.isForService : false);
 
-            queryClient.fetchQuery(['responses-list']).then((res: any) => {
-              if (intentResponses.length > 0) {
-                const intentExistingResponse = res[0].response.find((response: any) => `utter_${newSelectedIntent.title}` === response.name);
-                if (intentExistingResponse) {
-                  setIntentResponseText(intentExistingResponse.text);
-                  setIntentResponseName(intentExistingResponse.name);
-                }
-              }
-            })
+            // queryClient.fetchQuery(['responses-list']).then((res: any) => {
+            //   if (intentResponses.length > 0) {
+            //     const intentExistingResponse = res[0].response.find((response: any) => `utter_${newSelectedIntent.title}` === response.name);
+            //     if (intentExistingResponse) {
+            //       setIntentResponseText(intentExistingResponse.text);
+            //       setIntentResponseName(intentExistingResponse.name);
+            //     }
+            //   }
+            // })
 
-            queryClient.fetchQuery(['rules']).then((res: any) => {
-              if (rules.length > 0) {
-                const intentExistingRule = res.response.find((rule: any) => rule.id === `rule_${newSelectedIntent.title}`)
-                if (intentExistingRule) {
-                  setIntentRule(intentExistingRule.id);
-                }
-              }
-            })
+            // queryClient.fetchQuery(['rules']).then((res: any) => {
+            //   if (rules.length > 0) {
+            //     const intentExistingRule = res.response.find((rule: any) => rule.id === `rule_${newSelectedIntent.title}`)
+            //     if (intentExistingRule) {
+            //       setIntentRule(intentExistingRule.id);
+            //     }
+            //   }
+            // })
           }
         }
       });
     },
-    [intents, intentResponses, rules]
+    [intents]
   );
 
   function isValidDate(dateString: string | number | Date) {
