@@ -91,9 +91,10 @@ const Intents: FC = () => {
     queryKey: ['intents/full'],
   });
 
-  const { data: entities } = useQuery<Entity[]>({
-    queryKey: ['entities'],
-  });
+  // todo disable and remove prop from child component?
+  // const { data: entities } = useQuery<Entity[]>({
+  //   queryKey: ['entities'],
+  // });
 
   // const { data: responsesFullResponse } = useQuery({
   //   queryKey: ['responses-list'],
@@ -935,7 +936,7 @@ const Intents: FC = () => {
                       <IntentExamplesTable
                         examples={examplesData}
                         onAddNewExample={handleNewExample}
-                        entities={entities ?? []}
+                        // entities={entities ?? []}
                         selectedIntent={selectedIntent}
                         queryRefresh={queryRefresh}
                         updateSelectedIntent={updateSelectedIntent}
