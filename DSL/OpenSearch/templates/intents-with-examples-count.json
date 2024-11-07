@@ -4,34 +4,24 @@
     "source": {
       "size": 0,
       "aggs": {
-        "hot": {
+        "intents": {
           "terms": {
-            "field": "intent.keyword"
+            "field": "intent",
+            "size": 1000
           },
           "aggs": {
-            "examples_counts": {
+            "examples_count": {
               "value_count": {
-                "field": "examples.raw"
+                "field": "examples"
               }
             }
           }
         }
       },
       "query": {
-        "bool": {
-          "must": [
-            {
-              "query_string": {
-                "query": "*{{intent}}*",
-                "default_field": "intent"
-              }
-            }
-          ]
-        }
+        "match_all": {}
       }
     },
-    "params": {
-      "intent": ""
-    }
+    "params": {}
   }
 }

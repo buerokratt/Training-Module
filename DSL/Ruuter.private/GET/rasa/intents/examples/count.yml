@@ -13,8 +13,8 @@ getIntentsExampleCount:
     url: "[#TRAINING_OPENSEARCH]/intents/_search/template"
     body:
       id: "intents-with-examples-count"
-      params:
-        intent: ''
+      # params:
+      #   intent: ''
   result: getIntentsResult
 
 mapIntentsData:
@@ -22,9 +22,9 @@ mapIntentsData:
   args:
     url: "[#TRAINING_DMAPPER]/hbs/training/get_intents_with_examples_count"
     headers:
-      type: 'json'
+      type: "json"
     body:
-      buckets: ${getIntentsResult.response.body.aggregations.hot.buckets}
+      buckets: ${getIntentsResult.response.body}
   result: intentsData
   next: returnSuccess
 
