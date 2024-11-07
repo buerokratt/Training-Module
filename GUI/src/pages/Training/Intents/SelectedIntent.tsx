@@ -30,11 +30,11 @@ import LoadingDialog from 'components/LoadingDialog';
 interface SelectedIntentProps {
   // todo rename to intent
   selectedIntent: Intent;
-  updateSelectedIntent: (intent: Intent) => void;
+  // updateSelectedIntent: (intent: Intent) => void;
   setSelectedIntent: Dispatch<SetStateAction<Intent | null>>;
 }
 
-const SelectedIntent: FC<SelectedIntentProps> = ({ selectedIntent, updateSelectedIntent }) => {
+const SelectedIntent: FC<SelectedIntentProps> = ({ selectedIntent, setSelectedIntent }) => {
   const [editingIntentTitle, setEditingIntentTitle] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [isMarkedForService, setIsMarkedForService] = useState<boolean>(false);
@@ -446,6 +446,11 @@ const SelectedIntent: FC<SelectedIntentProps> = ({ selectedIntent, updateSelecte
     } else {
       await deleteIntentMutation.mutateAsync(deletableIntent!.id);
     }
+  };
+
+  const updateSelectedIntent = (updatedIntent: Intent) => {
+    setSelectedIntent(null);
+    setTimeout(() => setSelectedIntent(updatedIntent), 20);
   };
 
   return (

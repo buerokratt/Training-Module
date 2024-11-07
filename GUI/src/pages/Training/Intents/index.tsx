@@ -213,8 +213,8 @@ const Intents: FC = () => {
   }
 
   const updateSelectedIntent = (updatedIntent: Intent) => {
-    // setSelectedIntent(null);
-    // setTimeout(() => setSelectedIntent(updatedIntent), 20);
+    setSelectedIntent(null);
+    setTimeout(() => setSelectedIntent(updatedIntent), 20);
   };
 
   const addExamplesMutation = useMutation({
