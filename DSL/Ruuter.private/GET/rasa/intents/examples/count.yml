@@ -24,7 +24,7 @@ mapIntentsData:
     headers:
       type: "json"
     body:
-      buckets: ${getIntentsResult.response.body}
+      buckets: ${getIntentsResult.response.body.aggregations.hot.buckets}
   result: intentsData
   next: returnSuccess
 

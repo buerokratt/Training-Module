@@ -4,13 +4,13 @@
     "source": {
       "size": 0,
       "aggs": {
-        "intents": {
+        "hot": {
           "terms": {
             "field": "intent",
-            "size": 1000
+            "size": 10000
           },
           "aggs": {
-            "examples_count": {
+            "examples_counts": {
               "value_count": {
                 "field": "examples"
               }
