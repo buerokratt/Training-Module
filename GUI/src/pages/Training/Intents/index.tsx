@@ -89,26 +89,28 @@ const Intents: FC = () => {
   };
 
   const { data: intentsFullResponse, isLoading } = useQuery({
-    queryKey: ['intents/full'],
+    // queryKey: ['intents/full'],
+    // todo move the yaml file
+    queryKey: ['intents/examples/count'],
   });
 
   // todo entities just likely pass as props?
-  const { data: entities } = useQuery<Entity[]>({
-    queryKey: ['entities'],
-  });
+  // const { data: entities } = useQuery<Entity[]>({
+  //   queryKey: ['entities'],
+  // });
 
-  const { data: responsesFullResponse } = useQuery({
-    queryKey: ['responses-list'],
-  });
+  // const { data: responsesFullResponse } = useQuery({
+  //   queryKey: ['responses-list'],
+  // });
 
-  const { data: rulesFullResponse } = useQuery({
-    queryKey: ['rules'],
-  });
+  // const { data: rulesFullResponse } = useQuery({
+  //   queryKey: ['rules'],
+  // });
 
   // console.log(intentsFullResponse);
-  console.log(entities);
-  console.log(responsesFullResponse);
-  console.log(rulesFullResponse);
+  // console.log(entities);
+  // console.log(responsesFullResponse);
+  // console.log(rulesFullResponse);
 
   let intentsFullList = intentsFullResponse?.response?.intents;
   let intents: Intent[] = [];
@@ -121,16 +123,17 @@ const Intents: FC = () => {
 
   if (intentsFullList) {
     intentsFullList.forEach((intent: any) => {
-      const countExamples = intent.examples.length;
+      // const countExamples = intent.examples.length;
+      // todo types and simplify
       const newIntent: Intent = {
-        id: intent.title,
+        id: intent.intent,
         description: null,
         inModel: intent.inmodel,
         modifiedAt: intent.modifiedAt,
-        examplesCount: countExamples,
+        examplesCount: intent.examples_count,
         examples: intent.examples,
         serviceId: intent.serviceId,
-        isCommon: intent.title.startsWith('common_'),
+        isCommon: intent.intent.startsWith('common_'),
       };
       intents.push(newIntent);
     });
