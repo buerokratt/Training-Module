@@ -19,9 +19,18 @@
         }
       },
       "query": {
+        {{#intent}}
+        "wildcard": {
+          "intent": "*{{intent}}*"
+        }
+        {{/intent}}
+        {{^intent}}
         "match_all": {}
+        {{/intent}}
       }
     },
-    "params": {}
+    "params": {
+      "intent": ""
+    }
   }
 }
