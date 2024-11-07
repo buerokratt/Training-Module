@@ -30,7 +30,6 @@ import LoadingDialog from 'components/LoadingDialog';
 interface SelectedIntentProps {
   // todo rename to intent
   selectedIntent: Intent;
-  // updateSelectedIntent: (intent: Intent) => void;
   setSelectedIntent: Dispatch<SetStateAction<Intent | null>>;
 }
 
@@ -569,12 +568,13 @@ const SelectedIntent: FC<SelectedIntentProps> = ({ selectedIntent, setSelectedIn
         {selectedIntent?.examples && (
           <Track align="stretch" justify="between" gap={10} style={{ width: '100%' }}>
             <div style={{ flex: 1 }}>
+              {/* todo missing props */}
               <IntentExamplesTable
                 examples={examplesData}
                 onAddNewExample={handleNewExample}
-                entities={entities ?? []}
+                // entities={entities ?? []}
                 selectedIntent={selectedIntent}
-                queryRefresh={queryRefresh}
+                // queryRefresh={queryRefresh}
                 updateSelectedIntent={updateSelectedIntent}
               />
             </div>
