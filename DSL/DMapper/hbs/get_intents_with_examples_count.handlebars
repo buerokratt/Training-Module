@@ -2,7 +2,7 @@
   "intents": [
       {{#each buckets}}
         {
-         "intent": "{{key}}",
+         "id": "{{key}}",
          "examples_count": {{examples_counts.value}}
         }{{#unless @last}},{{/unless}}
       {{/each}}

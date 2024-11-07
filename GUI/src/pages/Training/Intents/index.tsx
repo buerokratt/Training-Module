@@ -90,8 +90,8 @@ const Intents: FC = () => {
 
   const { data: intentsFullResponse, isLoading } = useQuery({
     // queryKey: ['intents/full'],
-    // todo move the yaml file
-    queryKey: ['intents/examples/count'],
+    // todo is this broken VS base? http://localhost:3001/training/training/common-intents
+    queryKey: ['intents/with-examples-count'],
   });
 
   // todo entities just likely pass as props?
@@ -126,14 +126,14 @@ const Intents: FC = () => {
       // const countExamples = intent.examples.length;
       // todo types and simplify
       const newIntent: Intent = {
-        id: intent.intent,
+        id: intent.id,
         description: null,
         inModel: intent.inmodel,
         modifiedAt: intent.modifiedAt,
         examplesCount: intent.examples_count,
         examples: intent.examples,
         serviceId: intent.serviceId,
-        isCommon: intent.intent.startsWith('common_'),
+        isCommon: intent.id.startsWith('common_'),
       };
       intents.push(newIntent);
     });
