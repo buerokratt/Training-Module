@@ -92,18 +92,23 @@ const Intents: FC = () => {
     queryKey: ['intents/full'],
   });
 
-  // todo disable and remove prop from child component?
-  // const { data: entities } = useQuery<Entity[]>({
-  //   queryKey: ['entities'],
-  // });
+  // todo entities just likely pass as props?
+  const { data: entities } = useQuery<Entity[]>({
+    queryKey: ['entities'],
+  });
 
-  // const { data: responsesFullResponse } = useQuery({
-  //   queryKey: ['responses-list'],
-  // });
+  const { data: responsesFullResponse } = useQuery({
+    queryKey: ['responses-list'],
+  });
 
-  // const { data: rulesFullResponse } = useQuery({
-  //   queryKey: ['rules'],
-  // })
+  const { data: rulesFullResponse } = useQuery({
+    queryKey: ['rules'],
+  });
+
+  // console.log(intentsFullResponse);
+  console.log(entities);
+  console.log(responsesFullResponse);
+  console.log(rulesFullResponse);
 
   let intentsFullList = intentsFullResponse?.response?.intents;
   let intents: Intent[] = [];
@@ -766,6 +771,7 @@ const Intents: FC = () => {
         </Tabs.Root>
       )}
 
+      {/* todo need to check if used at all */}
       {turnIntentToServiceIntent !== null && (
         <Dialog
           title={t('training.intents.turnIntoService')}

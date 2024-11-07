@@ -33,6 +33,7 @@ interface SelectedIntentProps {
   setSelectedIntent: Dispatch<SetStateAction<Intent | null>>;
 }
 
+// todo maybe rename to IntentDetails
 const SelectedIntent: FC<SelectedIntentProps> = ({ selectedIntent, setSelectedIntent }) => {
   const [editingIntentTitle, setEditingIntentTitle] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
