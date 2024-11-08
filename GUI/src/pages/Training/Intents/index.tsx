@@ -65,28 +65,9 @@ const Intents: FC = () => {
 
   let intentParam;
 
-  const updateMarkForService = (value: boolean) => {
-    refetch().then((r) => {
-      if (!r.data) {
-        markIntentServiceMutation.mutate({ name: selectedIntent?.id ?? '', isForService: value });
-      }
-    });
-  };
-
   const { data: isPossibleToUpdateMark, refetch } = useQuery<boolean>({
     queryKey: [`intents/is-marked-for-service?intent=${selectedIntent?.id}`],
   });
-
-  const serviceEligable = () => {
-    const roles = useStore.getState().userInfo?.authorities;
-    if (roles && roles.length > 0) {
-      return (
-        roles?.includes(ROLES.ROLE_ADMINISTRATOR) ||
-        (roles?.includes(ROLES.ROLE_SERVICE_MANAGER) && roles?.includes(ROLES.ROLE_CHATBOT_TRAINER))
-      );
-    }
-    return false;
-  };
 
   const { data: intentsFullResponse, isLoading } = useQuery({
     // queryKey: ['intents/full'],
@@ -156,16 +137,6 @@ const Intents: FC = () => {
   //   });
   // }
 
-  useEffect(() => {
-    if (!intentParam || intentsFullList?.length !== intents?.length) return;
-
-    const queryIntent = intents.find((intent) => intent.id === intentParam);
-
-    if (queryIntent) {
-      setSelectedIntent(queryIntent);
-    }
-  }, [intentParam]);
-
   const queryRefresh = useCallback(
     function queryRefresh(selectIntent: string | null) {
       setSelectedIntent(null);
@@ -216,68 +187,17 @@ const Intents: FC = () => {
     [intents]
   );
 
-  function isValidDate(dateString: string | number | Date) {
-    const date = new Date(dateString);
-    return !isNaN(date.getTime());
-  }
+  // todo below all ok and should stay in this component
 
-  const updateSelectedIntent = (updatedIntent: Intent) => {
-    setSelectedIntent(null);
-    setTimeout(() => setSelectedIntent(updatedIntent), 20);
-  };
+  useEffect(() => {
+    if (!intentParam || intentsFullList?.length !== intents?.length) return;
 
-  const addExamplesMutation = useMutation({
-    mutationFn: (addExamplesData: { intentName: string; intentExamples: string[]; newExamples: string }) =>
-      addExample(addExamplesData),
-    onMutate: () => {
-      setRefreshing(true);
-    },
-    onSuccess: () => {
-      toast.open({
-        type: 'success',
-        title: t('global.notification'),
-        message: t('toast.newExampleAdded'),
-      });
-    },
-    onError: (error: AxiosError) => {
-      toast.open({
-        type: 'error',
-        title: t('global.notificationError'),
-        message: error.message,
-      });
-    },
-    onSettled: () => {
-      queryRefresh(selectedIntent!.id);
-    },
-  });
+    const queryIntent = intents.find((intent) => intent.id === intentParam);
 
-  const deleteIntentMutation = useMutation({
-    mutationFn: (name: string) => deleteIntent({ name }),
-    onMutate: () => {
-      setRefreshing(true);
-      setDeletableIntent(null);
-      setConnectableIntent(null);
-      setSelectedIntent(null);
-    },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries(['intents/full']);
-      toast.open({
-        type: 'success',
-        title: t('global.notification'),
-        message: t('toast.intentDeleted'),
-      });
-    },
-    onError: (error: AxiosError) => {
-      toast.open({
-        type: 'error',
-        title: t('global.notificationError'),
-        message: error.message,
-      });
-    },
-    onSettled: () => {
-      queryRefresh('');
-    },
-  });
+    if (queryIntent) {
+      setSelectedIntent(queryIntent);
+    }
+  }, [intentParam]);
 
   const intentModifiedMutation = useMutation({
     mutationFn: (data: { intentName: string }) => getLastModified(data),
@@ -310,11 +230,6 @@ const Intents: FC = () => {
   });
 
   useDocumentEscapeListener(() => setEditingIntentTitle(null));
-
-  const examplesData = useMemo(
-    () => selectedIntent?.examples.map((example, index) => ({ id: index, value: example })),
-    [selectedIntent?.examples]
-  );
 
   const handleTabsValueChange = useCallback(
     (value: string) => {
@@ -371,362 +286,6 @@ const Intents: FC = () => {
     },
   });
 
-  const intentEditMutation = useMutation({
-    mutationFn: (editIntentData: { oldName: string; newName: string }) => editIntent(editIntentData),
-    onMutate: () => {
-      setRefreshing(true);
-    },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries(['intents/full']);
-      toast.open({
-        type: 'success',
-        title: t('global.notification'),
-        message: t('toast.intentTitleSaved'),
-      });
-    },
-    onError: (error: AxiosError) => {
-      toast.open({
-        type: 'error',
-        title: t('global.notificationError'),
-        message: error.message,
-      });
-    },
-    onSettled: () => {
-      setEditingIntentTitle(null);
-      setRefreshing(false);
-    },
-  });
-
-  const markIntentServiceMutation = useMutation({
-    mutationFn: (data: { name: string; isForService: boolean }) => markForService(data),
-    onMutate: () => {
-      setRefreshing(true);
-    },
-    onSuccess: () => {
-      toast.open({
-        type: 'success',
-        title: t('global.notification'),
-        message: t('toast.intentUpdated'),
-      });
-      setIsMarkedForService(!isMarkedForService);
-    },
-    onError: (error: AxiosError) => {
-      toast.open({
-        type: 'error',
-        title: t('global.notificationError'),
-        message: error.message,
-      });
-    },
-    onSettled: () => {
-      setRefreshing(false);
-    },
-  });
-
-  const intentModelMutation = useMutation({
-    mutationFn: (intentModelData: { name: string; inModel: boolean }) => addRemoveIntentModel(intentModelData),
-    onMutate: () => {
-      setRefreshing(true);
-    },
-    onSuccess: () => {
-      if (selectedIntent?.inModel === true) {
-        toast.open({
-          type: 'success',
-          title: t('global.notification'),
-          message: t('toast.intentRemovedFromModel'),
-        });
-      } else {
-        toast.open({
-          type: 'success',
-          title: t('global.notification'),
-          message: t('toast.intentAddedToModel'),
-        });
-      }
-    },
-    onError: (error: AxiosError) => {
-      toast.open({
-        type: 'error',
-        title: t('global.notificationError'),
-        message: error.message,
-      });
-    },
-    onSettled: () => {
-      setEditingIntentTitle(null);
-      setRefreshing(false);
-      queryRefresh(selectedIntent?.id || '');
-    },
-  });
-
-  const intentDownloadMutation = useMutation({
-    mutationFn: (intentModelData: { intentName: string }) => downloadExamples(intentModelData),
-    onSuccess: (data) => {
-      // @ts-ignore
-      const blob = new Blob([data], { type: 'text/csv' });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = selectedIntent?.id + '.csv';
-      a.click();
-      window.URL.revokeObjectURL(url);
-
-      toast.open({
-        type: 'success',
-        title: t('global.notification'),
-        message: t('toast.examplesSentForDownloading'),
-      });
-    },
-    onError: (error: AxiosError) => {
-      toast.open({
-        type: 'error',
-        title: t('global.notificationError'),
-        message: error.message,
-      });
-    },
-  });
-
-  const intentUploadMutation = useMutation({
-    mutationFn: ({ intentName, formData }: { intentName: string; formData: File }) =>
-      uploadExamples(intentName, formData),
-    onMutate: () => {
-      setRefreshing(true);
-    },
-    onSuccess: () => {
-      toast.open({
-        type: 'success',
-        title: t('global.notification'),
-        message: t('toast.fileUploadedSuccessfully'),
-      });
-    },
-    onError: (error: AxiosError) => {
-      toast.open({
-        type: 'error',
-        title: t('global.notificationError'),
-        message: error.message,
-      });
-    },
-    onSettled: () => {
-      setRefreshing(false);
-      queryRefresh(selectedIntent?.id || '');
-    },
-  });
-
-  const handleNewExample = (example: string) => {
-    if (!selectedIntent) return;
-    addExamplesMutation.mutate({
-      intentName: selectedIntent.id,
-      intentExamples: selectedIntent.examples,
-      newExamples: example.replace(/(\t|\n)+/g, ' ').trim(),
-    });
-  };
-
-  const handleIntentExamplesUpload = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.csv';
-
-    input.addEventListener('change', async (event) => {
-      const fileInput = event.target as HTMLInputElement;
-      const files = fileInput.files;
-
-      if (!files || files.length === 0) {
-        return;
-      }
-
-      const file = files[0];
-
-      try {
-        await intentUploadMutation.mutateAsync({
-          intentName: selectedIntent?.id || '',
-          formData: file,
-        });
-      } catch (error) {}
-    });
-
-    input.click();
-  };
-
-  const addOrEditResponseMutation = useMutation({
-    mutationFn: (intentResponseData: { id: string; responseText: string; update: boolean }) =>
-      editResponse(intentResponseData.id, intentResponseData.responseText, intentResponseData.update),
-    onMutate: () => {
-      setRefreshing(true);
-    },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries(['response-list']);
-      toast.open({
-        type: 'success',
-        title: t('global.notification'),
-        message: t('toast.newResponseAdded'),
-      });
-    },
-    onError: (error: AxiosError) => {
-      toast.open({
-        type: 'error',
-        title: t('global.notificationError'),
-        message: error.message,
-      });
-    },
-    onSettled: () => {
-      setRefreshing(false);
-    },
-  });
-
-  const deleteResponseMutation = useMutation({
-    mutationFn: (response: string) => deleteResponse({ response }),
-    onMutate: () => {
-      setRefreshing(true);
-    },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries(['response-list']);
-      toast.open({
-        type: 'success',
-        title: t('global.notification'),
-        message: t('toast.responseDeleted'),
-      });
-    },
-    onError: (error: AxiosError) => {
-      toast.open({
-        type: 'error',
-        title: t('global.notificationError'),
-        message: error.message,
-      });
-    },
-    onSettled: () => {
-      setRefreshing(false);
-    },
-  });
-
-  const addRuleMutation = useMutation({
-    mutationFn: ({ data }: { data: RuleDTO }) => addStoryOrRule(data as RuleDTO, 'rules'),
-    onMutate: () => {
-      setRefreshing(true);
-    },
-    onSuccess: () => {
-      toast.open({
-        type: 'success',
-        title: t('global.notification'),
-        message: t('toast.storyAdded'),
-      });
-    },
-    onError: (error: AxiosError) => {
-      toast.open({
-        type: 'error',
-        title: t('global.notificationError'),
-        message: error.message,
-      });
-    },
-    onSettled: () => {
-      setRefreshing(false);
-    },
-  });
-
-  const deleteRuleMutation = useMutation({
-    mutationFn: (id: string | number) => deleteStoryOrRule(id, 'rules'),
-    onMutate: () => {
-      setRefreshing(true);
-    },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries(['rules']);
-      toast.open({
-        type: 'success',
-        title: t('global.notification'),
-        message: t('toast.storyDeleted'),
-      });
-    },
-    onError: (error: AxiosError) => {
-      toast.open({
-        type: 'error',
-        title: t('global.notificationError'),
-        message: error.message,
-      });
-    },
-    onSettled: () => {
-      setRefreshing(false);
-    },
-  });
-
-  const deleteRuleWithIntentMutation = useMutation({
-    mutationFn: (id: string | number) => deleteStoryOrRule(id, 'rules'),
-    onMutate: () => {
-      setRefreshing(true);
-    },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries(['response-list']);
-      await queryClient.invalidateQueries(['rules']);
-      toast.open({
-        type: 'success',
-        title: t('global.notification'),
-        message: t('toast.storyDeleted'),
-      });
-    },
-    onError: (error: AxiosError) => {
-      toast.open({
-        type: 'error',
-        title: t('global.notificationError'),
-        message: error.message,
-      });
-    },
-    onSettled: () => {
-      deleteIntentMutation.mutate(deletableIntent!.id);
-      setRefreshing(false);
-    },
-  });
-
-  const editIntentName = async () => {
-    if (!selectedIntent || !editingIntentTitle) return;
-
-    const newName = editingIntentTitle.replace(/\s+/g, '_');
-
-    await intentEditMutation.mutateAsync({
-      oldName: selectedIntent.id,
-      newName,
-    });
-    queryRefresh(newName);
-  };
-
-  const handleDeleteIntent = async () => {
-    if (intentRule) {
-      await deleteRuleWithIntentMutation.mutateAsync(intentRule);
-    } else {
-      await deleteIntentMutation.mutateAsync(deletableIntent!.id);
-    }
-  };
-
-  const handleIntentResponseSubmit = async (newId?: string) => {
-    if (!intentResponseText || intentResponseText == '' || !selectedIntent) return;
-
-    const intentId = newId || selectedIntent.id;
-
-    await addOrEditResponseMutation.mutate({
-      id: `utter_${intentId}`,
-      responseText: intentResponseText,
-      update: !!intentResponseName,
-    });
-
-    if (!intentResponseName) {
-      await addRuleMutation.mutate({
-        data: {
-          rule: `rule_${intentId}`,
-          steps: [
-            {
-              intent: intentId,
-            },
-            {
-              action: `utter_${intentId}`,
-            },
-          ],
-        },
-      });
-    }
-
-    if (editingIntentTitle) {
-      await intentEditMutation.mutateAsync({
-        oldName: selectedIntent.id,
-        newName: newId,
-      });
-      queryRefresh(intentId);
-    }
-  };
-
   if (isLoading) return <>Loading...</>;
 
   return (
@@ -775,7 +334,7 @@ const Intents: FC = () => {
         </Tabs.Root>
       )}
 
-      {/* todo need to check if used at all */}
+      {/* TODO: need to check if used at all */}
       {turnIntentToServiceIntent !== null && (
         <Dialog
           title={t('training.intents.turnIntoService')}

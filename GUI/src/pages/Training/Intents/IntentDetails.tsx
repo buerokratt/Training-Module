@@ -464,7 +464,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent }) 
     setTimeout(() => setSelectedIntent(updatedIntent), 20);
   };
 
-  if (!intent) return null;
+  if (!intent) return <>Loading...</>;
 
   return (
     <Tabs.Content key={intent.id} className="vertical-tabs__body" value={intent.id} style={{ overflowX: 'auto' }}>
