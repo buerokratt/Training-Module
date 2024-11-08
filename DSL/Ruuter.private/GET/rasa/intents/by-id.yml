@@ -84,7 +84,7 @@ assignResults:
   assign:
     # todo singular, object
     intents:
-      intents: ${getIntentDataResult.response.body.intents}
+      intents: ${getIntentResult.response.body.hits.hits}
       inmodel: ${getDomainDataResult.response.body.response.intents}
       connections: ${connection_res.response.body}
       intentsModifiedAt: ${getIntentListLastChangedResult.response.body}
@@ -92,7 +92,7 @@ assignResults:
 mapIntentData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/hbs/training/get_intents_full"
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_intent_by_id"
     headers:
       type: "json"
     body:

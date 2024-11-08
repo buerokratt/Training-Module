@@ -1,0 +1,19 @@
+{
+"intents": [
+{{#each intents.intents}}
+    {
+    "id": "{{_source.id}}",
+    "title": "{{_source.intent}}",
+    "examples": [
+    {{#each _source.examples}}
+        "{{{this}}}"{{#unless @last}},{{/unless}}
+    {{/each}}
+    ],
+    "inmodel": {{isInModel _source.intent ../intents}},
+    "serviceId": "{{findConnectedServiceId _source.intent ../intents}}",
+    "isForService": "{{getObjectKeyFromObjectArray ../intents/intentsModifiedAt 'intent' _source.intent 'isforservice'}}",
+    "modifiedAt": "{{findModifiedAt _source.intent ../intents/intentsModifiedAt}}"
+    }{{#unless @last}},{{/unless}}
+{{/each}}
+]
+}
