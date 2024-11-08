@@ -27,6 +27,7 @@ import { RuleDTO } from 'types/rule';
 import ConnectServiceToIntentModal from 'pages/ConnectServiceToIntentModal';
 import LoadingDialog from 'components/LoadingDialog';
 import { Entity } from 'types/entity';
+import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 
 interface IntentDetailsProps {
   intentId: string;
@@ -465,6 +466,8 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
     setSelectedIntent(null);
     setTimeout(() => setSelectedIntent(updatedIntent), 20);
   };
+
+  useDocumentEscapeListener(() => setEditingIntentTitle(null));
 
   if (!intent) return <>Loading...</>;
 

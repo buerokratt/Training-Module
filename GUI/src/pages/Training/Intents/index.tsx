@@ -229,19 +229,14 @@ const Intents: FC = () => {
     },
   });
 
-  useDocumentEscapeListener(() => setEditingIntentTitle(null));
-
   const handleTabsValueChange = useCallback(
     (value: string) => {
-      setEditingIntentTitle(null);
-      setSelectedIntent(null);
-      setIntentResponseName(null);
-      setIntentResponseText(null);
+      // setSelectedIntent(null);
 
       if (!intents) return;
       const selectedIntent = intents.find((intent) => intent.id === value);
       if (selectedIntent) {
-        queryRefresh(selectedIntent?.id || '');
+        // todo wtf is this? should only be run on actual intent change right?
         intentModifiedMutation.mutate(
           { intentName: selectedIntent.id },
           {
@@ -257,7 +252,7 @@ const Intents: FC = () => {
         );
       }
     },
-    [intentModifiedMutation, intents, queryRefresh]
+    [intentModifiedMutation, intents]
   );
 
   const newIntentMutation = useMutation({
