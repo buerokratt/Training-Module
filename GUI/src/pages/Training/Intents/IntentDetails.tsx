@@ -46,7 +46,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intent, setSelectedIntent }) =>
   const queryClient = useQueryClient();
   const toast = useToast();
 
-  const { data: intentDetails, isLoading } = useQuery({
+  const { data: intentDetails, isLoading } = useQuery<Intent>({
     // queryKey: ['intents/full'],
     queryKey: [`intents/by-id?intent=${intent.id}`],
   });
