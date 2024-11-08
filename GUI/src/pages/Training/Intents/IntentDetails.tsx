@@ -26,13 +26,15 @@ import { addStoryOrRule, deleteStoryOrRule } from 'services/stories';
 import { RuleDTO } from 'types/rule';
 import ConnectServiceToIntentModal from 'pages/ConnectServiceToIntentModal';
 import LoadingDialog from 'components/LoadingDialog';
+import { Entity } from 'types/entity';
 
 interface IntentDetailsProps {
   intentId: string;
+  entities: Entity[];
   setSelectedIntent: Dispatch<SetStateAction<Intent | null>>;
 }
 
-const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent }) => {
+const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, entities }) => {
   const [intent, setIntent] = useState<Intent | null>(null);
 
   const [editingIntentTitle, setEditingIntentTitle] = useState<string | null>(null);
@@ -581,7 +583,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent }) 
               <IntentExamplesTable
                 examples={examplesData}
                 onAddNewExample={handleNewExample}
-                // entities={entities ?? []}
+                entities={entities}
                 selectedIntent={intent}
                 // queryRefresh={queryRefresh}
                 updateSelectedIntent={updateSelectedIntent}

@@ -76,9 +76,9 @@ const Intents: FC = () => {
   });
 
   // todo entities just likely pass as props?
-  // const { data: entities } = useQuery<Entity[]>({
-  //   queryKey: ['entities'],
-  // });
+  const { data: entitiesResponse } = useQuery<{ response: Entity[] }>({
+    queryKey: ['entities'],
+  });
 
   // const { data: responsesFullResponse } = useQuery({
   //   queryKey: ['responses-list'],
@@ -89,7 +89,7 @@ const Intents: FC = () => {
   // });
 
   // console.log(intentsFullResponse);
-  // console.log(entities);
+  console.log(entitiesResponse);
   // console.log(responsesFullResponse);
   // console.log(rulesFullResponse);
 
@@ -322,15 +322,18 @@ const Intents: FC = () => {
               onDismiss={() => {
                 if (!selectedIntent?.isCommon) return;
                 setSelectedIntent(null);
-                setEditingIntentTitle(null);
-                setIntentResponseName(null);
-                setIntentResponseText(null);
               }}
             />
           </Tabs.List>
 
           {/* todo details here */}
-          {selectedIntent && <IntentDetails intentId={selectedIntent.id} setSelectedIntent={setSelectedIntent} />}
+          {selectedIntent && (
+            <IntentDetails
+              intentId={selectedIntent.id}
+              setSelectedIntent={setSelectedIntent}
+              entities={entitiesResponse?.response ?? []}
+            />
+          )}
         </Tabs.Root>
       )}
 
