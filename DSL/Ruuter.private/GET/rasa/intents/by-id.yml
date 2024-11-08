@@ -52,22 +52,12 @@ getServiceIntentConnections:
     url: "[#TRAINING_RESQL]/get-service-intent-connections"
   result: connection_res
 
-getIntentNames:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/hbs/training/get_intents"
-    headers:
-      type: "json"
-    body:
-      hits: ${getIntentResult.response.body.hits.hits}
-  result: getIntentNamesResult
-
 getIntentListLastChanged:
   call: http.post
   args:
     url: "[#TRAINING_RESQL]/get-intents-list-last-changed"
     body:
-      intentsList: ${getIntentNamesResult.response.body.intents}
+      intentsList: ${getIntentResult.response.body.hits.hits._id}
   result: getIntentListLastChangedResult
 
 assignResults:
