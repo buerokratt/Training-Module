@@ -27,14 +27,12 @@ import { RuleDTO } from 'types/rule';
 import ConnectServiceToIntentModal from 'pages/ConnectServiceToIntentModal';
 import LoadingDialog from 'components/LoadingDialog';
 
-interface SelectedIntentProps {
-  // todo rename to intent
-  selectedIntent: Intent;
+interface IntentDetailsProps {
+  intent: Intent;
   setSelectedIntent: Dispatch<SetStateAction<Intent | null>>;
 }
 
-// todo maybe rename to IntentDetails
-const SelectedIntent: FC<SelectedIntentProps> = ({ selectedIntent, setSelectedIntent }) => {
+const IntentDetails: FC<IntentDetailsProps> = ({ intent, setSelectedIntent }) => {
   const [editingIntentTitle, setEditingIntentTitle] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [isMarkedForService, setIsMarkedForService] = useState<boolean>(false);
@@ -76,13 +74,13 @@ const SelectedIntent: FC<SelectedIntentProps> = ({ selectedIntent, setSelectedIn
   const updateMarkForService = (value: boolean) => {
     refetch().then((r) => {
       if (!r.data) {
-        markIntentServiceMutation.mutate({ name: selectedIntent?.id ?? '', isForService: value });
+        markIntentServiceMutation.mutate({ name: intent?.id ?? '', isForService: value });
       }
     });
   };
 
   const { data: isPossibleToUpdateMark, refetch } = useQuery<boolean>({
-    queryKey: [`intents/is-marked-for-service?intent=${selectedIntent?.id}`],
+    queryKey: [`intents/is-marked-for-service?intent=${intent?.id}`],
   });
 
   const intentEditMutation = useMutation({
@@ -112,12 +110,12 @@ const SelectedIntent: FC<SelectedIntentProps> = ({ selectedIntent, setSelectedIn
   });
 
   const editIntentName = async () => {
-    if (!selectedIntent || !editingIntentTitle) return;
+    if (!intent || !editingIntentTitle) return;
 
     const newName = editingIntentTitle.replace(/\s+/g, '_');
 
     await intentEditMutation.mutateAsync({
-      oldName: selectedIntent.id,
+      oldName: intent.id,
       newName,
     });
     // todo
@@ -166,7 +164,7 @@ const SelectedIntent: FC<SelectedIntentProps> = ({ selectedIntent, setSelectedIn
     onSettled: () => {
       setRefreshing(false);
       // todo
-      queryRefresh(selectedIntent?.id || '');
+      queryRefresh(intent?.id || '');
     },
   });
 
@@ -187,7 +185,7 @@ const SelectedIntent: FC<SelectedIntentProps> = ({ selectedIntent, setSelectedIn
 
       try {
         await intentUploadMutation.mutateAsync({
-          intentName: selectedIntent?.id || '',
+          intentName: intent?.id || '',
           formData: file,
         });
       } catch (error) {}
@@ -204,7 +202,7 @@ const SelectedIntent: FC<SelectedIntentProps> = ({ selectedIntent, setSelectedIn
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = selectedIntent?.id + '.csv';
+      a.download = intent?.id + '.csv';
       a.click();
       window.URL.revokeObjectURL(url);
 
@@ -229,7 +227,7 @@ const SelectedIntent: FC<SelectedIntentProps> = ({ selectedIntent, setSelectedIn
       setRefreshing(true);
     },
     onSuccess: () => {
-      if (selectedIntent?.inModel === true) {
+      if (intent?.inModel === true) {
         toast.open({
           type: 'success',
           title: t('global.notification'),
@@ -254,7 +252,7 @@ const SelectedIntent: FC<SelectedIntentProps> = ({ selectedIntent, setSelectedIn
       setEditingIntentTitle(null);
       setRefreshing(false);
       // todo
-      queryRefresh(selectedIntent?.id || '');
+      queryRefresh(intent?.id || '');
     },
   });
 
@@ -310,9 +308,9 @@ const SelectedIntent: FC<SelectedIntentProps> = ({ selectedIntent, setSelectedIn
 
   // todo clean up and fix errors
   const handleIntentResponseSubmit = async (newId?: string) => {
-    if (!intentResponseText || intentResponseText == '' || !selectedIntent) return;
+    if (!intentResponseText || intentResponseText == '' || !intent) return;
 
-    const intentId = newId || selectedIntent.id;
+    const intentId = newId || intent.id;
 
     await addOrEditResponseMutation.mutate({
       id: `utter_${intentId}`,
@@ -338,7 +336,7 @@ const SelectedIntent: FC<SelectedIntentProps> = ({ selectedIntent, setSelectedIn
 
     if (editingIntentTitle) {
       await intentEditMutation.mutateAsync({
-        oldName: selectedIntent.id,
+        oldName: intent.id,
         newName: newId,
       });
       queryRefresh(intentId);
@@ -346,8 +344,8 @@ const SelectedIntent: FC<SelectedIntentProps> = ({ selectedIntent, setSelectedIn
   };
 
   const examplesData = useMemo(
-    () => selectedIntent?.examples.map((example, index) => ({ id: index, value: example })),
-    [selectedIntent?.examples]
+    () => intent?.examples.map((example, index) => ({ id: index, value: example })),
+    [intent?.examples]
   );
 
   const addExamplesMutation = useMutation({
@@ -372,15 +370,15 @@ const SelectedIntent: FC<SelectedIntentProps> = ({ selectedIntent, setSelectedIn
     },
     onSettled: () => {
       // todo
-      queryRefresh(selectedIntent.id);
+      queryRefresh(intent.id);
     },
   });
 
   const handleNewExample = (example: string) => {
-    if (!selectedIntent) return;
+    if (!intent) return;
     addExamplesMutation.mutate({
-      intentName: selectedIntent.id,
-      intentExamples: selectedIntent.examples,
+      intentName: intent.id,
+      intentExamples: intent.examples,
       newExamples: example.replace(/(\t|\n)+/g, ' ').trim(),
     });
   };
@@ -454,12 +452,7 @@ const SelectedIntent: FC<SelectedIntentProps> = ({ selectedIntent, setSelectedIn
   };
 
   return (
-    <Tabs.Content
-      key={selectedIntent.id}
-      className="vertical-tabs__body"
-      value={selectedIntent.id}
-      style={{ overflowX: 'auto' }}
-    >
+    <Tabs.Content key={intent.id} className="vertical-tabs__body" value={intent.id} style={{ overflowX: 'auto' }}>
       <div className="vertical-tabs__content-header">
         <Track direction="vertical" align="stretch" gap={8}>
           <Track justify="between">
@@ -473,7 +466,7 @@ const SelectedIntent: FC<SelectedIntentProps> = ({ selectedIntent, setSelectedIn
                   hideLabel
                 />
               ) : (
-                <h3>{selectedIntent.id.replace(/_/g, ' ')}</h3>
+                <h3>{intent.id.replace(/_/g, ' ')}</h3>
               )}
               {editingIntentTitle ? (
                 <Button appearance="text" onClick={editIntentName}>
@@ -481,7 +474,7 @@ const SelectedIntent: FC<SelectedIntentProps> = ({ selectedIntent, setSelectedIn
                   {t('global.save')}
                 </Button>
               ) : (
-                <Button appearance="text" onClick={() => setEditingIntentTitle(selectedIntent.id.replace(/_/g, ' '))}>
+                <Button appearance="text" onClick={() => setEditingIntentTitle(intent.id.replace(/_/g, ' '))}>
                   <Icon icon={<MdOutlineModeEditOutline />} />
                   {t('global.edit')}
                 </Button>
@@ -489,8 +482,8 @@ const SelectedIntent: FC<SelectedIntentProps> = ({ selectedIntent, setSelectedIn
             </Track>
             <p style={{ color: '#4D4F5D' }}>
               {t('global.modifiedAt')}:
-              {isValidDate(selectedIntent.modifiedAt)
-                ? ` ${format(new Date(selectedIntent.modifiedAt), 'dd.MM.yyyy')}`
+              {isValidDate(intent.modifiedAt)
+                ? ` ${format(new Date(intent.modifiedAt), 'dd.MM.yyyy')}`
                 : ` ${t('global.missing')}`}
             </p>
           </Track>
@@ -514,18 +507,18 @@ const SelectedIntent: FC<SelectedIntentProps> = ({ selectedIntent, setSelectedIn
               appearance="secondary"
               onClick={() =>
                 intentDownloadMutation.mutate({
-                  intentName: selectedIntent.id,
+                  intentName: intent.id,
                 })
               }
             >
               {t('training.intents.download')}
             </Button>
-            {selectedIntent.inModel ? (
+            {intent.inModel ? (
               <Button
                 appearance="secondary"
                 onClick={() =>
                   intentModelMutation.mutate({
-                    name: selectedIntent.id,
+                    name: intent.id,
                     inModel: true,
                   })
                 }
@@ -536,7 +529,7 @@ const SelectedIntent: FC<SelectedIntentProps> = ({ selectedIntent, setSelectedIn
               <Button
                 onClick={() =>
                   intentModelMutation.mutate({
-                    name: selectedIntent.id,
+                    name: intent.id,
                     inModel: false,
                   })
                 }
@@ -547,17 +540,17 @@ const SelectedIntent: FC<SelectedIntentProps> = ({ selectedIntent, setSelectedIn
             {isHiddenFeaturesEnabled && serviceEligable() && (
               <Tooltip content={t('training.intents.connectToServiceTooltip')}>
                 <span>
-                  <Button appearance="secondary" onClick={() => setConnectableIntent(selectedIntent)}>
-                    {selectedIntent.serviceId
+                  <Button appearance="secondary" onClick={() => setConnectableIntent(intent)}>
+                    {intent.serviceId
                       ? t('training.intents.changeConnectedService')
                       : t('training.intents.connectToService')}
                   </Button>
                 </span>
               </Tooltip>
             )}
-            <Tooltip content={t('training.intents.deleteTooltip')} hidden={!selectedIntent.serviceId}>
+            <Tooltip content={t('training.intents.deleteTooltip')} hidden={!intent.serviceId}>
               <span>
-                <Button appearance="error" onClick={() => setDeletableIntent(selectedIntent)}>
+                <Button appearance="error" onClick={() => setDeletableIntent(intent)}>
                   {t('global.delete')}
                 </Button>
               </span>
@@ -566,7 +559,7 @@ const SelectedIntent: FC<SelectedIntentProps> = ({ selectedIntent, setSelectedIn
         </Track>
       </div>
       <div className="vertical-tabs__content">
-        {selectedIntent?.examples && (
+        {intent?.examples && (
           <Track align="stretch" justify="between" gap={10} style={{ width: '100%' }}>
             <div style={{ flex: 1 }}>
               {/* todo missing props */}
@@ -574,7 +567,7 @@ const SelectedIntent: FC<SelectedIntentProps> = ({ selectedIntent, setSelectedIn
                 examples={examplesData}
                 onAddNewExample={handleNewExample}
                 // entities={entities ?? []}
-                selectedIntent={selectedIntent}
+                selectedIntent={intent}
                 // queryRefresh={queryRefresh}
                 updateSelectedIntent={updateSelectedIntent}
               />
@@ -638,4 +631,4 @@ const SelectedIntent: FC<SelectedIntentProps> = ({ selectedIntent, setSelectedIn
   );
 };
 
-export default SelectedIntent;
+export default IntentDetails;

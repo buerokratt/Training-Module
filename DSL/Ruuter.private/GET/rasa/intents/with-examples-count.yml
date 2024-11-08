@@ -13,8 +13,6 @@ getIntentsExampleCount:
     url: "[#TRAINING_OPENSEARCH]/intents/_search/template"
     body:
       id: "intents-with-examples-count"
-      # params:
-      #   intent: ''
   result: getIntentsResult
 
 mapIntentsData:

@@ -34,7 +34,7 @@ import { Rule, RuleDTO } from '../../../types/rule';
 import { addStoryOrRule, deleteStoryOrRule } from '../../../services/stories';
 import IntentTabList from './IntentTabList';
 import useStore from '../../../store/store';
-import SelectedIntent from './SelectedIntent';
+import IntentDetails from './IntentDetails';
 
 type Response = {
   name: string;
@@ -770,7 +770,7 @@ const Intents: FC = () => {
             />
           </Tabs.List>
 
-          {selectedIntent && <SelectedIntent selectedIntent={selectedIntent} setSelectedIntent={setSelectedIntent} />}
+          {selectedIntent && <IntentDetails intent={selectedIntent} setSelectedIntent={setSelectedIntent} />}
         </Tabs.Root>
       )}
 
