@@ -20,6 +20,8 @@ assignValues:
   assign:
     intent: ${incoming.params.intent}
 
+# todo return intent object, not array
+
 getIntent:
   call: http.post
   args:
@@ -51,10 +53,10 @@ getDomainFile:
 checkIfIntentExists:
   switch:
     - condition: ${getIntentDataResult.response.body.intents != null}
-      next: get_service_intent_connections
+      next: getServiceIntentConnections
   next: returnNoIntentFound
 
-get_service_intent_connections:
+getServiceIntentConnections:
   call: http.post
   args:
     url: "[#TRAINING_RESQL]/get-service-intent-connections"
@@ -80,6 +82,7 @@ getIntentListLastChanged:
 
 assignResults:
   assign:
+    # todo singular, object
     intents:
       intents: ${getIntentDataResult.response.body.intents}
       inmodel: ${getDomainDataResult.response.body.response.intents}
