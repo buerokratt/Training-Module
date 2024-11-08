@@ -53,12 +53,13 @@ getServiceIntentConnections:
   result: getServiceIntentConnectionsResult
 
 # todo if not using full, maybe modify to return one value
+# todo is this broken?
 getIntentListLastChanged:
   call: http.post
   args:
     url: "[#TRAINING_RESQL]/get-intents-list-last-changed"
     body:
-      intentsList: "[${getIntentResult.response.body.hits.hits._id}]"
+      intentsList: ${getIntentResult.response.body.hits.hits[0]._id}
   result: getIntentListLastChangedResult
 
 assignResults:
