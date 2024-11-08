@@ -1,0 +1,16 @@
+{
+  "script": {
+    "lang": "mustache",
+    "source": {
+      "size": 1,
+      "query": {
+        "term": {
+          "intent.keyword": "{{intent}}"
+        }
+      }
+    },
+    "params": {
+      "intent": ""
+    }
+  }
+}
