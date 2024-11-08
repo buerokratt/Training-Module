@@ -1,3 +1,4 @@
+# todo check usages of this
 declaration:
   call: declare
   version: 0.1
@@ -23,7 +24,7 @@ getIntentsData:
   args:
     url: "[#TRAINING_DMAPPER]/hbs/training/get_intents_with_examples"
     headers:
-      type: 'json'
+      type: "json"
     body:
       hits: ${getIntentsResult.response.body.hits.hits}
   result: getIntentDataResult
@@ -53,7 +54,7 @@ getIntentsNames:
   args:
     url: "[#TRAINING_DMAPPER]/hbs/training/get_intents"
     headers:
-      type: 'json'
+      type: "json"
     body:
       hits: ${getIntentsResult.response.body.hits.hits}
   result: getIntentsNamesResult
@@ -79,7 +80,7 @@ mapIntentsData:
   args:
     url: "[#TRAINING_DMAPPER]/hbs/training/get_intents_full"
     headers:
-      type: 'json'
+      type: "json"
     body:
       intents: ${intents}
   result: getIntentDataResult

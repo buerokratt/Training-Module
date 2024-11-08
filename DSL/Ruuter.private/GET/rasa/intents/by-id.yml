@@ -7,10 +7,10 @@ declaration:
   returns: json
   namespace: training
   allowlist:
-    # headers:
-    #   - field: cookie
-    #     type: string
-    #     description: "Cookie field"
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie field"
     params:
       - field: intent
         type: string
@@ -20,7 +20,7 @@ assignValues:
   assign:
     intent: ${incoming.params.intent}
 
-getIntents:
+getIntent:
   call: http.post
   args:
     url: "[#TRAINING_OPENSEARCH]/intents/_search/template"
@@ -28,8 +28,7 @@ getIntents:
       id: "intent-with-name"
       params:
         intent: ${intent}
-  result: getIntentsResult
-  next: getIntentData
+  result: getIntentResult
 
 getIntentData:
   call: http.post
@@ -38,7 +37,63 @@ getIntentData:
     headers:
       type: "json"
     body:
-      hits: ${getIntentsResult.response.body.hits.hits}
+      hits: ${getIntentResult.response.body.hits.hits}
+  result: getIntentDataResult
+
+getDomainFile:
+  call: http.get
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/internal/domain-file"
+    headers:
+      cookie: ${incoming.headers.cookie}
+  result: getDomainDataResult
+
+checkIfIntentExists:
+  switch:
+    - condition: ${getIntentDataResult.response.body.intents != null}
+      next: get_service_intent_connections
+  next: returnNoIntentFound
+
+get_service_intent_connections:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/get-service-intent-connections"
+  result: connection_res
+
+getIntentNames:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_intents"
+    headers:
+      type: "json"
+    body:
+      hits: ${getIntentResult.response.body.hits.hits}
+  result: getIntentNamesResult
+
+getIntentListLastChanged:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/get-intents-list-last-changed"
+    body:
+      intentsList: ${getIntentNamesResult.response.body.intents}
+  result: getIntentListLastChangedResult
+
+assignResults:
+  assign:
+    intents:
+      intents: ${getIntentDataResult.response.body.intents}
+      inmodel: ${getDomainDataResult.response.body.response.intents}
+      connections: ${connection_res.response.body}
+      intentsModifiedAt: ${getIntentListLastChangedResult.response.body}
+
+mapIntentData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_intents_full"
+    headers:
+      type: "json"
+    body:
+      intents: ${intents}
   result: getIntentDataResult
   next: returnSuccess
 
@@ -46,8 +101,8 @@ returnSuccess:
   return: ${getIntentDataResult.response.body}
   next: end
 
-returnNoIntentsFound:
-  return: "Error: no intents found"
+returnNoIntentFound:
+  return: "Error: no intent found"
   wrapper: false
-  status: 409
+  status: 404
   next: end
