@@ -52,12 +52,13 @@ getServiceIntentConnections:
     url: "[#TRAINING_RESQL]/get-service-intent-connections"
   result: getServiceIntentConnectionsResult
 
+# todo if not using full, maybe modify to return one value
 getIntentListLastChanged:
   call: http.post
   args:
     url: "[#TRAINING_RESQL]/get-intents-list-last-changed"
     body:
-      intentsList: ${getIntentResult.response.body.hits.hits._id}
+      intentsList: "[${getIntentResult.response.body.hits.hits._id}]"
   result: getIntentListLastChangedResult
 
 assignResults:
