@@ -7,7 +7,7 @@
         "hot": {
           "terms": {
             "field": "intent",
-            "size": 10000
+            "size": 1000
           },
           "aggs": {
             "examples_counts": {
@@ -19,18 +19,9 @@
         }
       },
       "query": {
-        {{#intent}}
-        "wildcard": {
-          "intent": "*{{intent}}*"
-        }
-        {{/intent}}
-        {{^intent}}
         "match_all": {}
-        {{/intent}}
       }
     },
-    "params": {
-      "intent": ""
-    }
+    "params": {}
   }
 }
