@@ -32,16 +32,6 @@ getIntent:
         intent: ${intent}
   result: getIntentResult
 
-getIntentData:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/hbs/training/get_intents_with_examples"
-    headers:
-      type: "json"
-    body:
-      hits: ${getIntentResult.response.body.hits.hits}
-  result: getIntentDataResult
-
 getDomainFile:
   call: http.get
   args:
@@ -52,7 +42,7 @@ getDomainFile:
 
 checkIfIntentExists:
   switch:
-    - condition: ${getIntentDataResult.response.body.intents != null}
+    - condition: ${getIntentResult.response.body.hits.hits != null}
       next: getServiceIntentConnections
   next: returnNoIntentFound
 
@@ -62,6 +52,7 @@ getServiceIntentConnections:
     url: "[#TRAINING_RESQL]/get-service-intent-connections"
   result: connection_res
 
+# todo sus
 getIntentNames:
   call: http.post
   args:
