@@ -771,7 +771,7 @@ const Intents: FC = () => {
           </Tabs.List>
 
           {/* todo details here */}
-          {selectedIntent && <IntentDetails intent={selectedIntent} setSelectedIntent={setSelectedIntent} />}
+          {selectedIntent && <IntentDetails intentId={selectedIntent.id} setSelectedIntent={setSelectedIntent} />}
         </Tabs.Root>
       )}
 
