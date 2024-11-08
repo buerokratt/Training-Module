@@ -52,7 +52,6 @@ getServiceIntentConnections:
     url: "[#TRAINING_RESQL]/get-service-intent-connections"
   result: connection_res
 
-# todo sus
 getIntentNames:
   call: http.post
   args:
