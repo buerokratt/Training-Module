@@ -20,8 +20,6 @@ assignValues:
   assign:
     intent: ${incoming.params.intent}
 
-# todo return intent object, not array
-
 getIntent:
   call: http.post
   args:
@@ -53,7 +51,6 @@ getServiceIntentConnections:
   result: getServiceIntentConnectionsResult
 
 # todo if not using full, maybe modify to return one value
-# todo is this broken?
 getIntentListLastChanged:
   call: http.post
   args:
@@ -64,7 +61,7 @@ getIntentListLastChanged:
 
 assignResults:
   assign:
-    # todo singular, object
+    # TODO: Ideally, should use a single object, not array
     intents:
       intents: ${getIntentResult.response.body.hits.hits}
       inmodel: ${getDomainDataResult.response.body.response.intents}
