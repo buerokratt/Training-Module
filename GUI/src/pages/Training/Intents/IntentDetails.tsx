@@ -588,14 +588,14 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
                 </Button>
               )}
             </Track>
-            {/* <p style={{ color: '#4D4F5D' }}>
+            <p style={{ color: '#4D4F5D' }}>
               {t('global.modifiedAt')}:
               {isValidDate(intent.modifiedAt)
                 ? ` ${format(new Date(intent.modifiedAt), 'dd.MM.yyyy')}`
                 : ` ${t('global.missing')}`}
-            </p> */}
+            </p>
           </Track>
-          {/* {serviceEligable() && (
+          {serviceEligable() && (
             <Track direction="vertical" align="stretch" gap={5}>
               <Switch
                 label={t('training.intents.markForService')}
@@ -606,8 +606,8 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
                 disabled={isPossibleToUpdateMark}
               />
             </Track>
-          )} */}
-          {/* <Track justify="end" gap={8} isMultiline={true}>
+          )}
+          <Track justify="end" gap={8} isMultiline={true}>
             <Button appearance="secondary" onClick={() => handleIntentExamplesUpload()}>
               {t('training.intents.upload')}
             </Button>
@@ -663,8 +663,49 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
                 </Button>
               </span>
             </Tooltip>
-          </Track> */}
+          </Track>
         </Track>
+      </div>
+
+      <div className="vertical-tabs__content">
+        {intent?.examples && (
+          <Track align="stretch" justify="between" gap={10} style={{ width: '100%' }}>
+            <div style={{ flex: 1 }}>
+              {/* todo missing props */}
+              <IntentExamplesTable
+                examples={examplesData}
+                onAddNewExample={handleNewExample}
+                entities={entities}
+                selectedIntent={intent}
+                // queryRefresh={queryRefresh}
+                updateSelectedIntent={updateSelectedIntent}
+              />
+            </div>
+            <div>
+              <Track align="right" justify="between" direction="vertical" gap={100}>
+                <Track align="left" direction="vertical">
+                  <h1>{t('training.intents.responseTitle')}</h1>
+                  <FormTextarea
+                    label={t('global.addNew')}
+                    value={intentResponseText}
+                    name="intentResponse"
+                    minRows={7}
+                    maxRows={7}
+                    placeholder={t('global.addNew') + '...' || ''}
+                    hideLabel
+                    maxLength={RESPONSE_TEXT_LENGTH}
+                    showMaxLength
+                    onChange={(e) => setIntentResponseText(e.target.value)}
+                    disableHeightResize
+                  />
+                </Track>
+                <Button appearance="text" onClick={() => handleIntentResponseSubmit()}>
+                  {t('global.save')}
+                </Button>
+              </Track>
+            </div>
+          </Track>
+        )}
       </div>
 
       {deletableIntent !== null && (
