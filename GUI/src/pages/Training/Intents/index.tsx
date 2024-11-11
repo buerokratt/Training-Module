@@ -75,6 +75,7 @@ const Intents: FC = () => {
     queryKey: ['entities'],
   });
 
+  // todo these likely need new queries
   // const { data: responsesFullResponse } = useQuery({
   //   queryKey: ['responses-list'],
   // });
@@ -190,6 +191,7 @@ const Intents: FC = () => {
     }
   }, [intentParam]);
 
+  // TODO: need to check if this is used at all
   const turnIntentIntoServiceMutation = useMutation({
     mutationFn: ({ intent }: { intent: Intent }) => turnIntentIntoService(intent),
     onMutate: () => {
@@ -216,7 +218,6 @@ const Intents: FC = () => {
     },
   });
 
-  // todo rename form stays active
   const handleTabsValueChange = useCallback(
     (value: string) => {
       const selectedIntent = intents.find((intent) => intent.id === value);
@@ -291,7 +292,6 @@ const Intents: FC = () => {
             />
           </Tabs.List>
 
-          {/* todo details here */}
           {selectedIntent && (
             <IntentDetails
               intentId={selectedIntent.id}
@@ -303,7 +303,6 @@ const Intents: FC = () => {
         </Tabs.Root>
       )}
 
-      {/* TODO: need to check if this is used at all */}
       {turnIntentToServiceIntent !== null && (
         <Dialog
           title={t('training.intents.turnIntoService')}

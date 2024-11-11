@@ -53,7 +53,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
   const queryClient = useQueryClient();
   const toast = useToast();
 
-  const { data: intentResponse, isLoading } = useQuery<{ response: Intent }>({
+  const { data: intentResponse } = useQuery<{ response: Intent }>({
     queryKey: [`intents/by-id?intent=${intentId}`],
   });
 
@@ -65,6 +65,8 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
     if (intentResponse) {
       console.log('intentResponse EFFECT', intentResponse);
       setIntent(intentResponse.response);
+      // Also reset editing state on intent change
+      setEditingIntentTitle(null);
     }
   }, [intentResponse]);
 
@@ -75,16 +77,12 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
   const queryRefresh = useCallback(
     async (intent?: string) => {
       console.log('queryRefresh start', intent);
-      // queryClient.fetchQuery<{ response: Intent }>([`intents/by-id?intent=${intent ?? intentId}`]).then((res) => {
-      //   console.log('queryRefresh res', res);
-      // });
       const response = await queryClient.fetchQuery<{ response: Intent }>([
         `intents/by-id?intent=${intent ?? intentId}`,
       ]);
       console.log('queryRefresh response', response);
       if (response) {
         console.log('queryRefresh SET', response);
-        // setRefreshing(false);
         setIntent(response.response);
         // listRefresh(intent ?? intentId);
         setSelectedIntent(response.response);
@@ -193,7 +191,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
     },
   });
 
-  // todo testing this
   const editIntentName = async () => {
     if (!intent || !editingIntentTitle) return;
 
@@ -213,8 +210,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
     return !isNaN(date.getTime());
   };
 
-  // todo typo
-  const serviceEligable = () => {
+  const serviceEligible = () => {
     const roles = useStore.getState().userInfo?.authorities;
     if (roles && roles.length > 0) {
       return (
@@ -247,8 +243,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
     },
     onSettled: () => {
       setRefreshing(false);
-      // todo
-      queryRefresh(intent?.id || '');
+      queryRefresh();
     },
   });
 
@@ -335,8 +330,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
     onSettled: () => {
       setEditingIntentTitle(null);
       setRefreshing(false);
-      // todo
-      queryRefresh(intent?.id || '');
+      queryRefresh();
     },
   });
 
@@ -577,7 +571,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
                 : ` ${t('global.missing')}`}
             </p>
           </Track>
-          {serviceEligable() && (
+          {serviceEligible() && (
             <Track direction="vertical" align="stretch" gap={5}>
               <Switch
                 label={t('training.intents.markForService')}
@@ -627,7 +621,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
                 {t('training.intents.addToModel')}
               </Button>
             )}
-            {isHiddenFeaturesEnabled && serviceEligable() && (
+            {isHiddenFeaturesEnabled && serviceEligible() && (
               <Tooltip content={t('training.intents.connectToServiceTooltip')}>
                 <span>
                   <Button appearance="secondary" onClick={() => setConnectableIntent(intent)}>
