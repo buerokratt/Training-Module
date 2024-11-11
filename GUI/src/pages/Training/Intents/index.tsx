@@ -19,7 +19,7 @@ import {
   deleteIntent,
   downloadExamples,
   editIntent,
-  getLastModified,
+  editLastModified,
   markForService,
   turnIntentIntoService,
   uploadExamples,
@@ -218,16 +218,19 @@ const Intents: FC = () => {
 
   // todo related to below handleTabsValueChange
   const intentModifiedMutation = useMutation({
-    mutationFn: (data: { intentName: string }) => getLastModified(data),
+    mutationFn: (data: { intentName: string }) => editLastModified(data),
   });
 
+  // todo rename form stays active
   const handleTabsValueChange = useCallback(
     (value: string) => {
-      // setSelectedIntent(null);
+      setSelectedIntent(null);
 
       if (!intents) return;
       const selectedIntent = intents.find((intent) => intent.id === value);
+      // todo maybe this can be updated in queryRefresh only?
       // if (selectedIntent) {
+      //   console.log('handleTabsValueChange selectedIntent', selectedIntent);
       //   // todo what is this? should only be run on actual intent change right?
       //   intentModifiedMutation.mutate(
       //     { intentName: selectedIntent.id },

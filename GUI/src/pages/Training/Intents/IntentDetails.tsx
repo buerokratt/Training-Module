@@ -2,7 +2,7 @@ import { Track, FormInput, Button, Icon, Switch, Tooltip, FormTextarea, Dialog }
 import { isHiddenFeaturesEnabled, RESPONSE_TEXT_LENGTH } from 'constants/config';
 import { format } from 'date-fns';
 import { t } from 'i18next';
-import { Dispatch, FC, SetStateAction, useEffect, useMemo, useState } from 'react';
+import { Dispatch, FC, SetStateAction, useCallback, useEffect, useMemo, useState } from 'react';
 import { MdOutlineSave, MdOutlineModeEditOutline } from 'react-icons/md';
 import { Intent } from 'types/intent';
 import IntentExamplesTable from './IntentExamplesTable';
@@ -55,9 +55,101 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
     queryKey: [`intents/by-id?intent=${intentId}`],
   });
 
+  // todo split all css
+
   useEffect(() => {
-    if (intentResponse) setIntent(intentResponse.response);
+    if (intentResponse) {
+      console.log('intentResponse EFFECT', intentResponse);
+      setIntent(intentResponse.response);
+    }
   }, [intentResponse]);
+
+  const { data: isPossibleToUpdateMark, refetch } = useQuery<boolean>({
+    queryKey: [`intents/is-marked-for-service?intent=${intentId}`],
+  });
+
+  const queryRefresh = useCallback(
+    async function queryRefresh(intent?: string) {
+      console.log('queryRefresh start', intent);
+      // queryClient.fetchQuery<{ response: Intent }>([`intents/by-id?intent=${intent ?? intentId}`]).then((res) => {
+      //   console.log('queryRefresh res', res);
+      // });
+      const response = await queryClient.fetchQuery<{ response: Intent }>([
+        `intents/by-id?intent=${intent ?? intentId}`,
+      ]);
+      console.log('queryRefresh response', response);
+      if (response) {
+        console.log('queryRefresh SET', response);
+        setRefreshing(false);
+        setIntent(response.response);
+      }
+      // todo setIsMarkedForService
+
+      // setIntentResponseName(null);
+      // setIntentResponseText(null);
+      // setIntentRule(null);
+      // queryClient.fetchQuery(['intents/full']).then((res: any) => {
+      //   setRefreshing(false);
+      //   if (intents.length > 0) {
+      //     const newSelectedIntent = res.response.intents.find((intent: any) => intent.title === selectIntent) || null;
+      //     if (newSelectedIntent) {
+      //       setSelectedIntent({
+      //         id: newSelectedIntent.title,
+      //         description: null,
+      //         inModel: newSelectedIntent.inmodel,
+      //         modifiedAt: newSelectedIntent.modifiedAt,
+      //         examplesCount: newSelectedIntent.examples.length,
+      //         examples: newSelectedIntent.examples,
+      //         serviceId: newSelectedIntent.serviceId,
+      //         isForService: newSelectedIntent.isForService,
+      //       });
+      //       setIsMarkedForService(newSelectedIntent.isForService ? newSelectedIntent.isForService : false);
+      //       // queryClient.fetchQuery(['responses-list']).then((res: any) => {
+      //       //   if (intentResponses.length > 0) {
+      //       //     const intentExistingResponse = res[0].response.find((response: any) => `utter_${newSelectedIntent.title}` === response.name);
+      //       //     if (intentExistingResponse) {
+      //       //       setIntentResponseText(intentExistingResponse.text);
+      //       //       setIntentResponseName(intentExistingResponse.name);
+      //       //     }
+      //       //   }
+      //       // })
+      //       // queryClient.fetchQuery(['rules']).then((res: any) => {
+      //       //   if (rules.length > 0) {
+      //       //     const intentExistingRule = res.response.find((rule: any) => rule.id === `rule_${newSelectedIntent.title}`)
+      //       //     if (intentExistingRule) {
+      //       //       setIntentRule(intentExistingRule.id);
+      //       //     }
+      //       //   }
+      //       // })
+      //     }
+      //   }
+      // });
+    },
+    [queryClient]
+  );
+
+  // const queryRefresh = useCallback(
+  //   async function queryRefresh() {
+  //     console.log('queryRefresh start', intentId);
+  //     try {
+  //       const result = await queryClient.fetchQuery<{ response: Intent }>(
+  //         [`intents/by-id?intent=${intentId}`],
+  //         // Add fetch options to ensure the query executes
+  //         {
+  //           staleTime: 0,
+  //           cacheTime: 0,
+  //         }
+  //       );
+  //       console.log('queryRefresh success:', result);
+  //       if (result?.response) {
+  //         setIntent(result.response);
+  //       }
+  //     } catch (error) {
+  //       console.error('queryRefresh error:', error);
+  //     }
+  //   },
+  //   [queryClient, intentId]
+  // );
 
   const markIntentServiceMutation = useMutation({
     mutationFn: (data: { name: string; isForService: boolean }) => markForService(data),
@@ -92,10 +184,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
     });
   };
 
-  const { data: isPossibleToUpdateMark, refetch } = useQuery<boolean>({
-    queryKey: [`intents/is-marked-for-service?intent=${intent?.id}`],
-  });
-
   const intentEditMutation = useMutation({
     mutationFn: (editIntentData: { oldName: string; newName: string }) => editIntent(editIntentData),
     onMutate: () => {
@@ -122,6 +210,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
     },
   });
 
+  // todo testing this
   const editIntentName = async () => {
     if (!intent || !editingIntentTitle) return;
 
@@ -131,7 +220,8 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
       oldName: intent.id,
       newName,
     });
-    // todo
+
+    console.log('editIntentName', newName);
     queryRefresh(newName);
   };
 
@@ -470,7 +560,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
   if (!intent) return <>Loading...</>;
 
   return (
-    <Tabs.Content key={intent.id} className="vertical-tabs__body" value={intent.id} style={{ overflowX: 'auto' }}>
+    <Tabs.Content className="vertical-tabs__body" value={intent.id} style={{ overflowX: 'auto' }}>
       <div className="vertical-tabs__content-header">
         <Track direction="vertical" align="stretch" gap={8}>
           <Track justify="between">
@@ -498,14 +588,14 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
                 </Button>
               )}
             </Track>
-            <p style={{ color: '#4D4F5D' }}>
+            {/* <p style={{ color: '#4D4F5D' }}>
               {t('global.modifiedAt')}:
               {isValidDate(intent.modifiedAt)
                 ? ` ${format(new Date(intent.modifiedAt), 'dd.MM.yyyy')}`
                 : ` ${t('global.missing')}`}
-            </p>
+            </p> */}
           </Track>
-          {serviceEligable() && (
+          {/* {serviceEligable() && (
             <Track direction="vertical" align="stretch" gap={5}>
               <Switch
                 label={t('training.intents.markForService')}
@@ -516,8 +606,8 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
                 disabled={isPossibleToUpdateMark}
               />
             </Track>
-          )}
-          <Track justify="end" gap={8} isMultiline={true}>
+          )} */}
+          {/* <Track justify="end" gap={8} isMultiline={true}>
             <Button appearance="secondary" onClick={() => handleIntentExamplesUpload()}>
               {t('training.intents.upload')}
             </Button>
@@ -573,48 +663,8 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
                 </Button>
               </span>
             </Tooltip>
-          </Track>
+          </Track> */}
         </Track>
-      </div>
-      <div className="vertical-tabs__content">
-        {intent?.examples && (
-          <Track align="stretch" justify="between" gap={10} style={{ width: '100%' }}>
-            <div style={{ flex: 1 }}>
-              {/* todo missing props */}
-              <IntentExamplesTable
-                examples={examplesData}
-                onAddNewExample={handleNewExample}
-                entities={entities}
-                selectedIntent={intent}
-                // queryRefresh={queryRefresh}
-                updateSelectedIntent={updateSelectedIntent}
-              />
-            </div>
-            <div>
-              <Track align="right" justify="between" direction="vertical" gap={100}>
-                <Track align="left" direction="vertical">
-                  <h1>{t('training.intents.responseTitle')}</h1>
-                  <FormTextarea
-                    label={t('global.addNew')}
-                    value={intentResponseText}
-                    name="intentResponse"
-                    minRows={7}
-                    maxRows={7}
-                    placeholder={t('global.addNew') + '...' || ''}
-                    hideLabel
-                    maxLength={RESPONSE_TEXT_LENGTH}
-                    showMaxLength
-                    onChange={(e) => setIntentResponseText(e.target.value)}
-                    disableHeightResize
-                  />
-                </Track>
-                <Button appearance="text" onClick={() => handleIntentResponseSubmit()}>
-                  {t('global.save')}
-                </Button>
-              </Track>
-            </div>
-          </Track>
-        )}
       </div>
 
       {deletableIntent !== null && (
