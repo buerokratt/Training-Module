@@ -71,7 +71,6 @@ const Intents: FC = () => {
     queryKey: ['intents/with-examples-count'],
   });
 
-  // todo entities just likely pass as props?
   const { data: entitiesResponse } = useQuery<{ response: Entity[] }>({
     queryKey: ['entities'],
   });
@@ -84,11 +83,6 @@ const Intents: FC = () => {
   //   queryKey: ['rules'],
   // });
 
-  // console.log(intentsFullResponse);
-  console.log('ENTITIES', entitiesResponse);
-  // console.log(responsesFullResponse);
-  // console.log(rulesFullResponse);
-
   let intentsFullList = intentsFullResponse?.response?.intents;
   let intents: Intent[] = [];
 
@@ -98,6 +92,7 @@ const Intents: FC = () => {
   // let rulesFullList = rulesFullResponse?.response;
   // let rules: Rule[] = [];
 
+  // todo this needs to be useEffect - do after queryRefresh
   if (intentsFullList) {
     intentsFullList.forEach((intent: any) => {
       // const countExamples = intent.examples.length;
@@ -195,10 +190,6 @@ const Intents: FC = () => {
     }
   }, [intentParam]);
 
-  const intentModifiedMutation = useMutation({
-    mutationFn: (data: { intentName: string }) => getLastModified(data),
-  });
-
   const turnIntentIntoServiceMutation = useMutation({
     mutationFn: ({ intent }: { intent: Intent }) => turnIntentIntoService(intent),
     onMutate: () => {
@@ -225,6 +216,11 @@ const Intents: FC = () => {
     },
   });
 
+  // todo related to below handleTabsValueChange
+  const intentModifiedMutation = useMutation({
+    mutationFn: (data: { intentName: string }) => getLastModified(data),
+  });
+
   const handleTabsValueChange = useCallback(
     (value: string) => {
       // setSelectedIntent(null);
@@ -248,7 +244,7 @@ const Intents: FC = () => {
       //   );
       // }
 
-      // todo below siumplified
+      // todo below simplified
       setSelectedIntent(selectedIntent!);
     },
     [intentModifiedMutation, intents]
@@ -331,7 +327,7 @@ const Intents: FC = () => {
         </Tabs.Root>
       )}
 
-      {/* TODO: need to check if used at all */}
+      {/* TODO: need to check if this is used at all */}
       {turnIntentToServiceIntent !== null && (
         <Dialog
           title={t('training.intents.turnIntoService')}
