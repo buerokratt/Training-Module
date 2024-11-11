@@ -129,13 +129,13 @@ const Intents: FC = () => {
   // }
 
   const queryRefresh = useCallback(
-    function queryRefresh(selectIntent: string | null) {
+    function queryRefresh(selectIntent?: string) {
       setSelectedIntent(null);
       setIntentResponseName(null);
       setIntentResponseText(null);
       setIntentRule(null);
 
-      queryClient.fetchQuery(['intents/full']).then((res: any) => {
+      queryClient.fetchQuery(['intents/with-examples-count']).then((res: any) => {
         setRefreshing(false);
 
         if (intents.length > 0) {
@@ -325,6 +325,7 @@ const Intents: FC = () => {
               intentId={selectedIntent.id}
               setSelectedIntent={setSelectedIntent}
               entities={entitiesResponse?.response ?? []}
+              listRefresh={queryRefresh}
             />
           )}
         </Tabs.Root>

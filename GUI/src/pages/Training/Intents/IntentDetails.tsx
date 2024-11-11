@@ -33,9 +33,10 @@ interface IntentDetailsProps {
   intentId: string;
   entities: Entity[];
   setSelectedIntent: Dispatch<SetStateAction<Intent | null>>;
+  listRefresh: (intent?: string) => void;
 }
 
-const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, entities }) => {
+const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, entities, listRefresh }) => {
   const [intent, setIntent] = useState<Intent | null>(null);
 
   const [editingIntentTitle, setEditingIntentTitle] = useState<string | null>(null);
@@ -223,6 +224,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
 
     console.log('editIntentName', newName);
     queryRefresh(newName);
+    listRefresh(newName);
   };
 
   // todo consistent format: fn OR const
