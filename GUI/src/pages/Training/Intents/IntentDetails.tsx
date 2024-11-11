@@ -70,7 +70,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
   });
 
   const queryRefresh = useCallback(
-    async function queryRefresh(intent?: string) {
+    async (intent?: string) => {
       console.log('queryRefresh start', intent);
       // queryClient.fetchQuery<{ response: Intent }>([`intents/by-id?intent=${intent ?? intentId}`]).then((res) => {
       //   console.log('queryRefresh res', res);
@@ -81,8 +81,10 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
       console.log('queryRefresh response', response);
       if (response) {
         console.log('queryRefresh SET', response);
-        setRefreshing(false);
+        // setRefreshing(false);
         setIntent(response.response);
+        listRefresh(intent ?? intentId);
+        setSelectedIntent(response.response);
       }
       // todo setIsMarkedForService
 
@@ -201,15 +203,12 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
 
     console.log('editIntentName', newName);
     queryRefresh(newName);
-    listRefresh(newName);
   };
 
-  // todo consistent format: fn OR const
-  // todo extract everything that is possible outside of component
-  function isValidDate(dateString: string | number | Date) {
+  const isValidDate = (dateString: string | number | Date) => {
     const date = new Date(dateString);
     return !isNaN(date.getTime());
-  }
+  };
 
   // todo typo
   const serviceEligable = () => {
