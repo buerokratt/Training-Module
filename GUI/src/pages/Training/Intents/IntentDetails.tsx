@@ -59,8 +59,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
     if (intentResponse) setIntent(intentResponse.response);
   }, [intentResponse]);
 
-  console.log('intentResponse', intentResponse);
-
   const markIntentServiceMutation = useMutation({
     mutationFn: (data: { name: string; isForService: boolean }) => markForService(data),
     onMutate: () => {

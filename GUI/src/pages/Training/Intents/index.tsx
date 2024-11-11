@@ -63,11 +63,7 @@ const Intents: FC = () => {
   const [connectableIntent, setConnectableIntent] = useState<Intent | null>(null);
   const [turnIntentToServiceIntent, setTurnIntentToServiceIntent] = useState<Intent | null>(null);
 
-  let intentParam;
-
-  const { data: isPossibleToUpdateMark, refetch } = useQuery<boolean>({
-    queryKey: [`intents/is-marked-for-service?intent=${selectedIntent?.id}`],
-  });
+  let intentParam: string | null = null;
 
   const { data: intentsFullResponse, isLoading } = useQuery({
     // queryKey: ['intents/full'],
@@ -89,7 +85,7 @@ const Intents: FC = () => {
   // });
 
   // console.log(intentsFullResponse);
-  console.log(entitiesResponse);
+  console.log('ENTITIES', entitiesResponse);
   // console.log(responsesFullResponse);
   // console.log(rulesFullResponse);
 
@@ -235,22 +231,25 @@ const Intents: FC = () => {
 
       if (!intents) return;
       const selectedIntent = intents.find((intent) => intent.id === value);
-      if (selectedIntent) {
-        // todo wtf is this? should only be run on actual intent change right?
-        intentModifiedMutation.mutate(
-          { intentName: selectedIntent.id },
-          {
-            onSuccess: (data) => {
-              selectedIntent.modifiedAt = data.response;
-              setSelectedIntent(selectedIntent);
-            },
-            onError: (error) => {
-              selectedIntent.modifiedAt = '';
-              setSelectedIntent(selectedIntent);
-            },
-          }
-        );
-      }
+      // if (selectedIntent) {
+      //   // todo what is this? should only be run on actual intent change right?
+      //   intentModifiedMutation.mutate(
+      //     { intentName: selectedIntent.id },
+      //     {
+      //       onSuccess: (data) => {
+      //         selectedIntent.modifiedAt = data.response;
+      //         setSelectedIntent(selectedIntent);
+      //       },
+      //       onError: (error) => {
+      //         selectedIntent.modifiedAt = '';
+      //         setSelectedIntent(selectedIntent);
+      //       },
+      //     }
+      //   );
+      // }
+
+      // todo below siumplified
+      setSelectedIntent(selectedIntent!);
     },
     [intentModifiedMutation, intents]
   );
