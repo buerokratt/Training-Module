@@ -538,186 +538,183 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
   if (!intent) return <>Loading...</>;
 
   return (
-    <div>
-      {intent.id}
-      <Tabs.Content key={intent.id} className="vertical-tabs__body" value={intent.id} style={{ overflowX: 'auto' }}>
-        <div className="vertical-tabs__content-header">
-          <Track direction="vertical" align="stretch" gap={8}>
-            <Track justify="between">
-              <Track gap={16}>
-                {editingIntentTitle ? (
-                  <FormInput
-                    label="Intent title"
-                    name="intentTitle"
-                    value={editingIntentTitle}
-                    onChange={(e) => setEditingIntentTitle(e.target.value)}
-                    hideLabel
-                  />
-                ) : (
-                  <h3>{intent.id.replace(/_/g, ' ')}</h3>
-                )}
-                {editingIntentTitle ? (
-                  <Button appearance="text" onClick={editIntentName}>
-                    <Icon icon={<MdOutlineSave />} />
-                    {t('global.save')}
-                  </Button>
-                ) : (
-                  <Button appearance="text" onClick={() => setEditingIntentTitle(intent.id.replace(/_/g, ' '))}>
-                    <Icon icon={<MdOutlineModeEditOutline />} />
-                    {t('global.edit')}
-                  </Button>
-                )}
-              </Track>
-              <p style={{ color: '#4D4F5D' }}>
-                {t('global.modifiedAt')}:
-                {isValidDate(intent.modifiedAt)
-                  ? ` ${format(new Date(intent.modifiedAt), 'dd.MM.yyyy')}`
-                  : ` ${t('global.missing')}`}
-              </p>
-            </Track>
-            {serviceEligable() && (
-              <Track direction="vertical" align="stretch" gap={5}>
-                <Switch
-                  label={t('training.intents.markForService')}
-                  onLabel={t('global.yes') ?? 'yes'}
-                  offLabel={t('global.no') ?? 'no'}
-                  onCheckedChange={(value) => updateMarkForService(value)}
-                  checked={isMarkedForService}
-                  disabled={isPossibleToUpdateMark}
+    <Tabs.Content key={intent.id} className="vertical-tabs__body" value={intent.id} style={{ overflowX: 'auto' }}>
+      <div className="vertical-tabs__content-header">
+        <Track direction="vertical" align="stretch" gap={8}>
+          <Track justify="between">
+            <Track gap={16}>
+              {editingIntentTitle ? (
+                <FormInput
+                  label="Intent title"
+                  name="intentTitle"
+                  value={editingIntentTitle}
+                  onChange={(e) => setEditingIntentTitle(e.target.value)}
+                  hideLabel
                 />
-              </Track>
-            )}
-            <Track justify="end" gap={8} isMultiline={true}>
-              <Button appearance="secondary" onClick={() => handleIntentExamplesUpload()}>
-                {t('training.intents.upload')}
-              </Button>
+              ) : (
+                <h3>{intent.id.replace(/_/g, ' ')}</h3>
+              )}
+              {editingIntentTitle ? (
+                <Button appearance="text" onClick={editIntentName}>
+                  <Icon icon={<MdOutlineSave />} />
+                  {t('global.save')}
+                </Button>
+              ) : (
+                <Button appearance="text" onClick={() => setEditingIntentTitle(intent.id.replace(/_/g, ' '))}>
+                  <Icon icon={<MdOutlineModeEditOutline />} />
+                  {t('global.edit')}
+                </Button>
+              )}
+            </Track>
+            <p style={{ color: '#4D4F5D' }}>
+              {t('global.modifiedAt')}:
+              {isValidDate(intent.modifiedAt)
+                ? ` ${format(new Date(intent.modifiedAt), 'dd.MM.yyyy')}`
+                : ` ${t('global.missing')}`}
+            </p>
+          </Track>
+          {serviceEligable() && (
+            <Track direction="vertical" align="stretch" gap={5}>
+              <Switch
+                label={t('training.intents.markForService')}
+                onLabel={t('global.yes') ?? 'yes'}
+                offLabel={t('global.no') ?? 'no'}
+                onCheckedChange={(value) => updateMarkForService(value)}
+                checked={isMarkedForService}
+                disabled={isPossibleToUpdateMark}
+              />
+            </Track>
+          )}
+          <Track justify="end" gap={8} isMultiline={true}>
+            <Button appearance="secondary" onClick={() => handleIntentExamplesUpload()}>
+              {t('training.intents.upload')}
+            </Button>
+            <Button
+              appearance="secondary"
+              onClick={() =>
+                intentDownloadMutation.mutate({
+                  intentName: intent.id,
+                })
+              }
+            >
+              {t('training.intents.download')}
+            </Button>
+            {intent.inModel ? (
               <Button
                 appearance="secondary"
                 onClick={() =>
-                  intentDownloadMutation.mutate({
-                    intentName: intent.id,
+                  intentModelMutation.mutate({
+                    name: intent.id,
+                    inModel: true,
                   })
                 }
               >
-                {t('training.intents.download')}
+                {t('training.intents.removeFromModel')}
               </Button>
-              {intent.inModel ? (
-                <Button
-                  appearance="secondary"
-                  onClick={() =>
-                    intentModelMutation.mutate({
-                      name: intent.id,
-                      inModel: true,
-                    })
-                  }
-                >
-                  {t('training.intents.removeFromModel')}
-                </Button>
-              ) : (
-                <Button
-                  onClick={() =>
-                    intentModelMutation.mutate({
-                      name: intent.id,
-                      inModel: false,
-                    })
-                  }
-                >
-                  {t('training.intents.addToModel')}
-                </Button>
-              )}
-              {isHiddenFeaturesEnabled && serviceEligable() && (
-                <Tooltip content={t('training.intents.connectToServiceTooltip')}>
-                  <span>
-                    <Button appearance="secondary" onClick={() => setConnectableIntent(intent)}>
-                      {intent.serviceId
-                        ? t('training.intents.changeConnectedService')
-                        : t('training.intents.connectToService')}
-                    </Button>
-                  </span>
-                </Tooltip>
-              )}
-              <Tooltip content={t('training.intents.deleteTooltip')} hidden={!intent.serviceId}>
+            ) : (
+              <Button
+                onClick={() =>
+                  intentModelMutation.mutate({
+                    name: intent.id,
+                    inModel: false,
+                  })
+                }
+              >
+                {t('training.intents.addToModel')}
+              </Button>
+            )}
+            {isHiddenFeaturesEnabled && serviceEligable() && (
+              <Tooltip content={t('training.intents.connectToServiceTooltip')}>
                 <span>
-                  <Button appearance="error" onClick={() => setDeletableIntent(intent)}>
-                    {t('global.delete')}
+                  <Button appearance="secondary" onClick={() => setConnectableIntent(intent)}>
+                    {intent.serviceId
+                      ? t('training.intents.changeConnectedService')
+                      : t('training.intents.connectToService')}
                   </Button>
                 </span>
               </Tooltip>
-            </Track>
+            )}
+            <Tooltip content={t('training.intents.deleteTooltip')} hidden={!intent.serviceId}>
+              <span>
+                <Button appearance="error" onClick={() => setDeletableIntent(intent)}>
+                  {t('global.delete')}
+                </Button>
+              </span>
+            </Tooltip>
           </Track>
-        </div>
+        </Track>
+      </div>
 
-        <div className="vertical-tabs__content">
-          {intent?.examples && (
-            <Track align="stretch" justify="between" gap={10} style={{ width: '100%' }}>
-              <div style={{ flex: 1 }}>
-                {/* todo missing props */}
-                <IntentExamplesTable
-                  examples={examplesData}
-                  onAddNewExample={handleNewExample}
-                  entities={entities}
-                  selectedIntent={intent}
-                  // queryRefresh={queryRefresh}
-                  updateSelectedIntent={updateSelectedIntent}
-                />
-              </div>
-              <div>
-                <Track align="right" justify="between" direction="vertical" gap={100}>
-                  <Track align="left" direction="vertical">
-                    <h1>{t('training.intents.responseTitle')}</h1>
-                    <FormTextarea
-                      label={t('global.addNew')}
-                      value={intentResponseText}
-                      name="intentResponse"
-                      minRows={7}
-                      maxRows={7}
-                      placeholder={t('global.addNew') + '...' || ''}
-                      hideLabel
-                      maxLength={RESPONSE_TEXT_LENGTH}
-                      showMaxLength
-                      onChange={(e) => setIntentResponseText(e.target.value)}
-                      disableHeightResize
-                    />
-                  </Track>
-                  <Button appearance="text" onClick={() => handleIntentResponseSubmit()}>
-                    {t('global.save')}
-                  </Button>
+      <div className="vertical-tabs__content">
+        {intent?.examples && (
+          <Track align="stretch" justify="between" gap={10} style={{ width: '100%' }}>
+            <div style={{ flex: 1 }}>
+              {/* todo missing props */}
+              <IntentExamplesTable
+                examples={examplesData}
+                onAddNewExample={handleNewExample}
+                entities={entities}
+                selectedIntent={intent}
+                // queryRefresh={queryRefresh}
+                updateSelectedIntent={updateSelectedIntent}
+              />
+            </div>
+            <div>
+              <Track align="right" justify="between" direction="vertical" gap={100}>
+                <Track align="left" direction="vertical">
+                  <h1>{t('training.intents.responseTitle')}</h1>
+                  <FormTextarea
+                    label={t('global.addNew')}
+                    value={intentResponseText}
+                    name="intentResponse"
+                    minRows={7}
+                    maxRows={7}
+                    placeholder={t('global.addNew') + '...' || ''}
+                    hideLabel
+                    maxLength={RESPONSE_TEXT_LENGTH}
+                    showMaxLength
+                    onChange={(e) => setIntentResponseText(e.target.value)}
+                    disableHeightResize
+                  />
                 </Track>
-              </div>
-            </Track>
-          )}
-        </div>
-
-        {deletableIntent !== null && (
-          <Dialog
-            title={t('training.responses.deleteIntent')}
-            onClose={() => setDeletableIntent(null)}
-            footer={
-              <>
-                <Button appearance="secondary" onClick={() => setDeletableIntent(null)}>
-                  {t('global.no')}
+                <Button appearance="text" onClick={() => handleIntentResponseSubmit()}>
+                  {t('global.save')}
                 </Button>
-                <Button appearance="error" onClick={() => handleDeleteIntent()}>
-                  {t('global.yes')}
-                </Button>
-              </>
-            }
-          >
-            <p>{t('global.removeValidation')}</p>
-          </Dialog>
+              </Track>
+            </div>
+          </Track>
         )}
+      </div>
 
-        {connectableIntent !== null && (
-          <ConnectServiceToIntentModal intent={connectableIntent.id} onModalClose={() => setConnectableIntent(null)} />
-        )}
+      {deletableIntent !== null && (
+        <Dialog
+          title={t('training.responses.deleteIntent')}
+          onClose={() => setDeletableIntent(null)}
+          footer={
+            <>
+              <Button appearance="secondary" onClick={() => setDeletableIntent(null)}>
+                {t('global.no')}
+              </Button>
+              <Button appearance="error" onClick={() => handleDeleteIntent()}>
+                {t('global.yes')}
+              </Button>
+            </>
+          }
+        >
+          <p>{t('global.removeValidation')}</p>
+        </Dialog>
+      )}
 
-        {refreshing && (
-          <LoadingDialog title={t('global.updatingDataHead')}>
-            <p>{t('global.updatingDataBody')}</p>
-          </LoadingDialog>
-        )}
-      </Tabs.Content>
-    </div>
+      {connectableIntent !== null && (
+        <ConnectServiceToIntentModal intent={connectableIntent.id} onModalClose={() => setConnectableIntent(null)} />
+      )}
+
+      {refreshing && (
+        <LoadingDialog title={t('global.updatingDataHead')}>
+          <p>{t('global.updatingDataBody')}</p>
+        </LoadingDialog>
+      )}
+    </Tabs.Content>
   );
 };
 
