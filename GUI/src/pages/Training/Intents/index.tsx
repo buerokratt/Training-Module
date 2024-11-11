@@ -187,7 +187,7 @@ const Intents: FC = () => {
     [intents]
   );
 
-  // todo below all ok and should stay in this component
+  // todo below mostly ok and should likely stay in this component
 
   useEffect(() => {
     if (!intentParam || intentsFullList?.length !== intents?.length) return;
