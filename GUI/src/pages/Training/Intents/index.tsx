@@ -216,21 +216,13 @@ const Intents: FC = () => {
     },
   });
 
-  // todo related to below handleTabsValueChange
-  const intentModifiedMutation = useMutation({
-    mutationFn: (data: { intentName: string }) => editLastModified(data),
-  });
-
   // todo rename form stays active
   const handleTabsValueChange = useCallback(
     (value: string) => {
-      setSelectedIntent(null);
-
-      if (!intents) return;
       const selectedIntent = intents.find((intent) => intent.id === value);
       setSelectedIntent(selectedIntent!);
     },
-    [intentModifiedMutation, intents]
+    [intents]
   );
 
   const newIntentMutation = useMutation({
