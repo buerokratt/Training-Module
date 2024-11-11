@@ -560,7 +560,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
   if (!intent) return <>Loading...</>;
 
   return (
-    <Tabs.Content className="vertical-tabs__body" value={intent.id} style={{ overflowX: 'auto' }}>
+    <Tabs.Content key={intent.id} className="vertical-tabs__body" value={intent.id} style={{ overflowX: 'auto' }}>
       <div className="vertical-tabs__content-header">
         <Track direction="vertical" align="stretch" gap={8}>
           <Track justify="between">
