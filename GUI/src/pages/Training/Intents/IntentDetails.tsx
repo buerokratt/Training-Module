@@ -33,6 +33,7 @@ interface IntentDetailsProps {
   intentId: string;
   entities: Entity[];
   setSelectedIntent: Dispatch<SetStateAction<Intent | null>>;
+  // todo maybe remove and invalidate istead
   listRefresh: (intent?: string) => void;
 }
 
@@ -57,6 +58,8 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
   });
 
   // todo split all css
+
+  // todo check IntentExamplesTable for /full query
 
   useEffect(() => {
     if (intentResponse) {
@@ -83,7 +86,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
         console.log('queryRefresh SET', response);
         // setRefreshing(false);
         setIntent(response.response);
-        listRefresh(intent ?? intentId);
+        // listRefresh(intent ?? intentId);
         setSelectedIntent(response.response);
       }
       // todo setIsMarkedForService
@@ -170,7 +173,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
       setRefreshing(true);
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['intents/full']);
+      await queryClient.invalidateQueries(['intents/with-examples-count']);
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -465,6 +468,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
     });
   };
 
+  // todo needs testing
   const deleteIntentMutation = useMutation({
     mutationFn: (name: string) => deleteIntent({ name }),
     onMutate: () => {
@@ -474,7 +478,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
       setSelectedIntent(null);
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['intents/full']);
+      await queryClient.invalidateQueries(['intents/with-examples-count']);
       toast.open({
         type: 'success',
         title: t('global.notification'),

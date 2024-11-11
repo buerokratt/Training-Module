@@ -228,26 +228,6 @@ const Intents: FC = () => {
 
       if (!intents) return;
       const selectedIntent = intents.find((intent) => intent.id === value);
-      // todo maybe this can be updated in queryRefresh only?
-      // if (selectedIntent) {
-      //   console.log('handleTabsValueChange selectedIntent', selectedIntent);
-      //   // todo what is this? should only be run on actual intent change right?
-      //   intentModifiedMutation.mutate(
-      //     { intentName: selectedIntent.id },
-      //     {
-      //       onSuccess: (data) => {
-      //         selectedIntent.modifiedAt = data.response;
-      //         setSelectedIntent(selectedIntent);
-      //       },
-      //       onError: (error) => {
-      //         selectedIntent.modifiedAt = '';
-      //         setSelectedIntent(selectedIntent);
-      //       },
-      //     }
-      //   );
-      // }
-
-      // todo below simplified
       setSelectedIntent(selectedIntent!);
     },
     [intentModifiedMutation, intents]
