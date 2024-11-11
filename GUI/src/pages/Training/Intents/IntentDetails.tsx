@@ -417,8 +417,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
         oldName: intent.id,
         newName: newId,
       });
-      // todo
-      queryRefresh(intentId);
+      queryRefresh();
     }
   };
 
@@ -448,8 +447,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
       });
     },
     onSettled: () => {
-      // todo
-      queryRefresh(intent.id);
+      queryRefresh();
     },
   });
 
@@ -487,7 +485,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
       });
     },
     onSettled: () => {
-      queryRefresh('');
+      queryRefresh();
     },
   });
 
