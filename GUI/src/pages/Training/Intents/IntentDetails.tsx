@@ -129,29 +129,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
     [queryClient]
   );
 
-  // const queryRefresh = useCallback(
-  //   async function queryRefresh() {
-  //     console.log('queryRefresh start', intentId);
-  //     try {
-  //       const result = await queryClient.fetchQuery<{ response: Intent }>(
-  //         [`intents/by-id?intent=${intentId}`],
-  //         // Add fetch options to ensure the query executes
-  //         {
-  //           staleTime: 0,
-  //           cacheTime: 0,
-  //         }
-  //       );
-  //       console.log('queryRefresh success:', result);
-  //       if (result?.response) {
-  //         setIntent(result.response);
-  //       }
-  //     } catch (error) {
-  //       console.error('queryRefresh error:', error);
-  //     }
-  //   },
-  //   [queryClient, intentId]
-  // );
-
   const markIntentServiceMutation = useMutation({
     mutationFn: (data: { name: string; isForService: boolean }) => markForService(data),
     onMutate: () => {
