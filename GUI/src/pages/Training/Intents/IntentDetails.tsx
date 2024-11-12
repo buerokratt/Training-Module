@@ -81,7 +81,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
       ]);
       if (response) {
         setIntent(response.response);
-        // listRefresh(intent ?? intentId);
         setSelectedIntent(response.response);
       }
       // todo setIsMarkedForService
