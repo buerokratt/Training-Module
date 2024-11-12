@@ -1,14 +1,14 @@
-import { FC, useMemo, useState } from "react";
+import { FC, useMemo, useState } from 'react';
 import { SwitchBox } from 'components';
-import { useTranslation } from "react-i18next";
-import { Intent } from "types/intent";
-import { compareInModel, compareInModelReversed } from "utils/compare";
-import IntentList from "./IntentList";
-import "./IntentTabList.scss";
+import { useTranslation } from 'react-i18next';
+import { compareInModel, compareInModelReversed } from 'utils/compare';
+import IntentList from './IntentList';
+import './IntentTabList.scss';
+import { IntentWithExamplesCount } from 'types/intentWithExampleCounts';
 
 interface IntentTabListProps {
   filter: string;
-  intents: Intent[];
+  intents: IntentWithExamplesCount[];
   onDismiss: () => void;
 }
 
@@ -45,26 +45,23 @@ const IntentTabList: FC<IntentTabListProps> = ({ filter, intents, onDismiss }) =
 
   return (
     <div className="vertical-tabs__list-scrollable">
-      <div style={{ padding: "10px" }}>
-        <div className='sorting-control margin-bottom'>
-          <label htmlFor='show-common-toggle'>{t('training.intents.commonIntents')}</label>
+      <div style={{ padding: '10px' }}>
+        <div className="sorting-control margin-bottom">
+          <label htmlFor="show-common-toggle">{t('training.intents.commonIntents')}</label>
           <SwitchBox
-            id='show-common-toggle'
+            id="show-common-toggle"
             checked={showCommons}
             hideLabel
-            label=''
+            label=""
             onCheckedChange={() => {
               onDismiss();
               setShowCommons(!showCommons);
-            }} 
+            }}
           />
         </div>
-        <div className='sorting-control'>
-          <label htmlFor='sorting-type-control'>{t('training.intents.sortingType.label')}</label>
-          <select id='sorting-type-control'
-            value={order}
-            onChange={e => setOrder(e.target.value)}
-          >
+        <div className="sorting-control">
+          <label htmlFor="sorting-type-control">{t('training.intents.sortingType.label')}</label>
+          <select id="sorting-type-control" value={order} onChange={(e) => setOrder(e.target.value)}>
             <option value="alphabetically-asc">{t('training.intents.sortingType.alphabeticalAsc')}</option>
             <option value="alphabetically-Desc">{t('training.intents.sortingType.alphabeticalDesc')}</option>
             <option value="inmodel-asc">{t('training.intents.sortingType.inModelFirst')}</option>
@@ -79,7 +76,7 @@ const IntentTabList: FC<IntentTabListProps> = ({ filter, intents, onDismiss }) =
       {showCommons && <div className="divider" />}
       {showCommons && <IntentList intents={commonIntents} />}
     </div>
-  )
-}
+  );
+};
 
 export default IntentTabList;

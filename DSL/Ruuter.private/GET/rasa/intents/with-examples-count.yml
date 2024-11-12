@@ -28,6 +28,24 @@ getDomainFile:
       cookie: ${incoming.headers.cookie}
   result: getDomainDataResult
 
+getIntentsNames:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_intent_names_from_example_counts"
+    headers:
+      type: "json"
+    body:
+      hits: ${getIntentsResult.response.body.aggregations.hot.buckets}
+  result: getIntentsNamesResult
+
+getIntentListLastChanged:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/get-intents-list-last-changed"
+    body:
+      intentsList: ${getIntentsNamesResult.response.body.intents}
+  result: getIntentsListLastChangedResult
+
 mapIntentsData:
   call: http.post
   args:
@@ -38,6 +56,7 @@ mapIntentsData:
       buckets: ${getIntentsResult.response.body.aggregations.hot.buckets}
       intents:
         inmodel: ${getDomainDataResult.response.body.response.intents}
+        intentsModifiedAt: ${getIntentsListLastChangedResult.response.body}
   result: intentsData
   next: returnSuccess
 

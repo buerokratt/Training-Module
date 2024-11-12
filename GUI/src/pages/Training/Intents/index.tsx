@@ -17,7 +17,7 @@ import IntentDetails from './IntentDetails';
 import { IntentWithExamplesCount } from 'types/intentWithExampleCounts';
 
 // TODO: change examples_count to examplesCount when possible with changes in CommonIntents
-type IntentWithExamplesCountResponse = Pick<Intent, 'id' | 'inModel'> & { examples_count: number };
+type IntentWithExamplesCountResponse = Pick<Intent, 'id' | 'inModel' | 'modifiedAt'> & { examples_count: number };
 
 type IntentsWithExamplesCountResponse = {
   response: {
@@ -261,8 +261,6 @@ const Intents: FC = () => {
               </Track>
             </div>
 
-            {/* todo type issues + show commons toggle broken */}
-            {/* todo also separator between normal and common broken */}
             <IntentTabList
               intents={intents}
               filter={filter}

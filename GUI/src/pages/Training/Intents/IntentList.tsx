@@ -3,17 +3,15 @@ import * as Tabs from '@radix-ui/react-tabs';
 import { Icon, Tooltip, Track } from 'components';
 import { MdCheckCircleOutline } from 'react-icons/md';
 import { useTranslation } from 'react-i18next';
-import { Intent } from 'types/intent';
 import './IntentTabList.scss';
+import { IntentWithExamplesCount } from 'types/intentWithExampleCounts';
 
 interface IntentListProps {
-  intents: Intent[];
+  intents: IntentWithExamplesCount[];
 }
 
 const IntentList: FC<IntentListProps> = ({ intents }) => {
   const { t } = useTranslation();
-
-  // console.log('IntentList', intents);
 
   return (
     <>
