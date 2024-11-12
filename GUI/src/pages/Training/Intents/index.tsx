@@ -65,7 +65,6 @@ const Intents: FC = () => {
   let intentParam: string | null = null;
 
   const { data: intentsFullResponse, isLoading } = useQuery({
-    // queryKey: ['intents/full'],
     // todo is this broken VS base? http://localhost:3001/training/training/common-intents
     queryKey: ['intents/with-examples-count'],
   });
@@ -189,8 +188,8 @@ const Intents: FC = () => {
     }
   }, [intentParam]);
 
-  // TODO: need to check if this is used at all
-  // TODO: if not, need to fix errors
+  // TODO: This is not used at all at the moment
+  // TODO: If this is needed at some point, errors should be fixed
   const turnIntentIntoServiceMutation = useMutation({
     mutationFn: ({ intent }: { intent: Intent }) => turnIntentIntoService(intent),
     onMutate: () => {
