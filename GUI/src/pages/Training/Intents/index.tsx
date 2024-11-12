@@ -40,10 +40,20 @@ type Response = {
   text: string;
 };
 
+type IntentWithExamplesCount = Pick<Intent, 'id' | 'examplesCount'>;
+
+type IntentWithExamplesCountResponse = {
+  response: {
+    intents: (Pick<Intent, 'id'> & { examples_count: number })[];
+  };
+};
+
 const Intents: FC = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const toast = useToast();
+
+  const [intents, setIntents] = useState<IntentWithExamplesCount[]>([]);
 
   const [intentResponseName, setIntentResponseName] = useState<string>('');
   const [intentResponseText, setIntentResponseText] = useState<string>('');
@@ -64,10 +74,24 @@ const Intents: FC = () => {
 
   let intentParam: string | null = null;
 
-  const { data: intentsFullResponse, isLoading } = useQuery({
+  const { data: intentsFullResponse, isLoading } = useQuery<IntentWithExamplesCountResponse>({
     // todo is this broken VS base? http://localhost:3001/training/training/common-intents
     queryKey: ['intents/with-examples-count'],
   });
+
+  useEffect(() => {
+    if (intentsFullResponse) {
+      console.log('intents', intentsFullResponse);
+      setIntents(
+        intentsFullResponse.response.intents.map((intent) => ({
+          id: intent.id,
+          examplesCount: intent.examples_count,
+        }))
+      );
+    }
+  }, [intentsFullResponse]);
+
+  // todo intent count and inModel circle are broken
 
   // todo is this fetched twice
   const { data: entitiesResponse } = useQuery<{ response: Entity[] }>({
@@ -84,7 +108,7 @@ const Intents: FC = () => {
   // });
 
   let intentsFullList = intentsFullResponse?.response?.intents;
-  let intents: Intent[] = [];
+  // let intents: Intent[] = [];
 
   // let intentResponsesFullList = responsesFullResponse ? responsesFullResponse[0].response : null;
   // let intentResponses: Response[] = [];
@@ -92,25 +116,26 @@ const Intents: FC = () => {
   // let rulesFullList = rulesFullResponse?.response;
   // let rules: Rule[] = [];
 
-  // todo this needs to be useEffect - do after queryRefresh
-  if (intentsFullList) {
-    intentsFullList.forEach((intent: any) => {
-      // const countExamples = intent.examples.length;
-      // todo types and simplify
-      const newIntent: Intent = {
-        id: intent.id,
-        description: null,
-        inModel: intent.inmodel,
-        modifiedAt: intent.modifiedAt,
-        examplesCount: intent.examples_count,
-        examples: intent.examples,
-        serviceId: intent.serviceId,
-        isCommon: intent.id.startsWith('common_'),
-      };
-      intents.push(newIntent);
-    });
-    intentParam = searchParams.get('intent');
-  }
+  // if (intentsFullList) {
+  //   intentsFullList.forEach((intent: any) => {
+  //     // const countExamples = intent.examples.length;
+  //     const newIntent: Intent = {
+  //       id: intent.id,
+  //       description: null,
+  //       inModel: intent.inmodel,
+  //       modifiedAt: intent.modifiedAt,
+  //       examplesCount: intent.examples_count,
+  //       examples: intent.examples,
+  //       serviceId: intent.serviceId,
+  //       isCommon: intent.id.startsWith('common_'),
+  //     };
+  //     intents.push(newIntent);
+  //   });
+  // }
+
+  // todo intentparam breaks
+  //   intentParam = searchParams.get('intent');
+  // }
 
   // if (intentResponsesFullList) {
   //   intentResponsesFullList?.forEach((response: any) => {

@@ -53,6 +53,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
   const queryClient = useQueryClient();
   const toast = useToast();
 
+  // todo use type
   const { data: intentResponse } = useQuery<{ response: Intent }>({
     queryKey: [`intents/by-id?intent=${intentId}`],
   });
