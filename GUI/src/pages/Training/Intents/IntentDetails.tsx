@@ -30,6 +30,11 @@ import { Entity } from 'types/entity';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import { IntentWithExamplesCount } from 'types/intentWithExampleCounts';
 
+type Response = {
+  name: string;
+  text: string;
+};
+
 interface IntentDetailsProps {
   intentId: string;
   entities: Entity[];
@@ -59,7 +64,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
     queryKey: [`intents/by-id?intent=${intentId}`],
   });
 
-  // todo check IntentExamplesTable for /full query
+  // todo check IntentExamplesTable for /full query - and if changed, remove all related stuff
 
   useEffect(() => {
     if (intentResponse) {
@@ -127,6 +132,89 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
       // });
     },
     [queryClient]
+  );
+
+  // todo these likely need new queries
+  const { data: responsesFullResponse } = useQuery({
+    queryKey: ['responses-list'],
+  });
+
+  const { data: rulesFullResponse } = useQuery({
+    queryKey: ['rules'],
+  });
+
+  let intentResponsesFullList = responsesFullResponse ? responsesFullResponse[0].response : null;
+  let intentResponses: Response[] = [];
+
+  // let rulesFullList = rulesFullResponse?.response;
+  // let rules: Rule[] = [];
+
+  if (intentResponsesFullList) {
+    intentResponsesFullList?.forEach((response: any) => {
+      const newIntentResponse: Response = {
+        name: response.name,
+        text: response.text,
+      };
+      intentResponses.push(newIntentResponse);
+    });
+  }
+
+  // if (rulesFullList) {
+  //   rulesFullList.forEach((rule: any) => {
+  //     rules.push(rule);
+  //   });
+  // }
+
+  const queryRefreshOld = useCallback(
+    function queryRefresh(selectIntent?: string) {
+      setSelectedIntent(null);
+      setIntentResponseName(null);
+      setIntentResponseText(null);
+      setIntentRule(null);
+
+      queryClient.fetchQuery(['intents/with-examples-count']).then((res: any) => {
+        setRefreshing(false);
+
+        if (intents.length > 0) {
+          const newSelectedIntent = res.response.intents.find((intent: any) => intent.title === selectIntent) || null;
+          if (newSelectedIntent) {
+            setSelectedIntent({
+              id: newSelectedIntent.title,
+              description: null,
+              inModel: newSelectedIntent.inmodel,
+              modifiedAt: newSelectedIntent.modifiedAt,
+              examplesCount: newSelectedIntent.examples.length,
+              examples: newSelectedIntent.examples,
+              serviceId: newSelectedIntent.serviceId,
+              isForService: newSelectedIntent.isForService,
+            });
+            setIsMarkedForService(newSelectedIntent.isForService ? newSelectedIntent.isForService : false);
+
+            queryClient.fetchQuery(['responses-list']).then((res: any) => {
+              if (intentResponses.length > 0) {
+                const intentExistingResponse = res[0].response.find(
+                  (response: any) => `utter_${newSelectedIntent.title}` === response.name
+                );
+                if (intentExistingResponse) {
+                  setIntentResponseText(intentExistingResponse.text);
+                  setIntentResponseName(intentExistingResponse.name);
+                }
+              }
+            });
+
+            // queryClient.fetchQuery(['rules']).then((res: any) => {
+            //   if (rules.length > 0) {
+            //     const intentExistingRule = res.response.find((rule: any) => rule.id === `rule_${newSelectedIntent.title}`)
+            //     if (intentExistingRule) {
+            //       setIntentRule(intentExistingRule.id);
+            //     }
+            //   }
+            // })
+          }
+        }
+      });
+    },
+    [queryClient, setSelectedIntent]
   );
 
   const markIntentServiceMutation = useMutation({
@@ -457,7 +545,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
     });
   };
 
-  // todo needs testing
   const deleteIntentMutation = useMutation({
     mutationFn: (name: string) => deleteIntent({ name }),
     onMutate: () => {
@@ -643,7 +730,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
         {intent?.examples && (
           <Track align="stretch" justify="between" gap={10} style={{ width: '100%' }}>
             <div style={{ flex: 1 }}>
-              {/* todo missing props */}
+              {/* todo missing/broken props */}
               <IntentExamplesTable
                 examples={examplesData}
                 onAddNewExample={handleNewExample}
