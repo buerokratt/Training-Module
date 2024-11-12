@@ -36,7 +36,8 @@ mapIntentsData:
       type: "json"
     body:
       buckets: ${getIntentsResult.response.body.aggregations.hot.buckets}
-      inmodel: ${getDomainDataResult.response.body.response.intents}
+      intents:
+        inmodel: ${getDomainDataResult.response.body.response.intents}
   result: intentsData
   next: returnSuccess
 

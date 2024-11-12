@@ -52,12 +52,6 @@ const Intents: FC = () => {
     }
   }, [intentsFullResponse]);
 
-  // todo intent inModel circle is broken - below for testing, this works with full query
-  // todo this does work with by-id query
-  useQuery({
-    queryKey: ['intents/full'],
-  });
-
   const { data: entitiesResponse } = useQuery<{ response: Entity[] }>({
     queryKey: ['entities'],
   });
