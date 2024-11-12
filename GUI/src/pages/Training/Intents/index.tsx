@@ -34,19 +34,30 @@ import { addStoryOrRule, deleteStoryOrRule } from '../../../services/stories';
 import IntentTabList from './IntentTabList';
 import useStore from '../../../store/store';
 import IntentDetails from './IntentDetails';
+import { IntentWithExamplesCount } from 'types/intentWithExampleCounts';
+import { t } from 'i18next';
+import { filter } from 'rxjs';
 
 type Response = {
   name: string;
   text: string;
 };
 
-type IntentWithExamplesCount = Pick<Intent, 'id' | 'examplesCount' | 'inModel'>;
+// TODO: change examples_count to examplesCount when possible with changes in CommonIntents
+type IntentWithExamplesCountResponse = Pick<Intent, 'id' | 'inModel'> & { examples_count: number };
 
-type IntentWithExamplesCountResponse = {
+// intents: (Pick<Intent, 'id' | 'inModel'> & { examples_count: number })[];
+
+type IntentsWithExamplesCountResponse = {
   response: {
-    intents: (Pick<Intent, 'id' | 'inModel'> & { examples_count: number })[];
+    intents: IntentWithExamplesCountResponse[];
   };
 };
+
+const intentResponseToIntent = (intent: IntentWithExamplesCountResponse): IntentWithExamplesCount => ({
+  ...intent,
+  examplesCount: intent.examples_count,
+});
 
 const Intents: FC = () => {
   const { t } = useTranslation();
@@ -72,20 +83,13 @@ const Intents: FC = () => {
   const [connectableIntent, setConnectableIntent] = useState<Intent | null>(null);
   const [turnIntentToServiceIntent, setTurnIntentToServiceIntent] = useState<Intent | null>(null);
 
-  const { data: intentsFullResponse, isLoading } = useQuery<IntentWithExamplesCountResponse>({
-    // todo is this broken VS base? http://localhost:3001/training/training/common-intents
+  const { data: intentsFullResponse, isLoading } = useQuery<IntentsWithExamplesCountResponse>({
     queryKey: ['intents/with-examples-count'],
   });
 
   useEffect(() => {
     if (intentsFullResponse) {
-      console.log('intents', intentsFullResponse);
-      setIntents(
-        intentsFullResponse.response.intents.map((intent) => ({
-          ...intent,
-          examplesCount: intent.examples_count,
-        }))
-      );
+      setIntents(intentsFullResponse.response.intents.map((intent) => intentResponseToIntent(intent)));
     }
   }, [intentsFullResponse]);
 
@@ -133,54 +137,74 @@ const Intents: FC = () => {
   //   });
   // }
 
+  // const queryRefresh = useCallback(
+  //   function queryRefresh(selectIntent?: string) {
+  //     setSelectedIntent(null);
+  //     setIntentResponseName(null);
+  //     setIntentResponseText(null);
+  //     setIntentRule(null);
+
+  //     queryClient.fetchQuery(['intents/with-examples-count']).then((res: any) => {
+  //       setRefreshing(false);
+
+  //       if (intents.length > 0) {
+  //         const newSelectedIntent = res.response.intents.find((intent: any) => intent.title === selectIntent) || null;
+  //         if (newSelectedIntent) {
+  //           setSelectedIntent({
+  //             id: newSelectedIntent.title,
+  //             description: null,
+  //             inModel: newSelectedIntent.inmodel,
+  //             modifiedAt: newSelectedIntent.modifiedAt,
+  //             examplesCount: newSelectedIntent.examples.length,
+  //             examples: newSelectedIntent.examples,
+  //             serviceId: newSelectedIntent.serviceId,
+  //             isForService: newSelectedIntent.isForService,
+  //           });
+  //           setIsMarkedForService(newSelectedIntent.isForService ? newSelectedIntent.isForService : false);
+
+  //           // queryClient.fetchQuery(['responses-list']).then((res: any) => {
+  //           //   if (intentResponses.length > 0) {
+  //           //     const intentExistingResponse = res[0].response.find((response: any) => `utter_${newSelectedIntent.title}` === response.name);
+  //           //     if (intentExistingResponse) {
+  //           //       setIntentResponseText(intentExistingResponse.text);
+  //           //       setIntentResponseName(intentExistingResponse.name);
+  //           //     }
+  //           //   }
+  //           // })
+
+  //           // queryClient.fetchQuery(['rules']).then((res: any) => {
+  //           //   if (rules.length > 0) {
+  //           //     const intentExistingRule = res.response.find((rule: any) => rule.id === `rule_${newSelectedIntent.title}`)
+  //           //     if (intentExistingRule) {
+  //           //       setIntentRule(intentExistingRule.id);
+  //           //     }
+  //           //   }
+  //           // })
+  //         }
+  //       }
+  //     });
+  //   },
+  //   [intents]
+  // );
+
   const queryRefresh = useCallback(
-    function queryRefresh(selectIntent?: string) {
-      setSelectedIntent(null);
-      setIntentResponseName(null);
-      setIntentResponseText(null);
-      setIntentRule(null);
+    async (selectIntent?: string) => {
+      // todo this is necessary to reset - but maybe in child component with responses-list query?
+      // setIntentResponseText(null);
 
-      queryClient.fetchQuery(['intents/with-examples-count']).then((res: any) => {
-        setRefreshing(false);
+      const response = await queryClient.fetchQuery<IntentsWithExamplesCountResponse>(['intents/with-examples-count']);
 
-        if (intents.length > 0) {
-          const newSelectedIntent = res.response.intents.find((intent: any) => intent.title === selectIntent) || null;
-          if (newSelectedIntent) {
-            setSelectedIntent({
-              id: newSelectedIntent.title,
-              description: null,
-              inModel: newSelectedIntent.inmodel,
-              modifiedAt: newSelectedIntent.modifiedAt,
-              examplesCount: newSelectedIntent.examples.length,
-              examples: newSelectedIntent.examples,
-              serviceId: newSelectedIntent.serviceId,
-              isForService: newSelectedIntent.isForService,
-            });
-            setIsMarkedForService(newSelectedIntent.isForService ? newSelectedIntent.isForService : false);
+      if (response) {
+        setIntents(response.response.intents.map((intent) => intentResponseToIntent(intent)));
 
-            // queryClient.fetchQuery(['responses-list']).then((res: any) => {
-            //   if (intentResponses.length > 0) {
-            //     const intentExistingResponse = res[0].response.find((response: any) => `utter_${newSelectedIntent.title}` === response.name);
-            //     if (intentExistingResponse) {
-            //       setIntentResponseText(intentExistingResponse.text);
-            //       setIntentResponseName(intentExistingResponse.name);
-            //     }
-            //   }
-            // })
+        const selectedIntent = response.response.intents.find(
+          (intent) => intent.id === selectIntent
+        ) as IntentWithExamplesCountResponse;
 
-            // queryClient.fetchQuery(['rules']).then((res: any) => {
-            //   if (rules.length > 0) {
-            //     const intentExistingRule = res.response.find((rule: any) => rule.id === `rule_${newSelectedIntent.title}`)
-            //     if (intentExistingRule) {
-            //       setIntentRule(intentExistingRule.id);
-            //     }
-            //   }
-            // })
-          }
-        }
-      });
+        setSelectedIntent(intentResponseToIntent(selectedIntent));
+      }
     },
-    [intents]
+    [queryClient]
   );
 
   useEffect(() => {
@@ -251,7 +275,6 @@ const Intents: FC = () => {
     },
     onSettled: () => {
       setRefreshing(false);
-      // todo needs query refresh
       queryRefresh(filter.trim().replace(/\s+/g, '_'));
       setFilter('');
     },
@@ -287,6 +310,7 @@ const Intents: FC = () => {
               </Track>
             </div>
 
+            {/* todo type issues + show commons toggle broken */}
             <IntentTabList
               intents={intents}
               filter={filter}
@@ -332,6 +356,12 @@ const Intents: FC = () => {
         >
           <p>{t('global.removeValidation')}</p>
         </Dialog>
+      )}
+
+      {refreshing && (
+        <LoadingDialog title={t('global.updatingDataHead')}>
+          <p>{t('global.updatingDataBody')}</p>
+        </LoadingDialog>
       )}
     </>
   );

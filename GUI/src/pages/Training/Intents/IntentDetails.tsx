@@ -28,11 +28,12 @@ import ConnectServiceToIntentModal from 'pages/ConnectServiceToIntentModal';
 import LoadingDialog from 'components/LoadingDialog';
 import { Entity } from 'types/entity';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
+import { IntentWithExamplesCount } from 'types/intentWithExampleCounts';
 
 interface IntentDetailsProps {
   intentId: string;
   entities: Entity[];
-  setSelectedIntent: Dispatch<SetStateAction<Intent | null>>;
+  setSelectedIntent: Dispatch<SetStateAction<IntentWithExamplesCount | null>>;
   // todo maybe remove and invalidate istead
   listRefresh: (intent?: string) => void;
 }
@@ -62,10 +63,10 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
 
   useEffect(() => {
     if (intentResponse) {
-      console.log('intentResponse EFFECT', intentResponse);
       setIntent(intentResponse.response);
-      // Also reset editing state on choosing another intent from list
+      // Also reset form states on choosing another intent from list
       setEditingIntentTitle(null);
+      setIntentResponseText('');
     }
   }, [intentResponse]);
 
@@ -75,13 +76,10 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
 
   const queryRefresh = useCallback(
     async (intent?: string) => {
-      console.log('queryRefresh start', intent);
       const response = await queryClient.fetchQuery<{ response: Intent }>([
         `intents/by-id?intent=${intent ?? intentId}`,
       ]);
-      console.log('queryRefresh response', response);
       if (response) {
-        console.log('queryRefresh SET', response);
         setIntent(response.response);
         // listRefresh(intent ?? intentId);
         setSelectedIntent(response.response);
@@ -201,7 +199,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
       newName,
     });
 
-    console.log('editIntentName', newName);
     queryRefresh(newName);
   };
 

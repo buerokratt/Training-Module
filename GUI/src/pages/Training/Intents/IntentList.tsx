@@ -13,7 +13,7 @@ interface IntentListProps {
 const IntentList: FC<IntentListProps> = ({ intents }) => {
   const { t } = useTranslation();
 
-  console.log('IntentList', intents);
+  // console.log('IntentList', intents);
 
   return (
     <>
