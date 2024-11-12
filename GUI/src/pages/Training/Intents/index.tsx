@@ -1,52 +1,23 @@
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as Tabs from '@radix-ui/react-tabs';
-import { format } from 'date-fns';
 import { AxiosError } from 'axios';
-import { MdOutlineModeEditOutline, MdOutlineSave } from 'react-icons/md';
 
-import { Button, Dialog, FormInput, FormTextarea, Icon, Switch, Tooltip, Track } from 'components';
-import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
+import { Button, Dialog, FormInput, Track } from 'components';
 import { useToast } from 'hooks/useToast';
 import { Intent } from 'types/intent';
 import { Entity } from 'types/entity';
-import {
-  addExample,
-  addIntent,
-  addRemoveIntentModel,
-  deleteIntent,
-  downloadExamples,
-  editIntent,
-  markForService,
-  turnIntentIntoService,
-  uploadExamples,
-} from 'services/intents';
-import IntentExamplesTable from './IntentExamplesTable';
+import { addIntent, turnIntentIntoService } from 'services/intents';
 import LoadingDialog from '../../../components/LoadingDialog';
-import ConnectServiceToIntentModal from 'pages/ConnectServiceToIntentModal';
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
-import { isHiddenFeaturesEnabled, RESPONSE_TEXT_LENGTH } from 'constants/config';
-import { deleteResponse, editResponse } from '../../../services/responses';
-import { Rule, RuleDTO } from '../../../types/rule';
-import { addStoryOrRule, deleteStoryOrRule } from '../../../services/stories';
 import IntentTabList from './IntentTabList';
-import useStore from '../../../store/store';
 import IntentDetails from './IntentDetails';
 import { IntentWithExamplesCount } from 'types/intentWithExampleCounts';
-import { t } from 'i18next';
-import { filter } from 'rxjs';
-
-type Response = {
-  name: string;
-  text: string;
-};
 
 // TODO: change examples_count to examplesCount when possible with changes in CommonIntents
 type IntentWithExamplesCountResponse = Pick<Intent, 'id' | 'inModel'> & { examples_count: number };
-
-// intents: (Pick<Intent, 'id' | 'inModel'> & { examples_count: number })[];
 
 type IntentsWithExamplesCountResponse = {
   response: {
@@ -63,24 +34,12 @@ const Intents: FC = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const toast = useToast();
+  const [searchParams] = useSearchParams();
 
   const [intents, setIntents] = useState<IntentWithExamplesCount[]>([]);
-
-  const [intentResponseName, setIntentResponseName] = useState<string>('');
-  const [intentResponseText, setIntentResponseText] = useState<string>('');
-
-  const [searchParams] = useSearchParams();
-  const [filter, setFilter] = useState('');
-  const [isMarkedForService, setIsMarkedForService] = useState<boolean>(false);
-
-  const [refreshing, setRefreshing] = useState(false);
-
-  const [editingIntentTitle, setEditingIntentTitle] = useState<string | null>(null);
   const [selectedIntent, setSelectedIntent] = useState<IntentWithExamplesCount | null>(null);
-  const [intentRule, setIntentRule] = useState<string>('');
-
-  const [deletableIntent, setDeletableIntent] = useState<Intent | null>(null);
-  const [connectableIntent, setConnectableIntent] = useState<Intent | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
+  const [filter, setFilter] = useState('');
   const [turnIntentToServiceIntent, setTurnIntentToServiceIntent] = useState<Intent | null>(null);
 
   const { data: intentsFullResponse, isLoading } = useQuery<IntentsWithExamplesCountResponse>({
@@ -111,9 +70,6 @@ const Intents: FC = () => {
   // const { data: rulesFullResponse } = useQuery({
   //   queryKey: ['rules'],
   // });
-
-  let intentsFullList = intentsFullResponse?.response?.intents;
-  // let intents: Intent[] = [];
 
   // let intentResponsesFullList = responsesFullResponse ? responsesFullResponse[0].response : null;
   // let intentResponses: Response[] = [];
@@ -209,14 +165,14 @@ const Intents: FC = () => {
 
   useEffect(() => {
     let intentParam = searchParams.get('intent');
-    if (!intentParam || intentsFullList?.length !== intents?.length) return;
+    if (!intentParam) return;
 
     const queryIntent = intents.find((intent) => intent.id === intentParam);
 
     if (queryIntent) {
       setSelectedIntent(queryIntent);
     }
-  }, [intents, intentsFullList?.length, searchParams]);
+  }, [intents, searchParams]);
 
   // TODO: This is not used at all at the moment
   // TODO: If this is needed at some point, errors should be fixed
