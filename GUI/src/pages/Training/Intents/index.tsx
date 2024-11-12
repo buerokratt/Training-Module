@@ -53,10 +53,10 @@ const Intents: FC = () => {
   }, [intentsFullResponse]);
 
   // todo intent inModel circle is broken - below for testing, this works with full query
-  // todo this is also broken with by-id query
-  // useQuery({
-  //   queryKey: ['intents/full'],
-  // });
+  // todo this does work with by-id query
+  useQuery({
+    queryKey: ['intents/full'],
+  });
 
   const { data: entitiesResponse } = useQuery<{ response: Entity[] }>({
     queryKey: ['entities'],
@@ -267,6 +267,7 @@ const Intents: FC = () => {
             </div>
 
             {/* todo type issues + show commons toggle broken */}
+            {/* todo also separator between normal and common broken */}
             <IntentTabList
               intents={intents}
               filter={filter}
