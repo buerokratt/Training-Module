@@ -19,7 +19,6 @@ import {
   deleteIntent,
   downloadExamples,
   editIntent,
-  editLastModified,
   markForService,
   turnIntentIntoService,
   uploadExamples,
@@ -179,8 +178,6 @@ const Intents: FC = () => {
     [intents]
   );
 
-  // todo below mostly ok and should likely stay in this component
-
   useEffect(() => {
     if (!intentParam || intentsFullList?.length !== intents?.length) return;
 
@@ -192,7 +189,7 @@ const Intents: FC = () => {
   }, [intentParam]);
 
   // TODO: need to check if this is used at all
-  // TODO: If not, need to fix errors
+  // TODO: if not, need to fix errors
   const turnIntentIntoServiceMutation = useMutation({
     mutationFn: ({ intent }: { intent: Intent }) => turnIntentIntoService(intent),
     onMutate: () => {
@@ -248,6 +245,7 @@ const Intents: FC = () => {
     },
     onSettled: () => {
       setRefreshing(false);
+      // todo needs query refresh
       queryRefresh(filter.trim().replace(/\s+/g, '_'));
       setFilter('');
     },

@@ -65,7 +65,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
     if (intentResponse) {
       console.log('intentResponse EFFECT', intentResponse);
       setIntent(intentResponse.response);
-      // Also reset editing state on intent change
+      // Also reset editing state on choosing another intent from list
       setEditingIntentTitle(null);
     }
   }, [intentResponse]);
