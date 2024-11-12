@@ -135,6 +135,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
   );
 
   // todo these likely need new queries
+  // todo test with: common teenus citizien initiative popular
   const { data: responsesFullResponse } = useQuery({
     queryKey: ['responses-list'],
   });
@@ -736,6 +737,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
                 onAddNewExample={handleNewExample}
                 entities={entities}
                 selectedIntent={intent}
+                // todo necessary,
                 // queryRefresh={queryRefresh}
                 updateSelectedIntent={updateSelectedIntent}
               />
