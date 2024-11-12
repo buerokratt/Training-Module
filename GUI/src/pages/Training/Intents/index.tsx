@@ -117,27 +117,6 @@ const Intents: FC = () => {
   // let rulesFullList = rulesFullResponse?.response;
   // let rules: Rule[] = [];
 
-  // if (intentsFullList) {
-  //   intentsFullList.forEach((intent: any) => {
-  //     // const countExamples = intent.examples.length;
-  //     const newIntent: Intent = {
-  //       id: intent.id,
-  //       description: null,
-  //       inModel: intent.inmodel,
-  //       modifiedAt: intent.modifiedAt,
-  //       examplesCount: intent.examples_count,
-  //       examples: intent.examples,
-  //       serviceId: intent.serviceId,
-  //       isCommon: intent.id.startsWith('common_'),
-  //     };
-  //     intents.push(newIntent);
-  //   });
-  // }
-
-  // todo intentparam breaks
-  //   intentParam = searchParams.get('intent');
-  // }
-
   // if (intentResponsesFullList) {
   //   intentResponsesFullList?.forEach((response: any) => {
   //     const newIntentResponse: Response = {
@@ -204,14 +183,9 @@ const Intents: FC = () => {
     [intents]
   );
 
-  // let intentParam: string | null = null;
-
   useEffect(() => {
-    console.log('param useEffect', searchParams);
     let intentParam = searchParams.get('intent');
     if (!intentParam || intentsFullList?.length !== intents?.length) return;
-
-    console.log('intentParam', intentParam);
 
     const queryIntent = intents.find((intent) => intent.id === intentParam);
 
