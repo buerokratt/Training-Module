@@ -65,14 +65,12 @@ const Intents: FC = () => {
   const [refreshing, setRefreshing] = useState(false);
 
   const [editingIntentTitle, setEditingIntentTitle] = useState<string | null>(null);
-  const [selectedIntent, setSelectedIntent] = useState<Intent | null>(null);
+  const [selectedIntent, setSelectedIntent] = useState<IntentWithExamplesCount | null>(null);
   const [intentRule, setIntentRule] = useState<string>('');
 
   const [deletableIntent, setDeletableIntent] = useState<Intent | null>(null);
   const [connectableIntent, setConnectableIntent] = useState<Intent | null>(null);
   const [turnIntentToServiceIntent, setTurnIntentToServiceIntent] = useState<Intent | null>(null);
-
-  let intentParam: string | null = null;
 
   const { data: intentsFullResponse, isLoading } = useQuery<IntentWithExamplesCountResponse>({
     // todo is this broken VS base? http://localhost:3001/training/training/common-intents
@@ -91,9 +89,12 @@ const Intents: FC = () => {
     }
   }, [intentsFullResponse]);
 
-  // todo intent inModel circle is broken
+  // todo intent inModel circle is broken - below for testing, this works with full query
+  // todo this is also broken with by-id query
+  // useQuery({
+  //   queryKey: ['intents/full'],
+  // });
 
-  // todo is this fetched twice
   const { data: entitiesResponse } = useQuery<{ response: Entity[] }>({
     queryKey: ['entities'],
   });
@@ -203,15 +204,21 @@ const Intents: FC = () => {
     [intents]
   );
 
+  // let intentParam: string | null = null;
+
   useEffect(() => {
+    console.log('param useEffect', searchParams);
+    let intentParam = searchParams.get('intent');
     if (!intentParam || intentsFullList?.length !== intents?.length) return;
+
+    console.log('intentParam', intentParam);
 
     const queryIntent = intents.find((intent) => intent.id === intentParam);
 
     if (queryIntent) {
       setSelectedIntent(queryIntent);
     }
-  }, [intentParam]);
+  }, [intents, intentsFullList?.length, searchParams]);
 
   // TODO: This is not used at all at the moment
   // TODO: If this is needed at some point, errors should be fixed
