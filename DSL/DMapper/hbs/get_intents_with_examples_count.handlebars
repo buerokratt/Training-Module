@@ -3,7 +3,8 @@
       {{#each buckets}}
         {
          "id": "{{key}}",
-         "examples_count": {{examples_counts.value}}
+         "examples_count": {{examples_counts.value}},
+         "inModel": {{isInModel key ../intents}}
         }{{#unless @last}},{{/unless}}
       {{/each}}
     ]

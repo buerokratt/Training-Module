@@ -40,11 +40,11 @@ type Response = {
   text: string;
 };
 
-type IntentWithExamplesCount = Pick<Intent, 'id' | 'examplesCount'>;
+type IntentWithExamplesCount = Pick<Intent, 'id' | 'examplesCount' | 'inModel'>;
 
 type IntentWithExamplesCountResponse = {
   response: {
-    intents: (Pick<Intent, 'id'> & { examples_count: number })[];
+    intents: (Pick<Intent, 'id' | 'inModel'> & { examples_count: number })[];
   };
 };
 
@@ -84,14 +84,14 @@ const Intents: FC = () => {
       console.log('intents', intentsFullResponse);
       setIntents(
         intentsFullResponse.response.intents.map((intent) => ({
-          id: intent.id,
+          ...intent,
           examplesCount: intent.examples_count,
         }))
       );
     }
   }, [intentsFullResponse]);
 
-  // todo intent count and inModel circle are broken
+  // todo intent inModel circle is broken
 
   // todo is this fetched twice
   const { data: entitiesResponse } = useQuery<{ response: Entity[] }>({

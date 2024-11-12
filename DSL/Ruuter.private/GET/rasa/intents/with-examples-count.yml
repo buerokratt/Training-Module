@@ -6,6 +6,11 @@ declaration:
   accepts: json
   returns: json
   namespace: training
+  allowlist:
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie field"
 
 getIntentsExampleCount:
   call: http.post
@@ -15,6 +20,14 @@ getIntentsExampleCount:
       id: "intents-with-examples-count"
   result: getIntentsResult
 
+getDomainFile:
+  call: http.get
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/internal/domain-file"
+    headers:
+      cookie: ${incoming.headers.cookie}
+  result: getDomainDataResult
+
 mapIntentsData:
   call: http.post
   args:
@@ -23,6 +36,7 @@ mapIntentsData:
       type: "json"
     body:
       buckets: ${getIntentsResult.response.body.aggregations.hot.buckets}
+      inmodel: ${getDomainDataResult.response.body.response.intents}
   result: intentsData
   next: returnSuccess
 
