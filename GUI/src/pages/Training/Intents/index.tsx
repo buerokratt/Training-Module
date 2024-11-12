@@ -28,6 +28,7 @@ type IntentsWithExamplesCountResponse = {
 const intentResponseToIntent = (intent: IntentWithExamplesCountResponse): IntentWithExamplesCount => ({
   ...intent,
   examplesCount: intent.examples_count,
+  isCommon: intent.id.startsWith('common_'),
 });
 
 const Intents: FC = () => {
