@@ -57,8 +57,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
     queryKey: [`intents/by-id?intent=${intentId}`],
   });
 
-  // todo split all css
-
   // todo check IntentExamplesTable for /full query
 
   useEffect(() => {
@@ -88,6 +86,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
         setSelectedIntent(response.response);
       }
       // todo setIsMarkedForService
+      // todo also set intentResponseName and intentResponseText?
 
       // setIntentResponseName(null);
       // setIntentResponseText(null);
@@ -341,6 +340,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
       setRefreshing(true);
     },
     onSuccess: async () => {
+      // todo invalidate
       await queryClient.invalidateQueries(['response-list']);
       toast.open({
         type: 'success',
@@ -495,6 +495,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
       setRefreshing(true);
     },
     onSuccess: async () => {
+      // todo invalidate
       await queryClient.invalidateQueries(['response-list']);
       await queryClient.invalidateQueries(['rules']);
       toast.open({

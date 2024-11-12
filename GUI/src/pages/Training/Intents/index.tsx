@@ -70,6 +70,7 @@ const Intents: FC = () => {
     queryKey: ['intents/with-examples-count'],
   });
 
+  // todo is this fetched twice
   const { data: entitiesResponse } = useQuery<{ response: Entity[] }>({
     queryKey: ['entities'],
   });
