@@ -140,6 +140,20 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
     queryKey: ['responses-list'],
   });
 
+  useEffect(() => {
+    if (responsesFullResponse) {
+      // @ts-ignore
+      const intentExistingResponse = responsesFullResponse[0].response.find(
+        (response: any) => `utter_${intent?.id}` === response.name
+      );
+      console.log('intentExistingResponse', intentExistingResponse);
+      if (intentExistingResponse) {
+        setIntentResponseText(intentExistingResponse.text);
+        setIntentResponseName(intentExistingResponse.name);
+      }
+    }
+  }, [intent?.id, responsesFullResponse]);
+
   const { data: rulesFullResponse } = useQuery({
     queryKey: ['rules'],
   });
@@ -158,6 +172,17 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
       };
       intentResponses.push(newIntentResponse);
     });
+
+    // if (intentResponses.length > 0) {
+    //   // @ts-ignore
+    //   const intentExistingResponse = responsesFullResponse[0].response.find(
+    //     (response: any) => `utter_${intent?.id}` === response.name
+    //   );
+    //   if (intentExistingResponse) {
+    //     setIntentResponseText(intentExistingResponse.text);
+    //     setIntentResponseName(intentExistingResponse.name);
+    //   }
+    // }
   }
 
   // if (rulesFullList) {

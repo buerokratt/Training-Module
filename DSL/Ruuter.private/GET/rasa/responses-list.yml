@@ -6,15 +6,20 @@ declaration:
   accepts: json
   returns: json
   namespace: training
+  allowlist:
+    params:
+      - field: name
+        type: string
+        description: "Response name"
 
 getResponses:
-  call: http.get
+  call: http.post
   args:
-    url: "[#TRAINING_OPENSEARCH]/domain/_search"
-    query:
-      size: 10000
-      q: _id:responses
-      _source: responses
+    url: "[#TRAINING_OPENSEARCH]/responses/_search/template"
+    body:
+      id: "response-by-intent-name"
+      params:
+        response_name: "utter_common_teenus_citizien_initiative_popular"
   result: getResponsesResult
 
 mapResponsesData:
@@ -22,7 +27,7 @@ mapResponsesData:
   args:
     url: "[#TRAINING_DMAPPER]/hbs/training/get_responses_list"
     headers:
-      type: 'json'
+      type: "json"
     body:
       response: ${getResponsesResult.response.body.hits.hits}
   result: responsesData
