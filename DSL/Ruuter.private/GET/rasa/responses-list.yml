@@ -12,6 +12,7 @@ declaration:
         type: string
         description: "Response name"
 
+# todo use param and test - for some reason it returns no results at the moment
 getResponses:
   call: http.post
   args:
@@ -19,7 +20,7 @@ getResponses:
     body:
       id: "response-by-intent-name"
       params:
-        response_name: "utter_common_teenus_citizien_initiative_popular"
+        response_name: "utter_common_ilm_checkpoint"
   result: getResponsesResult
 
 mapResponsesData:
