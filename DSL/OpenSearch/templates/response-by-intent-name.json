@@ -4,15 +4,8 @@
     "source": {
       "size": 10000,
       "query": {
-        "bool": {
-          "must": [
-            {
-              "query_string": {
-                "query": "*{{response_name}}*",
-                "default_field": "name"
-              }
-            }
-          ]
+        "match": {
+          "name": "{{response_name}}"
         }
       }
     },
