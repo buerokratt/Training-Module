@@ -30,20 +30,22 @@ import { Entity } from 'types/entity';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import { IntentWithExamplesCount } from 'types/intentWithExampleCounts';
 
-type Response = {
+interface Response {
   name: string;
   text: string;
-};
+}
+
+interface IntentResponse {
+  response: Intent;
+}
 
 interface IntentDetailsProps {
   intentId: string;
   entities: Entity[];
   setSelectedIntent: Dispatch<SetStateAction<IntentWithExamplesCount | null>>;
-  // todo maybe remove and invalidate istead
-  listRefresh: (intent?: string) => void;
 }
 
-const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, entities, listRefresh }) => {
+const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, entities }) => {
   const [intent, setIntent] = useState<Intent | null>(null);
 
   const [editingIntentTitle, setEditingIntentTitle] = useState<string | null>(null);
@@ -52,19 +54,17 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
   const [connectableIntent, setConnectableIntent] = useState<Intent | null>(null);
   const [deletableIntent, setDeletableIntent] = useState<Intent | null>(null);
   const [intentResponseText, setIntentResponseText] = useState<string>('');
-  // todo two unused come from queryRefresh
   const [intentResponseName, setIntentResponseName] = useState<string>('');
   const [intentRule, setIntentRule] = useState<string>('');
 
   const queryClient = useQueryClient();
   const toast = useToast();
 
-  // todo use type
-  const { data: intentResponse } = useQuery<{ response: Intent }>({
+  const { data: intentResponse } = useQuery<IntentResponse>({
     queryKey: [`intents/by-id?intent=${intentId}`],
   });
 
-  // todo check IntentExamplesTable for /full query - and if changed, remove all related stuff
+  // todo check IntentExamplesTable for /full query - and if not needed there, remove all related stuff
 
   useEffect(() => {
     if (intentResponse) {
@@ -81,14 +81,12 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
 
   const queryRefresh = useCallback(
     async (intent?: string) => {
-      const response = await queryClient.fetchQuery<{ response: Intent }>([
-        `intents/by-id?intent=${intent ?? intentId}`,
-      ]);
+      const response = await queryClient.fetchQuery<IntentResponse>([`intents/by-id?intent=${intent ?? intentId}`]);
       if (response) {
         setIntent(response.response);
         setSelectedIntent(response.response);
       }
-      // todo setIsMarkedForService
+      // todo setIsMarkedForService?
       // todo also set intentResponseName and intentResponseText?
 
       // setIntentResponseName(null);
@@ -134,8 +132,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
     [queryClient]
   );
 
-  // todo these likely need new queries
-  // todo test with: common teenus citizien initiative popular
+  // todo not yet fully working
   const { data: responsesFullResponse } = useQuery({
     queryKey: ['responses-list'],
   });
@@ -154,36 +151,13 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
     }
   }, [intent?.id, responsesFullResponse]);
 
+  // todo not implemented, need to get rules for one intent only
   const { data: rulesFullResponse } = useQuery({
     queryKey: ['rules'],
   });
 
-  let intentResponsesFullList = responsesFullResponse ? responsesFullResponse[0].response : null;
-  let intentResponses: Response[] = [];
-
   // let rulesFullList = rulesFullResponse?.response;
   // let rules: Rule[] = [];
-
-  if (intentResponsesFullList) {
-    intentResponsesFullList?.forEach((response: any) => {
-      const newIntentResponse: Response = {
-        name: response.name,
-        text: response.text,
-      };
-      intentResponses.push(newIntentResponse);
-    });
-
-    // if (intentResponses.length > 0) {
-    //   // @ts-ignore
-    //   const intentExistingResponse = responsesFullResponse[0].response.find(
-    //     (response: any) => `utter_${intent?.id}` === response.name
-    //   );
-    //   if (intentExistingResponse) {
-    //     setIntentResponseText(intentExistingResponse.text);
-    //     setIntentResponseName(intentExistingResponse.name);
-    //   }
-    // }
-  }
 
   // if (rulesFullList) {
   //   rulesFullList.forEach((rule: any) => {
@@ -191,57 +165,57 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
   //   });
   // }
 
-  const queryRefreshOld = useCallback(
-    function queryRefresh(selectIntent?: string) {
-      setSelectedIntent(null);
-      setIntentResponseName(null);
-      setIntentResponseText(null);
-      setIntentRule(null);
+  // const queryRefreshOld = useCallback(
+  //   function queryRefresh(selectIntent?: string) {
+  //     setSelectedIntent(null);
+  //     setIntentResponseName(null);
+  //     setIntentResponseText(null);
+  //     setIntentRule(null);
 
-      queryClient.fetchQuery(['intents/with-examples-count']).then((res: any) => {
-        setRefreshing(false);
+  //     queryClient.fetchQuery(['intents/with-examples-count']).then((res: any) => {
+  //       setRefreshing(false);
 
-        if (intents.length > 0) {
-          const newSelectedIntent = res.response.intents.find((intent: any) => intent.title === selectIntent) || null;
-          if (newSelectedIntent) {
-            setSelectedIntent({
-              id: newSelectedIntent.title,
-              description: null,
-              inModel: newSelectedIntent.inmodel,
-              modifiedAt: newSelectedIntent.modifiedAt,
-              examplesCount: newSelectedIntent.examples.length,
-              examples: newSelectedIntent.examples,
-              serviceId: newSelectedIntent.serviceId,
-              isForService: newSelectedIntent.isForService,
-            });
-            setIsMarkedForService(newSelectedIntent.isForService ? newSelectedIntent.isForService : false);
+  //       if (intents.length > 0) {
+  //         const newSelectedIntent = res.response.intents.find((intent: any) => intent.title === selectIntent) || null;
+  //         if (newSelectedIntent) {
+  //           setSelectedIntent({
+  //             id: newSelectedIntent.title,
+  //             description: null,
+  //             inModel: newSelectedIntent.inmodel,
+  //             modifiedAt: newSelectedIntent.modifiedAt,
+  //             examplesCount: newSelectedIntent.examples.length,
+  //             examples: newSelectedIntent.examples,
+  //             serviceId: newSelectedIntent.serviceId,
+  //             isForService: newSelectedIntent.isForService,
+  //           });
+  //           setIsMarkedForService(newSelectedIntent.isForService ? newSelectedIntent.isForService : false);
 
-            queryClient.fetchQuery(['responses-list']).then((res: any) => {
-              if (intentResponses.length > 0) {
-                const intentExistingResponse = res[0].response.find(
-                  (response: any) => `utter_${newSelectedIntent.title}` === response.name
-                );
-                if (intentExistingResponse) {
-                  setIntentResponseText(intentExistingResponse.text);
-                  setIntentResponseName(intentExistingResponse.name);
-                }
-              }
-            });
+  //           queryClient.fetchQuery(['responses-list']).then((res: any) => {
+  //             if (intentResponses.length > 0) {
+  //               const intentExistingResponse = res[0].response.find(
+  //                 (response: any) => `utter_${newSelectedIntent.title}` === response.name
+  //               );
+  //               if (intentExistingResponse) {
+  //                 setIntentResponseText(intentExistingResponse.text);
+  //                 setIntentResponseName(intentExistingResponse.name);
+  //               }
+  //             }
+  //           });
 
-            // queryClient.fetchQuery(['rules']).then((res: any) => {
-            //   if (rules.length > 0) {
-            //     const intentExistingRule = res.response.find((rule: any) => rule.id === `rule_${newSelectedIntent.title}`)
-            //     if (intentExistingRule) {
-            //       setIntentRule(intentExistingRule.id);
-            //     }
-            //   }
-            // })
-          }
-        }
-      });
-    },
-    [queryClient, setSelectedIntent]
-  );
+  //           // queryClient.fetchQuery(['rules']).then((res: any) => {
+  //           //   if (rules.length > 0) {
+  //           //     const intentExistingRule = res.response.find((rule: any) => rule.id === `rule_${newSelectedIntent.title}`)
+  //           //     if (intentExistingRule) {
+  //           //       setIntentRule(intentExistingRule.id);
+  //           //     }
+  //           //   }
+  //           // })
+  //         }
+  //       }
+  //     });
+  //   },
+  //   [queryClient, setSelectedIntent]
+  // );
 
   const markIntentServiceMutation = useMutation({
     mutationFn: (data: { name: string; isForService: boolean }) => markForService(data),

@@ -59,7 +59,7 @@ const Intents: FC = () => {
 
   const queryRefresh = useCallback(
     async (selectIntent?: string) => {
-      // todo this is necessary to reset - but maybe in child component with responses-list query?
+      // todo this is necessary to reset - but maybe in child component IntentDetails.tsx with responses-list query?
       // setIntentResponseText(null);
 
       const response = await queryClient.fetchQuery<IntentsWithExamplesCountResponse>(['intents/with-examples-count']);
