@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { format } from 'date-fns';
 
 import { Message } from 'types/message';
-import Linkifier from "./linkifier";
+import Markdownify from "./Markdownify";
 
 type ChatMessageProps = {
   message: Message;
@@ -16,7 +16,7 @@ const ChatMessage: FC<ChatMessageProps> = ({ message, onMessageClick }) => {
                 className="historical-chat__message-text"
                 onClick={onMessageClick ? () => onMessageClick(message) : undefined}
             >
-                <Linkifier message={message.content ?? ''} />
+                <Markdownify message={message.content ?? ''} />
             </button>
             <time
                 dateTime={message.authorTimestamp}
