@@ -30,6 +30,7 @@
     "@tanstack/react-table": "^8.7.4",
     "linkify-react": "^4.1.1",
     "linkifyjs": "^4.1.1",
+    "markdown-to-jsx": "^7.5.0",
     "axios": "^1.2.1",
     "buffer": "^6.0.3",
     "clsx": "^1.2.1",
