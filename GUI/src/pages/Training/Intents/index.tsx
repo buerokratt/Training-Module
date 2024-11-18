@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as Tabs from '@radix-ui/react-tabs';
 import { format } from 'date-fns';
-import { AxiosError, AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import {MdOutlineModeEditOutline, MdOutlineSave,} from 'react-icons/md';
 
 import {Button, Dialog, FormInput, FormTextarea, Icon, Switch, Tooltip, Track} from 'components';
