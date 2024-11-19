@@ -32,7 +32,6 @@ import IntentExamplesTable from './IntentExamplesTable';
 import LoadingDialog from '../../../components/LoadingDialog';
 import ConnectServiceToIntentModal from 'pages/ConnectServiceToIntentModal';
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
-import { saveCsv } from 'utils/save-csv';
 
 const CommonIntents: FC = () => {
   const { t } = useTranslation();
@@ -277,7 +276,23 @@ const CommonIntents: FC = () => {
     mutationFn: (intentModelData: { intentName: string }) =>
       downloadExamples(intentModelData),
     onSuccess: async (data) => {
-      saveCsv(data, selectedIntent?.id || '');
+      // @ts-ignore
+      const blob = new Blob([data], { type: 'text/csv' });
+      const fileName = selectedIntent?.id + '.csv';
+
+      if (window.showSaveFilePicker) {
+        const handle = await window.showSaveFilePicker({ suggestedName: fileName });
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        writable.close();
+      } else {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      }
 
       toast.open({
         type: 'success',
