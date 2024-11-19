@@ -33,6 +33,7 @@ import { Rule, RuleDTO } from '../../../types/rule';
 import { addStoryOrRule, deleteStoryOrRule } from '../../../services/stories';
 import IntentTabList from './IntentTabList';
 import useStore from "../../../store/store";
+import { saveCsv } from 'utils/save-intent-examples-csv';
 
 type Response = {
   name: string;
@@ -459,23 +460,7 @@ const Intents: FC = () => {
     mutationFn: (intentModelData: { intentName: string }) =>
       downloadExamples(intentModelData),
     onSuccess: async (data) => {
-      // @ts-ignore
-      const blob = new Blob([data], { type: 'text/csv' });
-      const fileName = selectedIntent?.id + '.csv';
-
-      if (window.showSaveFilePicker) {
-        const handle = await window.showSaveFilePicker({ suggestedName: fileName });
-        const writable = await handle.createWritable();
-        await writable.write(blob);
-        writable.close();
-      } else {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = fileName;
-        a.click();
-        window.URL.revokeObjectURL(url);
-      }
+      saveCsv(data, selectedIntent?.id || '');
 
       toast.open({
         type: 'success',
