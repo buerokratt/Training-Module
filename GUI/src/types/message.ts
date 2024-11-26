@@ -17,3 +17,8 @@ export interface Message {
   buttons?: string;
   options?: string;
 }
+
+export interface MessageButton {
+  title: string;
+  payload: string;
+}
