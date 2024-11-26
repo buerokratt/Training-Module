@@ -14,4 +14,6 @@ export interface Message {
   rating?: string;
   created?: string;
   updated?: string;
+  buttons?: string;
+  options?: string;
 }
