@@ -315,3 +315,30 @@ rules:
   - intent: common_service_estimated_subsistence_minimum
   - action: utter_common_service_estimated_subsistence_minimum
   - action: action_restart
+
+- rule: common_service_motor_vehicle_tax with form
+  steps:
+  - slot_was_set:
+    - reg_number: null
+  - intent: common_service_motor_vehicle_tax
+  - action: common_service_motor_vehicle_tax_form
+  - active_loop: common_service_motor_vehicle_tax_form
+
+- rule: common_service_motor_vehicle_tax form submit
+  condition:
+  - active_loop: common_service_motor_vehicle_tax_form
+  steps:
+  - action: common_service_motor_vehicle_tax_form
+  - active_loop: null
+  - slot_was_set:
+    - reg_number: true
+  - action: utter_common_service_motor_vehicle_tax
+  - action: action_restart
+
+- rule: common_service_motor_vehicle_tax without form
+  steps:
+  - slot_was_set:
+    - reg_number: true
+  - intent: common_service_motor_vehicle_tax
+  - action: utter_common_service_motor_vehicle_tax
+  - action: action_restart
