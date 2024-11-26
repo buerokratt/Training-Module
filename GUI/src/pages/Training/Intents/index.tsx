@@ -458,15 +458,24 @@ const Intents: FC = () => {
   const intentDownloadMutation = useMutation({
     mutationFn: (intentModelData: { intentName: string }) =>
       downloadExamples(intentModelData),
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       // @ts-ignore
       const blob = new Blob([data], { type: 'text/csv' });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = selectedIntent?.id + '.csv';
-      a.click();
-      window.URL.revokeObjectURL(url);
+      const fileName = selectedIntent?.id + '.csv';
+
+      if (window.showSaveFilePicker) {
+        const handle = await window.showSaveFilePicker({ suggestedName: fileName });
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        writable.close();
+      } else {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      }
 
       toast.open({
         type: 'success',
@@ -475,11 +484,13 @@ const Intents: FC = () => {
       });
     },
     onError: (error: AxiosError) => {
-      toast.open({
-        type: 'error',
-        title: t('global.notificationError'),
-        message: error.message,
-      });
+      if (error.name !== 'AbortError') {
+        toast.open({
+          type: 'error',
+          title: t('global.notificationError'),
+          message: error.message,
+        });      
+      }
     },
   });
 
