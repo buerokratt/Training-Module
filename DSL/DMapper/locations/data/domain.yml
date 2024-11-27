@@ -30,6 +30,7 @@ intents:
   - common_service_unemployment_rate
   - common_service_estimated_subsistence_minimum
   - common_service_motor_vehicle_tax
+  - common_service_school_holiday
 
 entities:
   - asukoht
@@ -222,6 +223,62 @@ slots:
       entity: by_month
       intent: common_service_holidays
 
+  today_school_holiday:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: today
+      intent: common_service_school_holiday
+
+  next_school_holiday:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: next_holiday
+      intent: common_service_school_holiday
+
+  next_school_holidays:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: next_holidays
+      intent: common_service_school_holiday
+
+  last_school_holiday:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: last_holiday
+      intent: common_service_school_holiday
+
+  last_school_holidays:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: last_holidays
+      intent: common_service_school_holiday
+
+  by_name_school_holiday:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: by_name
+      intent: common_service_school_holiday
+
+  by_month_school_holiday:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: by_month
+      intent: common_service_school_holiday
+
   affirm_deny:
     type: text
     influence_conversation: true
@@ -410,4 +467,28 @@ responses:
 
   utter_common_service_motor_vehicle_tax:
   - text: "#common_service, /GET/motor-vehicle-tax/registration-number, ({reg_number})"
+
+  utter_common_service_school_holiday:
+  - text: "##common_service, /GET/calendar/school-holidays/school-holidays"
+
+  utter_common_service_school_holiday_next_holidays:
+  - text: "#common_service, /GET/calendar/school-holidays/eoy"
+
+  utter_common_service_school_holiday_last_holidays:
+  - text: "#common_service, /GET/calendar/school-holidays/ytd"
+
+  utter_common_service_school_holiday_last_holiday:
+  - text: "#common_service, /GET/calendar/school-holidays/previous"
+
+  utter_common_service_school_holiday_next_holiday:
+  - text: "#common_service, /GET/calendar/school-holidays/next"
+
+  utter_common_service_school_holiday_today:
+  - text: "#common_service, /GET/calendar/school-holidays/today"
+
+  utter_common_service_school_holiday_by_name:
+  - text: "#common_service, /GET/calendar/school-holidays/find/by-name, ({by_name_school_holiday})"
+
+  utter_common_service_school_holiday_by_month:
+  - text: "#common_service, /GET/calendar/school-holidays/find/by-month, ({by_month_school_holiday})"
   
