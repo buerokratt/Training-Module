@@ -469,7 +469,7 @@ responses:
   - text: "#common_service, /GET/motor-vehicle-tax/registration-number, ({reg_number})"
 
   utter_common_service_school_holiday:
-  - text: "##common_service, /GET/calendar/school-holidays/school-holidays"
+  - text: "#common_service, /GET/calendar/school-holidays/school-holidays"
 
   utter_common_service_school_holiday_next_holidays:
   - text: "#common_service, /GET/calendar/school-holidays/eoy"
