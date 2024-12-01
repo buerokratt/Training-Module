@@ -372,7 +372,9 @@
       "unavailable_holiday_ask_contacts": "Holiday and asked for contacts",
       "message-read": "Read",
       "user-reached": "User contacted",
-      "user-not-reached": "User could not be reached"
+      "user-not-reached": "User could not be reached",
+      "ask-to-forward-to-csa": "Asked to forward the conversation to a customer service agent",
+      "forwarded_to_backoffice": "Conversation forwarded to back office"
     },
     "status": {
       "active": "Active",
@@ -417,7 +419,9 @@
       "pending-assigned": "{{name}} assigned to contact user",
       "user-reached": "{{name}} contacted the user",
       "user-not-reached": "{{name}} could not reach the user",
-      "user-authenticated": "{{name}} is authenticated {{date}}"
+      "user-authenticated": "{{name}} is authenticated {{date}}",
+      "ask-to-forward-to-csa": "Asked to forward the conversation to a customer service agent",
+      "forwarded_to_backoffice": "Conversation forwarded to back office"
     }
   },
   "submit": {
