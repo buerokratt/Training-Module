@@ -315,3 +315,92 @@ rules:
   - intent: common_service_estimated_subsistence_minimum
   - action: utter_common_service_estimated_subsistence_minimum
   - action: action_restart
+
+- rule: common_service_motor_vehicle_tax with form
+  steps:
+  - slot_was_set:
+    - reg_number: null
+  - intent: common_service_motor_vehicle_tax
+  - action: common_service_motor_vehicle_tax_form
+  - active_loop: common_service_motor_vehicle_tax_form
+
+- rule: common_service_motor_vehicle_tax form submit
+  condition:
+  - active_loop: common_service_motor_vehicle_tax_form
+  steps:
+  - action: common_service_motor_vehicle_tax_form
+  - active_loop: null
+  - slot_was_set:
+    - reg_number: true
+  - action: utter_common_service_motor_vehicle_tax
+  - action: action_restart
+
+- rule: common_service_motor_vehicle_tax without form
+  steps:
+  - slot_was_set:
+    - reg_number: true
+  - intent: common_service_motor_vehicle_tax
+  - action: utter_common_service_motor_vehicle_tax
+  - action: action_restart
+
+- rule: common_service_school_holiday
+  steps:
+  - intent: common_service_school_holiday
+  - action: utter_common_service_school_holiday
+  - action: action_restart
+
+- rule: common_service_school_holiday_today
+  steps:
+  - slot_was_set:
+    - today_school_holiday: true
+  - intent: common_service_school_holiday
+  - action: utter_common_service_school_holiday_today
+  - action: action_restart
+
+- rule: common_service_school_holiday_last_holidays
+  steps:
+  - slot_was_set:
+    - last_school_holidays: true
+  - intent: common_service_school_holiday
+  - action: utter_common_service_school_holiday_last_holidays
+  - action: action_restart
+
+- rule: common_service_school_holiday_last_holiday
+  steps:
+  - slot_was_set:
+    - last_school_holiday: true
+  - intent: common_service_school_holiday
+  - action: utter_common_service_school_holiday_last_holiday
+  - action: action_restart
+
+- rule: common_service_school_holiday_next_holidays
+  steps:
+  - slot_was_set:
+    - next_school_holidays: true
+  - intent: common_service_school_holiday
+  - action: utter_common_service_school_holiday_next_holidays
+  - action: action_restart
+
+- rule: common_service_school_holiday_next_holiday
+  steps:
+  - slot_was_set:
+    - next_school_holiday: true
+  - intent: common_service_school_holiday
+  - action: utter_common_service_school_holiday_next_holiday
+  - action: action_restart
+
+- rule: common_service_school_holiday_by_name
+  steps:
+  - slot_was_set:
+    - by_name_school_holiday: true
+  - intent: common_service_school_holiday
+  - action: utter_common_service_school_holiday_by_name
+  - action: action_restart
+
+- rule: common_service_school_holiday_by_month
+  steps:
+  - slot_was_set:
+    - by_month_school_holiday: true
+  - intent: common_service_school_holiday
+  - action: utter_common_service_school_holiday_by_month
+  - action: action_restart
