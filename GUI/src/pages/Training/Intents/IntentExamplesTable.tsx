@@ -43,7 +43,6 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({ examples, selectedI
     value: string;
   } | null>(null);
   const columnHelper = createColumnHelper<{ id: string; value: string }>();
-  const queryClient = useQueryClient();
 
   const { data: entitiesResponse } = useQuery<{ response: Entity[] }>({
     queryKey: ['entities'],
