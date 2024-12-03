@@ -43,19 +43,15 @@ const Intents: FC = () => {
   const [filter, setFilter] = useState('');
   const [turnIntentToServiceIntent, setTurnIntentToServiceIntent] = useState<Intent | null>(null);
 
-  const { data: intentsFullResponse, isLoading } = useQuery<IntentsWithExamplesCountResponse>({
+  const { data: intentsResponse, isLoading } = useQuery<IntentsWithExamplesCountResponse>({
     queryKey: ['intents/with-examples-count'],
   });
 
   useEffect(() => {
-    if (intentsFullResponse) {
-      setIntents(intentsFullResponse.response.intents.map((intent) => intentResponseToIntent(intent)));
+    if (intentsResponse) {
+      setIntents(intentsResponse.response.intents.map((intent) => intentResponseToIntent(intent)));
     }
-  }, [intentsFullResponse]);
-
-  const { data: entitiesResponse } = useQuery<{ response: Entity[] }>({
-    queryKey: ['entities'],
-  });
+  }, [intentsResponse]);
 
   const queryRefresh = useCallback(
     async (newIntent?: string) => {
@@ -192,7 +188,6 @@ const Intents: FC = () => {
             <IntentDetails
               intentId={selectedIntent.id}
               setSelectedIntent={setSelectedIntent}
-              entities={entitiesResponse?.response ?? []}
               listRefresh={queryRefresh}
             />
           )}

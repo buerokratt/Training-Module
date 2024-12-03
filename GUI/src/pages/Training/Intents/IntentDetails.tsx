@@ -26,7 +26,6 @@ import { addStoryOrRule, deleteStoryOrRule } from 'services/stories';
 import { RuleDTO } from 'types/rule';
 import ConnectServiceToIntentModal from 'pages/ConnectServiceToIntentModal';
 import LoadingDialog from 'components/LoadingDialog';
-import { Entity } from 'types/entity';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import { IntentWithExamplesCount } from 'types/intentWithExampleCounts';
 
@@ -48,13 +47,11 @@ interface IntentResponse {
 
 interface IntentDetailsProps {
   intentId: string;
-  // todo maybe fetch in IntentExamplesTable
-  entities: Entity[];
   setSelectedIntent: Dispatch<SetStateAction<IntentWithExamplesCount | null>>;
   listRefresh: (newIntent?: string) => Promise<void>;
 }
 
-const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, entities, listRefresh }) => {
+const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, listRefresh }) => {
   const [intent, setIntent] = useState<Intent | null>(null);
 
   const [editingIntentTitle, setEditingIntentTitle] = useState<string | null>(null);
@@ -74,6 +71,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
   });
 
   // todo check IntentExamplesTable for /full query - and if not needed there, remove all related stuff
+  // todo IntentExamplesTable setRefreshing does not false on adding new one Lisa
 
   useEffect(() => {
     if (intentResponse) {
@@ -531,7 +529,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
   };
 
   const examplesData = useMemo(
-    () => intent?.examples.map((example, index) => ({ id: index, value: example })),
+    () => intent?.examples.map((example, index) => ({ id: index, value: example })) ?? [],
     [intent?.examples]
   );
 
@@ -739,7 +737,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
             )}
             <Tooltip content={t('training.intents.deleteTooltip')} hidden={!intent.serviceId}>
               <span>
-                <Button appearance="error" onClick={() => setShowDeleteDialog(intent)}>
+                <Button appearance="error" onClick={() => setShowDeleteDialog(true)}>
                   {t('global.delete')}
                 </Button>
               </span>
@@ -752,11 +750,9 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
         {intent?.examples && (
           <Track align="stretch" justify="between" gap={10} style={{ width: '100%' }}>
             <div style={{ flex: 1 }}>
-              {/* todo missing/broken props */}
               <IntentExamplesTable
                 examples={examplesData}
                 onAddNewExample={handleNewExample}
-                entities={entities}
                 selectedIntent={intent}
                 // todo necessary
                 // queryRefresh={queryRefresh}
