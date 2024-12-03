@@ -10,7 +10,6 @@ import * as Tabs from '@radix-ui/react-tabs';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import {
-  addExample,
   addRemoveIntentModel,
   deleteIntent,
   downloadExamples,
@@ -68,8 +67,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
   const { data: intentResponse } = useQuery<IntentResponse>({
     queryKey: [`intents/by-id?intent=${intentId}`],
   });
-
-  // todo check IntentExamplesTable for /full query - and if not needed there, remove all related stuff
 
   useEffect(() => {
     if (intentResponse) {

@@ -12,7 +12,6 @@ import { useToast } from 'hooks/useToast';
 import { Intent } from 'types/intent';
 import { Entity } from 'types/entity';
 import {
-  addExample,
   addRemoveIntentModel,
   deleteIntent,
   downloadExamples,
