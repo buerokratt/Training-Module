@@ -72,6 +72,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
   });
 
   // todo check IntentExamplesTable for /full query - and if not needed there, remove all related stuff
+  // todo check deleting intent - I think selected logic breaks
 
   useEffect(() => {
     if (intentResponse) {
@@ -86,21 +87,33 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
     queryKey: [`intents/is-marked-for-service?intent=${intentId}`],
   });
 
-  const queryRefresh = useCallback(
-    async (intent?: string) => {
-      const response = await queryClient.fetchQuery<IntentResponse>([`intents/by-id?intent=${intent ?? intentId}`]);
-      setIntent(response.response);
-      setSelectedIntent(response.response);
-      // todo setIsMarkedForService?
-      // todo also rule
+  const setIntentResponse = useCallback(
+    (responsesResponse: ResponsesResponse | undefined) => {
+      if (!responsesResponse) return;
 
-      // todo dupe code
-      const res = await queryClient.fetchQuery<ResponsesResponse>(['responses-list']);
-      const intentExistingResponse = res[0].response.find((response: any) => `utter_${intentId}` === response.name);
+      const intentExistingResponse = responsesResponse[0].response.find(
+        (response: any) => `utter_${intentId}` === response.name
+      );
       if (intentExistingResponse) {
         setIntentResponseText(intentExistingResponse.text);
         setIntentResponseName(intentExistingResponse.name);
       }
+    },
+    [intentId]
+  );
+
+  const queryRefresh = useCallback(
+    async (intent?: string) => {
+      const intentsResponse = await queryClient.fetchQuery<IntentResponse>([
+        `intents/by-id?intent=${intent ?? intentId}`,
+      ]);
+      setIntent(intentsResponse.response);
+      setSelectedIntent(intentsResponse.response);
+      // todo setIsMarkedForService?
+      // todo also rule
+
+      const resonsesResponse = await queryClient.fetchQuery<ResponsesResponse>(['responses-list']);
+      setIntentResponse(resonsesResponse);
 
       // setIntentResponseName('');
       // setIntentResponseText('');
@@ -142,7 +155,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
       //   }
       // });
     },
-    [intentId, queryClient, setSelectedIntent]
+    [intentId, queryClient, setIntentResponse, setSelectedIntent]
   );
 
   // TODO: need to fetch only the response for the selected intent
@@ -150,32 +163,9 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
     queryKey: ['responses-list'],
   });
 
-  const setIntentResponse = useCallback(
-    (responsesResponse: ResponsesResponse | undefined) => {
-      if (!responsesResponse) return;
-
-      const intentExistingResponse = responsesResponse[0].response.find(
-        (response: any) => `utter_${intentId}` === response.name
-      );
-      if (intentExistingResponse) {
-        setIntentResponseText(intentExistingResponse.text);
-        setIntentResponseName(intentExistingResponse.name);
-      }
-    },
-    [intentId]
-  );
-
   useEffect(() => {
-    if (responsesResponse) {
-      const intentExistingResponse = responsesResponse[0].response.find(
-        (response: any) => `utter_${intent?.id}` === response.name
-      );
-      if (intentExistingResponse) {
-        setIntentResponseText(intentExistingResponse.text);
-        setIntentResponseName(intentExistingResponse.name);
-      }
-    }
-  }, [intent?.id, responsesResponse]);
+    setIntentResponse(responsesResponse);
+  }, [intent?.id, responsesResponse, setIntentResponse]);
 
   // todo not implemented, need to get rules for one intent only
   const { data: rulesFullResponse } = useQuery({
