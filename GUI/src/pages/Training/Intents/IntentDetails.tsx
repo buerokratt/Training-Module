@@ -378,7 +378,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
   const intentDownloadMutation = useMutation({
     mutationFn: (intentModelData: { intentName: string }) => downloadExamples(intentModelData),
     onSuccess: async (data) => {
-      // @ts-ignore
       const blob = new Blob([data], { type: 'text/csv' });
       const fileName = intent?.id + '.csv';
 
