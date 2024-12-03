@@ -56,9 +56,8 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
 
   const [editingIntentTitle, setEditingIntentTitle] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
-  // todo also boolean
-  const [connectableIntent, setConnectableIntent] = useState<Intent | null>(null);
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showConnectToServiceModal, setShowConnectToServiceModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [intentResponseText, setIntentResponseText] = useState<string>('');
   const [intentResponseName, setIntentResponseName] = useState<string>('');
   const [intentRule, setIntentRule] = useState<string>('');
@@ -571,8 +570,8 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
     mutationFn: (name: string) => deleteIntent({ name }),
     onMutate: () => {
       setRefreshing(true);
-      setShowDeleteDialog(false);
-      setConnectableIntent(null);
+      setShowDeleteModal(false);
+      setShowConnectToServiceModal(false);
     },
     onSuccess: async () => {
       setSelectedIntent(null);
@@ -727,7 +726,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
             {isHiddenFeaturesEnabled && serviceEligible() && (
               <Tooltip content={t('training.intents.connectToServiceTooltip')}>
                 <span>
-                  <Button appearance="secondary" onClick={() => setConnectableIntent(intent)}>
+                  <Button appearance="secondary" onClick={() => setShowConnectToServiceModal(true)}>
                     {intent.serviceId
                       ? t('training.intents.changeConnectedService')
                       : t('training.intents.connectToService')}
@@ -737,7 +736,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
             )}
             <Tooltip content={t('training.intents.deleteTooltip')} hidden={!intent.serviceId}>
               <span>
-                <Button appearance="error" onClick={() => setShowDeleteDialog(true)}>
+                <Button appearance="error" onClick={() => setShowDeleteModal(true)}>
                   {t('global.delete')}
                 </Button>
               </span>
@@ -786,13 +785,13 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
         )}
       </div>
 
-      {showDeleteDialog && (
+      {showDeleteModal && (
         <Dialog
           title={t('training.responses.deleteIntent')}
-          onClose={() => setShowDeleteDialog(false)}
+          onClose={() => setShowDeleteModal(false)}
           footer={
             <>
-              <Button appearance="secondary" onClick={() => setShowDeleteDialog(false)}>
+              <Button appearance="secondary" onClick={() => setShowDeleteModal(false)}>
                 {t('global.no')}
               </Button>
               <Button appearance="error" onClick={() => handleDeleteIntent()}>
@@ -805,8 +804,8 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
         </Dialog>
       )}
 
-      {connectableIntent !== null && (
-        <ConnectServiceToIntentModal intent={connectableIntent.id} onModalClose={() => setConnectableIntent(null)} />
+      {showConnectToServiceModal && (
+        <ConnectServiceToIntentModal intent={intentId} onModalClose={() => setShowConnectToServiceModal(false)} />
       )}
 
       {refreshing && (
