@@ -7,16 +7,7 @@ import { format } from 'date-fns';
 import { AxiosError } from 'axios';
 import { MdCheckCircleOutline } from 'react-icons/md';
 
-import {
-  Button,
-  Card,
-  Dialog,
-  FormInput,
-  Icon,
-  Switch,
-  Tooltip,
-  Track,
-} from 'components';
+import { Button, Card, Dialog, FormInput, Icon, Switch, Tooltip, Track } from 'components';
 import { useToast } from 'hooks/useToast';
 import { Intent } from 'types/intent';
 import { Entity } from 'types/entity';
@@ -40,12 +31,8 @@ const CommonIntents: FC = () => {
   const [searchParams] = useSearchParams();
   const [commonIntentsEnabled, setCommonIntentsEnabled] = useState(true);
   const [selectedIntent, setSelectedIntent] = useState<Intent | null>(null);
-  const [deletableIntent, setDeletableIntent] = useState<
-    string | number | null
-  >(null);
-  const [connectableIntent, setConnectableIntent] = useState<Intent | null>(
-    null
-  );
+  const [deletableIntent, setDeletableIntent] = useState<string | number | null>(null);
+  const [connectableIntent, setConnectableIntent] = useState<Intent | null>(null);
   const [filter, setFilter] = useState('');
   const [refreshing, setRefreshing] = useState(false);
 
@@ -82,9 +69,7 @@ const CommonIntents: FC = () => {
   useEffect(() => {
     if (!intentParam || intentsFullList?.length !== commonIntents?.length) return;
 
-    const queryIntent = commonIntents.find(
-      (intent) => intent.id === intentParam
-    );
+    const queryIntent = commonIntents.find((intent) => intent.id === intentParam);
 
     if (queryIntent) {
       setSelectedIntent(queryIntent);
@@ -126,37 +111,8 @@ const CommonIntents: FC = () => {
     [commonIntents, queryClient]
   );
 
-  const addExamplesMutation = useMutation({
-    mutationFn: (addExamplesData: {
-      intentName: string;
-      intentExamples: string[];
-      newExamples: string;
-    }) => addExample(addExamplesData),
-    onMutate: () => {
-      setRefreshing(true);
-    },
-    onSuccess: () => {
-      toast.open({
-        type: 'success',
-        title: t('global.notification'),
-        message: t('toast.newExampleAdded'),
-      });
-    },
-    onError: (error: AxiosError) => {
-      toast.open({
-        type: 'error',
-        title: t('global.notificationError'),
-        message: error.message,
-      });
-    },
-    onSettled: () => {
-      queryRefresh(selectedIntent?.id || '');
-    },
-  });
-
   const intentModelMutation = useMutation({
-    mutationFn: (intentModelData: { name: string; inModel: boolean }) =>
-      addRemoveIntentModel(intentModelData),
+    mutationFn: (intentModelData: { name: string; inModel: boolean }) => addRemoveIntentModel(intentModelData),
     onMutate: () => {
       setRefreshing(true);
     },
@@ -213,9 +169,7 @@ const CommonIntents: FC = () => {
       });
     },
     onSettled: () => {
-      commonIntents = commonIntents.filter(
-        (intent) => intent.id !== selectedIntent?.id
-      );
+      commonIntents = commonIntents.filter((intent) => intent.id !== selectedIntent?.id);
       setRefreshing(false);
     },
   });
@@ -223,7 +177,8 @@ const CommonIntents: FC = () => {
   const filteredIntents = useMemo(() => {
     if (!commonIntents) return [];
     const formattedFilter = filter.trim().replace(/\s+/g, '_');
-    return commonIntents.filter((intent) => intent.id?.includes(formattedFilter))
+    return commonIntents
+      .filter((intent) => intent.id?.includes(formattedFilter))
       .sort((a, b) => a.id.localeCompare(b.id));
   }, [commonIntents, filter]);
 
@@ -232,7 +187,7 @@ const CommonIntents: FC = () => {
   });
 
   const examplesData = useMemo(
-    () => selectedIntent?.examples.map((example, index) => ({id: index, value: example})),
+    () => selectedIntent?.examples.map((example, index) => ({ id: index, value: example })),
     [selectedIntent?.examples]
   );
 
@@ -240,9 +195,7 @@ const CommonIntents: FC = () => {
     (value: string) => {
       setSelectedIntent(null);
       if (!commonIntents) return;
-      const selectedIntent = commonIntents.find(
-        (intent) => intent.id === value
-      );
+      const selectedIntent = commonIntents.find((intent) => intent.id === value);
       if (selectedIntent) {
         queryRefresh(selectedIntent.id || '');
         intentModifiedMutation.mutate(
@@ -263,18 +216,8 @@ const CommonIntents: FC = () => {
     [intentModifiedMutation, commonIntents, queryRefresh]
   );
 
-  const handleNewExample = (example: string) => {
-    if (!selectedIntent) return;
-    addExamplesMutation.mutate({
-      intentName: selectedIntent.id,
-      intentExamples: selectedIntent.examples,
-      newExamples: example,
-    });
-  };
-
   const intentDownloadMutation = useMutation({
-    mutationFn: (intentModelData: { intentName: string }) =>
-      downloadExamples(intentModelData),
+    mutationFn: (intentModelData: { intentName: string }) => downloadExamples(intentModelData),
     onSuccess: async (data) => {
       // @ts-ignore
       const blob = new Blob([data], { type: 'text/csv' });
@@ -306,7 +249,7 @@ const CommonIntents: FC = () => {
           type: 'error',
           title: t('global.notificationError'),
           message: error.message,
-        });      
+        });
       }
     },
   });
@@ -338,13 +281,8 @@ const CommonIntents: FC = () => {
   };
 
   const intentUploadMutation = useMutation({
-    mutationFn: ({
-      intentName,
-      formData,
-    }: {
-      intentName: string;
-      formData: File;
-    }) => uploadExamples(intentName, formData),
+    mutationFn: ({ intentName, formData }: { intentName: string; formData: File }) =>
+      uploadExamples(intentName, formData),
     onSuccess: () => {
       toast.open({
         type: 'success',
@@ -399,18 +337,13 @@ const CommonIntents: FC = () => {
           value={selectedIntent?.id ?? undefined}
           onValueChange={handleTabsValueChange}
         >
-          <Tabs.List
-            className="vertical-tabs__list"
-            aria-label={t('training.intents.title') || ''}
-          >
+          <Tabs.List className="vertical-tabs__list" aria-label={t('training.intents.title') || ''}>
             <div className="vertical-tabs__list-search">
               <Track gap={8}>
                 <FormInput
                   name="intentSearch"
                   label={t('training.intents.searchIntentPlaceholder')}
-                  placeholder={
-                    t('training.intents.searchIntentPlaceholder') + '...' || ''
-                  }
+                  placeholder={t('training.intents.searchIntentPlaceholder') + '...' || ''}
                   value={filter}
                   onChange={(e) => setFilter(e.target.value)}
                   hideLabel
@@ -420,39 +353,29 @@ const CommonIntents: FC = () => {
 
             <div className="vertical-tabs__list-scrollable">
               {filteredIntents.map((intent, index) => (
-                <Tabs.Trigger
-                  key={`${intent}-${index}`}
-                  className="vertical-tabs__trigger"
-                  value={intent.id}
-                >
+                <Tabs.Trigger key={`${intent}-${index}`} className="vertical-tabs__trigger" value={intent.id}>
                   <Track gap={16}>
-                  <span style={{ flex: 1 }}>
-                    {intent.id.replace(/^common_/, '').replace(/_/g, ' ')}
-                  </span>
+                    <span style={{ flex: 1 }}>{intent.id.replace(/^common_/, '').replace(/_/g, ' ')}</span>
                     <Tooltip content={t('training.intents.amountOfExamples')}>
-                    <span style={{ color: '#5D6071' }}>
-                      {intent.examplesCount}
-                    </span>
+                      <span style={{ color: '#5D6071' }}>{intent.examplesCount}</span>
                     </Tooltip>
                     {intent.inModel ? (
                       <Tooltip content={t('training.intents.intentInModel')}>
-                      <span style={{ display: 'flex', alignItems: 'center' }}>
-                        <Icon
-                          icon={
-                            <MdCheckCircleOutline
-                              color={'rgba(0, 0, 0, 0.54)'}
-                              opacity={intent.inModel ? 1 : 0}
-                            />
-                          }
-                        />
-                      </span>
+                        <span style={{ display: 'flex', alignItems: 'center' }}>
+                          <Icon
+                            icon={
+                              <MdCheckCircleOutline color={'rgba(0, 0, 0, 0.54)'} opacity={intent.inModel ? 1 : 0} />
+                            }
+                          />
+                        </span>
                       </Tooltip>
                     ) : (
                       <span style={{ display: 'block', width: 16 }}></span>
                     )}
                   </Track>
                 </Tabs.Trigger>
-              ))}</div>
+              ))}
+            </div>
           </Tabs.List>
 
           {selectedIntent && (
@@ -471,18 +394,12 @@ const CommonIntents: FC = () => {
                     <p style={{ color: '#4D4F5D' }}>
                       {t('global.modifiedAt')}:
                       {isValidDate(selectedIntent.modifiedAt)
-                        ? ` ${format(
-                            new Date(selectedIntent.modifiedAt),
-                            'dd.MM.yyyy'
-                          )}`
+                        ? ` ${format(new Date(selectedIntent.modifiedAt), 'dd.MM.yyyy')}`
                         : ` ${t('global.missing')}`}
                     </p>
                   </Track>
                   <Track justify="end" gap={8}>
-                    <Button
-                      appearance="secondary"
-                      onClick={() => handleIntentExamplesUpload()}
-                    >
+                    <Button appearance="secondary" onClick={() => handleIntentExamplesUpload()}>
                       {t('training.intents.upload')}
                     </Button>
                     <Button
@@ -519,14 +436,9 @@ const CommonIntents: FC = () => {
                         {t('training.intents.addToModel')}
                       </Button>
                     )}
-                    <Tooltip
-                      content={t('training.intents.connectToServiceTooltip')}
-                    >
+                    <Tooltip content={t('training.intents.connectToServiceTooltip')}>
                       <span>
-                        <Button
-                          appearance="secondary"
-                          onClick={() => setConnectableIntent(selectedIntent)}
-                        >
+                        <Button appearance="secondary" onClick={() => setConnectableIntent(selectedIntent)}>
                           {selectedIntent.serviceId
                             ? t('training.intents.changeConnectedService')
                             : t('training.intents.connectToService')}
@@ -534,15 +446,9 @@ const CommonIntents: FC = () => {
                       </span>
                     </Tooltip>
 
-                    <Tooltip
-                      content={t('training.intents.deleteTooltip')}
-                      hidden={!selectedIntent.serviceId}
-                    >
+                    <Tooltip content={t('training.intents.deleteTooltip')} hidden={!selectedIntent.serviceId}>
                       <span>
-                        <Button
-                          appearance="error"
-                          onClick={() => setDeletableIntent(selectedIntent!.id)}
-                        >
+                        <Button appearance="error" onClick={() => setDeletableIntent(selectedIntent!.id)}>
                           {t('global.delete')}
                         </Button>
                       </span>
@@ -551,13 +457,10 @@ const CommonIntents: FC = () => {
                 </Track>
               </div>
               <div className="vertical-tabs__content">
-                 {selectedIntent?.examples && examplesData && (
+                {selectedIntent?.examples && examplesData && (
                   <IntentExamplesTable
                     examples={examplesData}
-                    onAddNewExample={handleNewExample}
-                    entities={entities ?? []}
                     selectedIntent={selectedIntent}
-                    queryRefresh={queryRefresh}
                     updateSelectedIntent={updateSelectedIntent}
                   />
                 )}
@@ -568,10 +471,7 @@ const CommonIntents: FC = () => {
       )}
 
       {connectableIntent !== null && (
-        <ConnectServiceToIntentModal
-          intent={connectableIntent.id}
-          onModalClose={() => setConnectableIntent(null)}
-        />
+        <ConnectServiceToIntentModal intent={connectableIntent.id} onModalClose={() => setConnectableIntent(null)} />
       )}
 
       {deletableIntent !== null && (
@@ -580,18 +480,10 @@ const CommonIntents: FC = () => {
           onClose={() => setDeletableIntent(null)}
           footer={
             <>
-              <Button
-                appearance="secondary"
-                onClick={() => setDeletableIntent(null)}
-              >
+              <Button appearance="secondary" onClick={() => setDeletableIntent(null)}>
                 {t('global.no')}
               </Button>
-              <Button
-                appearance="error"
-                onClick={() =>
-                  deleteIntentMutation.mutate({ name: deletableIntent!.id })
-                }
-              >
+              <Button appearance="error" onClick={() => deleteIntentMutation.mutate({ name: deletableIntent!.id })}>
                 {t('global.yes')}
               </Button>
             </>

@@ -70,7 +70,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
   });
 
   // todo check IntentExamplesTable for /full query - and if not needed there, remove all related stuff
-  // todo IntentExamplesTable setRefreshing does not false on adding new one Lisa
 
   useEffect(() => {
     if (intentResponse) {
@@ -527,45 +526,11 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
     queryRefresh();
   };
 
+  // todo move to child - also fix common intents
   const examplesData = useMemo(
     () => intent?.examples.map((example, index) => ({ id: index, value: example })) ?? [],
     [intent?.examples]
   );
-
-  const addExamplesMutation = useMutation({
-    mutationFn: (addExamplesData: { intentName: string; intentExamples: string[]; newExamples: string }) =>
-      addExample(addExamplesData),
-    onMutate: () => {
-      setRefreshing(true);
-    },
-    onSuccess: () => {
-      toast.open({
-        type: 'success',
-        title: t('global.notification'),
-        message: t('toast.newExampleAdded'),
-      });
-    },
-    onError: (error: AxiosError) => {
-      toast.open({
-        type: 'error',
-        title: t('global.notificationError'),
-        message: error.message,
-      });
-    },
-    onSettled: () => {
-      setRefreshing(false);
-      queryRefresh();
-    },
-  });
-
-  const handleNewExample = (example: string) => {
-    if (!intent) return;
-    addExamplesMutation.mutate({
-      intentName: intent.id,
-      intentExamples: intent.examples,
-      newExamples: example.replace(/(\t|\n)+/g, ' ').trim(),
-    });
-  };
 
   const deleteIntentMutation = useMutation({
     mutationFn: (name: string) => deleteIntent({ name }),
@@ -752,10 +717,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
             <div style={{ flex: 1 }}>
               <IntentExamplesTable
                 examples={examplesData}
-                onAddNewExample={handleNewExample}
                 selectedIntent={intent}
-                // todo necessary
-                // queryRefresh={queryRefresh}
                 updateSelectedIntent={updateSelectedIntent}
               />
             </div>

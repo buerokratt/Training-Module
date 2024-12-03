@@ -9,7 +9,7 @@ import { Button, DataTable, Dialog, FormTextarea, Icon } from 'components';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import { INTENT_EXAMPLE_LENGTH } from 'constants/config';
 import type { Entity } from 'types/entity';
-import { turnExampleIntoIntent, deleteExample, editExample } from 'services/intents';
+import { turnExampleIntoIntent, deleteExample, editExample, addExample } from 'services/intents';
 import { useToast } from 'hooks/useToast';
 import IntentExamplesEntry from './IntentExamplesEntry';
 import { Intent } from '../../../types/intent';
@@ -18,19 +18,11 @@ import i18n from '../../../../i18n';
 
 type IntentExamplesTableProps = {
   examples: { id: number; value: string }[];
-  onAddNewExample: (example: string) => void;
   selectedIntent: Intent;
-  queryRefresh: (selectIntent: string) => void;
   updateSelectedIntent: (intent: Intent) => void;
 };
 
-const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
-  examples,
-  onAddNewExample,
-  selectedIntent,
-  queryRefresh,
-  updateSelectedIntent,
-}) => {
+const IntentExamplesTable: FC<IntentExamplesTableProps> = ({ examples, selectedIntent, updateSelectedIntent }) => {
   let updatedExampleTitle = '';
   const { t } = useTranslation();
   const toast = useToast();
@@ -56,10 +48,6 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
   const { data: entitiesResponse } = useQuery<{ response: Entity[] }>({
     queryKey: ['entities'],
   });
-
-  const handleRefresh = (selectIntent: string) => {
-    queryRefresh(selectIntent);
-  };
 
   useDocumentEscapeListener(() => {
     updatedExampleTitle = '';
@@ -148,7 +136,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
         title: t('global.notification'),
         message: t('toast.exampleDeleted'),
       });
-      handleRefresh(selectedIntent.id);
+      updateSelectedIntent(selectedIntent);
       deleteExampleFromList(oldExampleText);
     },
     onError: (error: AxiosError) => {
@@ -164,9 +152,43 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
     },
   });
 
+  const addExamplesMutation = useMutation({
+    mutationFn: (addExamplesData: { intentName: string; intentExamples: string[]; newExamples: string }) =>
+      addExample(addExamplesData),
+    onMutate: () => {
+      setRefreshing(true);
+    },
+    onSuccess: () => {
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: t('toast.newExampleAdded'),
+      });
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
+    onSettled: () => {
+      setRefreshing(false);
+      updateSelectedIntent(selectedIntent);
+    },
+  });
+
+  const handleNewExample = (example: string) => {
+    addExamplesMutation.mutate({
+      intentName: selectedIntent.id,
+      intentExamples: selectedIntent.examples,
+      newExamples: example.replace(/(\t|\n)+/g, ' ').trim(),
+    });
+  };
+
   const handleNewExampleSubmit = () => {
     if (!newExampleRef.current) return;
-    onAddNewExample(newExampleRef.current.value || '');
+    handleNewExample(newExampleRef.current.value || '');
     newExampleRef.current.value = '';
     setExampleText('');
   };
