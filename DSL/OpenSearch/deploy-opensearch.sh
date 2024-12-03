@@ -14,7 +14,6 @@ curl -XDELETE "$URL/responses?ignore_unavailable=true" -u "$AUTH" --insecure
 curl -H "Content-Type: application/x-ndjson" -X PUT "$URL/responses" -ku "$AUTH" --data-binary "@fieldMappings/responses.json"
 if $MOCK_ALLOWED; then curl -H "Content-Type: application/x-ndjson" -X PUT "$URL/responses/_bulk" -ku "$AUTH" --data-binary "@mock/responses.json"; fi
 curl -L -X POST "$URL/_scripts/response-with-name-and-text" -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/response-with-name-and-text.json"
-curl -L -X POST "$URL/_scripts/response-by-intent-name" -H 'Content-Type: application/json' --data-binary "@templates/response-by-intent-name.json"
 
 # intents
 curl -XDELETE "$URL/intents?ignore_unavailable=true" -u "$AUTH" --insecure
