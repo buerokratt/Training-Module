@@ -3,12 +3,11 @@ import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as Tabs from '@radix-ui/react-tabs';
-import { AxiosError } from 'axios';
+import { AxiosError, AxiosError } from 'axios';
 
 import { Button, Dialog, FormInput, Track } from 'components';
 import { useToast } from 'hooks/useToast';
 import { Intent } from 'types/intent';
-import { Entity } from 'types/entity';
 import { addIntent, turnIntentIntoService } from 'services/intents';
 import LoadingDialog from '../../../components/LoadingDialog';
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
