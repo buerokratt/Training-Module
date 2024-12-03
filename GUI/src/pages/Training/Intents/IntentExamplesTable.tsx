@@ -19,7 +19,6 @@ import i18n from '../../../../i18n';
 type IntentExamplesTableProps = {
   examples: { id: number; value: string }[];
   onAddNewExample: (example: string) => void;
-  // entities: Entity[];
   selectedIntent: Intent;
   queryRefresh: (selectIntent: string) => void;
   updateSelectedIntent: (intent: Intent) => void;
@@ -28,7 +27,6 @@ type IntentExamplesTableProps = {
 const IntentExamplesTable: FC<IntentExamplesTableProps> = ({
   examples,
   onAddNewExample,
-  // entities,
   selectedIntent,
   queryRefresh,
   updateSelectedIntent,

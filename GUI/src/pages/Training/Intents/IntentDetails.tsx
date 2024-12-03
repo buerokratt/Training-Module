@@ -553,6 +553,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
       });
     },
     onSettled: () => {
+      setRefreshing(false);
       queryRefresh();
     },
   });

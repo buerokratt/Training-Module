@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as Tabs from '@radix-ui/react-tabs';
-import { AxiosError, AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 
 import { Button, Dialog, FormInput, Track } from 'components';
 import { useToast } from 'hooks/useToast';
