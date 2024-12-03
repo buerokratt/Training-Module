@@ -779,7 +779,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
                     disableHeightResize
                   />
                 </Track>
-                {/* todo ???? */}
                 <Button appearance="text" onClick={() => handleIntentResponseSubmit()}>
                   {t('global.save')}
                 </Button>
