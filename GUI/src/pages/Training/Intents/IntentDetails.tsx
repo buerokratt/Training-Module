@@ -35,7 +35,7 @@ interface Response {
   text: string;
 }
 
-// TODO: back-end should return data in better format
+// TODO: back-end should return data in a better format
 interface ResponsesResponse
   extends Array<{
     name: string;
@@ -57,7 +57,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
 
   const [editingIntentTitle, setEditingIntentTitle] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
-  const [isMarkedForService, setIsMarkedForService] = useState<boolean>(false);
   const [connectableIntent, setConnectableIntent] = useState<Intent | null>(null);
   const [deletableIntent, setDeletableIntent] = useState<Intent | null>(null);
   const [intentResponseText, setIntentResponseText] = useState<string>('');
@@ -109,11 +108,11 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
       ]);
       setIntent(intentsResponse.response);
       setSelectedIntent(intentsResponse.response);
-      // todo setIsMarkedForService?
-      // todo also rule
 
       const resonsesResponse = await queryClient.fetchQuery<ResponsesResponse>(['responses-list']);
       setIntentResponse(resonsesResponse);
+
+      // todo also rule
 
       // setIntentResponseName('');
       // setIntentResponseText('');
@@ -244,7 +243,10 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
         title: t('global.notification'),
         message: t('toast.intentUpdated'),
       });
-      setIsMarkedForService(!isMarkedForService);
+      setIntent((prev) => {
+        if (!prev) return null;
+        return { ...prev, isForService: !prev.isForService };
+      });
     },
     onError: (error: AxiosError) => {
       toast.open({
@@ -452,8 +454,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
       setRefreshing(true);
     },
     onSuccess: async () => {
-      // todo does not work for some reason?
-      console.log('invalidating response-list');
       await queryClient.invalidateQueries({ queryKey: ['response-list'], refetchType: 'all' });
       toast.open({
         type: 'success',
@@ -498,10 +498,10 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
   });
 
   // todo clean up and fix errors
-  const handleIntentResponseSubmit = async (newId: string) => {
-    if (!intentResponseText || intentResponseText === '' || !intent) return;
+  const handleIntentResponseSubmit = async () => {
+    if (intentResponseText === '' || !intent) return;
 
-    const intentId = newId || intent.id;
+    const intentId = intent.id;
 
     await addOrEditResponseMutation.mutate({
       id: `utter_${intentId}`,
@@ -522,13 +522,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
             },
           ],
         },
-      });
-    }
-
-    if (editingIntentTitle) {
-      await intentEditMutation.mutateAsync({
-        oldName: intent.id,
-        newName: newId,
       });
     }
 
@@ -689,7 +682,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
                 onLabel={t('global.yes') ?? 'yes'}
                 offLabel={t('global.no') ?? 'no'}
                 onCheckedChange={(value) => updateMarkForService(value)}
-                checked={isMarkedForService}
+                checked={intent.isForService}
                 disabled={isPossibleToUpdateMark}
               />
             </Track>
@@ -787,6 +780,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
                     disableHeightResize
                   />
                 </Track>
+                {/* todo ???? */}
                 <Button appearance="text" onClick={() => handleIntentResponseSubmit()}>
                   {t('global.save')}
                 </Button>
