@@ -48,17 +48,20 @@ interface IntentResponse {
 
 interface IntentDetailsProps {
   intentId: string;
+  // todo maybe fetch in IntentExamplesTable
   entities: Entity[];
   setSelectedIntent: Dispatch<SetStateAction<IntentWithExamplesCount | null>>;
+  listRefresh: (newIntent?: string) => Promise<void>;
 }
 
-const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, entities }) => {
+const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, entities, listRefresh }) => {
   const [intent, setIntent] = useState<Intent | null>(null);
 
   const [editingIntentTitle, setEditingIntentTitle] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  // todo also boolean
   const [connectableIntent, setConnectableIntent] = useState<Intent | null>(null);
-  const [deletableIntent, setDeletableIntent] = useState<Intent | null>(null);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [intentResponseText, setIntentResponseText] = useState<string>('');
   const [intentResponseName, setIntentResponseName] = useState<string>('');
   const [intentRule, setIntentRule] = useState<string>('');
@@ -157,7 +160,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
     [intentId, queryClient, setIntentResponse, setSelectedIntent]
   );
 
-  // TODO: need to fetch only the response for the selected intent
+  // TODO: need to fetch response for the selected intent only
   const { data: responsesResponse } = useQuery<ResponsesResponse>({
     queryKey: ['responses-list'],
   });
@@ -166,6 +169,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
     setIntentResponse(responsesResponse);
   }, [intent?.id, responsesResponse, setIntentResponse]);
 
+  // TODO: need to fetch rules for the selected intent only
   // todo not implemented, need to get rules for one intent only
   const { data: rulesFullResponse } = useQuery({
     queryKey: ['rules'],
@@ -570,12 +574,14 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
     mutationFn: (name: string) => deleteIntent({ name }),
     onMutate: () => {
       setRefreshing(true);
-      setDeletableIntent(null);
+      setShowDeleteDialog(false);
       setConnectableIntent(null);
-      setSelectedIntent(null);
     },
     onSuccess: async () => {
+      setSelectedIntent(null);
       await queryClient.invalidateQueries(['intents/with-examples-count']);
+      // Without the delay, back end still returns the deleted intent. Perhaps BE is deleting asynchronously?
+      setTimeout(() => listRefresh(), 300);
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -588,9 +594,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
         title: t('global.notificationError'),
         message: error.message,
       });
-    },
-    onSettled: () => {
-      queryRefresh();
     },
   });
 
@@ -616,7 +619,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
       });
     },
     onSettled: () => {
-      deleteIntentMutation.mutate(deletableIntent!.id);
+      deleteIntentMutation.mutate(intentId);
       setRefreshing(false);
     },
   });
@@ -625,7 +628,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
     if (intentRule) {
       await deleteRuleWithIntentMutation.mutateAsync(intentRule);
     } else {
-      await deleteIntentMutation.mutateAsync(deletableIntent!.id);
+      await deleteIntentMutation.mutateAsync(intentId);
     }
   };
 
@@ -737,7 +740,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
             )}
             <Tooltip content={t('training.intents.deleteTooltip')} hidden={!intent.serviceId}>
               <span>
-                <Button appearance="error" onClick={() => setDeletableIntent(intent)}>
+                <Button appearance="error" onClick={() => setShowDeleteDialog(intent)}>
                   {t('global.delete')}
                 </Button>
               </span>
@@ -788,13 +791,13 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
         )}
       </div>
 
-      {deletableIntent !== null && (
+      {showDeleteDialog && (
         <Dialog
           title={t('training.responses.deleteIntent')}
-          onClose={() => setDeletableIntent(null)}
+          onClose={() => setShowDeleteDialog(false)}
           footer={
             <>
-              <Button appearance="secondary" onClick={() => setDeletableIntent(null)}>
+              <Button appearance="secondary" onClick={() => setShowDeleteDialog(false)}>
                 {t('global.no')}
               </Button>
               <Button appearance="error" onClick={() => handleDeleteIntent()}>

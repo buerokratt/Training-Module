@@ -58,14 +58,14 @@ const Intents: FC = () => {
   });
 
   const queryRefresh = useCallback(
-    async (selectIntent?: string) => {
+    async (newIntent?: string) => {
       const response = await queryClient.fetchQuery<IntentsWithExamplesCountResponse>(['intents/with-examples-count']);
 
       if (response) {
         setIntents(response.response.intents.map((intent) => intentResponseToIntent(intent)));
 
         const selectedIntent = response.response.intents.find(
-          (intent) => intent.id === selectIntent
+          (intent) => intent.id === newIntent
         ) as IntentWithExamplesCountResponse;
 
         setSelectedIntent(intentResponseToIntent(selectedIntent));
@@ -193,6 +193,7 @@ const Intents: FC = () => {
               intentId={selectedIntent.id}
               setSelectedIntent={setSelectedIntent}
               entities={entitiesResponse?.response ?? []}
+              listRefresh={queryRefresh}
             />
           )}
         </Tabs.Root>
