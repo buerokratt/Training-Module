@@ -74,7 +74,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
   });
 
   // todo check IntentExamplesTable for /full query - and if not needed there, remove all related stuff
-  // todo check deleting intent - I think selected logic breaks
 
   useEffect(() => {
     if (intentResponse) {
