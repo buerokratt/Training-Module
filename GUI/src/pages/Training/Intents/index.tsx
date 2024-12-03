@@ -16,7 +16,7 @@ import IntentTabList from './IntentTabList';
 import IntentDetails from './IntentDetails';
 import { IntentWithExamplesCount } from 'types/intentWithExampleCounts';
 
-// TODO: change examples_count to examplesCount when possible with changes in CommonIntents
+// TODO: rename examples_count to examplesCount when possible with changes in CommonIntents
 type IntentWithExamplesCountResponse = Pick<Intent, 'id' | 'inModel' | 'modifiedAt'> & { examples_count: number };
 
 type IntentsWithExamplesCountResponse = {
@@ -59,9 +59,6 @@ const Intents: FC = () => {
 
   const queryRefresh = useCallback(
     async (selectIntent?: string) => {
-      // todo this is necessary to reset - but maybe in child component IntentDetails.tsx with responses-list query?
-      // setIntentResponseText(null);
-
       const response = await queryClient.fetchQuery<IntentsWithExamplesCountResponse>(['intents/with-examples-count']);
 
       if (response) {
@@ -196,7 +193,6 @@ const Intents: FC = () => {
               intentId={selectedIntent.id}
               setSelectedIntent={setSelectedIntent}
               entities={entitiesResponse?.response ?? []}
-              listRefresh={queryRefresh}
             />
           )}
         </Tabs.Root>

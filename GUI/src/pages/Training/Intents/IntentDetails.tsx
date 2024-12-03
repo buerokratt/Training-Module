@@ -35,6 +35,13 @@ interface Response {
   text: string;
 }
 
+// TODO: back-end should return data in better format
+interface ResponsesResponse
+  extends Array<{
+    name: string;
+    response: Response[];
+  }> {}
+
 interface IntentResponse {
   response: Intent;
 }
@@ -82,15 +89,21 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
   const queryRefresh = useCallback(
     async (intent?: string) => {
       const response = await queryClient.fetchQuery<IntentResponse>([`intents/by-id?intent=${intent ?? intentId}`]);
-      if (response) {
-        setIntent(response.response);
-        setSelectedIntent(response.response);
-      }
+      setIntent(response.response);
+      setSelectedIntent(response.response);
       // todo setIsMarkedForService?
-      // todo also set intentResponseName and intentResponseText?
+      // todo also rule
 
-      // setIntentResponseName(null);
-      // setIntentResponseText(null);
+      // todo dupe code
+      const res = await queryClient.fetchQuery<ResponsesResponse>(['responses-list']);
+      const intentExistingResponse = res[0].response.find((response: any) => `utter_${intentId}` === response.name);
+      if (intentExistingResponse) {
+        setIntentResponseText(intentExistingResponse.text);
+        setIntentResponseName(intentExistingResponse.name);
+      }
+
+      // setIntentResponseName('');
+      // setIntentResponseText('');
       // setIntentRule(null);
       // queryClient.fetchQuery(['intents/full']).then((res: any) => {
       //   setRefreshing(false);
@@ -132,24 +145,37 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
     [queryClient]
   );
 
-  // todo not yet fully working
-  const { data: responsesFullResponse } = useQuery({
+  // TODO: need to fetch only the response for the selected intent
+  const { data: responsesResponse } = useQuery<ResponsesResponse>({
     queryKey: ['responses-list'],
   });
 
+  const setIntentResponse = useCallback(
+    (responsesResponse: ResponsesResponse | undefined) => {
+      if (!responsesResponse) return;
+
+      const intentExistingResponse = responsesResponse[0].response.find(
+        (response: any) => `utter_${intentId}` === response.name
+      );
+      if (intentExistingResponse) {
+        setIntentResponseText(intentExistingResponse.text);
+        setIntentResponseName(intentExistingResponse.name);
+      }
+    },
+    [intentId]
+  );
+
   useEffect(() => {
-    if (responsesFullResponse) {
-      // @ts-ignore
-      const intentExistingResponse = responsesFullResponse[0].response.find(
+    if (responsesResponse) {
+      const intentExistingResponse = responsesResponse[0].response.find(
         (response: any) => `utter_${intent?.id}` === response.name
       );
-      console.log('intentExistingResponse', intentExistingResponse);
       if (intentExistingResponse) {
         setIntentResponseText(intentExistingResponse.text);
         setIntentResponseName(intentExistingResponse.name);
       }
     }
-  }, [intent?.id, responsesFullResponse]);
+  }, [intent?.id, responsesResponse]);
 
   // todo not implemented, need to get rules for one intent only
   const { data: rulesFullResponse } = useQuery({
@@ -436,8 +462,9 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
       setRefreshing(true);
     },
     onSuccess: async () => {
-      // todo invalidate
-      await queryClient.invalidateQueries(['response-list']);
+      // todo does not work for some reason?
+      console.log('invalidating response-list');
+      await queryClient.invalidateQueries({ queryKey: ['response-list'], refetchType: 'all' });
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -481,8 +508,8 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
   });
 
   // todo clean up and fix errors
-  const handleIntentResponseSubmit = async (newId?: string) => {
-    if (!intentResponseText || intentResponseText == '' || !intent) return;
+  const handleIntentResponseSubmit = async (newId: string) => {
+    if (!intentResponseText || intentResponseText === '' || !intent) return;
 
     const intentId = newId || intent.id;
 
@@ -513,8 +540,9 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
         oldName: intent.id,
         newName: newId,
       });
-      queryRefresh();
     }
+
+    queryRefresh();
   };
 
   const examplesData = useMemo(
@@ -590,7 +618,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
       setRefreshing(true);
     },
     onSuccess: async () => {
-      // todo invalidate
       await queryClient.invalidateQueries(['response-list']);
       await queryClient.invalidateQueries(['rules']);
       toast.open({
@@ -747,7 +774,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
                 onAddNewExample={handleNewExample}
                 entities={entities}
                 selectedIntent={intent}
-                // todo necessary,
+                // todo necessary
                 // queryRefresh={queryRefresh}
                 updateSelectedIntent={updateSelectedIntent}
               />
