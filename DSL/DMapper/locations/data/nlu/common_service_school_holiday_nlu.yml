@@ -7,7 +7,7 @@ nlu:
     - Millal algab suvine koolivaheaeg?
     - Kas sa tead, millal on talvine koolivaheaeg?
     - Millal lõpeb kevadine koolivaheaeg?
-    - Millal on järgmine koolivaheaeg?
+    - Millal on koolivaheajad?
     - Millal on sügisene koolivaheaeg?
     - Mis kuupäeval algab talvine vaheaeg?
     - Millal on talvised koolivaheajad?
@@ -18,9 +18,9 @@ nlu:
     - Kas ma saaksin teada, millal algavad vaheajad?
     - Millised on selle aasta koolivaheaegade kuupäevad?
     - Millal on kevadine koolivaheaeg?
-    - Palun ütle mulle, millal on järgmine vaheaeg.
+    - Palun ütle mulle, millal on vaheaeg.
     - Kas koolivaheajad on lähiajal tulemas?
-    - Mis kuupäeval algab järgmine vaheaeg?
+    - Mis kuupäeval algab vaheaeg?
     - Millal algab koolivaheaeg kevadel?
     - Millal on talvine vaheaeg tänavu?
     - Mis kuupäeval algavad koolivaheajad?
