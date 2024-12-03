@@ -523,12 +523,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
     queryRefresh();
   };
 
-  // todo move to child - also fix common intents
-  const examplesData = useMemo(
-    () => intent?.examples.map((example, index) => ({ id: index, value: example })) ?? [],
-    [intent?.examples]
-  );
-
   const deleteIntentMutation = useMutation({
     mutationFn: (name: string) => deleteIntent({ name }),
     onMutate: () => {
@@ -712,11 +706,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
         {intent?.examples && (
           <Track align="stretch" justify="between" gap={10} style={{ width: '100%' }}>
             <div style={{ flex: 1 }}>
-              <IntentExamplesTable
-                examples={examplesData}
-                selectedIntent={intent}
-                updateSelectedIntent={updateSelectedIntent}
-              />
+              <IntentExamplesTable intent={intent} updateSelectedIntent={updateSelectedIntent} />
             </div>
             <div>
               <Track align="right" justify="between" direction="vertical" gap={100}>

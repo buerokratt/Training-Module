@@ -17,12 +17,11 @@ import LoadingDialog from '../../../components/LoadingDialog';
 import i18n from '../../../../i18n';
 
 type IntentExamplesTableProps = {
-  examples: { id: number; value: string }[];
-  selectedIntent: Intent;
+  intent: Intent;
   updateSelectedIntent: (intent: Intent) => void;
 };
 
-const IntentExamplesTable: FC<IntentExamplesTableProps> = ({ examples, selectedIntent, updateSelectedIntent }) => {
+const IntentExamplesTable: FC<IntentExamplesTableProps> = ({ intent, updateSelectedIntent }) => {
   let updatedExampleTitle = '';
   const { t } = useTranslation();
   const toast = useToast();
@@ -48,6 +47,11 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({ examples, selectedI
     queryKey: ['entities'],
   });
 
+  const examples = useMemo(
+    () => intent?.examples.map((example, index) => ({ id: index, value: example })) ?? [],
+    [intent?.examples]
+  );
+
   useDocumentEscapeListener(() => {
     updatedExampleTitle = '';
     setEditableRow(null);
@@ -58,13 +62,13 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({ examples, selectedI
   };
 
   const updateExampleOnList = (oldExample: string, newExample: string): void => {
-    const updatedIntent = selectedIntent;
+    const updatedIntent = intent;
     updatedIntent.examples[updatedIntent.examples.indexOf(oldExample)] = newExample;
     updateSelectedIntent(updatedIntent);
   };
 
   const deleteExampleFromList = (example: string): void => {
-    const updatedIntent = selectedIntent;
+    const updatedIntent = intent;
     const examplesArray = updatedIntent.examples;
     const index = examplesArray.findIndex((item) => item === example);
     examplesArray.splice(index, 1);
@@ -75,7 +79,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({ examples, selectedI
   const exampleToIntentMutation = useMutation({
     mutationFn: ({ exampleName }: { intentName: string; exampleName: string }) =>
       turnExampleIntoIntent({
-        intentName: selectedIntent.id,
+        intentName: intent.id,
         exampleName: exampleName,
       }),
     onSuccess: () => {
@@ -134,7 +138,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({ examples, selectedI
         title: t('global.notification'),
         message: t('toast.exampleDeleted'),
       });
-      updateSelectedIntent(selectedIntent);
+      updateSelectedIntent(intent);
       deleteExampleFromList(oldExampleText);
     },
     onError: (error: AxiosError) => {
@@ -172,14 +176,14 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({ examples, selectedI
     },
     onSettled: () => {
       setRefreshing(false);
-      updateSelectedIntent(selectedIntent);
+      updateSelectedIntent(intent);
     },
   });
 
   const handleNewExample = (example: string) => {
     addExamplesMutation.mutate({
-      intentName: selectedIntent.id,
-      intentExamples: selectedIntent.examples,
+      intentName: intent.id,
+      intentExamples: intent.examples,
       newExamples: example.replace(/(\t|\n)+/g, ' ').trim(),
     });
   };
@@ -230,7 +234,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({ examples, selectedI
               setOldExampleText(editableRow.value);
               setExampleText(updatedExampleTitle.trim());
               exampleEditMutation.mutate({
-                intentName: selectedIntent.id,
+                intentName: intent.id,
                 oldExample: editableRow.value,
                 newExample: updatedExampleTitle.trim(),
               });
@@ -269,7 +273,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({ examples, selectedI
       entitiesResponse?.response,
       updatedExampleTitle,
       exampleEditMutation,
-      selectedIntent.id,
+      intent.id,
     ]
   );
 
@@ -318,7 +322,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({ examples, selectedI
                 onClick={() => {
                   setOldExampleText(deletableRow!.value);
                   exampleDeleteMutation.mutate({
-                    intentName: selectedIntent.id,
+                    intentName: intent.id,
                     example: deletableRow!.value,
                   });
                 }}

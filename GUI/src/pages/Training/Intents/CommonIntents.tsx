@@ -185,11 +185,6 @@ const CommonIntents: FC = () => {
     mutationFn: (data: { intentName: string }) => getLastModified(data),
   });
 
-  const examplesData = useMemo(
-    () => selectedIntent?.examples.map((example, index) => ({ id: index, value: example })),
-    [selectedIntent?.examples]
-  );
-
   const handleTabsValueChange = useCallback(
     (value: string) => {
       setSelectedIntent(null);
@@ -456,12 +451,8 @@ const CommonIntents: FC = () => {
                 </Track>
               </div>
               <div className="vertical-tabs__content">
-                {selectedIntent?.examples && examplesData && (
-                  <IntentExamplesTable
-                    examples={examplesData}
-                    selectedIntent={selectedIntent}
-                    updateSelectedIntent={updateSelectedIntent}
-                  />
+                {selectedIntent?.examples && (
+                  <IntentExamplesTable intent={selectedIntent} updateSelectedIntent={updateSelectedIntent} />
                 )}
               </div>
             </Tabs.Content>
