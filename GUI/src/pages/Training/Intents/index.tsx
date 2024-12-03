@@ -87,7 +87,7 @@ const Intents: FC = () => {
 
   // TODO: This is not used at all at the moment
   // TODO: If this is needed at some point, errors should be fixed
-  // todo check first point here: https://github.com/buerokratt/Training-Module/pull/663
+  // TODO: Possibly relevant https://github.com/buerokratt/Training-Module/pull/663
   const turnIntentIntoServiceMutation = useMutation({
     mutationFn: ({ intent }: { intent: Intent }) => turnIntentIntoService(intent),
     onMutate: () => {
