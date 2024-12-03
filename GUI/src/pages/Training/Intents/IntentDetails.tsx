@@ -142,7 +142,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, en
       //   }
       // });
     },
-    [queryClient]
+    [intentId, queryClient, setSelectedIntent]
   );
 
   // TODO: need to fetch only the response for the selected intent
