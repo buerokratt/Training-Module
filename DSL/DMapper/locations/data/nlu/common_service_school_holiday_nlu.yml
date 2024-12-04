@@ -4,15 +4,15 @@ nlu:
   examples: |
     - Millal on selle aasta koolivaheajad?
     - Mis kuupäevadel on koolivaheajad sel aastal?
-    - Millal algab suvine koolivaheaeg?
-    - Kas sa tead, millal on talvine koolivaheaeg?
-    - Millal lõpeb kevadine koolivaheaeg?
+    - Millal algavad koolivaheaeg?
+    - Kas sa tead, millal on koolivaheaeg?
+    - Millal lõpeb koolivaheaeg?
     - Millal on koolivaheajad?
-    - Millal on sügisene koolivaheaeg?
-    - Mis kuupäeval algab talvine vaheaeg?
-    - Millal on talvised koolivaheajad?
+    - Millal on koolivaheaeg?
+    - Mis kuupäeval algab vaheaeg?
+    - Millal on koolivaheajad?
     - Palun ütle, millal algab koolivaheaeg.
-    - Millal algavad suvevaheajad?
+    - Millal algavad vaheajad?
     - Mis ajavahemikul on sel aastal koolivaheajad?
     - Millal lõppevad koolivaheajad?
     - Kas ma saaksin teada, millal algavad vaheajad?
@@ -21,15 +21,15 @@ nlu:
     - Palun ütle mulle, millal on vaheaeg.
     - Kas koolivaheajad on lähiajal tulemas?
     - Mis kuupäeval algab vaheaeg?
-    - Millal algab koolivaheaeg kevadel?
-    - Millal on talvine vaheaeg tänavu?
+    - Millal algab koolivaheaeg?
+    - Millal on vaheaeg tänavu?
     - Mis kuupäeval algavad koolivaheajad?
-    - Millal on suvevaheaja algus?
-    - Millal lõpeb talvine vaheaeg?
-    - Millal algab kevadine koolivaheaeg sel aastal?
+    - Millal on vaheaja algus?
+    - Millal lõpeb vaheaeg?
+    - Millal algab koolivaheaeg sel aastal?
     - Millal on esimene koolivaheaeg?
     - Mis on koolivaheaegade alguse kuupäevad?
-    - Millal lõppeb sügisene koolivaheaeg?
+    - Millal lõppeb koolivaheaeg?
     - Millal koolivaheajad algavad?
     - Kas koolivaheajad on varsti tulemas?
     - Mis on [järgmised](next_holidays) tähtsad koolivaheajad sel aastal?
