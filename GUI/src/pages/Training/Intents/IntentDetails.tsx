@@ -421,7 +421,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
     });
 
     if (!intentResponseName) {
-      await addRuleMutation.mutate({
+      addRuleMutation.mutate({
         data: {
           rule: `rule_${intentId}`,
           steps: [
