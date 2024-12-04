@@ -2,7 +2,7 @@ import { Track, FormInput, Button, Icon, Switch, Tooltip, FormTextarea, Dialog }
 import { isHiddenFeaturesEnabled, RESPONSE_TEXT_LENGTH } from 'constants/config';
 import { format } from 'date-fns';
 import { t } from 'i18next';
-import { Dispatch, FC, SetStateAction, useCallback, useEffect, useMemo, useState } from 'react';
+import { Dispatch, FC, SetStateAction, useCallback, useEffect, useState } from 'react';
 import { MdOutlineSave, MdOutlineModeEditOutline } from 'react-icons/md';
 import { Intent } from 'types/intent';
 import IntentExamplesTable from './IntentExamplesTable';
@@ -408,13 +408,12 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
     },
   });
 
-  // todo clean up and fix errors - LAST ONE
   const handleIntentResponseSubmit = async () => {
     if (intentResponseText === '' || !intent) return;
 
     const intentId = intent.id;
 
-    await addOrEditResponseMutation.mutate({
+    addOrEditResponseMutation.mutate({
       id: `utter_${intentId}`,
       responseText: intentResponseText,
       update: !!intentResponseName,
