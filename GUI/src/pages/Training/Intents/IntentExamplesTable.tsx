@@ -15,6 +15,7 @@ import IntentExamplesEntry from './IntentExamplesEntry';
 import { Intent } from '../../../types/intent';
 import LoadingDialog from '../../../components/LoadingDialog';
 import i18n from '../../../../i18n';
+import { t } from 'i18next';
 
 type IntentExamplesTableProps = {
   intent: Intent;
@@ -103,8 +104,8 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({ intent, updateSelec
   });
 
   const exampleEditMutation = useMutation({
-    mutationFn: (addExamplesData: { intentName: string; oldExample: string; newExample: string }) =>
-      editExample(addExamplesData),
+    mutationFn: (editExampleData: { intentName: string; oldExample: string; newExample: string }) =>
+      editExample(editExampleData),
     onMutate: async () => {
       setRefreshing(true);
     },
@@ -233,10 +234,16 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({ intent, updateSelec
               if (!editableRow) return;
               setOldExampleText(editableRow.value);
               setExampleText(updatedExampleTitle.trim());
+
+              const updatedTrimmedExample = updatedExampleTitle.trim();
+              if (updatedTrimmedExample === '') {
+                setEditableRow(null);
+                return;
+              }
               exampleEditMutation.mutate({
                 intentName: intent.id,
                 oldExample: editableRow.value,
-                newExample: updatedExampleTitle.trim(),
+                newExample: updatedTrimmedExample,
               });
             },
             () =>

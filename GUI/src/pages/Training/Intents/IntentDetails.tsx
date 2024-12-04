@@ -409,7 +409,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
   });
 
   // todo clean up and fix errors - LAST ONE
-  // todo change example broken
   const handleIntentResponseSubmit = async () => {
     if (intentResponseText === '' || !intent) return;
 
