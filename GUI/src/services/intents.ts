@@ -88,9 +88,3 @@ export async function turnExampleIntoIntent(data: { exampleName: string; intentN
   });
   await rasaApi.post('intents/examples/delete', { intent: data.intentName, example: data.exampleName });
 }
-
-export async function turnIntentIntoService(intent: Intent): Promise<void> {
-  await rasaApi.post('intents/turn-into-service', {
-    intentName: intent.id,
-  });
-}

@@ -5,10 +5,10 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as Tabs from '@radix-ui/react-tabs';
 import { AxiosError } from 'axios';
 
-import { Button, Dialog, FormInput, Track } from 'components';
+import { Button, FormInput, Track } from 'components';
 import { useToast } from 'hooks/useToast';
 import { Intent } from 'types/intent';
-import { addIntent, turnIntentIntoService } from 'services/intents';
+import { addIntent } from 'services/intents';
 import LoadingDialog from '../../../components/LoadingDialog';
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
 import IntentTabList from './IntentTabList';
@@ -40,7 +40,6 @@ const Intents: FC = () => {
   const [selectedIntent, setSelectedIntent] = useState<IntentWithExamplesCount | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [filter, setFilter] = useState('');
-  const [turnIntentToServiceIntent, setTurnIntentToServiceIntent] = useState<Intent | null>(null);
 
   const { data: intentsResponse, isLoading } = useQuery<IntentsWithExamplesCountResponse>({
     queryKey: ['intents/with-examples-count'],
@@ -79,35 +78,6 @@ const Intents: FC = () => {
       setSelectedIntent(queryIntent);
     }
   }, [intents, searchParams]);
-
-  // TODO: This is not used at all at the moment
-  // TODO: If this is needed at some point, errors should be fixed
-  // TODO: Possibly relevant https://github.com/buerokratt/Training-Module/pull/663
-  const turnIntentIntoServiceMutation = useMutation({
-    mutationFn: ({ intent }: { intent: Intent }) => turnIntentIntoService(intent),
-    onMutate: () => {
-      setRefreshing(true);
-    },
-    onSuccess: (_, { intent }) => {
-      toast.open({
-        type: 'success',
-        title: t('global.notification'),
-        message: t('toast.intentToServiceSuccess'),
-      });
-      window.location.href = `${serviceModuleGuiBaseUrl}/services/newService/${intent.intent}`;
-    },
-    onError: (error: AxiosError) => {
-      toast.open({
-        type: 'error',
-        title: t('global.notificationError'),
-        message: error.message,
-      });
-    },
-    onSettled: () => {
-      setRefreshing(false);
-      queryRefresh(selectedIntent?.id || '');
-    },
-  });
 
   const handleTabsValueChange = useCallback(
     (value: string) => {
@@ -191,32 +161,6 @@ const Intents: FC = () => {
             />
           )}
         </Tabs.Root>
-      )}
-
-      {turnIntentToServiceIntent !== null && (
-        <Dialog
-          title={t('training.intents.turnIntoService')}
-          onClose={() => setTurnIntentToServiceIntent(null)}
-          footer={
-            <>
-              <Button appearance="secondary" onClick={() => setTurnIntentToServiceIntent(null)}>
-                {t('global.no')}
-              </Button>
-              <Button
-                appearance="error"
-                onClick={() =>
-                  turnIntentIntoServiceMutation.mutate({
-                    intent: turnIntentToServiceIntent,
-                  })
-                }
-              >
-                {t('global.yes')}
-              </Button>
-            </>
-          }
-        >
-          <p>{t('global.removeValidation')}</p>
-        </Dialog>
       )}
 
       {refreshing && (
