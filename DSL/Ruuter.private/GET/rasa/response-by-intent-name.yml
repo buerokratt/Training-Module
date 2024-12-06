@@ -1,0 +1,69 @@
+declaration:
+  call: declare
+  version: 0.1
+  # todo description
+  description: "Decription placeholder for 'RESPONSES-LIST'"
+  method: get
+  accepts: json
+  returns: json
+  namespace: training
+
+# assign_values:
+#   assign:
+#     params:
+#       response_name: "utter_common_klienditeenindajale_suunamine"
+#       response_text: "Suunan teid klienditeenindajale. Varuge natukene kannatust."
+#   next: getResponsesWithNameAndText
+
+getResponsesWithNameAndText:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]/responses/_search/template"
+    body:
+      id: "response-with-name-and-text"
+      params:
+        response_name: "utter_common_klienditeenindajale_suunamine"
+        response_text: "Suunan teid klienditeenindajale. Varuge natukene kannatust."
+  result: getResponsesResult
+  next: returnSuccess
+
+# mapResponsesData:
+#   call: http.post
+#   args:
+#     url: "[#TRAINING_DMAPPER]/hbs/training/get_responses"
+#     headers:
+#       type: "json"
+#     body:
+#       hits: ${getResponsesResult.response.body.hits.hits}
+#   result: responsesData
+#   next: returnSuccess
+
+returnSuccess:
+  return: ${getResponsesResult.response.body}
+  next: end
+# getResponsesWithNameAndText:
+#     call: http.post
+#   args:
+#     url: "[#TRAINING_OPENSEARCH]/responses/_search/template"
+#     body:
+#       id: "response-with-name-and-text"
+#       params:
+#         response_name: "utter_common_klienditeenindajale_suunamine"
+#         response_text: "Suunan teid klienditeenindajale. Varuge natukene kannatust."
+#   result: getResponsesResult
+#   next: mapResponsesData
+
+# mapResponsesData:
+#   call: http.post
+#   args:
+#     url: "[#TRAINING_DMAPPER]/hbs/training/get_responses"
+#     headers:
+#       type: "json"
+#     body:
+#       hits: ${getResponsesResult.response.body.hits.hits}
+#   result: responsesData
+#   next: returnSuccess
+
+# returnSuccess:
+#   return: ${responsesData.response.body}
+#   next: end
