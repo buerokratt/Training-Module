@@ -1,4 +1,3 @@
-# todo rename
 declaration:
   call: declare
   version: 0.1
@@ -9,13 +8,13 @@ declaration:
   namespace: training
   allowlist:
     params:
-      - field: intent_name
+      - field: intent
         type: string
         description: "Intent ID"
 
 assign_values:
   assign:
-    response_name: ${"utter_" + incoming.params.intent_name}
+    response_name: ${"utter_" + incoming.params.intent}
 
 getResponsesWithNameAndText:
   call: http.post
@@ -31,7 +30,7 @@ getResponsesWithNameAndText:
 mapResponsesData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/hbs/training/get_response_by_intent_name"
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_response_by_intent_id"
     headers:
       type: "json"
     body:

@@ -103,7 +103,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
       setSelectedIntent(intentsResponse.response);
 
       const responseResponse = await queryClient.fetchQuery<ResponseResponse>([
-        `response-by-intent-name?intent_name=${intentId}`,
+        `response-by-intent-id?intent=${intentId}`,
       ]);
       setResponse(responseResponse.response);
 
@@ -115,7 +115,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
 
   // TODO rename does not work? need to invalidate?
   const { data: responseResponse } = useQuery<ResponseResponse>({
-    queryKey: [`response-by-intent-name?intent_name=${intentId}`],
+    queryKey: [`response-by-intent-id?intent=${intentId}`],
   });
 
   useEffect(() => {
