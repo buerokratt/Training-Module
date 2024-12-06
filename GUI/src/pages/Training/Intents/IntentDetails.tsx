@@ -128,8 +128,9 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
 
   // TODO: need to fetch response for the selected intent only
   const { data: responsesResponse } = useQuery<ResponsesResponse>({
-    queryKey: ['response-by-intent-name'],
-    // queryKey: ['responses-list'],
+    // queryKey: [`response-by-intent-name?intent_name=${intentId}`],
+    // todo also search to invalidate in this file!
+    queryKey: ['responses-list'],
   });
 
   useEffect(() => {

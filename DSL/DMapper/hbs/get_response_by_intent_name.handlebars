@@ -1,12 +1,10 @@
 {
-"responses": [
-{{#each response}}
-    {
-    "name": "{{_id}}",
-    "text": {{#if _source.response.[0].condition}}"{{{_source.response.[1].text}}}"{{else}}"{{{_source.response.[0].text}}}"{{/if}}
-    {{#if _source.response.[0].buttons}},
+"response": {
+    "name": "{{response.0._id}}",
+    "text": {{#if response.0._source.response.[0].condition}}"{{{response.0._source.response.[1].text}}}"{{else}}"{{{response.0._source.response.[0].text}}}"{{/if}}
+    {{#if response.0._source.response.[0].buttons}},
     "buttons": [
-        {{#each _source.response.[0].buttons}}
+        {{#each response.0._source.response.[0].buttons}}
             {
             "title": "{{title}}",
             "payload": "{{{payload}}}"
@@ -14,9 +12,9 @@
         {{/each}}
     ]
     {{/if}}
-    {{#if _source.response.[0].condition}},
+    {{#if response.0._source.response.[0].condition}},
     "condition": [
-        {{#each _source.response.[0].condition}}
+        {{#each response.0._source.response.[0].condition}}
             {
             "type": "{{type}}",
             "name": "{{name}}",
@@ -24,9 +22,7 @@
             }{{#unless @last}},{{/unless}}
         {{/each}}
     ],
-    "conditionText": "{{{_source.response.[0].text}}}"
+    "conditionText": "{{{response.0._source.response.[0].text}}}"
     {{/if}}
-    }{{#unless @last}},{{/unless}}
-{{/each}}
-]
+}
 }

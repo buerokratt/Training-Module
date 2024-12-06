@@ -1,12 +1,25 @@
 declaration:
   call: declare
   version: 0.1
-  # todo description
-  description: "Decription placeholder for 'RESPONSES-LIST'"
+  description: "Get response by intent name"
   method: get
   accepts: json
   returns: json
   namespace: training
+  allowlist:
+    # headers:
+    #   - field: cookie
+    #     type: string
+    #     description: "Cookie field"
+    params:
+      - field: intent_name
+        type: string
+        description: "Intent ID"
+
+assign_values:
+  assign:
+    response_name: ${"utter_" + incoming.params.intent_name}
+  # next: getResponsesWithNameAndText
 
 # assign_values:
 #   assign:
@@ -22,8 +35,7 @@ getResponsesWithNameAndText:
     body:
       id: "response-with-name-and-text"
       params:
-        # todo only name, remove hardcoded values
-        response_name: "utter_common_klienditeenindajale_suunamine"
+        response_name: ${response_name}
         response_text: "Suunan teid klienditeenindajale. Varuge natukene kannatust."
   result: getResponsesResult
 
@@ -39,5 +51,5 @@ mapResponsesData:
   next: returnSuccess
 
 returnSuccess:
-  return: ${responsesData.response.body.responses}
+  return: ${responsesData.response.body.response}
   next: end
