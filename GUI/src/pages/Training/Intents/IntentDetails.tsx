@@ -33,14 +33,9 @@ interface Response {
   text: string;
 }
 
-interface ResponsesResponse
-  extends Array<{
-    name: string;
-    response: {
-      name: string;
-      text: string;
-    }[];
-  }> {}
+interface ResponseResponse {
+  response: Response;
+}
 
 interface IntentResponse {
   response: Intent;
@@ -63,8 +58,8 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
   const [refreshing, setRefreshing] = useState(false);
   const [showConnectToServiceModal, setShowConnectToServiceModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [intentResponseText, setIntentResponseText] = useState<string>('');
-  const [intentResponseName, setIntentResponseName] = useState<string>('');
+
+  const [response, setResponse] = useState<Response>({ name: '', text: '' });
   const [intentRule, setIntentRule] = useState<string>('');
 
   const queryClient = useQueryClient();
@@ -79,28 +74,13 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
       setIntent(intentResponse.response);
       // Also reset form states on choosing another intent from list
       setEditingIntentTitle(null);
-      setIntentResponseText('');
+      setResponse({ name: '', text: '' });
     }
   }, [intentResponse]);
 
   const { data: isPossibleToUpdateMark, refetch } = useQuery<boolean>({
     queryKey: [`intents/is-marked-for-service?intent=${intentId}`],
   });
-
-  const setIntentResponse = useCallback(
-    (responsesResponse: ResponsesResponse | undefined) => {
-      if (!responsesResponse) return;
-
-      const intentExistingResponse = responsesResponse[0].response.find(
-        (response: any) => `utter_${intentId}` === response.name
-      );
-      if (intentExistingResponse) {
-        setIntentResponseText(intentExistingResponse.text);
-        setIntentResponseName(intentExistingResponse.name);
-      }
-    },
-    [intentId]
-  );
 
   const addIntentRule = useCallback(
     (rulesResponse: RulesResponse | undefined) => {
@@ -122,26 +102,25 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
       setIntent(intentsResponse.response);
       setSelectedIntent(intentsResponse.response);
 
-      const resonsesResponse = await queryClient.fetchQuery<ResponsesResponse>(['responses-list']);
-      setIntentResponse(resonsesResponse);
+      const responseResponse = await queryClient.fetchQuery<ResponseResponse>(['responses-list']);
+      setResponse(responseResponse.response);
 
       const rulesResponse = await queryClient.fetchQuery<RulesResponse>(['rules']);
       addIntentRule(rulesResponse);
     },
-    [addIntentRule, intentId, queryClient, setIntentResponse, setSelectedIntent]
+    [addIntentRule, intentId, queryClient, setResponse, setSelectedIntent]
   );
 
   // TODO: need to fetch response for the selected intent only
-  const { data: responsesResponse } = useQuery<ResponsesResponse>({
+  const { data: responseResponse } = useQuery<ResponseResponse>({
     queryKey: [`response-by-intent-name?intent_name=${intentId}`],
     // todo also search to invalidate in this file!
     // queryKey: ['responses-list'],
   });
 
   useEffect(() => {
-    console.log('responsesResponse', responsesResponse);
-    setIntentResponse(responsesResponse);
-  }, [responsesResponse, setIntentResponse]);
+    if (responseResponse) setResponse(responseResponse.response);
+  }, [responseResponse, setResponse]);
 
   // TODO: need to fetch rules for the selected intent only
   const { data: rulesResponse } = useQuery<RulesResponse>({
@@ -417,17 +396,17 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
   });
 
   const handleIntentResponseSubmit = async () => {
-    if (intentResponseText === '' || !intent) return;
+    if (response.text === '' || !intent) return;
 
     const intentId = intent.id;
 
     addOrEditResponseMutation.mutate({
       id: `utter_${intentId}`,
-      responseText: intentResponseText,
-      update: !!intentResponseName,
+      responseText: response.text,
+      update: !!response.name,
     });
 
-    if (!intentResponseName) {
+    if (!response.name) {
       addRuleMutation.mutate({
         data: {
           rule: `rule_${intentId}`,
@@ -637,7 +616,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
                   <h1>{t('training.intents.responseTitle')}</h1>
                   <FormTextarea
                     label={t('global.addNew')}
-                    value={intentResponseText}
+                    value={response.text}
                     name="intentResponse"
                     minRows={7}
                     maxRows={7}
@@ -645,7 +624,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
                     hideLabel
                     maxLength={RESPONSE_TEXT_LENGTH}
                     showMaxLength
-                    onChange={(e) => setIntentResponseText(e.target.value)}
+                    onChange={(e) => setResponse({ ...response, text: e.target.value })}
                     disableHeightResize
                   />
                 </Track>
