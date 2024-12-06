@@ -102,7 +102,9 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
       setIntent(intentsResponse.response);
       setSelectedIntent(intentsResponse.response);
 
-      const responseResponse = await queryClient.fetchQuery<ResponseResponse>(['responses-list']);
+      const responseResponse = await queryClient.fetchQuery<ResponseResponse>([
+        `response-by-intent-name?intent_name=${intentId}`,
+      ]);
       setResponse(responseResponse.response);
 
       const rulesResponse = await queryClient.fetchQuery<RulesResponse>(['rules']);
@@ -111,11 +113,9 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
     [addIntentRule, intentId, queryClient, setResponse, setSelectedIntent]
   );
 
-  // TODO: need to fetch response for the selected intent only
+  // TODO rename does not work? need to invalidate?
   const { data: responseResponse } = useQuery<ResponseResponse>({
     queryKey: [`response-by-intent-name?intent_name=${intentId}`],
-    // todo also search to invalidate in this file!
-    // queryKey: ['responses-list'],
   });
 
   useEffect(() => {
