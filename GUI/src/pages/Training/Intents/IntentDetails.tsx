@@ -28,6 +28,11 @@ import LoadingDialog from 'components/LoadingDialog';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import { IntentWithExamplesCount } from 'types/intentWithExampleCounts';
 
+interface Response {
+  name: string;
+  text: string;
+}
+
 interface ResponsesResponse
   extends Array<{
     name: string;
@@ -128,9 +133,9 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
 
   // TODO: need to fetch response for the selected intent only
   const { data: responsesResponse } = useQuery<ResponsesResponse>({
-    // queryKey: [`response-by-intent-name?intent_name=${intentId}`],
+    queryKey: [`response-by-intent-name?intent_name=${intentId}`],
     // todo also search to invalidate in this file!
-    queryKey: ['responses-list'],
+    // queryKey: ['responses-list'],
   });
 
   useEffect(() => {

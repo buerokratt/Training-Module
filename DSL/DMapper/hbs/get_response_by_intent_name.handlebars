@@ -2,27 +2,5 @@
 "response": {
     "name": "{{response.0._id}}",
     "text": {{#if response.0._source.response.[0].condition}}"{{{response.0._source.response.[1].text}}}"{{else}}"{{{response.0._source.response.[0].text}}}"{{/if}}
-    {{#if response.0._source.response.[0].buttons}},
-    "buttons": [
-        {{#each response.0._source.response.[0].buttons}}
-            {
-            "title": "{{title}}",
-            "payload": "{{{payload}}}"
-            }{{#unless @last}},{{/unless}}
-        {{/each}}
-    ]
-    {{/if}}
-    {{#if response.0._source.response.[0].condition}},
-    "condition": [
-        {{#each response.0._source.response.[0].condition}}
-            {
-            "type": "{{type}}",
-            "name": "{{name}}",
-            "value": {{#if value}}"{{{value}}}"{{else}}null{{/if}}
-            }{{#unless @last}},{{/unless}}
-        {{/each}}
-    ],
-    "conditionText": "{{{response.0._source.response.[0].text}}}"
-    {{/if}}
 }
 }
