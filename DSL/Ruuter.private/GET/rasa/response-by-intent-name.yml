@@ -7,10 +7,6 @@ declaration:
   returns: json
   namespace: training
   allowlist:
-    # headers:
-    #   - field: cookie
-    #     type: string
-    #     description: "Cookie field"
     params:
       - field: intent_name
         type: string
@@ -19,14 +15,6 @@ declaration:
 assign_values:
   assign:
     response_name: ${"utter_" + incoming.params.intent_name}
-  # next: getResponsesWithNameAndText
-
-# assign_values:
-#   assign:
-#     params:
-#       response_name: "utter_common_klienditeenindajale_suunamine"
-#       response_text: "Suunan teid klienditeenindajale. Varuge natukene kannatust."
-#   next: getResponsesWithNameAndText
 
 getResponsesWithNameAndText:
   call: http.post
