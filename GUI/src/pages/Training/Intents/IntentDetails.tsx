@@ -27,6 +27,7 @@ import ConnectServiceToIntentModal from 'pages/ConnectServiceToIntentModal';
 import LoadingDialog from 'components/LoadingDialog';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import { IntentWithExamplesCount } from 'types/intentWithExampleCounts';
+import { type } from 'os';
 
 interface Response {
   name: string;
@@ -117,9 +118,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
   });
 
   useEffect(() => {
-    if (responseResponse?.response) {
-      setResponse(responseResponse.response);
-    }
+    if (responseResponse?.response) setResponse(responseResponse.response);
   }, [responseResponse]);
 
   const responseText = response?.text ?? '';
