@@ -22,48 +22,22 @@ getResponsesWithNameAndText:
     body:
       id: "response-with-name-and-text"
       params:
+        # todo only name, remove hardcoded values
         response_name: "utter_common_klienditeenindajale_suunamine"
         response_text: "Suunan teid klienditeenindajale. Varuge natukene kannatust."
   result: getResponsesResult
+
+mapResponsesData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_response_by_intent_name"
+    headers:
+      type: "json"
+    body:
+      response: ${getResponsesResult.response.body.hits.hits}
+  result: responsesData
   next: returnSuccess
 
-# mapResponsesData:
-#   call: http.post
-#   args:
-#     url: "[#TRAINING_DMAPPER]/hbs/training/get_responses"
-#     headers:
-#       type: "json"
-#     body:
-#       hits: ${getResponsesResult.response.body.hits.hits}
-#   result: responsesData
-#   next: returnSuccess
-
 returnSuccess:
-  return: ${getResponsesResult.response.body}
+  return: ${responsesData.response.body.responses}
   next: end
-# getResponsesWithNameAndText:
-#     call: http.post
-#   args:
-#     url: "[#TRAINING_OPENSEARCH]/responses/_search/template"
-#     body:
-#       id: "response-with-name-and-text"
-#       params:
-#         response_name: "utter_common_klienditeenindajale_suunamine"
-#         response_text: "Suunan teid klienditeenindajale. Varuge natukene kannatust."
-#   result: getResponsesResult
-#   next: mapResponsesData
-
-# mapResponsesData:
-#   call: http.post
-#   args:
-#     url: "[#TRAINING_DMAPPER]/hbs/training/get_responses"
-#     headers:
-#       type: "json"
-#     body:
-#       hits: ${getResponsesResult.response.body.hits.hits}
-#   result: responsesData
-#   next: returnSuccess
-
-# returnSuccess:
-#   return: ${responsesData.response.body}
-#   next: end

@@ -129,6 +129,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
   // TODO: need to fetch response for the selected intent only
   const { data: responsesResponse } = useQuery<ResponsesResponse>({
     queryKey: ['response-by-intent-name'],
+    // queryKey: ['responses-list'],
   });
 
   useEffect(() => {

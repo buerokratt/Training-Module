@@ -22,7 +22,7 @@ mapResponsesData:
   args:
     url: "[#TRAINING_DMAPPER]/hbs/training/get_responses_list"
     headers:
-      type: 'json'
+      type: "json"
     body:
       response: ${getResponsesResult.response.body.hits.hits}
   result: responsesData

@@ -1,0 +1,32 @@
+{
+"responses": [
+{{#each response}}
+    {
+    "name": "{{_id}}",
+    "text": {{#if _source.response.[0].condition}}"{{{_source.response.[1].text}}}"{{else}}"{{{_source.response.[0].text}}}"{{/if}}
+    {{#if _source.response.[0].buttons}},
+    "buttons": [
+        {{#each _source.response.[0].buttons}}
+            {
+            "title": "{{title}}",
+            "payload": "{{{payload}}}"
+            }{{#unless @last}},{{/unless}}
+        {{/each}}
+    ]
+    {{/if}}
+    {{#if _source.response.[0].condition}},
+    "condition": [
+        {{#each _source.response.[0].condition}}
+            {
+            "type": "{{type}}",
+            "name": "{{name}}",
+            "value": {{#if value}}"{{{value}}}"{{else}}null{{/if}}
+            }{{#unless @last}},{{/unless}}
+        {{/each}}
+    ],
+    "conditionText": "{{{_source.response.[0].text}}}"
+    {{/if}}
+    }{{#unless @last}},{{/unless}}
+{{/each}}
+]
+}
