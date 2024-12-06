@@ -24,7 +24,6 @@ getResponsesWithNameAndText:
       id: "response-with-name-and-text"
       params:
         response_name: ${response_name}
-        response_text: "Suunan teid klienditeenindajale. Varuge natukene kannatust."
   result: getResponsesResult
 
 mapResponsesData:
