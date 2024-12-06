@@ -58,8 +58,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
   const [refreshing, setRefreshing] = useState(false);
   const [showConnectToServiceModal, setShowConnectToServiceModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-
-  const [response, setResponse] = useState<Response>({ name: '', text: '' });
+  const [response, setResponse] = useState<Response | null>(null);
   const [intentRule, setIntentRule] = useState<string>('');
 
   const queryClient = useQueryClient();
@@ -74,7 +73,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
       setIntent(intentResponse.response);
       // Also reset form states on choosing another intent from list
       setEditingIntentTitle(null);
-      setResponse({ name: '', text: '' });
     }
   }, [intentResponse]);
 
@@ -114,14 +112,19 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
   );
 
   // todo also need to click twice lol. why?
-  // TODO rename does not work? need to invalidate?
+  // todo rename does not work? need to invalidate?
   const { data: responseResponse } = useQuery<ResponseResponse>({
     queryKey: [`response-by-intent-id?intent=${intentId}`],
   });
 
   useEffect(() => {
-    if (responseResponse) setResponse(responseResponse.response);
-  }, [responseResponse, setResponse]);
+    if (responseResponse?.response) {
+      setResponse(responseResponse.response);
+    }
+  }, [responseResponse]);
+
+  const responseText = response?.text ?? '';
+  const responseName = response?.name ?? '';
 
   // TODO: need to fetch rules for the selected intent only
   const { data: rulesResponse } = useQuery<RulesResponse>({
@@ -397,17 +400,17 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
   });
 
   const handleIntentResponseSubmit = async () => {
-    if (response.text === '' || !intent) return;
+    if (responseText === '' || !intent) return;
 
     const intentId = intent.id;
 
     addOrEditResponseMutation.mutate({
       id: `utter_${intentId}`,
-      responseText: response.text,
-      update: !!response.name,
+      responseText,
+      update: !!responseName,
     });
 
-    if (!response.name) {
+    if (!responseName) {
       addRuleMutation.mutate({
         data: {
           rule: `rule_${intentId}`,
@@ -617,7 +620,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
                   <h1>{t('training.intents.responseTitle')}</h1>
                   <FormTextarea
                     label={t('global.addNew')}
-                    value={response.text}
+                    value={responseText}
                     name="intentResponse"
                     minRows={7}
                     maxRows={7}
@@ -625,7 +628,12 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
                     hideLabel
                     maxLength={RESPONSE_TEXT_LENGTH}
                     showMaxLength
-                    onChange={(e) => setResponse({ ...response, text: e.target.value })}
+                    onChange={(e) =>
+                      setResponse({
+                        name: response?.name ?? '',
+                        text: e.target.value ?? '',
+                      })
+                    }
                     disableHeightResize
                   />
                 </Track>
