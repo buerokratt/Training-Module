@@ -379,7 +379,8 @@
       "user-reached": "Kasutajaga võeti ühendust",
       "user-not-reached": "Kasutajaga ei õnnestunud ühendust saada",
       "ask_to_forward_to_csa": "Paluti vestlus klienditeenindajale üle kanda",
-      "forwarded_to_backoffice": "Vestlus suunatakse tagasi kontorisse"
+      "forwarded_to_backoffice": "Vestlus suunatakse tagasi kontorisse",
+      "continue_chatting_with_bot": "Jätkake vestlust kasutajaga bürokratt"
     },
     "status": {
       "active": "Aktiivne",
@@ -426,7 +427,8 @@
       "user-not-reached": "{{name}} ei saanud kasutajaga ühendust",
       "user-authenticated": "{{name}} on autenditud {{date}}",
       "ask_to_forward_to_csa": "Paluti vestlus klienditeenindajale üle kanda",
-      "forwarded_to_backoffice": "Vestlus suunatakse tagasi kontorisse"
+      "forwarded_to_backoffice": "Vestlus suunatakse tagasi kontorisse",
+      "continue_chatting_with_bot": "Jätkake vestlust kasutajaga bürokratt"
     }
   },
   "submit": {
