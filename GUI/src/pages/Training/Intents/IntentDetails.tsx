@@ -27,7 +27,6 @@ import ConnectServiceToIntentModal from 'pages/ConnectServiceToIntentModal';
 import LoadingDialog from 'components/LoadingDialog';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import { IntentWithExamplesCount } from 'types/intentWithExampleCounts';
-import { type } from 'os';
 
 interface Response {
   name: string;
@@ -351,10 +350,14 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
     mutationFn: (intentResponseData: { id: string; responseText: string; update: boolean }) =>
       editResponse(intentResponseData.id, intentResponseData.responseText, intentResponseData.update),
     onMutate: () => {
+      console.log('onMutate');
       setRefreshing(true);
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['response-list'], refetchType: 'all' });
+      await queryClient.invalidateQueries({
+        queryKey: [`intents/is-marked-for-service?intent=${intentId}`],
+        refetchType: 'all',
+      });
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -460,7 +463,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
       setRefreshing(true);
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['response-list']);
+      await queryClient.invalidateQueries([`intents/is-marked-for-service?intent=${intentId}`]);
       await queryClient.invalidateQueries(['rules']);
       toast.open({
         type: 'success',
