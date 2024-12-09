@@ -312,6 +312,7 @@
       "popupNotifications": "Popup notifications",
       "newUnansweredChat": "New unanswered chat",
       "newForwardedChat": "New forwarded chat",
+      "newValidationMessage": "New message to validate",
       "useAutocorrect": "Text auto corrector"
     }
   },
@@ -374,7 +375,8 @@
       "user-reached": "User contacted",
       "user-not-reached": "User could not be reached",
       "ask_to_forward_to_csa": "Asked to forward the conversation to a customer service agent",
-      "forwarded_to_backoffice": "Conversation forwarded to back office"
+      "forwarded_to_backoffice": "Conversation forwarded to back office",
+      "continue_chatting_with_bot": "Continue conversation with bürokratt"
     },
     "status": {
       "active": "Active",
@@ -421,7 +423,8 @@
       "user-not-reached": "{{name}} could not reach the user",
       "user-authenticated": "{{name}} is authenticated {{date}}",
       "ask_to_forward_to_csa": "Asked to forward the conversation to a customer service agent",
-      "forwarded_to_backoffice": "Conversation forwarded to back office"
+      "forwarded_to_backoffice": "Conversation forwarded to back office",
+      "continue_chatting_with_bot": "Continue conversation with bürokratt"
     }
   },
   "submit": {
