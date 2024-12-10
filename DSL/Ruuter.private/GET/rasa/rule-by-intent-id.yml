@@ -1,0 +1,43 @@
+# todo not ready
+declaration:
+  call: declare
+  version: 0.1
+  description: "Get rule by intent name"
+  method: get
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    params:
+      - field: intent
+        type: string
+        description: "Intent ID"
+
+assign_values:
+  assign:
+    rule: ${"rule_" + incoming.params.intent}
+
+getRules:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]/rules/_search/template"
+    body:
+      id: "rule-with-name"
+      params:
+        rule: ${rule}
+  result: getRulesResult
+
+mapRulesData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_rules"
+    headers:
+      type: "json"
+    body:
+      hits: ${getRulesResult.response.body.hits.hits}
+  result: rulesData
+  next: returnSuccess
+
+returnSuccess:
+  return: ${rulesData.response.body.rules}
+  next: end

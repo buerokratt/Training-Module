@@ -124,7 +124,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
 
   // TODO: need to fetch rules for the selected intent only
   const { data: rulesResponse } = useQuery<RulesResponse>({
-    queryKey: ['rules'],
+    queryKey: [`rule-by-intent-id?intent=${intentId}`],
   });
 
   useEffect(() => {
