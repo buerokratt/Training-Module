@@ -111,7 +111,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
     [addIntentRule, intentId, queryClient, setResponse, setSelectedIntent]
   );
 
-  // todo rename does not work? need to invalidate?
   const { data: responseResponse } = useQuery<ResponseResponse>({
     queryKey: [`response-by-intent-id?intent=${intentId}`],
   });
