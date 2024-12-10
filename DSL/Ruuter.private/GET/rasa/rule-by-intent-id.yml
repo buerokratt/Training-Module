@@ -1,4 +1,3 @@
-# todo not ready
 declaration:
   call: declare
   version: 0.1
@@ -30,14 +29,14 @@ getRules:
 mapRulesData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/hbs/training/get_rules"
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_rule_by_intent_id"
     headers:
       type: "json"
     body:
       hits: ${getRulesResult.response.body.hits.hits}
   result: rulesData
-  next: returnSuccess
+  # next: returnSuccess
 
 returnSuccess:
-  return: ${rulesData.response.body.rules}
+  return: ${rulesData.response.body}
   next: end
