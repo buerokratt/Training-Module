@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useQueryClient, useQuery } from '@tanstack/react-query';
 import { IntentWithExamplesCount } from 'types/intentWithExamplesCount';
