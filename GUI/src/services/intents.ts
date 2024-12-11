@@ -1,5 +1,4 @@
 import { fileApi, rasaApi } from './api';
-import { Intent } from 'types/intent';
 
 export async function addIntent(newIntentData: { name: string }) {
   const { data } = await rasaApi.post('/intents/add', newIntentData);
