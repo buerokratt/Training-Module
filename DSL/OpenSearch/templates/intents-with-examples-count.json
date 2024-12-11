@@ -6,28 +6,27 @@
       "aggs": {
         "hot": {
           "terms": {
-            "field": "intent.keyword"
+            "field": "intent",
+            "size": 10000
           },
           "aggs": {
             "examples_counts": {
               "value_count": {
-                "field": "examples.raw"
+                "field": "examples"
               }
             }
           }
         }
       },
       "query": {
-        "bool": {
-          "must": [
-            {
-              "query_string": {
-                "query": "*{{intent}}*",
-                "default_field": "intent"
-              }
-            }
-          ]
+        {{#intent}}
+        "wildcard": {
+          "intent": "*{{intent}}*"
         }
+        {{/intent}}
+        {{^intent}}
+        "match_all": {}
+        {{/intent}}
       }
     },
     "params": {
