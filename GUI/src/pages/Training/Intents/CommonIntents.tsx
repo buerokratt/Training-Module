@@ -3,35 +3,22 @@ import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as Tabs from '@radix-ui/react-tabs';
-import { format } from 'date-fns';
-import { AxiosError } from 'axios';
 import { MdCheckCircleOutline } from 'react-icons/md';
 
 import { Button, Card, Dialog, FormInput, Icon, Switch, Tooltip, Track } from 'components';
-import { useToast } from 'hooks/useToast';
 import { Intent } from 'types/intent';
 import { Entity } from 'types/entity';
-import {
-  addRemoveIntentModel,
-  deleteIntent,
-  downloadExamples,
-  getLastModified,
-  uploadExamples,
-} from 'services/intents';
-import IntentExamplesTable from './IntentExamplesTable';
+import { getLastModified } from 'services/intents';
 import LoadingDialog from '../../../components/LoadingDialog';
-import ConnectServiceToIntentModal from 'pages/ConnectServiceToIntentModal';
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
+import IntentDetails from './IntentDetails';
 
 const CommonIntents: FC = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const toast = useToast();
   const [searchParams] = useSearchParams();
   const [commonIntentsEnabled, setCommonIntentsEnabled] = useState(true);
   const [selectedIntent, setSelectedIntent] = useState<Intent | null>(null);
-  const [deletableIntent, setDeletableIntent] = useState<string | number | null>(null);
-  const [connectableIntent, setConnectableIntent] = useState<Intent | null>(null);
   const [filter, setFilter] = useState('');
   const [refreshing, setRefreshing] = useState(false);
 
@@ -75,16 +62,6 @@ const CommonIntents: FC = () => {
     }
   }, [intentParam]);
 
-  function isValidDate(dateString: string | number | Date) {
-    const date = new Date(dateString);
-    return !isNaN(date.getTime());
-  }
-
-  const updateSelectedIntent = (updatedIntent: Intent) => {
-    setSelectedIntent(null);
-    setTimeout(() => setSelectedIntent(updatedIntent), 20);
-  };
-
   const queryRefresh = useCallback(
     function queryRefresh(selectIntent: string | null) {
       setSelectedIntent(null);
@@ -109,69 +86,6 @@ const CommonIntents: FC = () => {
     },
     [commonIntents, queryClient]
   );
-
-  const intentModelMutation = useMutation({
-    mutationFn: (intentModelData: { name: string; inModel: boolean }) => addRemoveIntentModel(intentModelData),
-    onMutate: () => {
-      setRefreshing(true);
-    },
-    onSuccess: async () => {
-      if (selectedIntent?.inModel === true) {
-        toast.open({
-          type: 'success',
-          title: t('global.notification'),
-          message: t('toast.intentRemovedFromModel'),
-        });
-      } else {
-        toast.open({
-          type: 'success',
-          title: t('global.notification'),
-          message: t('toast.intentAddedToModel'),
-        });
-      }
-      queryRefresh(selectedIntent?.id || '');
-    },
-    onError: (error: AxiosError) => {
-      toast.open({
-        type: 'error',
-        title: t('global.notificationError'),
-        message: error.message,
-      });
-    },
-    onSettled: () => {
-      setRefreshing(false);
-    },
-  });
-
-  const deleteIntentMutation = useMutation({
-    mutationFn: (data: { name: string }) => deleteIntent(data),
-    onMutate: () => {
-      setRefreshing(true);
-      setDeletableIntent(null);
-      setConnectableIntent(null);
-    },
-    onSuccess: async () => {
-      setSelectedIntent(null);
-      queryRefresh(null);
-      setRefreshing(false);
-      toast.open({
-        type: 'success',
-        title: t('global.notification'),
-        message: t('toast.intentDeleted'),
-      });
-    },
-    onError: (error: AxiosError) => {
-      toast.open({
-        type: 'error',
-        title: t('global.notificationError'),
-        message: error.message,
-      });
-    },
-    onSettled: () => {
-      commonIntents = commonIntents.filter((intent) => intent.id !== selectedIntent?.id);
-      setRefreshing(false);
-    },
-  });
 
   const filteredIntents = useMemo(() => {
     if (!commonIntents) return [];
@@ -210,89 +124,6 @@ const CommonIntents: FC = () => {
     [intentModifiedMutation, commonIntents, queryRefresh]
   );
 
-  const intentDownloadMutation = useMutation({
-    mutationFn: (intentModelData: { intentName: string }) => downloadExamples(intentModelData),
-    onSuccess: async (data) => {
-      // @ts-ignore
-      const blob = new Blob([data], { type: 'text/csv' });
-      const fileName = selectedIntent?.id + '.csv';
-
-      if (window.showSaveFilePicker) {
-        const handle = await window.showSaveFilePicker({ suggestedName: fileName });
-        const writable = await handle.createWritable();
-        await writable.write(blob);
-        writable.close();
-      } else {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = fileName;
-        a.click();
-        window.URL.revokeObjectURL(url);
-      }
-
-      toast.open({
-        type: 'success',
-        title: t('global.notification'),
-        message: t('toast.examplesSentForDownloading'),
-      });
-    },
-    onError: (error: AxiosError) => {
-      if (error.name !== 'AbortError') {
-        toast.open({
-          type: 'error',
-          title: t('global.notificationError'),
-          message: error.message,
-        });
-      }
-    },
-  });
-
-  const handleIntentExamplesUpload = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.csv';
-
-    input.addEventListener('change', async (event) => {
-      const fileInput = event.target as HTMLInputElement;
-      const files = fileInput.files;
-
-      if (!files || files.length === 0) {
-        return;
-      }
-
-      const file = files[0];
-
-      try {
-        await intentUploadMutation.mutateAsync({
-          intentName: selectedIntent?.id || '',
-          formData: file,
-        });
-      } catch (error) {}
-    });
-
-    input.click();
-  };
-
-  const intentUploadMutation = useMutation({
-    mutationFn: ({ intentName, formData }: { intentName: string; formData: File }) =>
-      uploadExamples(intentName, formData),
-    onSuccess: () => {
-      toast.open({
-        type: 'success',
-        title: t('global.notification'),
-        message: t('toast.fileUploadedSuccessfully'),
-      });
-    },
-    onError: (error: AxiosError) => {
-      toast.open({
-        type: 'error',
-        title: t('global.notificationError'),
-        message: error.message,
-      });
-    },
-  });
-
   if (isLoading) return <>Loading...</>;
 
   return (
@@ -310,6 +141,7 @@ const CommonIntents: FC = () => {
                 textDecoration: 'underline',
               }}
             >
+              {/* todo new bug */}
               <a href="#">{t('training.intents.moreFromGithub')}</a>
             </p>
           </div>
@@ -373,115 +205,16 @@ const CommonIntents: FC = () => {
           </Tabs.List>
 
           {selectedIntent && (
-            <Tabs.Content
-              key={selectedIntent.id}
-              className="vertical-tabs__body"
-              value={selectedIntent.id}
-              style={{ overflowX: 'auto' }}
-            >
-              <div className="vertical-tabs__content-header">
-                <Track direction="vertical" align="stretch" gap={8}>
-                  <Track justify="between">
-                    <Track gap={16}>
-                      <h3>{selectedIntent.id.replace(/^common_/, '').replace(/_/g, ' ')}</h3>
-                    </Track>
-                    <p style={{ color: '#4D4F5D' }}>
-                      {t('global.modifiedAt')}:
-                      {isValidDate(selectedIntent.modifiedAt)
-                        ? ` ${format(new Date(selectedIntent.modifiedAt), 'dd.MM.yyyy')}`
-                        : ` ${t('global.missing')}`}
-                    </p>
-                  </Track>
-                  <Track justify="end" gap={8}>
-                    <Button appearance="secondary" onClick={() => handleIntentExamplesUpload()}>
-                      {t('training.intents.upload')}
-                    </Button>
-                    <Button
-                      appearance="secondary"
-                      onClick={() =>
-                        intentDownloadMutation.mutate({
-                          intentName: selectedIntent!.id,
-                        })
-                      }
-                    >
-                      {t('training.intents.download')}
-                    </Button>
-                    {selectedIntent.inModel ? (
-                      <Button
-                        appearance="secondary"
-                        onClick={() =>
-                          intentModelMutation.mutate({
-                            name: selectedIntent!.id,
-                            inModel: true,
-                          })
-                        }
-                      >
-                        {t('training.intents.removeFromModel')}
-                      </Button>
-                    ) : (
-                      <Button
-                        onClick={() =>
-                          intentModelMutation.mutate({
-                            name: selectedIntent!.id,
-                            inModel: false,
-                          })
-                        }
-                      >
-                        {t('training.intents.addToModel')}
-                      </Button>
-                    )}
-                    <Tooltip content={t('training.intents.connectToServiceTooltip')}>
-                      <span>
-                        <Button appearance="secondary" onClick={() => setConnectableIntent(selectedIntent)}>
-                          {selectedIntent.serviceId
-                            ? t('training.intents.changeConnectedService')
-                            : t('training.intents.connectToService')}
-                        </Button>
-                      </span>
-                    </Tooltip>
-
-                    <Tooltip content={t('training.intents.deleteTooltip')} hidden={!selectedIntent.serviceId}>
-                      <span>
-                        <Button appearance="error" onClick={() => setDeletableIntent(selectedIntent!.id)}>
-                          {t('global.delete')}
-                        </Button>
-                      </span>
-                    </Tooltip>
-                  </Track>
-                </Track>
-              </div>
-              <div className="vertical-tabs__content">
-                {selectedIntent?.examples && (
-                  <IntentExamplesTable intent={selectedIntent} updateSelectedIntent={updateSelectedIntent} />
-                )}
-              </div>
-            </Tabs.Content>
+            <IntentDetails
+              intentId={selectedIntent.id}
+              // todo types
+              setSelectedIntent={setSelectedIntent}
+              listRefresh={queryRefresh}
+            />
           )}
         </Tabs.Root>
       )}
 
-      {connectableIntent !== null && (
-        <ConnectServiceToIntentModal intent={connectableIntent.id} onModalClose={() => setConnectableIntent(null)} />
-      )}
-
-      {deletableIntent !== null && (
-        <Dialog
-          title={t('training.responses.deleteIntent')}
-          onClose={() => setDeletableIntent(null)}
-          footer={
-            <>
-              <Button appearance="secondary" onClick={() => setDeletableIntent(null)}>
-                {t('global.no')}
-              </Button>
-              <Button appearance="error" onClick={() => deleteIntentMutation.mutate({ name: deletableIntent!.id })}>
-                {t('global.yes')}
-              </Button>
-            </>
-          }
-        >
-          <p>{t('global.removeValidation')}</p>
-        </Dialog>
-      )}
       {refreshing && (
         <LoadingDialog title={t('global.updatingDataHead')}>
           <p>{t('global.updatingDataBody')}</p>
