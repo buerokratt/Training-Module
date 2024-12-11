@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useQueryClient, useQuery } from '@tanstack/react-query';
 import { IntentWithExamplesCount } from 'types/intentWithExamplesCount';
@@ -9,7 +9,7 @@ type IntentsWithExamplesCountResponse = {
   };
 };
 
-const intentResponseToIntent = (intent: IntentWithExamplesCount): IntentWithExamplesCount => ({
+const setIsCommon = (intent: IntentWithExamplesCount): IntentWithExamplesCount => ({
   ...intent,
   isCommon: intent.id.startsWith('common_'),
 });
@@ -29,9 +29,7 @@ export const useIntentsData = ({ queryKey }: UseIntentsDataProps) => {
   });
 
   useEffect(() => {
-    if (intentsResponse) {
-      setIntents(intentsResponse.response.intents.map((intent) => intentResponseToIntent(intent)));
-    }
+    if (intentsResponse) setIntents(intentsResponse.response.intents.map((intent) => setIsCommon(intent)));
   }, [intentsResponse]);
 
   const queryRefresh = useCallback(
@@ -39,14 +37,12 @@ export const useIntentsData = ({ queryKey }: UseIntentsDataProps) => {
       const response = await queryClient.fetchQuery<IntentsWithExamplesCountResponse>([queryKey]);
 
       if (response) {
-        setIntents(response.response.intents.map((intent) => intentResponseToIntent(intent)));
+        const mappedIntents = response.response.intents.map((intent) => setIsCommon(intent));
+        setIntents(mappedIntents);
 
         if (newIntent) {
-          const selectedIntent = response.response.intents.find(
-            (intent) => intent.id === newIntent
-          ) as IntentWithExamplesCount;
-
-          setSelectedIntent(intentResponseToIntent(selectedIntent));
+          const selectedIntent = mappedIntents.find((intent) => intent.id === newIntent);
+          if (selectedIntent) setSelectedIntent(selectedIntent);
         }
       }
     },
