@@ -2,14 +2,14 @@ import { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation } from '@tanstack/react-query';
 import * as Tabs from '@radix-ui/react-tabs';
-import { MdCheckCircleOutline } from 'react-icons/md';
 
-import { Card, FormInput, Icon, Switch, Tooltip, Track } from 'components';
+import { Card, FormInput, Switch, Track } from 'components';
 import { getLastModified } from 'services/intents';
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
 import IntentDetails from './IntentDetails';
 
 import { useIntentsData } from './useIntentsData';
+import IntentList from './IntentList';
 
 const CommonIntents: FC = () => {
   const { t } = useTranslation();
@@ -109,29 +109,7 @@ const CommonIntents: FC = () => {
             </div>
 
             <div className="vertical-tabs__list-scrollable">
-              {filteredIntents.map((intent, index) => (
-                <Tabs.Trigger key={`${intent}-${index}`} className="vertical-tabs__trigger" value={intent.id}>
-                  <Track gap={16}>
-                    <span style={{ flex: 1 }}>{intent.id.replace(/^common_/, '').replace(/_/g, ' ')}</span>
-                    <Tooltip content={t('training.intents.amountOfExamples')}>
-                      <span style={{ color: '#5D6071' }}>{intent.examplesCount}</span>
-                    </Tooltip>
-                    {intent.inModel ? (
-                      <Tooltip content={t('training.intents.intentInModel')}>
-                        <span style={{ display: 'flex', alignItems: 'center' }}>
-                          <Icon
-                            icon={
-                              <MdCheckCircleOutline color={'rgba(0, 0, 0, 0.54)'} opacity={intent.inModel ? 1 : 0} />
-                            }
-                          />
-                        </span>
-                      </Tooltip>
-                    ) : (
-                      <span style={{ display: 'block', width: 16 }}></span>
-                    )}
-                  </Track>
-                </Tabs.Trigger>
-              ))}
+              <IntentList intents={filteredIntents} />
             </div>
           </Tabs.List>
 
