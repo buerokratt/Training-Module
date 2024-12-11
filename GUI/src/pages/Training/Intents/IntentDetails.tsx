@@ -26,7 +26,7 @@ import { RuleDTO } from 'types/rule';
 import ConnectServiceToIntentModal from 'pages/ConnectServiceToIntentModal';
 import LoadingDialog from 'components/LoadingDialog';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
-import { IntentWithExamplesCount } from 'types/intentWithExampleCounts';
+import { IntentWithExamplesCount } from 'types/intentWithExamplesCount';
 
 interface Response {
   name: string;

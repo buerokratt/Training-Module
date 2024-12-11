@@ -1,12 +1,18 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useQueryClient, useQuery } from '@tanstack/react-query';
-import {
-  IntentsWithExamplesCountResponse,
-  IntentWithExamplesCount,
-  intentResponseToIntent,
-  IntentWithExamplesCountResponse,
-} from 'types/intentWithExampleCounts';
+import { IntentWithExamplesCount } from 'types/intentWithExamplesCount';
+
+type IntentsWithExamplesCountResponse = {
+  response: {
+    intents: IntentWithExamplesCount[];
+  };
+};
+
+const intentResponseToIntent = (intent: IntentWithExamplesCount): IntentWithExamplesCount => ({
+  ...intent,
+  isCommon: intent.id.startsWith('common_'),
+});
 
 interface UseIntentsDataProps {
   queryKey: string;
@@ -38,7 +44,7 @@ export const useIntentsData = ({ queryKey }: UseIntentsDataProps) => {
         if (newIntent) {
           const selectedIntent = response.response.intents.find(
             (intent) => intent.id === newIntent
-          ) as IntentWithExamplesCountResponse;
+          ) as IntentWithExamplesCount;
 
           setSelectedIntent(intentResponseToIntent(selectedIntent));
         }
