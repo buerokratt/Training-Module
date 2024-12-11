@@ -404,3 +404,9 @@ rules:
   - intent: common_service_school_holiday
   - action: utter_common_service_school_holiday_by_month
   - action: action_restart
+
+- rule: common_service_nba_results
+  steps:
+  - intent: common_service_nba_results
+  - action: utter_common_service_nba_results
+  - action: action_restart

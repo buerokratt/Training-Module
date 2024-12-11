@@ -349,7 +349,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
     mutationFn: (intentResponseData: { id: string; responseText: string; update: boolean }) =>
       editResponse(intentResponseData.id, intentResponseData.responseText, intentResponseData.update),
     onMutate: () => {
-      console.log('onMutate');
       setRefreshing(true);
     },
     onSuccess: async () => {

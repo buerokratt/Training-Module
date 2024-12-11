@@ -1,0 +1,34 @@
+version: "3.0"
+nlu:
+- intent: common_service_nba_results
+  examples: |
+    - Mis olid viimaste mängude tulemused NBA-s?
+    - Kas sa tead viimaseid skooritulemusi NBA-s?
+    - Milline oli tulemus eileõhtustes NBA mängudes?
+    - Kuidas läks viimases NBA kohtumises?
+    - Kas viimase NBA mängu tulemused on juba väljas?
+    - Millised olid hiljutised NBA mängutulemused?
+    - Mis oli viimase mängu skoor NBA-s?
+    - Millised mängud lõppesid täna NBA-s?
+    - Kas oskad öelda viimaste NBA mängude tulemusi?
+    - Mis oli viimane NBA mängutulemus?
+    - Kuidas lõppesid viimased kohtumised NBA-s?
+    - Palun anna teada viimaseid NBA skooritulemusi.
+    - Kas ma saaksin viimase NBA mängu skoori teada?
+    - Kas sa tead, kes võitis viimased NBA mängud?
+    - Milline oli viimase NBA mängu lõpptulemus?
+    - Mis tulemused olid viimastes NBA mängudes?
+    - Millised olid viimased skoorid NBA-s?
+    - Kas sa saad öelda, kuidas viimased NBA mängud lõppesid?
+    - Kuidas lõppes viimane NBA kohtumine?
+    - Kas viimase NBA mängu tulemus on teada?
+    - Palun viimased NBA mängutulemused.
+    - Kas sa tead, kuidas lõppes eilne NBA mäng?
+    - Kuidas läks viimastel NBA mängudel?
+    - Milline oli tulemus tänahommikustes NBA mängudes?
+    - Kas oskad öelda, mis oli viimase NBA mängu skoor?
+    - Mis oli eilse NBA mängu tulemus?
+    - Millised mängud toimusid hiljuti NBA-s ja mis olid tulemused?
+    - Kuidas läksid viimased NBA mängud?
+    - Millised olid täna mängitud NBA mängude tulemused?
+    - Kas viimased NBA mängud on juba lõppenud ja mis olid tulemused?
