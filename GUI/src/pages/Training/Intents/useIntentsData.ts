@@ -1,0 +1,68 @@
+import { useState, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { useQueryClient, useQuery } from '@tanstack/react-query';
+import {
+  IntentsWithExamplesCountResponse,
+  IntentWithExamplesCount,
+  intentResponseToIntent,
+  IntentWithExamplesCountResponse,
+} from 'types/intentWithExampleCounts';
+
+interface UseIntentsDataProps {
+  queryKey: string;
+}
+
+export const useIntentsData = ({ queryKey }: UseIntentsDataProps) => {
+  const queryClient = useQueryClient();
+  const [searchParams] = useSearchParams();
+  const [intents, setIntents] = useState<IntentWithExamplesCount[]>([]);
+  const [selectedIntent, setSelectedIntent] = useState<IntentWithExamplesCount | null>(null);
+
+  const { data: intentsResponse, isLoading } = useQuery<IntentsWithExamplesCountResponse>({
+    queryKey: [queryKey],
+  });
+
+  useEffect(() => {
+    if (intentsResponse) {
+      setIntents(intentsResponse.response.intents.map((intent) => intentResponseToIntent(intent)));
+    }
+  }, [intentsResponse]);
+
+  const queryRefresh = useCallback(
+    async (newIntent?: string) => {
+      const response = await queryClient.fetchQuery<IntentsWithExamplesCountResponse>([queryKey]);
+
+      if (response) {
+        setIntents(response.response.intents.map((intent) => intentResponseToIntent(intent)));
+
+        if (newIntent) {
+          const selectedIntent = response.response.intents.find(
+            (intent) => intent.id === newIntent
+          ) as IntentWithExamplesCountResponse;
+
+          setSelectedIntent(intentResponseToIntent(selectedIntent));
+        }
+      }
+    },
+    [queryClient, queryKey]
+  );
+
+  useEffect(() => {
+    let intentParam = searchParams.get('intent');
+    if (!intentParam) return;
+
+    const queryIntent = intents.find((intent) => intent.id === intentParam);
+
+    if (queryIntent) {
+      setSelectedIntent(queryIntent);
+    }
+  }, [intents, searchParams]);
+
+  return {
+    intents,
+    selectedIntent,
+    setSelectedIntent,
+    queryRefresh,
+    isLoading,
+  };
+};
