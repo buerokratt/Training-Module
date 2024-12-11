@@ -1,7 +1,6 @@
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import * as Tabs from '@radix-ui/react-tabs';
 import { MdCheckCircleOutline } from 'react-icons/md';
 
@@ -9,62 +8,18 @@ import { Card, FormInput, Icon, Switch, Tooltip, Track } from 'components';
 import { getLastModified } from 'services/intents';
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
 import IntentDetails from './IntentDetails';
-import {
-  intentResponseToIntent,
-  IntentsWithExamplesCountResponse,
-  IntentWithExamplesCount,
-  IntentWithExamplesCountResponse,
-} from 'types/intentWithExampleCounts';
+
+import { useIntentsData } from './useIntentsData';
 
 const CommonIntents: FC = () => {
   const { t } = useTranslation();
-  const queryClient = useQueryClient();
-  const [searchParams] = useSearchParams();
-  const [commonIntentsEnabled, setCommonIntentsEnabled] = useState(true);
-  const [selectedIntent, setSelectedIntent] = useState<IntentWithExamplesCount | null>(null);
-  const [filter, setFilter] = useState('');
 
-  const [intents, setIntents] = useState<IntentWithExamplesCount[]>([]);
-
-  const { data: intentsResponse, isLoading } = useQuery<IntentsWithExamplesCountResponse>({
-    queryKey: ['intents/with-examples-count?prefix=common_'],
+  const { intents, selectedIntent, setSelectedIntent, queryRefresh, isLoading } = useIntentsData({
+    queryKey: 'intents/with-examples-count?prefix=common_',
   });
 
-  useEffect(() => {
-    if (intentsResponse) {
-      setIntents(intentsResponse.response.intents.map((intent) => intentResponseToIntent(intent)));
-    }
-  }, [intentsResponse]);
-
-  useEffect(() => {
-    let intentParam = searchParams.get('intent');
-    if (!intentParam) return;
-
-    const queryIntent = intents.find((intent) => intent.id === intentParam);
-
-    if (queryIntent) {
-      setSelectedIntent(queryIntent);
-    }
-  }, [intents, searchParams]);
-
-  const queryRefresh = useCallback(
-    async (newIntent?: string) => {
-      const response = await queryClient.fetchQuery<IntentsWithExamplesCountResponse>([
-        'intents/with-examples-count?prefix=common_',
-      ]);
-
-      if (response) {
-        setIntents(response.response.intents.map((intent) => intentResponseToIntent(intent)));
-
-        const selectedIntent = response.response.intents.find(
-          (intent) => intent.id === newIntent
-        ) as IntentWithExamplesCountResponse;
-
-        setSelectedIntent(intentResponseToIntent(selectedIntent));
-      }
-    },
-    [queryClient]
-  );
+  const [commonIntentsEnabled, setCommonIntentsEnabled] = useState(true);
+  const [filter, setFilter] = useState('');
 
   const filteredIntents = useMemo(() => {
     if (!intents) return [];
@@ -98,7 +53,7 @@ const CommonIntents: FC = () => {
         );
       }
     },
-    [intentModifiedMutation, intents, queryRefresh]
+    [intentModifiedMutation, intents, queryRefresh, setSelectedIntent]
   );
 
   if (isLoading) return <>Loading...</>;
