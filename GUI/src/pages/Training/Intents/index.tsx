@@ -7,28 +7,17 @@ import { AxiosError } from 'axios';
 
 import { Button, FormInput, Track } from 'components';
 import { useToast } from 'hooks/useToast';
-import { Intent } from 'types/intent';
 import { addIntent } from 'services/intents';
 import LoadingDialog from '../../../components/LoadingDialog';
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
 import IntentTabList from './IntentTabList';
 import IntentDetails from './IntentDetails';
-import { IntentWithExamplesCount } from 'types/intentWithExampleCounts';
-
-// TODO: rename examples_count to examplesCount when possible with changes in CommonIntents
-type IntentWithExamplesCountResponse = Pick<Intent, 'id' | 'inModel' | 'modifiedAt'> & { examples_count: number };
-
-type IntentsWithExamplesCountResponse = {
-  response: {
-    intents: IntentWithExamplesCountResponse[];
-  };
-};
-
-const intentResponseToIntent = (intent: IntentWithExamplesCountResponse): IntentWithExamplesCount => ({
-  ...intent,
-  examplesCount: intent.examples_count,
-  isCommon: intent.id.startsWith('common_'),
-});
+import {
+  intentResponseToIntent,
+  IntentsWithExamplesCountResponse,
+  IntentWithExamplesCount,
+  IntentWithExamplesCountResponse,
+} from 'types/intentWithExampleCounts';
 
 const Intents: FC = () => {
   const { t } = useTranslation();

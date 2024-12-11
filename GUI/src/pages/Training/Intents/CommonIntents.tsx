@@ -5,95 +5,72 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as Tabs from '@radix-ui/react-tabs';
 import { MdCheckCircleOutline } from 'react-icons/md';
 
-import { Button, Card, Dialog, FormInput, Icon, Switch, Tooltip, Track } from 'components';
-import { Intent } from 'types/intent';
-import { Entity } from 'types/entity';
+import { Card, FormInput, Icon, Switch, Tooltip, Track } from 'components';
 import { getLastModified } from 'services/intents';
-import LoadingDialog from '../../../components/LoadingDialog';
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
 import IntentDetails from './IntentDetails';
+import {
+  intentResponseToIntent,
+  IntentsWithExamplesCountResponse,
+  IntentWithExamplesCount,
+  IntentWithExamplesCountResponse,
+} from 'types/intentWithExampleCounts';
 
 const CommonIntents: FC = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
   const [commonIntentsEnabled, setCommonIntentsEnabled] = useState(true);
-  const [selectedIntent, setSelectedIntent] = useState<Intent | null>(null);
+  const [selectedIntent, setSelectedIntent] = useState<IntentWithExamplesCount | null>(null);
   const [filter, setFilter] = useState('');
-  const [refreshing, setRefreshing] = useState(false);
 
-  let intentParam;
+  const [intents, setIntents] = useState<IntentWithExamplesCount[]>([]);
 
-  const { data: intentsFullResponse, isLoading } = useQuery({
-    queryKey: ['intents/common'],
+  const { data: intentsResponse, isLoading } = useQuery<IntentsWithExamplesCountResponse>({
+    queryKey: ['intents/with-examples-count?prefix=common_'],
   });
-
-  const { data: entities } = useQuery<Entity[]>({
-    queryKey: ['entities'],
-  });
-
-  let intentsFullList = intentsFullResponse?.response?.intents;
-  let commonIntents: Intent[] = [];
-
-  if (intentsFullList) {
-    intentsFullList.forEach((intent: any) => {
-      const countExamples = intent.examples.length;
-      const newIntent: Intent = {
-        id: intent.title,
-        description: null,
-        inModel: intent.inmodel,
-        modifiedAt: '',
-        examplesCount: countExamples,
-        examples: intent.examples,
-        serviceId: intent.serviceId,
-      };
-      commonIntents.push(newIntent);
-    });
-    intentParam = searchParams.get('intent');
-  }
 
   useEffect(() => {
-    if (!intentParam || intentsFullList?.length !== commonIntents?.length) return;
+    if (intentsResponse) {
+      setIntents(intentsResponse.response.intents.map((intent) => intentResponseToIntent(intent)));
+    }
+  }, [intentsResponse]);
 
-    const queryIntent = commonIntents.find((intent) => intent.id === intentParam);
+  useEffect(() => {
+    let intentParam = searchParams.get('intent');
+    if (!intentParam) return;
+
+    const queryIntent = intents.find((intent) => intent.id === intentParam);
 
     if (queryIntent) {
       setSelectedIntent(queryIntent);
     }
-  }, [intentParam]);
+  }, [intents, searchParams]);
 
   const queryRefresh = useCallback(
-    function queryRefresh(selectIntent: string | null) {
-      setSelectedIntent(null);
+    async (newIntent?: string) => {
+      const response = await queryClient.fetchQuery<IntentsWithExamplesCountResponse>([
+        'intents/with-examples-count?prefix=common_',
+      ]);
 
-      queryClient.fetchQuery(['intents/common']).then((res: any) => {
-        setRefreshing(false);
-        if (commonIntents.length > 0) {
-          const newSelectedIntent = res.response.intents.find((intent) => intent.title === selectIntent) || null;
-          if (newSelectedIntent) {
-            setSelectedIntent({
-              id: newSelectedIntent.title,
-              description: null,
-              inModel: newSelectedIntent.inmodel,
-              modifiedAt: '',
-              examplesCount: newSelectedIntent.examples.length,
-              examples: newSelectedIntent.examples,
-              serviceId: newSelectedIntent.serviceId,
-            });
-          }
-        }
-      });
+      if (response) {
+        setIntents(response.response.intents.map((intent) => intentResponseToIntent(intent)));
+
+        const selectedIntent = response.response.intents.find(
+          (intent) => intent.id === newIntent
+        ) as IntentWithExamplesCountResponse;
+
+        setSelectedIntent(intentResponseToIntent(selectedIntent));
+      }
     },
-    [commonIntents, queryClient]
+    [queryClient]
   );
 
   const filteredIntents = useMemo(() => {
-    if (!commonIntents) return [];
+    if (!intents) return [];
     const formattedFilter = filter.trim().replace(/\s+/g, '_');
-    return commonIntents
-      .filter((intent) => intent.id?.includes(formattedFilter))
-      .sort((a, b) => a.id.localeCompare(b.id));
-  }, [commonIntents, filter]);
+    return intents.filter((intent) => intent.id?.includes(formattedFilter)).sort((a, b) => a.id.localeCompare(b.id));
+  }, [intents, filter]);
 
   const intentModifiedMutation = useMutation({
     mutationFn: (data: { intentName: string }) => getLastModified(data),
@@ -102,8 +79,8 @@ const CommonIntents: FC = () => {
   const handleTabsValueChange = useCallback(
     (value: string) => {
       setSelectedIntent(null);
-      if (!commonIntents) return;
-      const selectedIntent = commonIntents.find((intent) => intent.id === value);
+      if (!intents) return;
+      const selectedIntent = intents.find((intent) => intent.id === value);
       if (selectedIntent) {
         queryRefresh(selectedIntent.id || '');
         intentModifiedMutation.mutate(
@@ -121,7 +98,7 @@ const CommonIntents: FC = () => {
         );
       }
     },
-    [intentModifiedMutation, commonIntents, queryRefresh]
+    [intentModifiedMutation, intents, queryRefresh]
   );
 
   if (isLoading) return <>Loading...</>;
@@ -141,7 +118,6 @@ const CommonIntents: FC = () => {
                 textDecoration: 'underline',
               }}
             >
-              {/* todo new bug */}
               <a href="#">{t('training.intents.moreFromGithub')}</a>
             </p>
           </div>
@@ -155,7 +131,7 @@ const CommonIntents: FC = () => {
         </Track>
       </Card>
 
-      {commonIntentsEnabled && commonIntents && (
+      {commonIntentsEnabled && intents && (
         <Tabs.Root
           id="tabs"
           className="vertical-tabs"
@@ -207,18 +183,11 @@ const CommonIntents: FC = () => {
           {selectedIntent && (
             <IntentDetails
               intentId={selectedIntent.id}
-              // todo types
               setSelectedIntent={setSelectedIntent}
               listRefresh={queryRefresh}
             />
           )}
         </Tabs.Root>
-      )}
-
-      {refreshing && (
-        <LoadingDialog title={t('global.updatingDataHead')}>
-          <p>{t('global.updatingDataBody')}</p>
-        </LoadingDialog>
       )}
     </>
   );

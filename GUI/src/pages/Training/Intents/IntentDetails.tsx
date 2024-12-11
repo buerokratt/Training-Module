@@ -22,7 +22,7 @@ import { ROLES } from 'hoc/with-authorization';
 import useStore from '../../../store/store';
 import { editResponse } from 'services/responses';
 import { addStoryOrRule, deleteStoryOrRule } from 'services/stories';
-import { Rule, RuleDTO } from 'types/rule';
+import { RuleDTO } from 'types/rule';
 import ConnectServiceToIntentModal from 'pages/ConnectServiceToIntentModal';
 import LoadingDialog from 'components/LoadingDialog';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
