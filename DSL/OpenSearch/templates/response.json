@@ -8,14 +8,8 @@
           "must": [
             {
               "query_string": {
-                "query": "*{{response_name}}*",
+                "query": "{{response_name}}",
                 "default_field": "name"
-              }
-            },
-            {
-              "query_string": {
-                "query": "*{{response_text}}*",
-                "default_field": "response.text"
               }
             }
           ]
@@ -23,8 +17,7 @@
       }
     },
     "params": {
-      "response_name": "",
-      "response_text": ""
+      "response_name": ""
     }
   }
 }
