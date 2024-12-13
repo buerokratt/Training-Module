@@ -163,8 +163,8 @@ const History: FC = () => {
 
     setFilteredEndedChatsList(
       chatsList.filter((c) => {
-        const created = Date.parse(format(new Date(c.created), 'MM/dd/yyyy'));
-        return created >= startDate && created <= endDate;
+        const ended = Date.parse(format(new Date(c.ended), 'MM/dd/yyyy'));
+        return ended >= startDate && ended <= endDate;
       })
     );
   };
