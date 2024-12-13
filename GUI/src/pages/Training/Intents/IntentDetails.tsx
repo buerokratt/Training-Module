@@ -41,8 +41,8 @@ interface IntentResponse {
   response: Intent;
 }
 
-interface RulesResponse {
-  response: Rule[];
+interface RuleResponse {
+  response: { id: string };
 }
 
 interface IntentDetailsProps {
@@ -80,18 +80,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
     queryKey: [`intents/is-marked-for-service?intent=${intentId}`],
   });
 
-  const addIntentRule = useCallback(
-    (rulesResponse: RulesResponse | undefined) => {
-      if (!rulesResponse) return;
-
-      const intentRule = rulesResponse.response.find((rule: Rule) => rule.id === `rule_${intentId}`);
-      if (intentRule) {
-        setIntentRule(intentRule.id);
-      }
-    },
-    [intentId]
-  );
-
   const queryRefresh = useCallback(
     async (intent?: string) => {
       const intentsResponse = await queryClient.fetchQuery<IntentResponse>([
@@ -105,10 +93,10 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
       ]);
       setResponse(responseResponse.response);
 
-      const rulesResponse = await queryClient.fetchQuery<RulesResponse>(['rules']);
-      addIntentRule(rulesResponse);
+      const rulesResponse = await queryClient.fetchQuery<RuleResponse>([`rule-by-intent-id?intent=${intentId}`]);
+      setIntentRule(rulesResponse.response.id);
     },
-    [addIntentRule, intentId, queryClient, setResponse, setSelectedIntent]
+    [intentId, queryClient, setResponse, setSelectedIntent]
   );
 
   const { data: responseResponse } = useQuery<ResponseResponse>({
@@ -122,14 +110,13 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
   const responseText = response?.text ?? '';
   const responseName = response?.name ?? '';
 
-  // TODO: need to fetch rules for the selected intent only
-  const { data: rulesResponse } = useQuery<RulesResponse>({
-    queryKey: ['rules'],
+  const { data: rulesResponse } = useQuery<RuleResponse>({
+    queryKey: [`rule-by-intent-id?intent=${intentId}`],
   });
 
   useEffect(() => {
-    addIntentRule(rulesResponse);
-  }, [rulesResponse, addIntentRule]);
+    if (rulesResponse) setIntentRule(rulesResponse.response.id);
+  }, [rulesResponse]);
 
   const markIntentServiceMutation = useMutation({
     mutationFn: (data: { name: string; isForService: boolean }) => markForService(data),
@@ -462,7 +449,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries([`intents/is-marked-for-service?intent=${intentId}`]);
-      await queryClient.invalidateQueries(['rules']);
+      await queryClient.invalidateQueries([`rule-by-intent-id?intent=${intentId}`]);
       toast.open({
         type: 'success',
         title: t('global.notification'),
