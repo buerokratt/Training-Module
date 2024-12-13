@@ -28,14 +28,14 @@ import LoadingDialog from 'components/LoadingDialog';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import { IntentWithExamplesCount } from 'types/intentWithExampleCounts';
 
-interface ResponsesResponse
-  extends Array<{
-    name: string;
-    response: {
-      name: string;
-      text: string;
-    }[];
-  }> {}
+interface Response {
+  name: string;
+  text: string;
+}
+
+interface ResponseResponse {
+  response: Response;
+}
 
 interface IntentResponse {
   response: Intent;
@@ -58,8 +58,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
   const [refreshing, setRefreshing] = useState(false);
   const [showConnectToServiceModal, setShowConnectToServiceModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [intentResponseText, setIntentResponseText] = useState<string>('');
-  const [intentResponseName, setIntentResponseName] = useState<string>('');
+  const [response, setResponse] = useState<Response | null>(null);
   const [intentRule, setIntentRule] = useState<string>('');
 
   const queryClient = useQueryClient();
@@ -74,28 +73,12 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
       setIntent(intentResponse.response);
       // Also reset form states on choosing another intent from list
       setEditingIntentTitle(null);
-      setIntentResponseText('');
     }
   }, [intentResponse]);
 
   const { data: isPossibleToUpdateMark, refetch } = useQuery<boolean>({
     queryKey: [`intents/is-marked-for-service?intent=${intentId}`],
   });
-
-  const setIntentResponse = useCallback(
-    (responsesResponse: ResponsesResponse | undefined) => {
-      if (!responsesResponse) return;
-
-      const intentExistingResponse = responsesResponse[0].response.find(
-        (response: any) => `utter_${intentId}` === response.name
-      );
-      if (intentExistingResponse) {
-        setIntentResponseText(intentExistingResponse.text);
-        setIntentResponseName(intentExistingResponse.name);
-      }
-    },
-    [intentId]
-  );
 
   const addIntentRule = useCallback(
     (rulesResponse: RulesResponse | undefined) => {
@@ -117,23 +100,27 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
       setIntent(intentsResponse.response);
       setSelectedIntent(intentsResponse.response);
 
-      const resonsesResponse = await queryClient.fetchQuery<ResponsesResponse>(['responses-list']);
-      setIntentResponse(resonsesResponse);
+      const responseResponse = await queryClient.fetchQuery<ResponseResponse>([
+        `response-by-intent-id?intent=${intentId}`,
+      ]);
+      setResponse(responseResponse.response);
 
       const rulesResponse = await queryClient.fetchQuery<RulesResponse>(['rules']);
       addIntentRule(rulesResponse);
     },
-    [addIntentRule, intentId, queryClient, setIntentResponse, setSelectedIntent]
+    [addIntentRule, intentId, queryClient, setResponse, setSelectedIntent]
   );
 
-  // TODO: need to fetch response for the selected intent only
-  const { data: responsesResponse } = useQuery<ResponsesResponse>({
-    queryKey: ['responses-list'],
+  const { data: responseResponse } = useQuery<ResponseResponse>({
+    queryKey: [`response-by-intent-id?intent=${intentId}`],
   });
 
   useEffect(() => {
-    setIntentResponse(responsesResponse);
-  }, [responsesResponse, setIntentResponse]);
+    if (responseResponse?.response) setResponse(responseResponse.response);
+  }, [responseResponse]);
+
+  const responseText = response?.text ?? '';
+  const responseName = response?.name ?? '';
 
   // TODO: need to fetch rules for the selected intent only
   const { data: rulesResponse } = useQuery<RulesResponse>({
@@ -365,7 +352,10 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
       setRefreshing(true);
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['response-list'], refetchType: 'all' });
+      await queryClient.invalidateQueries({
+        queryKey: [`intents/is-marked-for-service?intent=${intentId}`],
+        refetchType: 'all',
+      });
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -409,17 +399,17 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
   });
 
   const handleIntentResponseSubmit = async () => {
-    if (intentResponseText === '' || !intent) return;
+    if (responseText === '' || !intent) return;
 
     const intentId = intent.id;
 
     addOrEditResponseMutation.mutate({
       id: `utter_${intentId}`,
-      responseText: intentResponseText,
-      update: !!intentResponseName,
+      responseText,
+      update: !!responseName,
     });
 
-    if (!intentResponseName) {
+    if (!responseName) {
       addRuleMutation.mutate({
         data: {
           rule: `rule_${intentId}`,
@@ -471,7 +461,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
       setRefreshing(true);
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['response-list']);
+      await queryClient.invalidateQueries([`intents/is-marked-for-service?intent=${intentId}`]);
       await queryClient.invalidateQueries(['rules']);
       toast.open({
         type: 'success',
@@ -629,7 +619,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
                   <h1>{t('training.intents.responseTitle')}</h1>
                   <FormTextarea
                     label={t('global.addNew')}
-                    value={intentResponseText}
+                    value={responseText}
                     name="intentResponse"
                     minRows={7}
                     maxRows={7}
@@ -637,7 +627,12 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
                     hideLabel
                     maxLength={RESPONSE_TEXT_LENGTH}
                     showMaxLength
-                    onChange={(e) => setIntentResponseText(e.target.value)}
+                    onChange={(e) =>
+                      setResponse({
+                        name: response?.name ?? '',
+                        text: e.target.value ?? '',
+                      })
+                    }
                     disableHeightResize
                   />
                 </Track>

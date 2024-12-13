@@ -1,0 +1,6 @@
+{
+"response": {
+    "name": "{{response.[0]._id}}",
+    "text": {{#if response.[0]._source.response.[0].condition}}"{{{response.[0]._source.response.[1].text}}}"{{else}}"{{{response.[0]._source.response.[0].text}}}"{{/if}}
+}
+}

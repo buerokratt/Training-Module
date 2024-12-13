@@ -50,7 +50,6 @@ getServiceIntentConnections:
     url: "[#TRAINING_RESQL]/get-service-intent-connections"
   result: getServiceIntentConnectionsResult
 
-# todo if not using full, maybe modify to return one value
 getIntentListLastChanged:
   call: http.post
   args:
