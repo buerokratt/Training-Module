@@ -31,6 +31,7 @@ intents:
   - common_service_estimated_subsistence_minimum
   - common_service_motor_vehicle_tax
   - common_service_school_holiday
+  - common_service_nba_results
 
 entities:
   - asukoht
@@ -491,4 +492,7 @@ responses:
 
   utter_common_service_school_holiday_by_month:
   - text: "#common_service, /GET/calendar/school-holidays/find/by-month, ({by_month_school_holiday})"
+
+  utter_common_service_nba_results:
+  - text: "#common_service, /GET/sports/nba-results"
   

@@ -118,9 +118,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
     if (rulesResponse) setIntentRule(rulesResponse.response.id);
   }, [rulesResponse]);
 
-  console.log('rulesResponse', rulesResponse);
-  console.log('intentRule', intentRule);
-
   const markIntentServiceMutation = useMutation({
     mutationFn: (data: { name: string; isForService: boolean }) => markForService(data),
     onMutate: () => {
@@ -339,7 +336,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
     mutationFn: (intentResponseData: { id: string; responseText: string; update: boolean }) =>
       editResponse(intentResponseData.id, intentResponseData.responseText, intentResponseData.update),
     onMutate: () => {
-      console.log('onMutate');
       setRefreshing(true);
     },
     onSuccess: async () => {
