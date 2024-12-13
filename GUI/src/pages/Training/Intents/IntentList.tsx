@@ -4,7 +4,7 @@ import { Icon, Tooltip, Track } from 'components';
 import { MdCheckCircleOutline } from 'react-icons/md';
 import { useTranslation } from 'react-i18next';
 import './IntentTabList.scss';
-import { IntentWithExamplesCount } from 'types/intentWithExampleCounts';
+import { IntentWithExamplesCount } from 'types/intentWithExamplesCount';
 
 interface IntentListProps {
   intents: IntentWithExamplesCount[];

@@ -19,18 +19,18 @@
         }
       },
       "query": {
-        {{#intent}}
-        "wildcard": {
-          "intent": "*{{intent}}*"
+        "prefix": {
+          "intent": {
+            "value": "{{prefix}}"
+          }
         }
-        {{/intent}}
-        {{^intent}}
-        "match_all": {}
-        {{/intent}}
       }
     },
     "params": {
-      "intent": ""
+      "prefix": {
+        "type": "string",
+        "description": "Optional prefix to filter intents"
+      }
     }
   }
 }

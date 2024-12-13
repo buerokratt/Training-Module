@@ -3,7 +3,7 @@
       {{#each buckets}}
         {
          "id": "{{key}}",
-         "examples_count": {{examples_counts.value}},
+         "examplesCount": {{examples_counts.value}},
          "inModel": {{isInModel key ../intents}},
          "modifiedAt": "{{findModifiedAt key ../intents/intentsModifiedAt}}"
         }{{#unless @last}},{{/unless}}

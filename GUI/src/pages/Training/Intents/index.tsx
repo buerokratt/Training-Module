@@ -1,90 +1,35 @@
-import { FC, useCallback, useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import * as Tabs from '@radix-ui/react-tabs';
 import { AxiosError } from 'axios';
 
 import { Button, FormInput, Track } from 'components';
 import { useToast } from 'hooks/useToast';
-import { Intent } from 'types/intent';
 import { addIntent } from 'services/intents';
 import LoadingDialog from '../../../components/LoadingDialog';
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
 import IntentTabList from './IntentTabList';
 import IntentDetails from './IntentDetails';
-import { IntentWithExamplesCount } from 'types/intentWithExampleCounts';
-
-// TODO: rename examples_count to examplesCount when possible with changes in CommonIntents
-type IntentWithExamplesCountResponse = Pick<Intent, 'id' | 'inModel' | 'modifiedAt'> & { examples_count: number };
-
-type IntentsWithExamplesCountResponse = {
-  response: {
-    intents: IntentWithExamplesCountResponse[];
-  };
-};
-
-const intentResponseToIntent = (intent: IntentWithExamplesCountResponse): IntentWithExamplesCount => ({
-  ...intent,
-  examplesCount: intent.examples_count,
-  isCommon: intent.id.startsWith('common_'),
-});
+import { useIntentsData } from './useIntentsData';
 
 const Intents: FC = () => {
   const { t } = useTranslation();
-  const queryClient = useQueryClient();
   const toast = useToast();
-  const [searchParams] = useSearchParams();
 
-  const [intents, setIntents] = useState<IntentWithExamplesCount[]>([]);
-  const [selectedIntent, setSelectedIntent] = useState<IntentWithExamplesCount | null>(null);
-  const [refreshing, setRefreshing] = useState(false);
-  const [filter, setFilter] = useState('');
-
-  const { data: intentsResponse, isLoading } = useQuery<IntentsWithExamplesCountResponse>({
-    queryKey: ['intents/with-examples-count'],
+  const { intents, selectedIntent, setSelectedIntent, queryRefresh, isLoading } = useIntentsData({
+    queryKey: 'intents/with-examples-count',
   });
 
-  useEffect(() => {
-    if (intentsResponse) {
-      setIntents(intentsResponse.response.intents.map((intent) => intentResponseToIntent(intent)));
-    }
-  }, [intentsResponse]);
-
-  const queryRefresh = useCallback(
-    async (newIntent?: string) => {
-      const response = await queryClient.fetchQuery<IntentsWithExamplesCountResponse>(['intents/with-examples-count']);
-
-      if (response) {
-        setIntents(response.response.intents.map((intent) => intentResponseToIntent(intent)));
-
-        const selectedIntent = response.response.intents.find(
-          (intent) => intent.id === newIntent
-        ) as IntentWithExamplesCountResponse;
-
-        setSelectedIntent(intentResponseToIntent(selectedIntent));
-      }
-    },
-    [queryClient]
-  );
-
-  useEffect(() => {
-    let intentParam = searchParams.get('intent');
-    if (!intentParam) return;
-
-    const queryIntent = intents.find((intent) => intent.id === intentParam);
-
-    if (queryIntent) {
-      setSelectedIntent(queryIntent);
-    }
-  }, [intents, searchParams]);
+  const [refreshing, setRefreshing] = useState(false);
+  const [filter, setFilter] = useState('');
 
   const handleTabsValueChange = useCallback(
     (value: string) => {
       const selectedIntent = intents.find((intent) => intent.id === value);
       setSelectedIntent(selectedIntent!);
     },
-    [intents]
+    [intents, setSelectedIntent]
   );
 
   const newIntentMutation = useMutation({

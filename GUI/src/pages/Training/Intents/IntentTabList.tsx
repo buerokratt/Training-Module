@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { compareInModel, compareInModelReversed } from 'utils/compare';
 import IntentList from './IntentList';
 import './IntentTabList.scss';
-import { IntentWithExamplesCount } from 'types/intentWithExampleCounts';
+import { IntentWithExamplesCount } from 'types/intentWithExamplesCount';
 
 interface IntentTabListProps {
   filter: string;
