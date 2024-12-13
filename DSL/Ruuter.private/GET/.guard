@@ -13,7 +13,7 @@ verify_header_nonce:
     body:
       updated_nonce: ${incoming.headers['x-ruuter-nonce']}
   result: nonce_response
-  next: check_nonce
+  next: check_inline
 
 verify_param_nonce:
   call: http.post
