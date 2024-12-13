@@ -21,7 +21,7 @@ getResponsesWithNameAndText:
   args:
     url: "[#TRAINING_OPENSEARCH]/responses/_search/template"
     body:
-      id: "response-with-name-and-text"
+      id: "response"
       params:
         response_name: ${response_name}
   result: getResponsesResult
