@@ -24,7 +24,7 @@ import withAuthorization, { ROLES } from 'hoc/with-authorization';
 
 const Models: FC = () => {
   const MODEL_FETCH_INTERVAL = 5000;
-  const MODEL_FETCH_TIMEOUT = 300000;
+  const MODEL_FETCH_TIMEOUT = 120000;
 
   const { t } = useTranslation();
   const toast = useToast();
@@ -100,6 +100,11 @@ const Models: FC = () => {
       const timeoutId = setTimeout(() => {
         clearInterval(intervalId);
         setIsFetching(false);
+        toast.open({
+          type: 'error',
+          title: t('global.notificationError'),
+          message: t('toast.modelActivationTimedOut'),
+        });
       }, MODEL_FETCH_TIMEOUT);
 
       if (currentlyLoadedModel?.id === previouslyLoadedModel?.id) {
@@ -128,7 +133,7 @@ const Models: FC = () => {
   return (
     <>
       <h1>{t('training.mba.models')}</h1>
-
+      <Track isMultiline></Track>
       {selectedModel && (
         <Card
           header={<h2 className="h3">{t('training.mba.selectedModel')}</h2>}
@@ -163,6 +168,7 @@ const Models: FC = () => {
             {selectedModel.state !== 'DEPLOYED' && (
               <Button
                 appearance="success"
+                disabled={isFetching}
                 onClick={() => setModelConfirmation(selectedModel.id)}
               >
                 {isFetching &&
