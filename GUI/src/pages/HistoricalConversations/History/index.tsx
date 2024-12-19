@@ -291,6 +291,7 @@ const History: FC = () => {
           columns={endedChatsColumns.filter((c) => selectedColumns.length > 0 ? selectedColumns.includes(c.id ?? '') : true)}
           pagination={pagination}
           sorting={sorting}
+          selectedRow={(row) => row.original.id === selectedChat?.id}
           setPagination={(state: PaginationState) => {
             if (
               state.pageIndex === pagination.pageIndex &&

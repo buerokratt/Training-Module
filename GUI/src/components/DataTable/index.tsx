@@ -54,6 +54,7 @@ type DataTableProps = {
   meta?: TableMeta<any>;
   setSelectedRow?: (row: Row<any>) => void;
   pageSizeOptions?: number[];
+  selectedRow?: (row: Row<any>) => boolean;
 };
 
 type ColumnMeta = {
@@ -113,6 +114,7 @@ const DataTable: FC<DataTableProps> = (
     meta,
     setSelectedRow,
     pageSizeOptions = [10, 20, 30, 40, 50],
+    selectedRow
   },
 ) => {
   const id = useId();
@@ -217,13 +219,14 @@ const DataTable: FC<DataTableProps> = (
             key={row.id} 
             onClick={() => setSelectedRow && setSelectedRow(row)}
             style={table.options.meta?.getRowStyles(row)}
+            className={selectedRow?.(row) ? 'highlighted' : 'default'}
           >
             {row.getVisibleCells().map((cell) => (
                 <td key={cell.id} style={{
                   position: cell.column.columnDef.meta?.sticky ? 'sticky' : undefined,
                   left: cell.column.columnDef.meta?.sticky === 'left' ? `${cell.column.getAfter('left') * 0.675}px` : undefined,
                   right: cell.column.columnDef.meta?.sticky === 'right' ? `${cell.column.getAfter('right') * 0.675}px` : undefined,
-                  backgroundColor: 'white', zIndex: cell.column.columnDef.meta?.sticky ? 1 : 0
+                  zIndex: cell.column.columnDef.meta?.sticky ? 1 : 0
                 }}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
             ))}
           </tr>
