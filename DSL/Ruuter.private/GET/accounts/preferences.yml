@@ -1,0 +1,28 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'user-preferences'"
+  method: get
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    params:
+      - field: userId
+        type: string
+        description: "Body field 'userId'"
+
+assignUserId:
+  assign:
+    userId: ${incoming.body.userId}
+
+getUserPreferences:
+  call: http.post
+  args:
+    url: "[#TRAINING_USERS_RESQL]/get-user-preferences"
+    body:
+      userId: ${userId}
+  result: res
+
+return_result:
+  return: ${res.response.body}
