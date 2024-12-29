@@ -133,6 +133,7 @@ const Models: FC = () => {
   return (
     <>
       <h1>{t('training.mba.models')}</h1>
+      
       {selectedModel && (
         <Card
           header={<h2 className="h3">{t('training.mba.selectedModel')}</h2>}
