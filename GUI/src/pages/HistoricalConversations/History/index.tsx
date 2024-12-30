@@ -27,11 +27,13 @@ import { useToast } from '../../../hooks/useToast';
 import { getColumns } from './columns';
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
 import { useDebouncedCallback } from "use-debounce";
+import useStore from "../../../store/store";
 
 const History: FC = () => {
   const { t } = useTranslation();
   const toast = useToast();
   const [search, setSearch] = useState('');
+  const userInfo = useStore((state) => state.userInfo);
   const [selectedChat, setSelectedChat] = useState<ChatType | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [pagination, setPagination] = useState<PaginationState>({
@@ -57,6 +59,31 @@ const History: FC = () => {
       search,
     });
   }, 500);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await api.get('/accounts/get-page-preference', {
+          params: { user_id: userInfo?.idCode, page_name: window.location.pathname},
+        });
+        if(response.data.pageResults !== undefined) {
+          updatePagePreference(response.data.pageResults)
+        }
+      }
+      catch (err) {
+        console.error('Failed to fetch data');
+      }
+    };
+
+    fetchData();
+  }, [userInfo?.idCode]);
+
+  const updatePagePreference = (pageResults: number ): void => {
+    setPagination((prev) => ({
+      ...prev,
+      pageSize: pageResults
+    }));
+  }
 
   const copyValueToClipboard = async (value: string) => {
     await navigator.clipboard.writeText(value);
@@ -139,6 +166,18 @@ const History: FC = () => {
       filterChatsList(res.data.response ?? []);
       setTotalPages(res?.data?.response[0]?.totalPages ?? 1);
     },
+  });
+
+  const updatePageSize = useMutation({
+    mutationFn: (data: {
+      page_results: number;
+    }) => {
+      return api.post('accounts/update-page-preference', {
+        user_id: userInfo?.idCode,
+        page_name: window.location.pathname,
+        page_results: data.page_results,
+      });
+    }
   });
 
   const getChatById = useMutation({
@@ -298,6 +337,7 @@ const History: FC = () => {
             )
               return;
             setPagination(state);
+            updatePageSize.mutate({page_results: state.pageSize});
             getAllEndedChats.mutate({
               startDate: format(new Date(startDate), 'yyyy-MM-dd'),
               endDate: format(new Date(endDate), 'yyyy-MM-dd'),
