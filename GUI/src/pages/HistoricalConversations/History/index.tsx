@@ -1,37 +1,26 @@
-import React, { FC, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useMutation } from '@tanstack/react-query';
-import { PaginationState, SortingState } from '@tanstack/react-table';
-import { format } from 'date-fns';
-import {
-  Card,
-  DataTable,
-  Drawer,
-  FormDatepicker,
-  FormInput,
-  FormMultiselect,
-  HistoricalChat,
-  Track,
-} from 'components';
-import { Chat as ChatType } from 'types/chat';
-import { Message } from 'types/message';
-import { Controller, useForm } from 'react-hook-form';
-import { api } from '../../../services/api';
-import { useLocation, useSearchParams } from 'react-router-dom';
-import {
-  getFromLocalStorage,
-  setToLocalStorage,
-} from '../../../utils/local-storage-utils';
-import { CHAT_HISTORY_PREFERENCES_KEY } from 'constants/config';
-import { useToast } from '../../../hooks/useToast';
-import { getColumns } from './columns';
-import withAuthorization, { ROLES } from 'hoc/with-authorization';
-import { useDebouncedCallback } from "use-debounce";
+import React, {FC, useEffect, useMemo, useState} from 'react';
+import {useTranslation} from 'react-i18next';
+import {useMutation} from '@tanstack/react-query';
+import {PaginationState, SortingState} from '@tanstack/react-table';
+import {format} from 'date-fns';
+import {Card, DataTable, Drawer, FormDatepicker, FormInput, FormMultiselect, HistoricalChat, Track,} from 'components';
+import {Chat as ChatType} from 'types/chat';
+import {Message} from 'types/message';
+import {Controller, useForm} from 'react-hook-form';
+import {api} from '../../../services/api';
+import {useLocation, useSearchParams} from 'react-router-dom';
+import {getFromLocalStorage, setToLocalStorage,} from '../../../utils/local-storage-utils';
+import {CHAT_HISTORY_PREFERENCES_KEY} from 'constants/config';
+import {useToast} from '../../../hooks/useToast';
+import {getColumns} from './columns';
+import withAuthorization, {ROLES} from 'hoc/with-authorization';
+import {useDebouncedCallback} from "use-debounce";
 import useStore from "../../../store/store";
 
 const History: FC = () => {
   const { t } = useTranslation();
   const toast = useToast();
+  const [initialLoad, setInitialLoad] = useState<boolean>(true);
   const [search, setSearch] = useState('');
   const userInfo = useStore((state) => state.userInfo);
   const [selectedChat, setSelectedChat] = useState<ChatType | null>(null);
@@ -60,29 +49,31 @@ const History: FC = () => {
     });
   }, 500);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await api.get('/accounts/get-page-preference', {
-          params: { user_id: userInfo?.idCode, page_name: window.location.pathname},
+  const fetchData = async () => {
+    setInitialLoad(false);
+    try {
+      const response = await api.get('/accounts/get-page-preference', {
+        params: {user_id: userInfo?.idCode, page_name: window.location.pathname},
+      });
+      if (response.data.pageResults !== undefined) {
+        const updatedPagination = updatePagePreference(response.data.pageResults)
+        getAllEndedChats.mutate({
+          startDate: format(new Date(startDate), 'yyyy-MM-dd'),
+          endDate: format(new Date(endDate), 'yyyy-MM-dd'),
+          updatedPagination,
+          sorting,
+          search,
         });
-        if(response.data.pageResults !== undefined) {
-          updatePagePreference(response.data.pageResults)
-        }
       }
-      catch (err) {
-        console.error('Failed to fetch data');
-      }
-    };
+    } catch (err) {
+      console.error('Failed to fetch data');
+    }
+  };
 
-    fetchData();
-  }, [userInfo?.idCode]);
-
-  const updatePagePreference = (pageResults: number ): void => {
-    setPagination((prev) => ({
-      ...prev,
-      pageSize: pageResults
-    }));
+  const updatePagePreference = (pageResults: number): PaginationState => {
+    const updatedPagination: PaginationState = {...pagination, pageSize: pageResults};
+    setPagination(updatedPagination);
+    return updatedPagination;
   }
 
   const copyValueToClipboard = async (value: string) => {
@@ -130,13 +121,17 @@ const History: FC = () => {
   }, [passedChatId]);
 
   useEffect(() => {
-    getAllEndedChats.mutate({
-      startDate: format(new Date(startDate), 'yyyy-MM-dd'),
-      endDate: format(new Date(endDate), 'yyyy-MM-dd'),
-      pagination,
-      sorting,
-      search,
-    });
+    if(initialLoad) {
+      fetchData();
+    } else {
+      getAllEndedChats.mutate({
+        startDate: format(new Date(startDate), 'yyyy-MM-dd'),
+        endDate: format(new Date(endDate), 'yyyy-MM-dd'),
+        pagination,
+        sorting,
+        search,
+      });
+    }
   }, []);
 
   const getAllEndedChats = useMutation({
