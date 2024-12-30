@@ -1,6 +1,6 @@
 {
 "response": {
-    "name": "{{response.[0]._id}}",
-    "text": {{#if response.[0]._source.response.[0].condition}}"{{{response.[0]._source.response.[1].text}}}"{{else}}"{{{response.[0]._source.response.[0].text}}}"{{/if}}
+    "name": "{{#with response.[0]._source.responses}}{{#each this as |value key|}}{{key}}{{/each}}{{/with}}",
+    "text": {{#with response.[0]._source.responses}}{{#each this}}{{#if this.[0].condition}}"{{{this.[1].text}}}"{{else}}"{{{this.[0].text}}}"{{/if}}{{/each}}{{/with}}
 }
 }

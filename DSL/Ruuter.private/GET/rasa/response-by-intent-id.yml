@@ -19,7 +19,7 @@ assign_values:
 getResponsesWithNameAndText:
   call: http.post
   args:
-    url: "[#TRAINING_OPENSEARCH]/responses/_search/template"
+    url: "[#TRAINING_OPENSEARCH]/domain/_search/template"
     body:
       id: "response"
       params:
