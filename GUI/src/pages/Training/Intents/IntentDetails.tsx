@@ -357,6 +357,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
       });
     },
     onSettled: () => {
+      queryRefresh();
       setRefreshing(false);
     },
   });
@@ -411,8 +412,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
         },
       });
     }
-
-    queryRefresh();
   };
 
   const deleteIntentMutation = useMutation({
