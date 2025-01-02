@@ -104,7 +104,12 @@ router.post(
     console.log(index_type);
     console.log(obj);
 	  
-    if (index_type) obj.id = obj[index_type].replaceAll(/\s+/g, "_");
+    if (index_type && obj[index_type]) {
+	  obj.id = obj[index_type].replaceAll(/\s+/g, "_");
+	} else {
+	  console.error(`Missing property '${index_type}' in object`, obj);
+	  // You can either skip or handle this case as appropriate
+	}
     if (obj.examples && !Array.isArray(obj.examples)) {
       obj.examples = obj.examples
         .split("\n")
