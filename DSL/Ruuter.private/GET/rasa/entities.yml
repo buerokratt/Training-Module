@@ -6,23 +6,54 @@ declaration:
   accepts: json
   returns: json
   namespace: training
+  params:
+    - field: search
+      type: string
+      description: "Query string"
+    - field: page
+      type: string
+      description: "Page number"
+    - field: size
+      type: string
+      description: "Page size"
+
+assignValues:
+  assign:
+    search: ${incoming.params.search}
+    page: ${incoming.params.page}
+    size: ${incoming.params.size}
 
 getEntities:
-  call: http.get
+  call: http.post
   args:
-    url: "[#TRAINING_OPENSEARCH]/domain/_search?size=10000"
+    url: "[#TRAINING_OPENSEARCH]/domain/_search/template"
+    body:
+      id: "entities"
+      params:
+        search: ${search}
+        # from: 0
+        # to: 20
+        from: ${page}
+        size: ${size}
   result: getEntitiesResult
+
+# getEntitiesWithName:
+#   call: http.post
+#   args:
+#     url: "[#TRAINING_OPENSEARCH]/entities/_search/template"
+#     body:
+#       id: "entity-with-name"
+#       params: ${params}
+#   result: getEntitiesResult
 
 mapEntitiesData:
   call: http.post
   args:
     url: "[#TRAINING_DMAPPER]/hbs/training/get_entities"
     headers:
-      type: 'json'
+      type: "json"
     body:
-      data: {
-        "hits": "${getEntitiesResult.response.body.hits.hits}"
-      }
+      data: { "hits": "${getEntitiesResult.response.body.hits.hits}" }
   result: entitiesData
   next: sortEntities
 
@@ -31,11 +62,9 @@ sortEntities:
   args:
     url: "[#TRAINING_DMAPPER]/hbs/training/sort_entities"
     headers:
-      type: 'json'
+      type: "json"
     body:
-      data: {
-        "hits": "${entitiesData.response.body.entities}"
-      }
+      data: { "hits": "${entitiesData.response.body.entities}" }
   result: sortedEntities
   next: returnSuccess
 

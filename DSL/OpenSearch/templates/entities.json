@@ -1,0 +1,42 @@
+{
+  "script": {
+    "lang": "mustache",
+    "source": {
+      "query": {
+        "term": {
+          "_id": "entities"
+        }
+      },
+      "script_fields": {
+        "paginated_entities": {
+          "script": {
+            "lang": "painless",
+            "source": """
+              def entities = params._source.entities;
+              def searchTerm = params.searchTerm.toLowerCase();
+              def from = (int)params.from;
+              def size = (int)params.size;
+              def result = new ArrayList();
+              def matchCount = 0;
+              
+              for (int i = 0; i < entities.length; i++) {
+                if (entities[i].toLowerCase().contains(searchTerm)) {
+                  if (matchCount >= from && matchCount < (from + size)) {
+                    result.add(entities[i]);
+                  }
+                  matchCount++;
+                }
+              }
+              return result;
+            """,
+            "params": {
+              "from": "{{from}}",
+              "size": "{{size}}",
+              "searchTerm": "{{search}}"
+            }
+          }
+        }
+      }
+    }
+  }
+}
