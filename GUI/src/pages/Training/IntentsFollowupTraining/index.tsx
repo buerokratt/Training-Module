@@ -21,34 +21,32 @@ const IntentsFollowupTraining: FC = () => {
 
   return (
     <>
-        <h1>{t('training.intents.followupTraining')}</h1>
+      <h1>{t('training.intents.followupTraining')}</h1>
 
-        <h4>Entities</h4>
-        <Tabs.Root
-            className='vertical-tabs'
-            orientation='vertical'
-            value={selectedTab ?? undefined}
-            onValueChange={setSelectedTab}
-            defaultValue='regex'
-        >
-
-            <Tabs.Content key='regex' value='regex' className='vertical-tabs__body'>
-              <Entities />
-            </Tabs.Content>
-        </Tabs.Root>
+      <h4>Entities</h4>
+      <Tabs.Root
+        className="vertical-tabs"
+        orientation="vertical"
+        value={selectedTab ?? undefined}
+        onValueChange={setSelectedTab}
+        defaultValue="regex"
+      >
+        <Tabs.Content key="regex" value="regex" className="vertical-tabs__body">
+          <Entities />
+        </Tabs.Content>
+      </Tabs.Root>
       <h4>Regexes</h4>
 
       <Tabs.Root
-        className='vertical-tabs'
-        orientation='vertical'
+        className="vertical-tabs"
+        orientation="vertical"
         value={selectedTab ?? undefined}
         onValueChange={setSelectedTab}
-        defaultValue='regex'
+        defaultValue="regex"
       >
-
-        <Tabs.Content key='regex' value='regex' className='vertical-tabs__body'>
+        {/* <Tabs.Content key='regex' value='regex' className='vertical-tabs__body'>
           <Regex />
-        </Tabs.Content>
+        </Tabs.Content> */}
       </Tabs.Root>
     </>
   );

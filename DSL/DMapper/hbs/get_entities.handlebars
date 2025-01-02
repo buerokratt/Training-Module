@@ -1,7 +1,7 @@
 {
     "entities": [
-    {{#each data}}
-        {{#each this.fields.paginated_entities}}
+    {{#each data.hits}}
+        {{#each this._source.entities}}
             {
                 "id": "{{{ this }}}",
                 "name": "{{{ this }}}"

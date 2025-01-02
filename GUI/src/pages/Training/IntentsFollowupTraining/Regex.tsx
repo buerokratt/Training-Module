@@ -1,4 +1,4 @@
-import {FC, useMemo, useState} from 'react';
+import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
@@ -16,7 +16,7 @@ import i18n from '../../../../i18n';
 type RegexTeaser = {
   readonly id: number;
   name: string;
-}
+};
 
 const Regex: FC = () => {
   const { t } = useTranslation();
@@ -57,12 +57,18 @@ const Regex: FC = () => {
     onSettled: () => setAddFormVisible(false),
   });
 
-  const availableEntities = useMemo(() => entities?.filter((e) => {
-    return !regexList?.some((r) => r.name === e.name);
-  }).map((e) => ({ label: e.name, value: String(e.id) })), [entities, regexList]);
+  const availableEntities = useMemo(
+    () =>
+      entities
+        ?.filter((e) => {
+          return !regexList?.some((r) => r.name === e.name);
+        })
+        .map((e) => ({ label: e.name, value: String(e.id) })),
+    [entities, regexList]
+  );
 
   const regexDeleteMutation = useMutation({
-    mutationFn: ( deleteData : { regex_name: string | number }) => deleteRegex(deleteData),
+    mutationFn: (deleteData: { regex_name: string | number }) => deleteRegex(deleteData),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['regexes']);
       toast.open({
@@ -85,19 +91,19 @@ const Regex: FC = () => {
   const regexColumns = useMemo(() => getColumns(navigate, setDeletableRow), []);
 
   const handleNewRegexSubmit = handleSubmit((data) => {
-    if(selectedRegex) {
-      newRegexMutation.mutate({name: selectedRegex});
+    if (selectedRegex) {
+      newRegexMutation.mutate({ name: selectedRegex });
     }
   });
 
   return (
     <>
-      <div className='vertical-tabs__content-header'>
-        <Track gap={8} direction='vertical' align='stretch'>
+      <div className="vertical-tabs__content-header">
+        <Track gap={8} direction="vertical" align="stretch">
           <Track gap={16}>
             <FormInput
               label={t('global.search')}
-              name='searchRegex'
+              name="searchRegex"
               placeholder={t('global.search') + '...'}
               hideLabel
               onChange={(e) => setFilter(e.target.value)}
@@ -107,35 +113,37 @@ const Regex: FC = () => {
           {addFormVisible && (
             <Track gap={16}>
               <div style={{ flex: 1 }}>
-                <Controller name='name' control={control} render={({ field }) => (
-                  <FormSelect
-                    {...field}
-                    label={t('training.intents.entity')}
-                    hideLabel
-                    onSelectionChange={(selection) => {
-                      setSelectedRegex(selection?.value);
-                    }}
-                    options={availableEntities || []
-                  }
-                  />
-                )} />
+                <Controller
+                  name="name"
+                  control={control}
+                  render={({ field }) => (
+                    <FormSelect
+                      {...field}
+                      label={t('training.intents.entity')}
+                      hideLabel
+                      onSelectionChange={(selection) => {
+                        setSelectedRegex(selection?.value);
+                      }}
+                      options={availableEntities || []}
+                    />
+                  )}
+                />
               </div>
               <Track gap={16}>
-                <Button appearance='secondary' onClick={() => setAddFormVisible(false)}>{t('global.cancel')}</Button>
-                <Button disabled={selectedRegex === undefined} onClick={handleNewRegexSubmit}>{t('global.save')}</Button>
+                <Button appearance="secondary" onClick={() => setAddFormVisible(false)}>
+                  {t('global.cancel')}
+                </Button>
+                <Button disabled={selectedRegex === undefined} onClick={handleNewRegexSubmit}>
+                  {t('global.save')}
+                </Button>
               </Track>
             </Track>
           )}
         </Track>
       </div>
-      <div className='vertical-tabs__content'>
+      <div className="vertical-tabs__content">
         {regexList && (
-          <DataTable
-            data={regexList}
-            columns={regexColumns}
-            globalFilter={filter}
-            setGlobalFilter={setFilter}
-          />
+          <DataTable data={regexList} columns={regexColumns} globalFilter={filter} setGlobalFilter={setFilter} />
         )}
       </div>
 
@@ -145,11 +153,10 @@ const Regex: FC = () => {
           onClose={() => setDeletableRow(null)}
           footer={
             <>
-              <Button appearance='secondary' onClick={() => setDeletableRow(null)}>{t('global.no')}</Button>
-              <Button
-                appearance='error'
-                onClick={() => regexDeleteMutation.mutate({ regex_name: deletableRow })}
-              >
+              <Button appearance="secondary" onClick={() => setDeletableRow(null)}>
+                {t('global.no')}
+              </Button>
+              <Button appearance="error" onClick={() => regexDeleteMutation.mutate({ regex_name: deletableRow })}>
                 {t('global.yes')}
               </Button>
             </>
@@ -162,10 +169,7 @@ const Regex: FC = () => {
   );
 };
 
-const getColumns = (
-  navigate: NavigateFunction,
-  setDeletableRow: (id: number) => void,
-) => {
+const getColumns = (navigate: NavigateFunction, setDeletableRow: (id: number) => void) => {
   const columnHelper = createColumnHelper<RegexTeaser>();
 
   return [
@@ -175,12 +179,8 @@ const getColumns = (
     columnHelper.display({
       header: '',
       cell: (props) => (
-        <Button appearance='text'
-                onClick={() => navigate(`/training/regex/${props.row.original.id}`)}>
-          <Icon
-            label={i18n.t('global.edit')}
-            icon={<MdOutlineEdit color={'rgba(0,0,0,0.54)'} />}
-          />
+        <Button appearance="text" onClick={() => navigate(`/training/regex/${props.row.original.id}`)}>
+          <Icon label={i18n.t('global.edit')} icon={<MdOutlineEdit color={'rgba(0,0,0,0.54)'} />} />
           {i18n.t('global.edit')}
         </Button>
       ),
@@ -192,11 +192,8 @@ const getColumns = (
     columnHelper.display({
       header: '',
       cell: (props) => (
-        <Button appearance='text' onClick={() => setDeletableRow(props.row.original.id)}>
-          <Icon
-            label={i18n.t('global.delete')}
-            icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />}
-          />
+        <Button appearance="text" onClick={() => setDeletableRow(props.row.original.id)}>
+          <Icon label={i18n.t('global.delete')} icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />} />
           {i18n.t('global.delete')}
         </Button>
       ),
@@ -205,7 +202,7 @@ const getColumns = (
         size: '1%',
       },
     }),
-  ]
-}
+  ];
+};
 
 export default Regex;
