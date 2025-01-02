@@ -31,21 +31,10 @@ getEntities:
       # todo rename
       id: "entities-test"
       params:
-        search: ${search}
-        # from: 0
-        # to: 20
+        searchTerm: ${search}
         from: ${page}
         size: ${size}
   result: getEntitiesResult
-
-# getEntitiesWithName:
-#   call: http.post
-#   args:
-#     url: "[#TRAINING_OPENSEARCH]/entities/_search/template"
-#     body:
-#       id: "entity-with-name"
-#       params: ${params}
-#   result: getEntitiesResult
 
 mapEntitiesData:
   call: http.post

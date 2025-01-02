@@ -26,9 +26,10 @@ const Entities: FC = () => {
   } | null>(null);
   const [deletableRow, setDeletableRow] = useState<string | number | null>(null);
   const [newEntityFormOpen, setNewEntityFormOpen] = useState(false);
-  const { data: entities, refetch } = useQuery<Entity[]>({
+  const { data: entities, refetch } = useQuery<{ response: Entity[] }>({
     queryKey: ['entities?page=0&size=20&search=igor'],
   });
+  console.log(entities);
   const { register, handleSubmit } = useForm<{ entity: string }>();
 
   useDocumentEscapeListener(() => setEditableRow(null));
@@ -156,7 +157,12 @@ const Entities: FC = () => {
       </div>
       <div className="vertical-tabs__content">
         {entities && (
-          <DataTable data={entities} columns={entitiesColumns} globalFilter={filter} setGlobalFilter={setFilter} />
+          <DataTable
+            data={entities.response}
+            columns={entitiesColumns}
+            globalFilter={filter}
+            setGlobalFilter={setFilter}
+          />
         )}
       </div>
 
