@@ -27,9 +27,10 @@ const Entities: FC = () => {
   const [deletableRow, setDeletableRow] = useState<string | number | null>(null);
   const [newEntityFormOpen, setNewEntityFormOpen] = useState(false);
   const { data: { response: entities } = { response: [] }, refetch } = useQuery<{ response: Entity[] }>({
-    queryKey: ['entities?page=0&size=20&search=igor'],
+    // todo hardcoded
+    // todo use filter here
+    queryKey: ['entities?page=0&size=20&search='],
   });
-  console.log(entities);
   const { register, handleSubmit } = useForm<{ entity: string }>();
 
   useDocumentEscapeListener(() => setEditableRow(null));
