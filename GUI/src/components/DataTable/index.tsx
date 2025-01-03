@@ -26,7 +26,6 @@ import { Icon, Track } from 'components';
 import Filter from './Filter';
 import './DataTable.scss';
 import { FetchNextPageOptions, InfiniteQueryObserverResult } from '@tanstack/react-query';
-import { Entity } from 'types/entity';
 
 type DataTableProps = {
   data: any;
@@ -52,7 +51,7 @@ type DataTableProps = {
   fetchNextPage?: (options?: FetchNextPageOptions) => Promise<
     InfiniteQueryObserverResult<
       {
-        response: Entity[];
+        response: unknown[];
       },
       unknown
     >

@@ -44,9 +44,9 @@ const IntentsFollowupTraining: FC = () => {
         onValueChange={setSelectedTab}
         defaultValue="regex"
       >
-        {/* <Tabs.Content key='regex' value='regex' className='vertical-tabs__body'>
+        <Tabs.Content key="regex" value="regex" className="vertical-tabs__body">
           <Regex />
-        </Tabs.Content> */}
+        </Tabs.Content>
       </Tabs.Root>
     </>
   );
