@@ -31,17 +31,15 @@ const Entities: FC = () => {
   const [deletableRow, setDeletableRow] = useState<string | number | null>(null);
   const [newEntityFormOpen, setNewEntityFormOpen] = useState(false);
 
+  // todo use filter here
   const fetchEntities = async ({ pageParam = 0 }): Promise<{ response: Entity[] }> => {
     console.log('!!!!!!!pageParam', pageParam);
-    const res = await rasaApi.get('/entities?size=' + pageSize + '&search=&from=' + pageParam);
+    const res = await rasaApi.get(`/entities?size=${pageSize}&search=${filter}&from=${pageParam}`);
     return res.data;
   };
-  // todo types
   const { data, refetch, fetchNextPage, isFetching } = useInfiniteQuery<{ response: Entity[] }>({
-    // todo use filter here
     queryKey: ['entities'],
     queryFn: fetchEntities,
-    initialPageParam: 0,
     getNextPageParam: (lastPage, pages) => {
       // todo simplify
       // console.log('lastPage', lastPage);
@@ -52,7 +50,6 @@ const Entities: FC = () => {
         console.log('!!!!!!! LAST PAGE');
         return undefined;
       }
-      // return lastPageParam ? lastPageParam + 1 : 1;
       return pages.length * pageSize + 1;
     },
   });
@@ -190,8 +187,8 @@ const Entities: FC = () => {
           <DataTable
             data={flatData}
             columns={entitiesColumns}
-            globalFilter={filter}
-            setGlobalFilter={setFilter}
+            // globalFilter={filter}
+            // setGlobalFilter={setFilter}
             isFetching={isFetching}
             fetchNextPage={fetchNextPage}
           />
