@@ -115,21 +115,13 @@ const DataTable: FC<DataTableProps> = ({
   const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  // todo fix, new stuff
-  // const flatData = React.useMemo(() => data?.pages?.flatMap((page) => page.data) ?? [], [data]);
 
   const fetchMoreOnBottomReached = React.useCallback(
     (containerRefElement?: HTMLDivElement | null) => {
-      console.log('fetchMoreOnBottomReached', containerRefElement);
       if (containerRefElement) {
         const { scrollHeight, scrollTop, clientHeight } = containerRefElement;
-        //once the user has scrolled within 500px of the bottom of the table, fetch more data if we can
-        if (
-          scrollHeight - scrollTop - clientHeight < 500 &&
-          !isFetching &&
-          fetchNextPage
-          // && totalFetched < totalDBRowCount
-        ) {
+        // Once the user has scrolled within 500px of the bottom of the table
+        if (scrollHeight - scrollTop - clientHeight < 500 && !isFetching && fetchNextPage) {
           fetchNextPage();
         }
       }
@@ -137,14 +129,7 @@ const DataTable: FC<DataTableProps> = ({
     [fetchNextPage, isFetching]
   );
 
-  // todo needs ref
-  //a check on mount and after a fetch to see if the table is already scrolled to the bottom and immediately needs to fetch more data
-  // React.useEffect(() => {
-  //   fetchMoreOnBottomReached(tableContainerRef.current);
-  // }, [fetchMoreOnBottomReached]);
-
   const table = useReactTable({
-    // todo make work with normal table
     data,
     columns,
     filterFns: {
@@ -246,38 +231,34 @@ const DataTable: FC<DataTableProps> = ({
           )}
           <tbody>
             {tableBodyPrefix}
-            {table.getRowModel().rows.map((row) => {
-              // todo clean up
-              // console.log('row', row);
-              return (
-                <tr
-                  key={row.id}
-                  onClick={() => setSelectedRow && setSelectedRow(row)}
-                  style={table.options.meta?.getRowStyles(row)}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <td
-                      key={cell.id}
-                      style={{
-                        position: cell.column.columnDef.meta?.sticky ? 'sticky' : undefined,
-                        left:
-                          cell.column.columnDef.meta?.sticky === 'left'
-                            ? `${cell.column.getAfter('left') * 0.675}px`
-                            : undefined,
-                        right:
-                          cell.column.columnDef.meta?.sticky === 'right'
-                            ? `${cell.column.getAfter('right') * 0.675}px`
-                            : undefined,
-                        backgroundColor: 'white',
-                        zIndex: cell.column.columnDef.meta?.sticky ? 1 : 0,
-                      }}
-                    >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </td>
-                  ))}
-                </tr>
-              );
-            })}
+            {table.getRowModel().rows.map((row) => (
+              <tr
+                key={row.id}
+                onClick={() => setSelectedRow && setSelectedRow(row)}
+                style={table.options.meta?.getRowStyles(row)}
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <td
+                    key={cell.id}
+                    style={{
+                      position: cell.column.columnDef.meta?.sticky ? 'sticky' : undefined,
+                      left:
+                        cell.column.columnDef.meta?.sticky === 'left'
+                          ? `${cell.column.getAfter('left') * 0.675}px`
+                          : undefined,
+                      right:
+                        cell.column.columnDef.meta?.sticky === 'right'
+                          ? `${cell.column.getAfter('right') * 0.675}px`
+                          : undefined,
+                      backgroundColor: 'white',
+                      zIndex: cell.column.columnDef.meta?.sticky ? 1 : 0,
+                    }}
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

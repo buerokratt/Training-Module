@@ -1,6 +1,6 @@
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { AxiosError } from 'axios';
 import { MdDeleteOutline, MdOutlineModeEditOutline, MdOutlineSave } from 'react-icons/md';
@@ -15,6 +15,9 @@ import { useForm } from 'react-hook-form';
 import i18n from '../../../../i18n';
 import { rasaApi } from 'services/api';
 
+// todo set 50
+const pageSize = 10;
+
 const Entities: FC = () => {
   let newEntityName = '';
   const { t } = useTranslation();
@@ -28,10 +31,8 @@ const Entities: FC = () => {
   const [deletableRow, setDeletableRow] = useState<string | number | null>(null);
   const [newEntityFormOpen, setNewEntityFormOpen] = useState(false);
 
-  const pageSize = 5;
   const fetchEntities = async ({ pageParam = 0 }): Promise<{ response: Entity[] }> => {
     console.log('!!!!!!!pageParam', pageParam);
-    // todo 10 to some constant
     const res = await rasaApi.get('/entities?size=' + pageSize + '&search=&from=' + pageParam);
     return res.data;
   };
@@ -42,11 +43,13 @@ const Entities: FC = () => {
     queryFn: fetchEntities,
     initialPageParam: 0,
     getNextPageParam: (lastPage, pages) => {
+      // todo simplify
       // console.log('lastPage', lastPage);
       // console.log('allPages', pages);
       // // console.log('lastPageParam', lastPageParam);
       // console.log('allPages.length', pages.length);
       if (lastPage.response.length === 0) {
+        console.log('!!!!!!! LAST PAGE');
         return undefined;
       }
       // return lastPageParam ? lastPageParam + 1 : 1;
@@ -57,11 +60,7 @@ const Entities: FC = () => {
   const flatData = useMemo(() => data?.pages?.flatMap((page) => page.response) ?? [], [data]);
   console.log('flatData', flatData);
 
-  // todo test with 5 items
-
   const { register, handleSubmit } = useForm<{ entity: string }>();
-
-  console.log('data', data);
 
   useDocumentEscapeListener(() => setEditableRow(null));
 
