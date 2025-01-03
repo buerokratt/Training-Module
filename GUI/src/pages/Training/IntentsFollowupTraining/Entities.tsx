@@ -36,7 +36,7 @@ const Entities: FC = () => {
     return res.data;
   };
   const { data, refetch, fetchNextPage, isFetching } = useInfiniteQuery<{ response: Entity[] }>({
-    queryKey: ['entities'],
+    queryKey: ['entities', filter],
     queryFn: fetchEntities,
     getNextPageParam: (lastPage, pages) => (lastPage.response.length === 0 ? undefined : pages.length * pageSize),
   });
