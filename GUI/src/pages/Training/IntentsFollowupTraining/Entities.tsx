@@ -15,8 +15,7 @@ import { useForm } from 'react-hook-form';
 import i18n from '../../../../i18n';
 import { rasaApi } from 'services/api';
 
-// todo set 50
-const pageSize = 10;
+const pageSize = 50;
 
 const Entities: FC = () => {
   let newEntityName = '';
@@ -31,30 +30,17 @@ const Entities: FC = () => {
   const [deletableRow, setDeletableRow] = useState<string | number | null>(null);
   const [newEntityFormOpen, setNewEntityFormOpen] = useState(false);
 
-  // todo use filter here
   // todo use debounce
   const fetchEntities = async ({ pageParam = 0 }): Promise<{ response: Entity[] }> => {
-    console.log('!!!!!!!pageParam', pageParam);
     const res = await rasaApi.get(`/entities?size=${pageSize}&search=${filter}&from=${pageParam}`);
     return res.data;
   };
   const { data, refetch, fetchNextPage, isFetching } = useInfiniteQuery<{ response: Entity[] }>({
     queryKey: ['entities'],
     queryFn: fetchEntities,
-    getNextPageParam: (lastPage, pages) => {
-      // todo simplify
-      // console.log('lastPage', lastPage);
-      // console.log('allPages', pages);
-      // // console.log('lastPageParam', lastPageParam);
-      // console.log('allPages.length', pages.length);
-      if (lastPage.response.length === 0) {
-        return undefined;
-      }
-      return pages.length * pageSize + 1;
-    },
+    getNextPageParam: (lastPage, pages) => (lastPage.response.length === 0 ? undefined : pages.length * pageSize),
   });
   const flatData = useMemo(() => data?.pages?.flatMap((page) => page.response) ?? [], [data]);
-  console.log('flatData', flatData);
 
   const { register, handleSubmit } = useForm<{ entity: string }>();
 
@@ -217,7 +203,6 @@ const getColumns = (
   onSaveClick: (name: string) => void
 ) => {
   const columnHelper = createColumnHelper<Entity>();
-  // const queryClient = useQueryClient();
 
   const buildEntity = (entity: Entity, value: string) => {
     if (editableRow?.id === entity.id) {
@@ -226,10 +211,7 @@ const getColumns = (
           name={`entity-${entity.id}`}
           label={i18n.t('training.intents.entity')}
           defaultValue={editableRow.name}
-          onChange={async (e) => {
-            // await queryClient.invalidateQueries(['entities']);
-            return updateEntityName(e.target.value);
-          }}
+          onChange={(e) => updateEntityName(e.target.value)}
           hideLabel
         />
       );
