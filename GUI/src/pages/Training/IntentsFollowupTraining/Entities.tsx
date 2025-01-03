@@ -15,13 +15,6 @@ import { useForm } from 'react-hook-form';
 import i18n from '../../../../i18n';
 import { rasaApi } from 'services/api';
 
-const fetchEntities = async ({ pageParam = 0 }): Promise<{ response: Entity[] }> => {
-  console.log('!!!!!!!pageParam', pageParam);
-  // todo 10 to some constant
-  const res = await rasaApi.get('/entities?size=10&search=&from=' + pageParam);
-  return res.data;
-};
-
 const Entities: FC = () => {
   let newEntityName = '';
   const { t } = useTranslation();
@@ -34,22 +27,30 @@ const Entities: FC = () => {
   } | null>(null);
   const [deletableRow, setDeletableRow] = useState<string | number | null>(null);
   const [newEntityFormOpen, setNewEntityFormOpen] = useState(false);
-  const { data, refetch, fetchNextPage, isFetching, isLoading } = useInfiniteQuery<{ response: Entity[] }>({
-    // todo types
+
+  const pageSize = 5;
+  const fetchEntities = async ({ pageParam = 0 }): Promise<{ response: Entity[] }> => {
+    console.log('!!!!!!!pageParam', pageParam);
+    // todo 10 to some constant
+    const res = await rasaApi.get('/entities?size=' + pageSize + '&search=&from=' + pageParam);
+    return res.data;
+  };
+  // todo types
+  const { data, refetch, fetchNextPage, isFetching } = useInfiniteQuery<{ response: Entity[] }>({
     // todo use filter here
     queryKey: ['entities'],
     queryFn: fetchEntities,
     initialPageParam: 0,
-    getNextPageParam: (lastPage, allPages, lastPageParam: number) => {
+    getNextPageParam: (lastPage, pages) => {
       // console.log('lastPage', lastPage);
-      // console.log('allPages', allPages);
-      // console.log('lastPageParam', lastPageParam);
-      console.log('allPages.length', allPages.length);
+      // console.log('allPages', pages);
+      // // console.log('lastPageParam', lastPageParam);
+      // console.log('allPages.length', pages.length);
       if (lastPage.response.length === 0) {
         return undefined;
       }
       // return lastPageParam ? lastPageParam + 1 : 1;
-      return allPages.length * 10 + 1;
+      return pages.length * pageSize + 1;
     },
   });
   // todo fix types
