@@ -14,6 +14,7 @@ import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import i18n from '../../../../i18n';
 import { rasaApi } from 'services/api';
+import { useDebouncedCallback } from 'use-debounce';
 
 const pageSize = 50;
 
@@ -23,6 +24,7 @@ const Entities: FC = () => {
   const toast = useToast();
   const queryClient = useQueryClient();
   const [filter, setFilter] = useState('');
+  const debouncedSetFilter = useDebouncedCallback(setFilter, 300);
   const [editableRow, setEditableRow] = useState<{
     id: number;
     name: string;
@@ -30,7 +32,6 @@ const Entities: FC = () => {
   const [deletableRow, setDeletableRow] = useState<string | number | null>(null);
   const [newEntityFormOpen, setNewEntityFormOpen] = useState(false);
 
-  // todo use debounce
   const fetchEntities = async ({ pageParam = 0 }): Promise<{ response: Entity[] }> => {
     const res = await rasaApi.get(`/entities?size=${pageSize}&search=${filter}&from=${pageParam}`);
     return res.data;
@@ -145,7 +146,7 @@ const Entities: FC = () => {
               name="searchEntities"
               placeholder={t('global.search') + '...'}
               hideLabel
-              onChange={(e) => setFilter(e.target.value)}
+              onChange={(e) => debouncedSetFilter(e.target.value)}
             />
             <Button onClick={() => setNewEntityFormOpen(true)}>{t('global.add')}</Button>
           </Track>
