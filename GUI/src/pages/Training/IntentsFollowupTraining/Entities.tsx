@@ -32,6 +32,7 @@ const Entities: FC = () => {
   const [newEntityFormOpen, setNewEntityFormOpen] = useState(false);
 
   // todo use filter here
+  // todo use debounce
   const fetchEntities = async ({ pageParam = 0 }): Promise<{ response: Entity[] }> => {
     console.log('!!!!!!!pageParam', pageParam);
     const res = await rasaApi.get(`/entities?size=${pageSize}&search=${filter}&from=${pageParam}`);
@@ -47,13 +48,11 @@ const Entities: FC = () => {
       // // console.log('lastPageParam', lastPageParam);
       // console.log('allPages.length', pages.length);
       if (lastPage.response.length === 0) {
-        console.log('!!!!!!! LAST PAGE');
         return undefined;
       }
       return pages.length * pageSize + 1;
     },
   });
-  // todo fix types
   const flatData = useMemo(() => data?.pages?.flatMap((page) => page.response) ?? [], [data]);
   console.log('flatData', flatData);
 
@@ -184,14 +183,7 @@ const Entities: FC = () => {
       </div>
       <div className="vertical-tabs__content">
         {data && (
-          <DataTable
-            data={flatData}
-            columns={entitiesColumns}
-            // globalFilter={filter}
-            // setGlobalFilter={setFilter}
-            isFetching={isFetching}
-            fetchNextPage={fetchNextPage}
-          />
+          <DataTable data={flatData} columns={entitiesColumns} isFetching={isFetching} fetchNextPage={fetchNextPage} />
         )}
       </div>
 
@@ -225,6 +217,7 @@ const getColumns = (
   onSaveClick: (name: string) => void
 ) => {
   const columnHelper = createColumnHelper<Entity>();
+  // const queryClient = useQueryClient();
 
   const buildEntity = (entity: Entity, value: string) => {
     if (editableRow?.id === entity.id) {
@@ -233,7 +226,10 @@ const getColumns = (
           name={`entity-${entity.id}`}
           label={i18n.t('training.intents.entity')}
           defaultValue={editableRow.name}
-          onChange={(e) => updateEntityName(e.target.value)}
+          onChange={async (e) => {
+            // await queryClient.invalidateQueries(['entities']);
+            return updateEntityName(e.target.value);
+          }}
           hideLabel
         />
       );
