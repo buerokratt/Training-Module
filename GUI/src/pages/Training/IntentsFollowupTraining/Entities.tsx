@@ -1,6 +1,6 @@
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { AxiosError } from 'axios';
 import { MdDeleteOutline, MdOutlineModeEditOutline, MdOutlineSave } from 'react-icons/md';
@@ -13,6 +13,14 @@ import { addEntity, deleteEntity, editEntity } from 'services/entities';
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import i18n from '../../../../i18n';
+import { rasaApi } from 'services/api';
+
+const fetchEntities = async ({ pageParam = 0 }): Promise<{ response: Entity[] }> => {
+  console.log('!!!!!!!pageParam', pageParam);
+  // todo 10 to some constant
+  const res = await rasaApi.get('/entities?size=10&search=&from=' + pageParam);
+  return res.data;
+};
 
 const Entities: FC = () => {
   let newEntityName = '';
@@ -26,12 +34,33 @@ const Entities: FC = () => {
   } | null>(null);
   const [deletableRow, setDeletableRow] = useState<string | number | null>(null);
   const [newEntityFormOpen, setNewEntityFormOpen] = useState(false);
-  const { data: { response: entities } = { response: [] }, refetch } = useQuery<{ response: Entity[] }>({
-    // todo hardcoded
+  const { data, refetch, fetchNextPage, isFetching, isLoading } = useInfiniteQuery<{ response: Entity[] }>({
+    // todo types
     // todo use filter here
-    queryKey: ['entities?page=0&size=20&search='],
+    queryKey: ['entities'],
+    queryFn: fetchEntities,
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPages, lastPageParam: number) => {
+      // console.log('lastPage', lastPage);
+      // console.log('allPages', allPages);
+      // console.log('lastPageParam', lastPageParam);
+      console.log('allPages.length', allPages.length);
+      if (lastPage.response.length === 0) {
+        return undefined;
+      }
+      // return lastPageParam ? lastPageParam + 1 : 1;
+      return allPages.length * 10 + 1;
+    },
   });
+  // todo fix types
+  const flatData = useMemo(() => data?.pages?.flatMap((page) => page.response) ?? [], [data]);
+  console.log('flatData', flatData);
+
+  // todo test with 5 items
+
   const { register, handleSubmit } = useForm<{ entity: string }>();
+
+  console.log('data', data);
 
   useDocumentEscapeListener(() => setEditableRow(null));
 
@@ -157,8 +186,15 @@ const Entities: FC = () => {
         </Track>
       </div>
       <div className="vertical-tabs__content">
-        {entities && (
-          <DataTable data={entities} columns={entitiesColumns} globalFilter={filter} setGlobalFilter={setFilter} />
+        {data && (
+          <DataTable
+            data={flatData}
+            columns={entitiesColumns}
+            globalFilter={filter}
+            setGlobalFilter={setFilter}
+            isFetching={isFetching}
+            fetchNextPage={fetchNextPage}
+          />
         )}
       </div>
 

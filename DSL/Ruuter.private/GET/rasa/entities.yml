@@ -10,9 +10,9 @@ declaration:
     - field: search
       type: string
       description: "Query string"
-    - field: page
+    - field: from
       type: string
-      description: "Page number"
+      description: "Item number"
     - field: size
       type: string
       description: "Page size"
@@ -20,7 +20,7 @@ declaration:
 assignValues:
   assign:
     search: ${incoming.params.search}
-    page: ${incoming.params.page}
+    from: ${incoming.params.from}
     size: ${incoming.params.size}
 
 getEntities:
@@ -32,7 +32,7 @@ getEntities:
       id: "entities-test"
       params:
         searchTerm: ${search}
-        from: ${page}
+        from: ${from}
         size: ${size}
   result: getEntitiesResult
 
