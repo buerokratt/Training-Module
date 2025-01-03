@@ -19,7 +19,6 @@ import { rasaApi } from 'services/api';
 const pageSize = 10;
 
 const Entities: FC = () => {
-  let newEntityName = '';
   const { t } = useTranslation();
   const toast = useToast();
   const queryClient = useQueryClient();
@@ -34,12 +33,14 @@ const Entities: FC = () => {
   // todo use filter here
   // todo use debounce
   const fetchEntities = async ({ pageParam = 0 }): Promise<{ response: Entity[] }> => {
+    // todo remove
     console.log('!!!!!!!pageParam', pageParam);
     const res = await rasaApi.get(`/entities?size=${pageSize}&search=${filter}&from=${pageParam}`);
     return res.data;
   };
   const { data, refetch, fetchNextPage, isFetching } = useInfiniteQuery<{ response: Entity[] }>({
-    queryKey: ['entities'],
+    // todo add filter elsewhere?
+    queryKey: ['entities', filter],
     queryFn: fetchEntities,
     getNextPageParam: (lastPage, pages) => {
       // todo simplify
@@ -54,7 +55,6 @@ const Entities: FC = () => {
     },
   });
   const flatData = useMemo(() => data?.pages?.flatMap((page) => page.response) ?? [], [data]);
-  console.log('flatData', flatData);
 
   const { register, handleSubmit } = useForm<{ entity: string }>();
 
@@ -127,23 +127,29 @@ const Entities: FC = () => {
     onSettled: () => setDeletableRow(null),
   });
 
-  const updateEntityName = (newName: string) => {
-    newEntityName = newName;
-  };
+  const entitiesColumns = useMemo(() => {
+    let newEntityName = '';
+    const updateEntityName = (newName: string) => {
+      console.log('updateEntityName', newName);
+      newEntityName = newName;
+    };
 
-  const entitiesColumns = useMemo(
-    () =>
-      getColumns(editableRow, updateEntityName, handleEditableRow, setDeletableRow, (name) =>
+    return getColumns(
+      editableRow,
+      updateEntityName,
+      handleEditableRow,
+      setDeletableRow,
+      (name) =>
         entityEditMutation.mutate({
           data: {
             entity_name: name,
             entity: newEntityName,
             intent: 'regex',
           },
-        })
-      ),
-    [editableRow]
-  );
+        }),
+      refetch
+    );
+  }, [editableRow, entityEditMutation, refetch]);
 
   const handleNewEntitySubmit = handleSubmit((data) => {
     entityAddMutation.mutate(data);
@@ -209,65 +215,87 @@ const Entities: FC = () => {
   );
 };
 
+const EntitiesCell = ({
+  entity,
+  value,
+  editableRow,
+  updateEntityName,
+  refetch,
+}: {
+  entity: Entity;
+  value: string;
+  editableRow: { id: number; name: string } | null;
+  updateEntityName: (newName: string) => void;
+  refetch: () => Promise<unknown>;
+}) => {
+  const queryClient = useQueryClient();
+
+  if (editableRow?.id === entity.id) {
+    return (
+      <FormInput
+        name={`entity-${entity.id}`}
+        label={i18n.t('training.intents.entity')}
+        defaultValue={editableRow.name}
+        onChange={(e) => {
+          updateEntityName(e.target.value);
+        }}
+        hideLabel
+      />
+    );
+  }
+
+  if (entity.relatedIntents) {
+    return (
+      <Tooltip
+        content={
+          <Track direction="vertical" align="left">
+            <strong>{i18n.t('training.intents.title')}</strong>
+            {entity.relatedIntents.map((intent) => (
+              <Link
+                key={intent}
+                style={{ color: '#005AA3' }}
+                to={
+                  intent.startsWith('common')
+                    ? `/training/common-intents?intent=${intent}#tabs`
+                    : `/treening/treening/teemad?intent=${intent}#tabs`
+                }
+              >
+                {intent}
+              </Link>
+            ))}
+          </Track>
+        }
+      >
+        <span style={{ color: '#005AA3' }}>{value}</span>
+      </Tooltip>
+    );
+  }
+
+  return <>{value}</>;
+};
+
 const getColumns = (
   editableRow: { id: number; name: string } | null,
   updateEntityName: (newName: string) => void,
   handleEditableRow: (entity: Entity) => void,
   setDeletableRow: (id: number) => void,
-  onSaveClick: (name: string) => void
+  onSaveClick: (name: string) => void,
+  refetch: () => Promise<unknown>
 ) => {
   const columnHelper = createColumnHelper<Entity>();
-  // const queryClient = useQueryClient();
-
-  const buildEntity = (entity: Entity, value: string) => {
-    if (editableRow?.id === entity.id) {
-      return (
-        <FormInput
-          name={`entity-${entity.id}`}
-          label={i18n.t('training.intents.entity')}
-          defaultValue={editableRow.name}
-          onChange={async (e) => {
-            // await queryClient.invalidateQueries(['entities']);
-            return updateEntityName(e.target.value);
-          }}
-          hideLabel
-        />
-      );
-    }
-    if (entity.relatedIntents) {
-      return (
-        <Tooltip
-          content={
-            <Track direction="vertical" align="left">
-              <strong>{i18n.t('training.intents.title')}</strong>
-              {entity.relatedIntents.map((intent) => (
-                <Link
-                  key={intent}
-                  style={{ color: '#005AA3' }}
-                  to={
-                    intent.startsWith('common')
-                      ? `/training/common-intents?intent=${intent}#tabs`
-                      : `/treening/treening/teemad?intent=${intent}#tabs`
-                  }
-                >
-                  {intent}
-                </Link>
-              ))}
-            </Track>
-          }
-        >
-          <span style={{ color: '#005AA3' }}>{value}</span>
-        </Tooltip>
-      );
-    }
-
-    return <>{value}</>;
-  };
 
   return [
     columnHelper.accessor('name', {
       header: i18n.t('training.intents.entities') || '',
-      cell: (props) => buildEntity(props.row.original, props.getValue()),
+      cell: (props) => (
+        <EntitiesCell
+          entity={props.row.original}
+          value={props.getValue()}
+          editableRow={editableRow}
+          updateEntityName={updateEntityName}
+          refetch={refetch}
+        />
+      ),
     }),
     columnHelper.display({
       header: '',
