@@ -20,7 +20,7 @@ declaration:
 getRegexes:
   call: http.post
   args:
-    url: "[#TRAINING_OPENSEARCH]/domain/_search/template"
+    url: "[#TRAINING_OPENSEARCH]/regexes/_search/template"
     body:
       id: "regexes-with-pagination"
       params: ${incoming.params}

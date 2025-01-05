@@ -31,9 +31,6 @@ const Regex: FC = () => {
   const [addFormVisible, setAddFormVisible] = useState(false);
   const [deletableRow, setDeletableRow] = useState<string | number | null>(null);
   const [selectedRegex, setSelectedRegex] = useState<string | undefined>(undefined);
-  // const { data: regexList, refetch } = useQuery<RegexTeaser[]>({
-  //   queryKey: ['regexes', ''],
-  // });
   const { data, refetch, fetchNextPage, isFetching } = useInfinitePagination<RegexTeaser>({
     queryKey: ['regexes', filter],
     fetchFn: getRegexes,
