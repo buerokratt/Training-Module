@@ -1,6 +1,6 @@
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
@@ -13,8 +13,8 @@ import { addRegex, deleteRegex } from 'services/regex';
 import { Entity } from 'types/entity';
 import i18n from '../../../../i18n';
 import { getEntities } from 'services/entities';
-import { t } from 'i18next';
 import { useInfinitePagination } from 'hooks/useInfinitePagination';
+import { flattenPaginatedData } from 'utils/api-utils';
 
 type RegexTeaser = {
   readonly id: number;
@@ -33,11 +33,6 @@ const Regex: FC = () => {
   const { data: regexList, refetch } = useQuery<RegexTeaser[]>({
     queryKey: ['regexes', ''],
   });
-  // const { data: entities } = useInfiniteQuery<{ response: Entity[] }>({
-  //   queryKey: ['entities', ''],
-  //   queryFn: () => getEntities({ pageParam: 0, pageSize: 50, filter: '' }),
-  //   getNextPageParam: (lastPage, pages) => (lastPage.response.length === 0 ? undefined : pages.length * 50),
-  // });
   const { data: entities } = useInfinitePagination<Entity>({
     queryKey: ['entities', ''],
     fetchFn: getEntities,
@@ -68,7 +63,7 @@ const Regex: FC = () => {
 
   const availableEntities = useMemo(
     () =>
-      (entities?.pages?.flatMap((page) => page.response) ?? [])
+      flattenPaginatedData(entities)
         ?.filter((e) => {
           return !regexList?.some((r) => r.name === e.name);
         })
