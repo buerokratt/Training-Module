@@ -9,7 +9,7 @@ import { MdDeleteOutline, MdOutlineEdit } from 'react-icons/md';
 
 import { Button, DataTable, Dialog, FormInput, FormSelect, Icon, Track } from 'components';
 import { useToast } from 'hooks/useToast';
-import { addRegex, deleteRegex } from 'services/regex';
+import { addRegex, deleteRegex, getRegexes } from 'services/regex';
 import { Entity } from 'types/entity';
 import i18n from '../../../../i18n';
 import { getEntities } from 'services/entities';
@@ -17,6 +17,7 @@ import { useInfinitePagination } from 'hooks/useInfinitePagination';
 import { flattenPaginatedData } from 'utils/api-utils';
 
 type RegexTeaser = {
+  // todo type string?
   readonly id: number;
   name: string;
 };
@@ -30,9 +31,15 @@ const Regex: FC = () => {
   const [addFormVisible, setAddFormVisible] = useState(false);
   const [deletableRow, setDeletableRow] = useState<string | number | null>(null);
   const [selectedRegex, setSelectedRegex] = useState<string | undefined>(undefined);
-  const { data: regexList, refetch } = useQuery<RegexTeaser[]>({
-    queryKey: ['regexes', ''],
+  // const { data: regexList, refetch } = useQuery<RegexTeaser[]>({
+  //   queryKey: ['regexes', ''],
+  // });
+  const { data, refetch, fetchNextPage, isFetching } = useInfinitePagination<RegexTeaser>({
+    queryKey: ['regexes', filter],
+    fetchFn: getRegexes,
+    filter,
   });
+  const regexList = useMemo(() => flattenPaginatedData(data), [data]);
   const { data: entities } = useInfinitePagination<Entity>({
     queryKey: ['entities', ''],
     fetchFn: getEntities,
@@ -147,7 +154,7 @@ const Regex: FC = () => {
       </div>
       <div className="vertical-tabs__content">
         {regexList && (
-          <DataTable data={regexList} columns={regexColumns} globalFilter={filter} setGlobalFilter={setFilter} />
+          <DataTable data={regexList} columns={regexColumns} isFetching={isFetching} fetchNextPage={fetchNextPage} />
         )}
       </div>
 
