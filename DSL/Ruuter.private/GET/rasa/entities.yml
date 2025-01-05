@@ -28,8 +28,7 @@ getEntities:
   args:
     url: "[#TRAINING_OPENSEARCH]/domain/_search/template"
     body:
-      # todo rename
-      id: "entities-test"
+      id: "entities-with-pagination"
       params:
         searchTerm: ${search}
         from: ${from}

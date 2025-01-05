@@ -65,6 +65,7 @@ curl -XDELETE "$URL/regexes?ignore_unavailable=true" -u "$AUTH" --insecure
 curl -H "Content-Type: application/x-ndjson" -X PUT "$URL/regexes" -ku "$AUTH" --data-binary "@fieldMappings/regexes.json"
 if $MOCK_ALLOWED; then curl -H "Content-Type: application/x-ndjson" -X PUT "$URL/regexes/_bulk" -ku "$AUTH" --data-binary "@mock/regexes.json"; fi
 curl -L -X POST "$URL/_scripts/regex-with-name" -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/regex-with-name.json"
+curl -L -X POST "$URL/_scripts/regex-with-pagination" -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/regex-with-pagination.json"
 
 # examples-entities
 curl -XDELETE "$URL/examples-entities?ignore_unavailable=true" -u "$AUTH" --insecure
@@ -80,7 +81,7 @@ if $MOCK_ALLOWED; then curl -H "Content-Type: application/x-ndjson" -X PUT "$URL
 curl -XDELETE "$URL/domain?ignore_unavailable=true" -u "$AUTH" --insecure
 curl -H "Content-Type: application/x-ndjson" -X PUT "$URL/domain" -ku "$AUTH" --data-binary "@fieldMappings/domain.json"
 if $MOCK_ALLOWED; then curl -H "Content-Type: application/x-ndjson" -X PUT "$URL/domain/_bulk" -ku "$AUTH" --data-binary "@mock/domain.json"; fi
-curl -L -X POST "$URL/_scripts/entities-test" -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/entities-test.json"
+curl -L -X POST "$URL/_scripts/entities-with-pagination" -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/entities-with-pagination.json"
 
 #Config
 curl -XDELETE "$URL/config?ignore_unavailable=true" -u "$AUTH" --insecure

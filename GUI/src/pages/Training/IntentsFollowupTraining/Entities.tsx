@@ -32,6 +32,7 @@ const Entities: FC = () => {
   const [deletableRow, setDeletableRow] = useState<string | number | null>(null);
   const [newEntityFormOpen, setNewEntityFormOpen] = useState(false);
 
+  // todo move to service
   const fetchEntities = async ({ pageParam = 0 }): Promise<{ response: Entity[] }> => {
     const res = await rasaApi.get(`/entities?size=${pageSize}&search=${filter}&from=${pageParam}`);
     return res.data;
