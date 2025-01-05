@@ -1,6 +1,6 @@
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
@@ -15,12 +15,7 @@ import i18n from '../../../../i18n';
 import { getEntities } from 'services/entities';
 import { useInfinitePagination } from 'hooks/useInfinitePagination';
 import { flattenPaginatedData } from 'utils/api-utils';
-
-type RegexTeaser = {
-  // todo type string?
-  readonly id: number;
-  name: string;
-};
+import { RegexTeaser } from 'types/regex';
 
 const Regex: FC = () => {
   const { t } = useTranslation();
@@ -68,10 +63,10 @@ const Regex: FC = () => {
   const availableEntities = useMemo(
     () =>
       flattenPaginatedData(entities)
-        ?.filter((e) => {
+        .filter((e) => {
           return !regexList?.some((r) => r.name === e.name);
         })
-        .map((e) => ({ label: e.name, value: String(e.id) })),
+        .map((e) => ({ label: e.name, value: e.id })),
     [entities, regexList]
   );
 
@@ -177,7 +172,7 @@ const Regex: FC = () => {
   );
 };
 
-const getColumns = (navigate: NavigateFunction, setDeletableRow: (id: number) => void) => {
+const getColumns = (navigate: NavigateFunction, setDeletableRow: (id: string) => void) => {
   const columnHelper = createColumnHelper<RegexTeaser>();
 
   return [

@@ -1,12 +1,13 @@
 import { api, rasaApi } from './api';
 import { saveAs } from 'file-saver';
 import { PaginationParams } from 'types/api';
+import { RegexTeaser } from 'types/regex';
 
 export const getRegexes = async ({
   pageParam,
   pageSize,
   filter,
-}: PaginationParams): Promise<{ response: { name: string; readonly id: number }[] }> => {
+}: PaginationParams): Promise<{ response: RegexTeaser[] }> => {
   const { data } = await rasaApi.get(`/regexes?size=${pageSize}&filter=${filter}&from=${pageParam}`);
   return data;
 };
