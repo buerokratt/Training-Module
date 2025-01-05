@@ -7,7 +7,7 @@
       "query": {
         "wildcard": {
           "regex": {
-            "value": "*{{searchTerm}}*"
+            "value": "*{{filter}}*"
           }
         }
       },
@@ -18,7 +18,7 @@
     "params": {
       "from": 0,
       "size": 50,
-      "searchTerm": ""
+      "filter": ""
     }
   }
 }

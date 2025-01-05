@@ -1,6 +1,6 @@
 {
   "script": {
     "lang": "mustache",
-    "source": "{\"query\":{\"term\":{\"_id\":\"entities\"}},\"script_fields\":{\"filtered_entities\":{\"script\":{\"lang\":\"painless\",\"source\":\"def entities = params._source.entities; def searchTerm = '{{searchTerm}}'; int from = {{from}}; int size = {{size}}; def filtered = entities.findAll(entity -> entity.toLowerCase().contains(searchTerm.toLowerCase())); int start = (int)Math.min(from, filtered.size()); int end = (int)Math.min(from + size, filtered.size()); return filtered.subList(start, end);\"}}}}"
+    "source": "{\"query\":{\"term\":{\"_id\":\"entities\"}},\"script_fields\":{\"filtered_entities\":{\"script\":{\"lang\":\"painless\",\"source\":\"def entities = params._source.entities; def searchTerm = '{{filter}}'; int from = {{from}}; int size = {{size}}; def filtered = entities.findAll(entity -> entity.toLowerCase().contains(searchTerm.toLowerCase())); int start = (int)Math.min(from, filtered.size()); int end = (int)Math.min(from + size, filtered.size()); return filtered.subList(start, end);\"}}}}"
   }
 }
