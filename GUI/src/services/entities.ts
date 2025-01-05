@@ -1,4 +1,4 @@
-import { PaginationParams } from 'types/paginationParams';
+import { PaginationParams } from 'types/api';
 import { rasaApi } from './api';
 import { Entity } from 'types/entity';
 

@@ -15,6 +15,7 @@ import { useForm } from 'react-hook-form';
 import i18n from '../../../../i18n';
 import { useDebouncedCallback } from 'use-debounce';
 import { useInfinitePagination } from 'hooks/useInfinitePagination';
+import { flattenPaginatedData } from 'utils/api-utils';
 
 const Entities: FC = () => {
   let newEntityName = '';
@@ -35,8 +36,7 @@ const Entities: FC = () => {
     fetchFn: getEntities,
     filter,
   });
-  // todo helper function
-  const flatData = useMemo(() => data?.pages?.flatMap((page) => page.response) ?? [], [data]);
+  const flatData = useMemo(() => flattenPaginatedData(data), [data]);
 
   const { register, handleSubmit } = useForm<{ entity: string }>();
 

@@ -14,6 +14,7 @@ import { Entity } from 'types/entity';
 import i18n from '../../../../i18n';
 import { getEntities } from 'services/entities';
 import { t } from 'i18next';
+import { useInfinitePagination } from 'hooks/useInfinitePagination';
 
 type RegexTeaser = {
   readonly id: number;
@@ -32,10 +33,14 @@ const Regex: FC = () => {
   const { data: regexList, refetch } = useQuery<RegexTeaser[]>({
     queryKey: ['regexes', ''],
   });
-  const { data: entities } = useInfiniteQuery<{ response: Entity[] }>({
+  // const { data: entities } = useInfiniteQuery<{ response: Entity[] }>({
+  //   queryKey: ['entities', ''],
+  //   queryFn: () => getEntities({ pageParam: 0, pageSize: 50, filter: '' }),
+  //   getNextPageParam: (lastPage, pages) => (lastPage.response.length === 0 ? undefined : pages.length * 50),
+  // });
+  const { data: entities } = useInfinitePagination<Entity>({
     queryKey: ['entities', ''],
-    queryFn: () => getEntities({ pageParam: 0, pageSize: 50, filter: '' }),
-    getNextPageParam: (lastPage, pages) => (lastPage.response.length === 0 ? undefined : pages.length * 50),
+    fetchFn: getEntities,
   });
   const { control, handleSubmit } = useForm<{ name: string }>();
 

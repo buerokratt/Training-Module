@@ -1,5 +1,5 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { PaginationParams } from 'types/paginationParams';
+import { PaginationParams } from 'types/api';
 
 interface UseInfinitePaginationProps<T> {
   queryKey: string[];
