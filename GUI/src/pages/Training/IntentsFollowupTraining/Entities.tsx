@@ -9,11 +9,10 @@ import { Button, DataTable, Dialog, FormInput, Icon, Tooltip, Track } from 'comp
 import { Entity } from 'types/entity';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import { useToast } from 'hooks/useToast';
-import { addEntity, deleteEntity, editEntity } from 'services/entities';
+import { addEntity, deleteEntity, editEntity, getEntities } from 'services/entities';
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import i18n from '../../../../i18n';
-import { rasaApi } from 'services/api';
 import { useDebouncedCallback } from 'use-debounce';
 
 const pageSize = 50;
@@ -32,14 +31,9 @@ const Entities: FC = () => {
   const [deletableRow, setDeletableRow] = useState<string | number | null>(null);
   const [newEntityFormOpen, setNewEntityFormOpen] = useState(false);
 
-  // todo move to service
-  const fetchEntities = async ({ pageParam = 0 }): Promise<{ response: Entity[] }> => {
-    const res = await rasaApi.get(`/entities?size=${pageSize}&search=${filter}&from=${pageParam}`);
-    return res.data;
-  };
   const { data, refetch, fetchNextPage, isFetching } = useInfiniteQuery<{ response: Entity[] }>({
     queryKey: ['entities', filter],
-    queryFn: fetchEntities,
+    queryFn: ({ pageParam }) => getEntities({ pageParam, pageSize, filter }),
     getNextPageParam: (lastPage, pages) => (lastPage.response.length === 0 ? undefined : pages.length * pageSize),
   });
   const flatData = useMemo(() => data?.pages?.flatMap((page) => page.response) ?? [], [data]);
