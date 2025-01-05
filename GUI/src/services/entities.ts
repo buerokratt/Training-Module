@@ -1,16 +1,13 @@
+import { PaginationParams } from 'types/paginationParams';
 import { rasaApi } from './api';
 import { Entity } from 'types/entity';
 
 export const getEntities = async ({
-  pageParam = 0,
+  pageParam,
   pageSize,
   filter,
-}: {
-  pageParam?: number;
-  pageSize: number;
-  filter: string;
-}): Promise<{ response: Entity[] }> => {
-  const { data } = await rasaApi.get(`/entities?size=${pageSize}&search=${filter}&from=${pageParam}`);
+}: PaginationParams): Promise<{ response: Entity[] }> => {
+  const { data } = await rasaApi.get(`/entities?size=${pageSize}&filter=${filter}&from=${pageParam}`);
   return data;
 };
 

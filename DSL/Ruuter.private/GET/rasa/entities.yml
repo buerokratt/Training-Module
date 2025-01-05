@@ -7,7 +7,7 @@ declaration:
   returns: json
   namespace: training
   params:
-    - field: search
+    - field: filter
       type: string
       description: "Query string"
     - field: from
@@ -19,7 +19,7 @@ declaration:
 
 assignValues:
   assign:
-    search: ${incoming.params.search}
+    filter: ${incoming.params.filter}
     from: ${incoming.params.from}
     size: ${incoming.params.size}
 
@@ -30,7 +30,7 @@ getEntities:
     body:
       id: "entities-with-pagination"
       params:
-        searchTerm: ${search}
+        searchTerm: ${filter}
         from: ${from}
         size: ${size}
   result: getEntitiesResult

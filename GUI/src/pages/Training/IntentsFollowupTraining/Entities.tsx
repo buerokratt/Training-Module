@@ -14,8 +14,7 @@ import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import i18n from '../../../../i18n';
 import { useDebouncedCallback } from 'use-debounce';
-
-const pageSize = 50;
+import { useInfinitePagination } from 'hooks/useInfinitePagination';
 
 const Entities: FC = () => {
   let newEntityName = '';
@@ -31,11 +30,12 @@ const Entities: FC = () => {
   const [deletableRow, setDeletableRow] = useState<string | number | null>(null);
   const [newEntityFormOpen, setNewEntityFormOpen] = useState(false);
 
-  const { data, refetch, fetchNextPage, isFetching } = useInfiniteQuery<{ response: Entity[] }>({
+  const { data, refetch, fetchNextPage, isFetching } = useInfinitePagination<Entity>({
     queryKey: ['entities', filter],
-    queryFn: ({ pageParam }) => getEntities({ pageParam, pageSize, filter }),
-    getNextPageParam: (lastPage, pages) => (lastPage.response.length === 0 ? undefined : pages.length * pageSize),
+    fetchFn: getEntities,
+    filter,
   });
+  // todo helper function
   const flatData = useMemo(() => data?.pages?.flatMap((page) => page.response) ?? [], [data]);
 
   const { register, handleSubmit } = useForm<{ entity: string }>();

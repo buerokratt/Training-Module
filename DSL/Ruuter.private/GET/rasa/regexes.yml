@@ -6,11 +6,33 @@ declaration:
   accepts: json
   returns: json
   namespace: training
+  params:
+    - field: filter
+      type: string
+      description: "Query string"
+    - field: from
+      type: string
+      description: "Item number"
+    - field: size
+      type: string
+      description: "Page size"
+
+assignValues:
+  assign:
+    filter: ${incoming.params.filter}
+    from: ${incoming.params.from}
+    size: ${incoming.params.size}
 
 getRegexes:
-  call: http.get
+  call: http.post
   args:
-    url: "[#TRAINING_OPENSEARCH]/regexes/_search?size=10000"
+    url: "[#TRAINING_OPENSEARCH]/domain/_search/template"
+    body:
+      id: "regexes-with-pagination"
+      params:
+        searchTerm: ${filter}
+        from: ${from}
+        size: ${size}
   result: getRegexesResult
 
 mapRegexesData:
@@ -18,7 +40,7 @@ mapRegexesData:
   args:
     url: "[#TRAINING_DMAPPER]/hbs/training/get_regexes"
     headers:
-      type: 'json'
+      type: "json"
     body:
       hits: ${getRegexesResult.response.body.hits.hits}
   result: regexesData

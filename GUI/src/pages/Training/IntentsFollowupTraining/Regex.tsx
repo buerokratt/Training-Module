@@ -1,6 +1,6 @@
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
@@ -12,6 +12,8 @@ import { useToast } from 'hooks/useToast';
 import { addRegex, deleteRegex } from 'services/regex';
 import { Entity } from 'types/entity';
 import i18n from '../../../../i18n';
+import { getEntities } from 'services/entities';
+import { t } from 'i18next';
 
 type RegexTeaser = {
   readonly id: number;
@@ -28,10 +30,12 @@ const Regex: FC = () => {
   const [deletableRow, setDeletableRow] = useState<string | number | null>(null);
   const [selectedRegex, setSelectedRegex] = useState<string | undefined>(undefined);
   const { data: regexList, refetch } = useQuery<RegexTeaser[]>({
-    queryKey: ['regexes'],
+    queryKey: ['regexes', ''],
   });
-  const { data: entities } = useQuery<Entity[]>({
-    queryKey: ['entities'],
+  const { data: entities } = useInfiniteQuery<{ response: Entity[] }>({
+    queryKey: ['entities', ''],
+    queryFn: () => getEntities({ pageParam: 0, pageSize: 50, filter: '' }),
+    getNextPageParam: (lastPage, pages) => (lastPage.response.length === 0 ? undefined : pages.length * 50),
   });
   const { control, handleSubmit } = useForm<{ name: string }>();
 
@@ -59,7 +63,7 @@ const Regex: FC = () => {
 
   const availableEntities = useMemo(
     () =>
-      entities
+      (entities?.pages?.flatMap((page) => page.response) ?? [])
         ?.filter((e) => {
           return !regexList?.some((r) => r.name === e.name);
         })
