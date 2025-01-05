@@ -199,7 +199,7 @@ const Responses: FC = () => {
       header: '',
       cell: (props) => buildSaveCell(
         editableRow?.id === props.row.original.response,
-        () => editableRow && responseSaveMutation.mutate({id: editableRow.id , text: editingTrainingTitle ?? props.row.original.text}),
+        () => editableRow && responseSaveMutation.mutate({id: editableRow.id , text: editingTrainingTitle.replaceAll(/\n{2,}/g, '\n').replaceAll('\n', '\\n\\n') ?? props.row.original.text.replaceAll(/\n{2,}/g, '\n').replaceAll('\n', '\\n\\n')}),
         () => {
           setEditingTrainingTitle(props.row.original.text);
           handleEditableRow({ id: props.row.original.response, text: props.row.original.text });

@@ -393,7 +393,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
 
     addOrEditResponseMutation.mutate({
       id: `utter_${intentId}`,
-      responseText,
+      responseText: responseText.replaceAll(/\n{2,}/g, '\n').replaceAll('\n', '\\n\\n'),
       update: !!responseName,
     });
 

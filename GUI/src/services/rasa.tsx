@@ -31,9 +31,9 @@ export const generateStoryStepsFromNodes = (nodes: Node[]) =>
                 };
             case 'slotNode':
                 return {
-                    slot_was_set: {
+                    slot_was_set: [{
                         [label]: parseValue(payload?.value),
-                    },
+                    }],
                 };
             case 'actionNode': {
                 const value = checkpoint

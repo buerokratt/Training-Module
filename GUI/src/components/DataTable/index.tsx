@@ -26,6 +26,9 @@ import { Icon, Track } from 'components';
 import Filter from './Filter';
 import './DataTable.scss';
 import { FetchNextPageOptions, InfiniteQueryObserverResult } from '@tanstack/react-query';
+import { table } from 'console';
+import { id } from 'date-fns/locale';
+import { t } from 'i18next';
 
 type DataTableProps = {
   data: any;
@@ -47,6 +50,7 @@ type DataTableProps = {
   meta?: TableMeta<any>;
   setSelectedRow?: (row: Row<any>) => void;
   pageSizeOptions?: number[];
+  selectedRow?: (row: Row<any>) => boolean;
   isFetching?: boolean;
   fetchNextPage?: (options?: FetchNextPageOptions) => Promise<
     InfiniteQueryObserverResult<
@@ -114,6 +118,7 @@ const DataTable: FC<DataTableProps> = ({
   meta,
   setSelectedRow,
   pageSizeOptions = [10, 20, 30, 40, 50],
+  selectedRow,
   isFetching,
   fetchNextPage,
 }) => {

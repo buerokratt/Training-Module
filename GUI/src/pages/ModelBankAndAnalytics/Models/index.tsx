@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns';
 import { AxiosError } from 'axios';
 import { MdOutlineSettingsInputAntenna } from 'react-icons/md';
+import './Models.scss'
 
 import {
   Button,
@@ -187,6 +188,7 @@ const Models: FC = () => {
         <Card header={<h2 className="h3">{t('training.mba.allModels')}</h2>}>
           <DataTable
             data={models}
+            selectedRow={(row) => row.original.versionNumber === selectedModel?.versionNumber}
             columns={modelsColumns}
             sortable
             sorting={sorting}
@@ -194,10 +196,7 @@ const Models: FC = () => {
             setSelectedRow={(row: Row<Model>) => setSelectedModel(row.original)}
             meta={{
               getRowStyles: (row: Row<Model>) => ({
-                backgroundColor:
-                  row.original.versionNumber === selectedModel?.versionNumber
-                    ? '#E1E2E5'
-                    : undefined,
+                cursor: 'pointer'
               }),
             }}
           />
@@ -244,7 +243,7 @@ const Models: FC = () => {
                 {t('global.no')}
               </Button>
               <Button
-                appearance="error"
+                appearance="primary"
                 onClick={() =>
                   activateModelMutation.mutate({
                     data: { versionNumber: selectedModel.versionNumber },
