@@ -16,13 +16,14 @@ import { getEntities } from 'services/entities';
 import { useInfinitePagination } from 'hooks/useInfinitePagination';
 import { flattenPaginatedData } from 'utils/api-utils';
 import { RegexTeaser } from 'types/regex';
+import { useDebouncedFilter } from 'hooks/useDebouncedFilter';
 
 const Regex: FC = () => {
   const { t } = useTranslation();
   const toast = useToast();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const [filter, setFilter] = useState('');
+  const { filter, setFilter } = useDebouncedFilter();
   const [addFormVisible, setAddFormVisible] = useState(false);
   const [deletableRow, setDeletableRow] = useState<string | number | null>(null);
   const [selectedRegex, setSelectedRegex] = useState<string | undefined>(undefined);

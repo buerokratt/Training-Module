@@ -13,21 +13,17 @@ import { addEntity, deleteEntity, editEntity, getEntities } from 'services/entit
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import i18n from '../../../../i18n';
-import { useDebouncedCallback } from 'use-debounce';
 import { useInfinitePagination } from 'hooks/useInfinitePagination';
 import { flattenPaginatedData } from 'utils/api-utils';
+import { useDebouncedFilter } from 'hooks/useDebouncedFilter';
 
 const Entities: FC = () => {
   let newEntityName = '';
   const { t } = useTranslation();
   const toast = useToast();
   const queryClient = useQueryClient();
-  const [filter, setFilter] = useState('');
-  const debouncedSetFilter = useDebouncedCallback(setFilter, 300);
-  const [editableRow, setEditableRow] = useState<{
-    id: number;
-    name: string;
-  } | null>(null);
+  const { filter, setFilter } = useDebouncedFilter();
+  const [editableRow, setEditableRow] = useState<Entity | null>(null);
   const [deletableRow, setDeletableRow] = useState<string | number | null>(null);
   const [newEntityFormOpen, setNewEntityFormOpen] = useState(false);
 
@@ -42,7 +38,7 @@ const Entities: FC = () => {
 
   useDocumentEscapeListener(() => setEditableRow(null));
 
-  const handleEditableRow = (example: { id: number; name: string }) => {
+  const handleEditableRow = (example: Entity) => {
     setEditableRow(example);
   };
 
@@ -141,7 +137,7 @@ const Entities: FC = () => {
               name="searchEntities"
               placeholder={t('global.search') + '...'}
               hideLabel
-              onChange={(e) => debouncedSetFilter(e.target.value)}
+              onChange={(e) => setFilter(e.target.value)}
             />
             <Button onClick={() => setNewEntityFormOpen(true)}>{t('global.add')}</Button>
           </Track>
@@ -192,10 +188,10 @@ const Entities: FC = () => {
 };
 
 const getColumns = (
-  editableRow: { id: number; name: string } | null,
+  editableRow: Entity | null,
   updateEntityName: (newName: string) => void,
   handleEditableRow: (entity: Entity) => void,
-  setDeletableRow: (id: number) => void,
+  setDeletableRow: (id: string) => void,
   onSaveClick: (name: string) => void
 ) => {
   const columnHelper = createColumnHelper<Entity>();
