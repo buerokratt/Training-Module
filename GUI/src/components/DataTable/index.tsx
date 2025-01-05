@@ -247,6 +247,7 @@ const DataTable: FC<DataTableProps> = ({
                 key={row.id}
                 onClick={() => setSelectedRow && setSelectedRow(row)}
                 style={table.options.meta?.getRowStyles(row)}
+                className={selectedRow?.(row) ? 'highlighted' : 'default'}
               >
                 {row.getVisibleCells().map((cell) => (
                   <td
