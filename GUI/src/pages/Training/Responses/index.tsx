@@ -18,6 +18,7 @@ import i18n from '../../../../i18n';
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
 import { useInfinitePagination } from 'hooks/useInfinitePagination';
 import { flattenPaginatedData } from 'utils/api-utils';
+import { useDebouncedFilter } from 'hooks/useDebouncedFilter';
 
 type NewResponse = {
   name: string;
@@ -28,26 +29,20 @@ const Responses: FC = () => {
   const { t } = useTranslation();
   const toast = useToast();
   const queryClient = useQueryClient();
-  // todo add debounce
-  const [filter, setFilter] = useState('');
+  const { filter, setFilter } = useDebouncedFilter();
   const { data: dependencies } = useQuery<DependenciesType>({
     queryKey: ['responses/dependencies'],
   });
 
+  const [responses, setResponses] = useState<Response[]>([]);
   const { data, refetch, fetchNextPage, isFetching } = useInfinitePagination<Response>({
     queryKey: ['responses-list', filter],
     fetchFn: getResponses,
     filter,
   });
-  const [formattedResponses, setFormattedResponses] = useState<Response[]>([]);
-  const responses = useMemo(() => {
-    const flattenedData = flattenPaginatedData(data);
-    setFormattedResponses(flattenedData?.length ? flattenedData : []);
-    return flattenedData;
+  useMemo(() => {
+    setResponses(flattenPaginatedData(data));
   }, [data]);
-  // todo remove
-  // console.log('data', data);
-  // console.log('responses', responses);
 
   const [addFormVisible, setAddFormVisible] = useState(false);
   const [editableRow, setEditableRow] = useState<{ id: string; text: string } | null>(null);
@@ -114,8 +109,8 @@ const Responses: FC = () => {
       setRefreshing(false);
     },
     onSettled: async () => {
-      const updatedResponses = formattedResponses.filter((r) => r.response !== deletableRow);
-      setFormattedResponses(updatedResponses);
+      const updatedResponses = responses.filter((r) => r.response !== deletableRow);
+      setResponses(updatedResponses);
       setDeletableRow(null);
       setRefreshing(false);
     },
@@ -160,7 +155,7 @@ const Responses: FC = () => {
     setEditableRow(response);
   };
 
-  const columnHelper = createColumnHelper<(typeof formattedResponses)[0]>();
+  const columnHelper = createColumnHelper<(typeof responses)[0]>();
 
   const getRules = (responseId: string) => {
     const dependency = dependencies?.response.find((d) => d.name === responseId);
@@ -294,7 +289,7 @@ const Responses: FC = () => {
 
       <Card>
         <DataTable
-          data={formattedResponses}
+          data={responses}
           columns={responsesColumns}
           sortable
           isFetching={isFetching}
