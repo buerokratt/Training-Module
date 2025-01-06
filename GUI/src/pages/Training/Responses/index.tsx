@@ -8,7 +8,7 @@ import { MdDeleteOutline, MdOutlineModeEditOutline, MdOutlineSave } from 'react-
 
 import { Button, Card, DataTable, Dialog, FormInput, FormTextarea, Icon, Label, Track } from 'components';
 import { RESPONSE_TEXT_LENGTH } from 'constants/config';
-import type { ResponseData } from 'types/response';
+import type { Response } from 'types/response';
 import type { Dependencies as DependenciesType } from 'types/dependencises';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import { useToast } from 'hooks/useToast';
@@ -24,12 +24,6 @@ type NewResponse = {
   text: string;
 };
 
-interface Response {
-  id: number;
-  response: string;
-  text: string;
-}
-
 const Responses: FC = () => {
   const { t } = useTranslation();
   const toast = useToast();
@@ -39,38 +33,27 @@ const Responses: FC = () => {
   const { data: dependencies } = useQuery<DependenciesType>({
     queryKey: ['responses/dependencies'],
   });
-  // const { data: responses, refetch } = useQuery<ResponsesType>({
-  //   queryKey: ['responses-list'],
-  // });
 
-  const { data, refetch, fetchNextPage, isFetching } = useInfinitePagination<ResponseData>({
+  const { data, refetch, fetchNextPage, isFetching } = useInfinitePagination<Response>({
     queryKey: ['responses-list', filter],
     fetchFn: getResponses,
     filter,
   });
-  console.log('data', data);
-  const responses = useMemo(() => flattenPaginatedData(data), [data]);
-  console.log('responses', responses);
+  const [formattedResponses, setFormattedResponses] = useState<Response[]>([]);
+  const responses = useMemo(() => {
+    const flattenedData = flattenPaginatedData(data);
+    setFormattedResponses(flattenedData?.length ? flattenedData : []);
+    return flattenedData;
+  }, [data]);
+  // todo remove
+  // console.log('data', data);
+  // console.log('responses', responses);
 
   const [addFormVisible, setAddFormVisible] = useState(false);
   const [editableRow, setEditableRow] = useState<{ id: string; text: string } | null>(null);
   const [deletableRow, setDeletableRow] = useState<string | null>(null);
   const { register, control, handleSubmit, resetField } = useForm<NewResponse>();
-  const [formattedResponses, setFormattedResponses] = useState<Response[]>([]);
   const [refreshing, setRefreshing] = useState(false);
-
-  useMemo(() => {
-    if (responses && responses.length > 0) {
-      const formattedData = responses.map((r, i) => ({
-        id: i ?? 'HUI',
-        response: r.name ?? 'HUI',
-        text: r.text ?? 'HUI',
-      }));
-      setFormattedResponses(formattedData);
-    } else {
-      setFormattedResponses([]);
-    }
-  }, [responses]);
 
   let editingTrainingTitle: string;
   useDocumentEscapeListener(() => setEditableRow(null));
@@ -82,11 +65,11 @@ const Responses: FC = () => {
   const responseSaveMutation = useMutation({
     mutationFn: ({ id, text }: { id: string; text: string }) => editResponse(id, text),
     onMutate: async () => {
-      await queryClient.cancelQueries(['responses-list']);
+      await queryClient.cancelQueries(['responses-list', filter]);
       setRefreshing(true);
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['responses-list']);
+      await queryClient.invalidateQueries(['responses-list', filter]);
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -111,7 +94,7 @@ const Responses: FC = () => {
   const responseDeleteMutation = useMutation({
     mutationFn: (data: { response: string }) => deleteResponse(data),
     onMutate: async () => {
-      await queryClient.invalidateQueries(['responses-list']);
+      await queryClient.invalidateQueries(['responses-list', filter]);
       setRefreshing(true);
     },
     onSuccess: async () => {
@@ -142,7 +125,7 @@ const Responses: FC = () => {
     mutationFn: ({ name, text }: { name: string; text: string }) =>
       editResponse('utter_' + name.trim().replace(/\s+/g, '_'), text, false),
     onMutate: async () => {
-      await queryClient.invalidateQueries(['responses-list']);
+      await queryClient.invalidateQueries(['responses-list', filter]);
       setRefreshing(true);
     },
     onSuccess: async () => {

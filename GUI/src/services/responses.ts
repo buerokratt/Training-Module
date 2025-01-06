@@ -1,8 +1,12 @@
 import { PaginationParams } from 'types/api';
 import { rasaApi } from './api';
-import { ResponseEdit, ResponseDataEdit, Responses } from 'types/response';
+import { ResponseEdit, ResponseDataEdit, Response } from 'types/response';
 
-export const getResponses = async ({ pageParam, pageSize, filter }: PaginationParams): Promise<Responses> => {
+export const getResponses = async ({
+  pageParam,
+  pageSize,
+  filter,
+}: PaginationParams): Promise<{ response: Response[] }> => {
   const { data } = await rasaApi.get(`/responses-list?size=${pageSize}&filter=${filter}&from=${pageParam}`);
   return data;
 };

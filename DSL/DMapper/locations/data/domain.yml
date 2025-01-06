@@ -332,22 +332,14 @@ responses:
       text: "#common_service, /POST/companies/search, (simple-company-data, {company_name})"
   utter_fallback:
     - text: UNKNOWN
-  utter_common_ask_csa:
-    - text: Kas suunan teid klienditeenindajale? (Jah/Ei)
   utter_common_klienditeenindajale_suunamine:
     - text: Suunan teid klienditeenindajale. Varuge natukene kannatust.
-  utter_common_ei_suuna_klienditeenindajale:
-    - text: Selge. Kuidas saan veel abiks olla?
   utter_common_hüvasti_jätmine:
     - text: Head aega!
-  utter_common_tänamine:
-    - text: Meeldiv kuulda. Kuidas saan veel abiks olla?
   utter_common_tervitus:
     - text: Kuidas saan abiks olla?
   utter_common_teenus_citizien_initiative:
     - text: "#common_service, /GET/public-initiatives/most-recent"
-  utter_common_teenus_citizien_initiative_popular:
-    - text: "#common_service, /GET/public-initiatives/most-popular"
   utter_common_teenus_rk_isiku_kohalolu:
     - condition:
         - type: slot
@@ -359,8 +351,6 @@ responses:
     - text: "#common_service, /GET/riigikogu/recent-voting"
   utter_common_teenus_rk_hääletus_viimased:
     - text: "#common_service, /GET/riigikogu/five-most-recent"
-  utter_common_teenus_rk_hääletus_fallback:
-    - text: Ma ei saanud täpselt aru. Palun proovige uuesti!
   utter_common_teenus_nordpool:
     - text: "#common_service, /GET/electricity/current-price"
   utter_common_teenus_nordpool_odav:
@@ -371,10 +361,6 @@ responses:
     - text: "#common_service, /GET/statistics-estonia/consumer-price-index"
   utter_common_service_CPI_previous_year:
     - text: "#common_service, /GET/statistics-estonia/consumer-price-index, (previous_year,,{by_year_statistics})"
-  utter_common_service_CPI_previous_month:
-    - text: "#common_service, /GET/statistics-estonia/consumer-price-index, (previous_month,{by_month_statistics},)"
-  utter_common_service_CPI_time_horizon:
-    - text: "#common_service, /GET/statistics-estonia/consumer-price-index, (previous_year,{by_month_statistics},{by_year_statistics})"
   utter_common_service_unemployment_rate:
     - text: "#common_service, /GET/statistics-estonia/unemployment-rate, ({by_year_statistics})"
   utter_common_service_unemployment_rate_fallback:
@@ -391,16 +377,12 @@ responses:
     - text: "#common_service, /GET/calendar/national-holidays/previous"
   utter_common_service_holidays_next_holiday:
     - text: "#common_service, /GET/calendar/national-holidays/next"
-  utter_common_service_holidays_today:
-    - text: "#common_service, /GET/calendar/national-holidays/today"
   utter_common_service_holidays_by_name:
     - text: "#common_service, /GET/calendar/national-holidays/find/by-name, ({by_name_holiday})"
   utter_common_service_holidays_by_month:
     - text: "#common_service, /GET/calendar/national-holidays/find/by-month, ({by_month_holiday})"
   utter_ask_reg_number:
     - text: "Mootorsõidukimaksu päringu tegemiseks palun sisestage Eestis registreeritud sõiduki kehtiv registreerimismärk. "
-  utter_common_service_motor_vehicle_tax:
-    - text: "#common_service, /GET/motor-vehicle-tax/registration-number, ({reg_number})"
   utter_common_service_school_holiday:
     - text: "#common_service, /GET/calendar/school-holidays/school-holidays"
   utter_common_service_school_holiday_next_holidays:
@@ -411,8 +393,6 @@ responses:
     - text: "#common_service, /GET/calendar/school-holidays/previous"
   utter_common_service_school_holiday_next_holiday:
     - text: "#common_service, /GET/calendar/school-holidays/next"
-  utter_common_service_school_holiday_today:
-    - text: "#common_service, /GET/calendar/school-holidays/today"
   utter_common_service_school_holiday_by_name:
     - text: "#common_service, /GET/calendar/school-holidays/find/by-name, ({by_name_school_holiday})"
   utter_common_service_school_holiday_by_month:

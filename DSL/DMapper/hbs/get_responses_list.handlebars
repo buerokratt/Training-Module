@@ -3,29 +3,8 @@
     {{#with data.hits.[0].fields.filtered_responses.[0]}}
         {{#each this}}
         {
-            "name": "{{@key}}",
-            "text": {{#if this.[0].condition}}"{{{this.[1].text}}}"{{else}}"{{{this.[0].text}}}"{{/if}}{{#if this.[0].buttons}},
-            "buttons": [
-            {{#each this.[0].buttons}}
-                {
-                "title": "{{title}}",
-                "payload": "{{{payload}}}"
-                }{{#unless @last}},{{/unless}}
-            {{/each}}
-            ]
-            {{/if}}
-            {{#if this.[0].condition}},
-            "condition": [
-            {{#each this.[0].condition}}
-                {
-                "type": "{{type}}",
-                "name": "{{name}}",
-                "value": {{#if value}}"{{{value}}}"{{else}}null{{/if}}
-                }{{#unless @last}},{{/unless}}
-            {{/each}}
-            ],
-            "conditionText": "{{{this.[0].text}}}"
-            {{/if}}
+            "response": "{{@key}}",
+            "text": {{#if this.[0].condition}}"{{{this.[1].text}}}"{{else}}"{{{this.[0].text}}}"{{/if}}
         }{{#unless @last}},{{/unless}}
         {{/each}}
     {{/with}}
