@@ -410,3 +410,9 @@ rules:
   - intent: common_service_nba_results
   - action: utter_common_service_nba_results
   - action: action_restart
+
+- rule: common_service_exchange_rate
+  steps:
+  - intent: common_service_exchange_rate
+  - action: utter_common_service_exchange_rate
+  - action: action_restart
