@@ -1,13 +1,10 @@
 {
-"responses": [
-{{#each response}}
-    {
-    "name": "{{_id}}",
-    "response": [
-    {{#each _source.responses}}
+"response": [
+    {{#with data.hits.[0].fields.filtered_responses.[0]}}
+        {{#each this}}
         {
-        "name": "{{@key}}",
-        "text": {{#if this.[0].condition}}"{{{this.[1].text}}}"{{else}}"{{{this.[0].text}}}"{{/if}}{{#if this.[0].buttons}},
+            "name": "{{@key}}",
+            "text": {{#if this.[0].condition}}"{{{this.[1].text}}}"{{else}}"{{{this.[0].text}}}"{{/if}}{{#if this.[0].buttons}},
             "buttons": [
             {{#each this.[0].buttons}}
                 {
@@ -16,23 +13,21 @@
                 }{{#unless @last}},{{/unless}}
             {{/each}}
             ]
-        {{/if}}
-        {{#if this.[0].condition}},
+            {{/if}}
+            {{#if this.[0].condition}},
             "condition": [
             {{#each this.[0].condition}}
                 {
                 "type": "{{type}}",
                 "name": "{{name}}",
-                "value":  {{#if value}}"{{{value}}}"{{else}}null{{/if}}
+                "value": {{#if value}}"{{{value}}}"{{else}}null{{/if}}
                 }{{#unless @last}},{{/unless}}
             {{/each}}
             ],
             "conditionText": "{{{this.[0].text}}}"
-        {{/if}}
+            {{/if}}
         }{{#unless @last}},{{/unless}}
-    {{/each}}
-    ]
-    }{{#unless @last}},{{/unless}}
-{{/each}}
+        {{/each}}
+    {{/with}}
 ]
 }
