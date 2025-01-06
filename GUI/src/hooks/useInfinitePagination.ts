@@ -17,7 +17,6 @@ export function useInfinitePagination<T>({
   return useInfiniteQuery<{ response: T[] }>({
     queryKey: [...queryKey, filter],
     queryFn: ({ pageParam = 0 }) => fetchFn({ pageParam, pageSize, filter }),
-    // todo why null?
-    getNextPageParam: (lastPage, pages) => (lastPage.response?.length === 0 ? undefined : pages.length * pageSize),
+    getNextPageParam: (lastPage, pages) => (lastPage.response.length === 0 ? undefined : pages.length * pageSize),
   });
 }
