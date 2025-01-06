@@ -30,7 +30,7 @@ mapResponsesData:
   args:
     url: "[#TRAINING_DMAPPER]/hbs/training/get_responses"
     headers:
-      type: 'json'
+      type: "json"
     body:
       hits: ${getResponsesResult.response.body.hits.hits}
   result: responsesData
@@ -40,7 +40,7 @@ mapDependenciesData:
   args:
     url: "[#TRAINING_DMAPPER]/hbs/training/get_responses_dependencies"
     headers:
-      type: 'json'
+      type: "json"
     body:
       rules: ${getRulesResult.response.body.hits.hits}
       stories: ${getStoriesResult.response.body.hits.hits}

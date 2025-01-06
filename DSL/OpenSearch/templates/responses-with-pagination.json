@@ -1,0 +1,6 @@
+{
+  "script": {
+    "lang": "mustache",
+    "source": "{\"query\":{\"term\":{\"_id\":\"responses\"}},\"script_fields\":{\"filtered_responses\":{\"script\":{\"lang\":\"painless\",\"source\":\"def responses = params._source.responses; def searchTerm = '{{filter}}'; int from = {{from}}; int size = {{size}}; def responseList = new ArrayList(responses.keySet()); def filtered = responseList.findAll(response -> response.toLowerCase().contains(searchTerm.toLowerCase())); int start = (int)Math.min(from, filtered.size()); int end = (int)Math.min(from + size, filtered.size()); return filtered.subList(start, end);\"}}}}"
+  }
+}
