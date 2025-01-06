@@ -41,6 +41,7 @@ curl -L -X POST "$URL/_scripts/story-with-name" -H 'Content-Type: application/js
 curl -L -X POST "$URL/_scripts/story-with-forms" -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/story-with-forms.json"
 curl -L -X POST "$URL/_scripts/story-with-responses" -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/story-with-responses.json"
 curl -L -X POST "$URL/_scripts/story-with-slots" -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/story-with-slots.json"
+curl -L -X POST "$URL/_scripts/stories-by-responses" -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/stories-by-responses.json"
 
 # test-stories
 curl -XDELETE "$URL/test-stories?ignore_unavailable=true" -u "$AUTH" --insecure

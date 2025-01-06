@@ -6,6 +6,16 @@ declaration:
   accepts: json
   returns: json
   namespace: training
+  params:
+    - field: filter
+      type: string
+      description: "Query string"
+    - field: from
+      type: string
+      description: "Item number"
+    - field: size
+      type: string
+      description: "Page size"
 
 getRulesData:
   call: http.get

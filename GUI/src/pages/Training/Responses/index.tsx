@@ -30,6 +30,7 @@ const Responses: FC = () => {
   const toast = useToast();
   const queryClient = useQueryClient();
   const { filter, setFilter } = useDebouncedFilter();
+  // todo remove completely and make one request with responses-list
   const { data: dependencies } = useQuery<DependenciesType>({
     queryKey: ['responses/dependencies'],
   });
