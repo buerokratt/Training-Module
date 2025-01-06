@@ -474,7 +474,7 @@ responses:
   - text: "#common_service, /GET/calendar/national-holidays/find/by-month, ({by_month_holiday})"
 
   utter_ask_reg_number:
-  - text: "Mootorsõidukimaksu päringu tegemiseks palun sisestage Eestis registreeritud sõiduki kehtiv registreerimismärk. "
+  - text: "Mootorsõidukimaksu päringu tegemiseks palun sisestage Eestis registreeritud sõiduki kehtiv registreerimismärk."
 
   utter_common_service_motor_vehicle_tax:
   - text: "#common_service, /GET/motor-vehicle-tax/registration-number, ({reg_number})"
