@@ -29,7 +29,6 @@ export interface ResponseEdit {
 
 // TODO: unify and simplify types later, breaks Responses page currently
 export interface Response {
-  id?: number;
   response: string;
   text: string;
 }
