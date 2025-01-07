@@ -26,18 +26,41 @@ getResponses:
       params: ${incoming.params}
   result: getResponsesResult
 
-mapResponsesData:
+mapResponsesNames:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/hbs/training/get_responses_list"
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_responses_names"
     headers:
       type: "json"
     body:
-      data: ${getResponsesResult.response.body.hits.hits}
-  result: responsesData
-  next: returnSuccess
+      data: ${getResponsesResult.response.body.hits.hits[0].fields.filtered_responses[0]}
+  result: responsesNames
+
+getStories:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]/stories/_search/template"
+    body:
+      id: "stories-by-responses"
+      params:
+        responses: "${responsesNames.response.body}"
+        size: 1000
+  result: getStoriesResult
+
+# mapResponsesData:
+#   call: http.post
+#   args:
+#     url: "[#TRAINING_DMAPPER]/hbs/training/get_responses_list"
+#     headers:
+#       type: "json"
+#     body:
+#       data: ${getResponsesResult.response.body.hits.hits}
+#   result: responsesData
+#   next: returnSuccess
 
 returnSuccess:
-  return: ${responsesData.response.body}
+  # # todo change, this is temporary
+  return: ${getStoriesResult.response.body}
+  # return: ${responsesData.response.body}
   wrapper: false
   next: end

@@ -31,9 +31,10 @@ const Responses: FC = () => {
   const queryClient = useQueryClient();
   const { filter, setFilter } = useDebouncedFilter();
   // todo remove completely and make one request with responses-list
-  const { data: dependencies } = useQuery<DependenciesType>({
-    queryKey: ['responses/dependencies'],
-  });
+  // const { data: dependencies } = useQuery<DependenciesType>({
+  //   queryKey: ['responses/dependencies'],
+  // });
+  const dependencies = { response: [] };
 
   const [responses, setResponses] = useState<Response[]>([]);
   const { data, refetch, fetchNextPage, isFetching } = useInfinitePagination<Response>({
