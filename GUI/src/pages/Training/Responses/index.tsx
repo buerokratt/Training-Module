@@ -34,14 +34,16 @@ const Responses: FC = () => {
   // const { data: dependencies } = useQuery<DependenciesType>({
   //   queryKey: ['responses/dependencies'],
   // });
-  const dependencies = { response: [] };
 
   const [responses, setResponses] = useState<Response[]>([]);
+  // todo type here
   const { data, refetch, fetchNextPage, isFetching } = useInfinitePagination<Response>({
     queryKey: ['responses-list', filter],
     fetchFn: getResponses,
     filter,
   });
+  const dependencies = { response: [] };
+  console.log(data);
   useMemo(() => {
     setResponses(flattenPaginatedData(data));
   }, [data]);

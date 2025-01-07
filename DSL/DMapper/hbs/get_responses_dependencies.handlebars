@@ -1,4 +1,5 @@
-[
+{
+"response": [
   {{#each responses}}
     {{assign 'response' @key}}
     {"response": "{{@key}}",
@@ -30,3 +31,4 @@
     }{{#unless @last}},{{/unless}}
   {{/each}}
 ]
+}

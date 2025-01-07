@@ -58,19 +58,6 @@ getRules:
         size: 1000
   result: getRulesResult
 
-# todo remove other YAML
-# todo fix TSX
-# mapResponsesData:
-#   call: http.post
-#   args:
-#     url: "[#TRAINING_DMAPPER]/hbs/training/get_responses_list"
-#     headers:
-#       type: "json"
-#     body:
-#       data: ${getResponsesResult.response.body.hits.hits}
-#   result: responsesData
-#   next: returnSuccess
-
 mapResponsesData:
   call: http.post
   args:
