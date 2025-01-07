@@ -47,6 +47,17 @@ getStories:
         size: 1000
   result: getStoriesResult
 
+getRules:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]/rules/_search/template"
+    body:
+      id: "rules-by-responses"
+      params:
+        responses: "${responsesNames.response.body}"
+        size: 1000
+  result: getRulesResult
+
 # mapResponsesData:
 #   call: http.post
 #   args:
@@ -60,7 +71,7 @@ getStories:
 
 returnSuccess:
   # # todo change, this is temporary
-  return: ${getStoriesResult.response.body}
+  return: ${getRulesResult.response.body}
   # return: ${responsesData.response.body}
   wrapper: false
   next: end
