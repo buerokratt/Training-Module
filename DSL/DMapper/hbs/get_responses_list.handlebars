@@ -1,6 +1,6 @@
 {
 "response": [
-    {{#with data.hits.[0].fields.filtered_responses.[0]}}
+    {{#with data.[0].fields.filtered_responses.[0]}}
         {{#each this}}
         {
             "response": "{{@key}}",

@@ -33,8 +33,7 @@ mapResponsesData:
     headers:
       type: "json"
     body:
-      # todo simplify?
-      data: { "hits": "${getResponsesResult.response.body.hits.hits}" }
+      data: ${getResponsesResult.response.body.hits.hits}
   result: responsesData
   next: returnSuccess
 
