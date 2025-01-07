@@ -62,7 +62,6 @@ getRules:
 # mapResponsesData:
 #   call: http.post
 #   args:
-# todo remove template
 #     url: "[#TRAINING_DMAPPER]/hbs/training/get_responses_list"
 #     headers:
 #       type: "json"
