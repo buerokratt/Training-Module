@@ -1,4 +1,3 @@
-PUT _scripts/my_search_template
 {
   "script": {
     "lang": "mustache",
