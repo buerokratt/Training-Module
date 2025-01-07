@@ -1,7 +1,7 @@
 [
   {{#each responses}}
-    {{assign 'response' name}}
-    {"name": "{{name}}",
+    {{assign 'response' @key}}
+    {"name": "{{@key}}",
       "rules": [
         {{assign 'multiple' false}}
         {{#each ../rules}}
@@ -20,7 +20,7 @@
           {{#each _source.steps as |step|}}
             {{#if (eq @root.response step.action)}}
               {{#if @root.multiple}},{{/if}}
-               "{{../_source.story}}"
+              "{{../_source.story}}"
               {{assign 'multiple' true}}
             {{/if}}
           {{/each}}

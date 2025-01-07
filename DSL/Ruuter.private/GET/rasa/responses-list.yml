@@ -58,9 +58,11 @@ getRules:
         size: 1000
   result: getRulesResult
 
+# todo remove other YAML
 # mapResponsesData:
 #   call: http.post
 #   args:
+# todo remove template
 #     url: "[#TRAINING_DMAPPER]/hbs/training/get_responses_list"
 #     headers:
 #       type: "json"
@@ -69,9 +71,21 @@ getRules:
 #   result: responsesData
 #   next: returnSuccess
 
+mapResponsesData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_responses_dependencies"
+    headers:
+      type: "json"
+    body:
+      rules: ${getRulesResult.response.body.hits.hits}
+      stories: ${getStoriesResult.response.body.hits.hits}
+      responses: ${getResponsesResult.response.body.hits.hits[0].fields.filtered_responses[0]}
+  result: responsesData
+
 returnSuccess:
   # # todo change, this is temporary
-  return: ${getRulesResult.response.body}
-  # return: ${responsesData.response.body}
+  # return: ${getRulesResult.response.body}
+  return: ${responsesData.response.body}
   wrapper: false
   next: end
