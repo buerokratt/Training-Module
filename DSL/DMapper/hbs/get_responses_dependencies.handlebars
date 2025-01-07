@@ -1,7 +1,7 @@
 [
   {{#each responses}}
     {{assign 'response' @key}}
-    {"name": "{{@key}}",
+    {"response": "{{@key}}",
       "rules": [
         {{assign 'multiple' false}}
         {{#each ../rules}}
