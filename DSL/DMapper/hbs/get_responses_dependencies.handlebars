@@ -2,6 +2,7 @@
   {{#each responses}}
     {{assign 'response' @key}}
     {"response": "{{@key}}",
+     "text": {{#if this.[0].condition}}"{{{this.[1].text}}}"{{else}}"{{{this.[0].text}}}"{{/if}},
       "rules": [
         {{assign 'multiple' false}}
         {{#each ../rules}}
