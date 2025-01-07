@@ -1,6 +1,6 @@
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { Controller, useForm } from 'react-hook-form';
 import { AxiosError } from 'axios';
@@ -9,7 +9,6 @@ import { MdDeleteOutline, MdOutlineModeEditOutline, MdOutlineSave } from 'react-
 import { Button, Card, DataTable, Dialog, FormInput, FormTextarea, Icon, Label, Track } from 'components';
 import { RESPONSE_TEXT_LENGTH } from 'constants/config';
 import type { Response } from 'types/response';
-import type { Dependencies as DependenciesType } from 'types/dependencises';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import { useToast } from 'hooks/useToast';
 import { deleteResponse, editResponse, getResponses } from 'services/responses';
@@ -30,20 +29,12 @@ const Responses: FC = () => {
   const toast = useToast();
   const queryClient = useQueryClient();
   const { filter, setFilter } = useDebouncedFilter();
-  // todo remove completely and make one request with responses-list
-  // const { data: dependencies } = useQuery<DependenciesType>({
-  //   queryKey: ['responses/dependencies'],
-  // });
-
   const [responses, setResponses] = useState<Response[]>([]);
-  // todo type here
   const { data, refetch, fetchNextPage, isFetching } = useInfinitePagination<Response>({
     queryKey: ['responses-list', filter],
     fetchFn: getResponses,
     filter,
   });
-  const dependencies = { response: [] };
-  console.log(data);
   useMemo(() => {
     setResponses(flattenPaginatedData(data));
   }, [data]);
@@ -162,13 +153,13 @@ const Responses: FC = () => {
   const columnHelper = createColumnHelper<(typeof responses)[0]>();
 
   const getRules = (responseId: string) => {
-    const dependency = dependencies?.response.find((d) => d.name === responseId);
-    return dependency?.rules.map((name, i) => <p key={name}>{name}</p>);
+    const rules = responses.find((r) => r.response === responseId)!.rules;
+    return rules.map((name) => <p key={name}>{name}</p>);
   };
 
   const getStories = (responseId: string) => {
-    const dependency = dependencies?.response.find((d) => d.name === responseId);
-    return dependency?.stories.map((name, i) => <p key={name}>{name}</p>);
+    const stories = responses.find((r) => r.response === responseId)!.stories;
+    return stories.map((name) => <p key={name}>{name}</p>);
   };
 
   const responsesColumns = useMemo(

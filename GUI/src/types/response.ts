@@ -31,4 +31,6 @@ export interface ResponseEdit {
 export interface Response {
   response: string;
   text: string;
+  rules: string[];
+  stories: string[];
 }
