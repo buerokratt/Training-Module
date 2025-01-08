@@ -7,7 +7,7 @@
     {{#each _source.responses}}
         {
         "name": "{{@key}}",
-        "text": {{#if this.[0].condition}}"{{{this.[1].text}}}"{{else}}"{{{this.[0].text}}}"{{/if}}{{#if this.[0].buttons}},
+        "text": {{#if this.[0].condition}}"{{{this.[1].text}}}"{{else}}"{{{ escapeQuotes this.[0].text}}}"{{/if}}{{#if this.[0].buttons}},
             "buttons": [
             {{#each this.[0].buttons}}
                 {
