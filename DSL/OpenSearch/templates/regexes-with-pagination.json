@@ -1,0 +1,24 @@
+{
+  "script": {
+    "lang": "mustache",
+    "source": {
+      "from": "{{from}}",
+      "size": "{{size}}",
+      "query": {
+        "wildcard": {
+          "regex": {
+            "value": "*{{filter}}*"
+          }
+        }
+      },
+      "_source": {
+        "excludes": ["examples"]
+      }
+    },
+    "params": {
+      "from": 0,
+      "size": 50,
+      "filter": ""
+    }
+  }
+}

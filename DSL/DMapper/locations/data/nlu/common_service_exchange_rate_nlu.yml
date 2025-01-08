@@ -1,0 +1,12 @@
+version: "3.0"
+nlu:
+- intent: common_service_exchange_rate
+  examples: |
+    - Mis suhe on euro ja [usd](currency) vahel
+    - Mis on euro ja [btc](currency) vahetuskurss?
+    - euro ja [gbp](currency) vaheline kurss
+    - euro ja [eth](currency) kurss
+    - eur [jpy](currency) kurss
+    - kui suur on euro ja [usd](currency) vaheline kurss
+    - mis on euro ja [jpy](currency) vahe
+    - mitu [gbp](currency) on üks euro?

@@ -32,6 +32,7 @@ intents:
   - common_service_motor_vehicle_tax
   - common_service_school_holiday
   - common_service_nba_results
+  - common_service_exchange_rate
 
 entities:
   - asukoht
@@ -49,6 +50,7 @@ entities:
   - last_holidays
   - by_year
   - reg_number
+  - currency
   
 slots:
   common_teenus_ilm_asukoht:
@@ -58,6 +60,14 @@ slots:
     - type: from_entity
       entity: asukoht
       intent: common_teenus_ilm
+
+  currency:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: currency
+      intent: common_service_exchange_rate
 
   reg_number:
     type: text
@@ -464,7 +474,7 @@ responses:
   - text: "#common_service, /GET/calendar/national-holidays/find/by-month, ({by_month_holiday})"
 
   utter_ask_reg_number:
-  - text: "Mootorsõidukimaksu päringu tegemiseks palun sisestage Eestis registreeritud sõiduki kehtiv registreerimismärk. "
+  - text: "Mootorsõidukimaksu päringu tegemiseks palun sisestage Eestis registreeritud sõiduki kehtiv registreerimismärk."
 
   utter_common_service_motor_vehicle_tax:
   - text: "#common_service, /GET/motor-vehicle-tax/registration-number, ({reg_number})"
@@ -495,4 +505,12 @@ responses:
 
   utter_common_service_nba_results:
   - text: "#common_service, /GET/sports/nba-results"
+
+  utter_common_service_exchange_rate:
+    - condition:
+        - type: slot
+          name: currency
+          value: null
+      text: "Palun korrake küsimust, kasutades valuuta koodi, mille kurssi soovite saada."
+    - text: "#service, /GET/currency, ({currency})"
   

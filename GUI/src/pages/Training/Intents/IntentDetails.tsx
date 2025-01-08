@@ -357,6 +357,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
       });
     },
     onSettled: () => {
+      queryRefresh();
       setRefreshing(false);
     },
   });
@@ -392,7 +393,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
 
     addOrEditResponseMutation.mutate({
       id: `utter_${intentId}`,
-      responseText,
+      responseText: responseText.replaceAll(/\n{2,}/g, '\n').replaceAll('\n', '\\n\\n'),
       update: !!responseName,
     });
 
@@ -411,8 +412,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
         },
       });
     }
-
-    queryRefresh();
   };
 
   const deleteIntentMutation = useMutation({

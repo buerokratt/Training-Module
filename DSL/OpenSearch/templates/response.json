@@ -7,13 +7,15 @@
         "bool": {
           "must": [
             {
-              "query_string": {
-                "query": "{{response_name}}",
-                "default_field": "name"
+              "term": {
+                "_id": "responses"
               }
             }
           ]
         }
+      },
+      "_source": {
+        "includes": ["responses.{{response_name}}"]
       }
     },
     "params": {
