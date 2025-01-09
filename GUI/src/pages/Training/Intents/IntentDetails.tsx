@@ -58,7 +58,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
   const [refreshing, setRefreshing] = useState(false);
   const [showConnectToServiceModal, setShowConnectToServiceModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [response, setResponse] = useState<Response | null>(null);
+  const [response, setResponse] = useState<Response>({ name: '', text: '' });
   const [intentRule, setIntentRule] = useState<string>('');
 
   const queryClient = useQueryClient();
@@ -106,9 +106,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
   useEffect(() => {
     if (responseResponse) setResponse(responseResponse.response);
   }, [responseResponse]);
-
-  const responseText = response?.text ?? '';
-  const responseName = response?.name ?? '';
 
   const { data: rulesResponse } = useQuery<RuleResponse>({
     queryKey: [`rule-by-intent-id?intent=${intentId}`],
@@ -387,17 +384,17 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
   });
 
   const handleIntentResponseSubmit = async () => {
-    if (responseText === '' || !intent) return;
+    if (response.text === '' || !intent) return;
 
     const intentId = intent.id;
 
     addOrEditResponseMutation.mutate({
       id: `utter_${intentId}`,
-      responseText: responseText.replaceAll(/\n{2,}/g, '\n').replaceAll('\n', '\\n\\n'),
-      update: !!responseName,
+      responseText: response.text.replaceAll(/\n{2,}/g, '\n').replaceAll('\n', '\\n\\n'),
+      update: !!response.name,
     });
 
-    if (!responseName) {
+    if (!response.name) {
       addRuleMutation.mutate({
         data: {
           rule: `rule_${intentId}`,
@@ -605,7 +602,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
                   <h1>{t('training.intents.responseTitle')}</h1>
                   <FormTextarea
                     label={t('global.addNew')}
-                    value={responseText}
+                    value={response.text}
                     name="intentResponse"
                     minRows={7}
                     maxRows={7}
