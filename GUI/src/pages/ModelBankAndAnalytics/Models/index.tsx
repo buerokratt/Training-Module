@@ -90,6 +90,13 @@ const Models: FC = () => {
     setSelectedModel(deployedModel);
     setCurrentlyLoadedModel(deployedModel);
     setPreviouslyLoadedModel(deployedModel);
+
+    const activatingModel = models?.find((m) => m.state === 'ACTIVATING')
+    if (activatingModel) {
+      setSelectedModel(activatingModel);
+      setCurrentlyLoadedModel(activatingModel);
+      setIsFetching(true);
+    }
   }, [models]);
 
   useEffect(() => {
@@ -246,7 +253,7 @@ const Models: FC = () => {
                 appearance="primary"
                 onClick={() =>
                   activateModelMutation.mutate({
-                    data: { versionNumber: selectedModel.versionNumber },
+                    data: { versionNumber: selectedModel.versionNumber, name: selectedModel.name },
                   })
                 }
               >

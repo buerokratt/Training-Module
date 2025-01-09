@@ -6,6 +6,6 @@ export interface Model {
   versionNumber: string;
 }
 
-export type ModelStateType = 'DEPLOYED' | 'READY' | 'Failed' | 'DELETED';
+export type ModelStateType = 'DEPLOYED' | 'ACTIVATING' | 'READY' | 'Failed' | 'DELETED';
 
-export interface UpdateModelDTO extends Pick<Model, 'versionNumber'> {}
+export interface UpdateModelDTO extends Pick<Model, 'versionNumber' | 'name'> {}

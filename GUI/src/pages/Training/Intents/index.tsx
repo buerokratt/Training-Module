@@ -68,7 +68,7 @@ const Intents: FC = () => {
           id="tabs"
           className="vertical-tabs"
           orientation="vertical"
-          value={selectedIntent?.id || undefined}
+          value={selectedIntent?.id ?? undefined}
           onValueChange={handleTabsValueChange}
         >
           <Tabs.List className="vertical-tabs__list" aria-label={t('training.intents.title') || ''}>
@@ -79,7 +79,13 @@ const Intents: FC = () => {
                   label={t('training.intents.searchIntentPlaceholder')}
                   placeholder={t('training.intents.searchIntentPlaceholder') + '...' || ''}
                   value={filter}
-                  onChange={(e) => setFilter(e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    const hasSpecialCharacters = /[^\p{L}\p{N} ]/u;
+                    if (!hasSpecialCharacters.test(value) && !value.startsWith(' ')) {
+                      setFilter(value);
+                    }
+                  }}
                   hideLabel
                 />
                 <Button onClick={() => newIntentMutation.mutate({ name: filter.trim() })} disabled={!filter}>
