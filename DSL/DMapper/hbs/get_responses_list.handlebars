@@ -27,7 +27,7 @@
                 }{{#unless @last}},{{/unless}}
             {{/each}}
             ],
-            "conditionText": "{{{this.[0].text}}}"
+            "conditionText": "{{{filterControlCharacters this.[0].text}}}"
         {{/if}}
         }{{#unless @last}},{{/unless}}
     {{/each}}

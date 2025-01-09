@@ -42,7 +42,7 @@ validateResponse:
 mergeResponses:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/merge/objects"
+    url: "[#TRAINING_DMAPPER]/merge/response_objects"
     body:
       object1: ${domainData.response.body.response.responses}
       object2: ${parameters.response}
