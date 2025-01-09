@@ -7,7 +7,7 @@ export const getRegexes = async ({
   pageParam,
   pageSize,
   filter,
-}: PaginationParams): Promise<{ response: RegexTeaser[] }> => {
+}: PaginationParams = { pageParam: 0, pageSize: 1000, filter: '' }): Promise<{ response: RegexTeaser[] }> => {
   const { data } = await rasaApi.get(`/regexes?size=${pageSize}&filter=${filter}&from=${pageParam}`);
   return data;
 };
