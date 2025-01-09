@@ -104,7 +104,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
   });
 
   useEffect(() => {
-    if (responseResponse?.response) setResponse(responseResponse.response);
+    if (responseResponse) setResponse(responseResponse.response);
   }, [responseResponse]);
 
   const responseText = response?.text ?? '';
