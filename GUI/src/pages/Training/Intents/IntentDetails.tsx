@@ -183,7 +183,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
   const editIntentName = async () => {
     if (!intent || !editingIntentTitle) return;
 
-    const newName = editingIntentTitle.replace(/\s+/g, '_');
+    const newName = editingIntentTitle.trim().replace(/\s+/g, '_');
 
     await intentEditMutation.mutateAsync({
       oldName: intent.id,
@@ -496,7 +496,14 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
                   label="Intent title"
                   name="intentTitle"
                   value={editingIntentTitle}
-                  onChange={(e) => setEditingIntentTitle(e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    const hasSpecialCharacters = /[^\p{L}\p{N} ]/u;
+                    if (!hasSpecialCharacters.test(value) && !value.startsWith(' ')) {
+                      setEditingIntentTitle(e.target.value);
+                    }
+                   }
+                  }
                   hideLabel
                 />
               ) : (
