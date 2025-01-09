@@ -99,7 +99,7 @@ processOpenSearchDeletion:
 
 reAssignRuleName:
   assign:
-    rule: ${rule.replace('_','')}
+    rule: ${rule.replace('rule_','rule')}
 
 deleteOpenSearchEntry:
   call: http.post
