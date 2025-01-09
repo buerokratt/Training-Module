@@ -47,7 +47,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({ intent, updateSelec
 
   const { data: entitiesResponse } = useQuery<{ response: Entity[] }>({
     queryKey: ['entities'],
-    queryFn: () => getEntities({ pageParam: 0, pageSize: 1000, filter: '' }),
+    queryFn: () => getEntities(),
   });
 
   const examples = useMemo(
