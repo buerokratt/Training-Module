@@ -3,9 +3,9 @@ import { rasaApi } from './api';
 import { Entity } from 'types/entity';
 
 export const getEntities = async ({
-  pageParam,
-  pageSize,
-  filter,
+  pageParam = 0,
+  pageSize = 1000,
+  filter = '',
 }: PaginationParams): Promise<{ response: Entity[] }> => {
   const { data } = await rasaApi.get(`/entities?size=${pageSize}&filter=${filter}&from=${pageParam}`);
   return data;
