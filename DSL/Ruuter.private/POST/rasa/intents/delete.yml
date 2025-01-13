@@ -76,7 +76,6 @@ checkIntentFileTmp:
   result: tmpFileExists
 
 validateTmpFileExists:
-  # todo rules condition
   switch:
     - condition: ${tmpFileExists.response.body.error === false}
       next: getRulesFile
@@ -107,11 +106,12 @@ convertRulesJsonToYaml:
       rules: ${rulesData.response.body.rules}
   result: rulesYaml
 
-validateRuleDependency:
-  switch:
-    - condition: ${rulesYaml.response.body.json.includes("intent:" + " " + parameters.name)}
-      next: returnRuleDependency
-  next: getStoriesFile
+# validateRuleDependency:
+#   # todo rules condition
+#   # switch:
+#   #   - condition: ${rulesYaml.response.body.json.includes("intent:" + " " + parameters.name)}
+#   #     next: returnRuleDependency
+#   next: getStoriesFile
 
 getStoriesFile:
   call: http.post
