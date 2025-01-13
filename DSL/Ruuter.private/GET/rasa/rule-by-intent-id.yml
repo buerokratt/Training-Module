@@ -14,7 +14,7 @@ declaration:
 
 assign_values:
   assign:
-    rule: ${"rule_" + incoming.params.intent}
+    rule: ${"rule" + incoming.params.intent}
 
 getRules:
   call: http.post
@@ -35,7 +35,6 @@ mapRulesData:
     body:
       hits: ${getRulesResult.response.body.hits.hits}
   result: rulesData
-  # next: returnSuccess
 
 returnSuccess:
   return: ${rulesData.response.body}
