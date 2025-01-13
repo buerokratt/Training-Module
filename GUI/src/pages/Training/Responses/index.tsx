@@ -200,39 +200,6 @@ const Responses: FC = () => {
               handleEditableRow({ id: props.row.original.response, text: props.row.original.text });
             }
           ),
-      }),
-      columnHelper.display({
-        id: 'dependencies',
-        cell: (props) =>
-          buildDependenciesCell(getRules(props.row.original.response), getStories(props.row.original.response)),
-        meta: {
-          size: '167px',
-        },
-      }),
-      columnHelper.accessor('text', {
-        header: '',
-        cell: (props) =>
-          buildTextCell(props.getValue(), editableRow?.id === props.row.original.response, setEditingTrainingTitle),
-        enableSorting: false,
-      }),
-      columnHelper.display({
-        header: '',
-        cell: (props) =>
-          buildSaveCell(
-            editableRow?.id === props.row.original.response,
-            () =>
-              editableRow &&
-              responseSaveMutation.mutate({
-                id: editableRow.id,
-                text:
-                  editingTrainingTitle.replaceAll(/\n{2,}/g, '\n').replaceAll('\n', '\\n\\n') ??
-                  props.row.original.text.replaceAll(/\n{2,}/g, '\n').replaceAll('\n', '\\n\\n'),
-              }),
-            () => {
-              setEditingTrainingTitle(props.row.original.text);
-              handleEditableRow({ id: props.row.original.response, text: props.row.original.text });
-            }
-          ),
         id: 'edit',
         meta: {
           size: '1%',
