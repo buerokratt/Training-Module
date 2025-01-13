@@ -212,14 +212,14 @@ convertJsonToYaml:
       nlu: ${intentFileJson.response.body}
   result: intentYaml
 
-saveIntentFile:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/file-manager/create"
-    body:
-      file_path: ${fileLocations.response.body.response.intents_location + "removed/" + intent + file_end}
-      content: ${intentYaml.response.body.json}
-  result: fileResult
+# saveIntentFile:
+#   call: http.post
+#   args:
+#     url: "[#TRAINING_DMAPPER]/file-manager/create"
+#     body:
+#       file_path: ${fileLocations.response.body.response.intents_location + "removed/" + intent + file_end}
+#       content: ${intentYaml.response.body.json}
+#   result: fileResult
 
 getDomainFile:
   call: http.get
