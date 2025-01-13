@@ -12,6 +12,9 @@ export const getResponses = async ({
 };
 
 export async function editResponse(id: string, responseText: string, update = true) {
+  if (responseText.startsWith('"') && responseText.endsWith('"')) {
+    responseText = responseText.slice(1, -1);
+  }
   const responseEditData = <ResponseEdit>{};
   const responseDataEdit = <ResponseDataEdit>{};
 

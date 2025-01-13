@@ -94,29 +94,27 @@ rules:
   - action: action_restart
 
 - rule: common_teenus_rk_hääletus_viimane
-  condition:
+  steps:
   - slot_was_set:
     - rk_hääletus: true
-  steps:
   - intent: common_teenus_rk_hääletus
   - action: utter_common_teenus_rk_hääletus_viimane
   - action: action_restart
 
 - rule: common_teenus_rk_hääletus_viimased
-  condition:
+  steps:
   - slot_was_set:
     - rk_hääletused: true
-  steps:
   - intent: common_teenus_rk_hääletus
   - action: utter_common_teenus_rk_hääletus_viimased
   - action: action_restart
 
 - rule: common_teenus_rk_hääletus fallback
-  condition:
+  steps:
   - slot_was_set:
     - rk_hääletus: null
+  - slot_was_set:
     - rk_hääletused: null
-  steps:
   - intent: common_teenus_rk_hääletus
   - action: utter_common_teenus_rk_hääletus_fallback
   - action: action_restart
