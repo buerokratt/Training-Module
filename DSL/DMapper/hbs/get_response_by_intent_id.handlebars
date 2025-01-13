@@ -1,5 +1,13 @@
 {
-"response": {
-    "name": "{{#with response.[0]._source.responses}}{{#each this as |value key|}}{{key}}{{/each}}{{/with}}",
-    "text": {{#with response.[0]._source.responses}}{{#each this}}{{#if this.[0].condition}}"{{{ filterControlCharacters (escapeQuotes this.[1].text) }}}"{{else}}"{{{ filterControlCharacters (escapeQuotes this.[0].text)}}}"{{/if}}{{/each}}{{/with}}
+"response": {{#if response.[0]._source.responses}}
+    {
+        "name": "{{#with response.[0]._source.responses}}{{#each this as |value key|}}{{key}}{{/each}}{{/with}}",
+        "text": {{#with response.[0]._source.responses}}{{#each this}}{{#if this.[0].condition}}"{{{filterControlCharacters (escapeQuotes this.[1].text)}}}"{{else}}"{{{filterControlCharacters (escapeQuotes this.[0].text)}}}"{{/if}}{{/each}}{{/with}}
+    }
+{{else}}
+    {
+        "name": "",
+        "text": ""
+    }
+{{/if}}
 }
