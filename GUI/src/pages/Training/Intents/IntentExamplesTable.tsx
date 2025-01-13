@@ -16,6 +16,7 @@ import { Intent } from '../../../types/intent';
 import LoadingDialog from '../../../components/LoadingDialog';
 import i18n from '../../../../i18n';
 import { t } from 'i18next';
+import { getEntities } from 'services/entities';
 
 type IntentExamplesTableProps = {
   intent: Intent;
@@ -46,6 +47,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({ intent, updateSelec
 
   const { data: entitiesResponse } = useQuery<{ response: Entity[] }>({
     queryKey: ['entities'],
+    queryFn: () => getEntities(),
   });
 
   const examples = useMemo(

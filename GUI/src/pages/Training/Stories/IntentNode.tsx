@@ -10,6 +10,7 @@ import {
 import {Button, FormSelect, Icon, Track} from 'components';
 import { Entity } from 'types/entity';
 import ToolTipWarning from "../../../components/ToolTipWarning";
+import { getEntities } from 'services/entities';
 
 type NodeDataProps = {
   data: {
@@ -34,8 +35,9 @@ type EntityPayload = (string | undefined)[] | undefined;
 const IntentNode: FC<NodeDataProps> = ({ data }) => {
   const [entityWarning, setEntityWarning] = useState(false);
   const { t } = useTranslation();
-  const { data: entities } = useQuery<Entity[]>({
+  const { data: entities } = useQuery<{ response: Entity[]}>({
     queryKey: ['entities'],
+    queryFn: () => getEntities(),
   });
   const { control, watch } = useForm<{ entities: { label: string; value: string }[] }>({
     defaultValues: {
@@ -81,7 +83,7 @@ const IntentNode: FC<NodeDataProps> = ({ data }) => {
                     }}
                     label={t('training.intents.entity')}
                     hideLabel
-                    options={entities?.map((e) => ({ label: e.name, value: String(e.id) })) || []}
+                    options={entities?.response.map((e) => ({ label: e.name, value: String(e.id) })) || []}
                 />
               )}
             />
