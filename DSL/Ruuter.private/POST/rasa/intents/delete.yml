@@ -156,7 +156,7 @@ removeFromDomainArray:
       value: ${intent}
   result: updatedIntents
 
-removeIntentRespoonses:
+removeIntentResponses:
   call: http.post
   args:
     url: "[#TRAINING_DMAPPER]/object/responses/remove-by-intent-name"
