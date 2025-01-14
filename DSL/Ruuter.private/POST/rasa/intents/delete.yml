@@ -97,120 +97,32 @@ convertRulesYamlToJson:
       file: ${ruleFile.response.body.file}
   result: rulesData
 
+removeIntentRules:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/object/rules/remove-by-intent-name"
+    body:
+      rulesJson: ${rulesData.response.body.rules}
+      searchIntentName: ${intent}
+  result: updatedRules
+
 convertRulesJsonToYaml:
   call: http.post
   args:
     url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
     body:
       version: "3.0"
-      rules: ${rulesData.response.body.rules}
+      rules: ${updatedRules.response.body.result}
   result: rulesYaml
 
-validateRuleDependency:
-  switch:
-    - condition: ${rulesYaml.response.body.json.includes("intent:" + " " + parameters.name)}
-      next: returnRuleDependency
-  next: getStoriesFile
-
-getStoriesFile:
+saveRulesFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/file-manager/read-file"
+    url: "[#TRAINING_DMAPPER]/file-manager/create"
     body:
-      file_path: ${fileLocations.response.body.response.stories_location}
-  result: storiesFile
-
-convertStoriesYamlToJson:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/conversion/yaml_to_json"
-    body:
-      file: ${storiesFile.response.body.file}
-  result: storiesData
-
-convertStoriesJsonToYaml:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
-    body:
-      version: "3.0"
-      stories: ${storiesData.response.body.stories}
-  result: storiesYaml
-
-validateStoriesDependency:
-  switch:
-    - condition: ${storiesYaml.response.body.json.includes("intent:" + " " + parameters.name)}
-      next: returnStoriesDependency
-  next: getIntentFile
-
-getIntentFile:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/file-manager/read-file"
-    body:
-      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
-  result: intentFile
-
-convertYamlToJson:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/conversion/yaml_to_json"
-    body:
-      file: ${intentFile.response.body.file}
-  result: intentData
-
-checkIfIntentEmpty:
-  switch:
-    - condition: ${intentData.response.body.nlu[0] != undefined}
-      next: replaceString
-
-assignEmptyExamples:
-  assign:
-    examplesToWriteIntoYml: []
-  next: mapIntentsData
-
-replaceString:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/conversion/string-replace"
-    body:
-      data: ${intentData.response.body.nlu[0].examples}
-      search: "- "
-      replace: ""
-  result: replacedString
-
-splitExamples:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/conversion/string-split"
-    body:
-      data: ${replacedString.response.body}
-      separator: "\n"
-  result: splitExamples
-
-assignExamples:
-  assign:
-    examplesToWriteIntoYml: ${splitExamples.response.body}
-
-mapIntentsData:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/hbs/training/get_intent_file"
-    headers:
-      type: "json"
-    body:
-      intent: ${parameters.name}
-      examples: ${examplesToWriteIntoYml}
-  result: intentFileJson
-
-convertJsonToYaml:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
-    body:
-      version: "3.0"
-      nlu: ${intentFileJson.response.body}
-  result: intentYaml
+      file_path: ${fileLocations.response.body.response.rules_location}
+      content: ${rulesYaml.response.body.json}
+  result: fileResult
 
 getDomainFile:
   call: http.get
@@ -244,6 +156,17 @@ removeFromDomainArray:
       value: ${intent}
   result: updatedIntents
 
+removeIntentResponses:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/object/responses/remove-by-intent-name"
+    headers:
+      type: "json"
+    body:
+      responses: ${domainData.response.body.response.responses}
+      intent: ${intent}
+  result: updatedResponses
+
 convertDomainJsonToYaml:
   call: http.post
   args:
@@ -255,7 +178,7 @@ convertDomainJsonToYaml:
       slots: ${domainData.response.body.response.slots}
       forms: ${domainData.response.body.response.forms}
       actions: ${domainData.response.body.response.actions}
-      responses: ${domainData.response.body.response.responses}
+      responses: ${updatedResponses.response.body}
       session_config: ${domainData.response.body.response.session_config}
   result: domainYaml
 
@@ -317,18 +240,6 @@ returnIntentMissing:
 
 returnIntentFileMissing:
   return: "Intent file to update is missing"
-  wrapper: false
-  status: 409
-  next: end
-
-returnRuleDependency:
-  return: "Intent has dependency with rules"
-  wrapper: false
-  status: 409
-  next: end
-
-returnStoriesDependency:
-  return: "Intent has dependency with stories"
   wrapper: false
   status: 409
   next: end
