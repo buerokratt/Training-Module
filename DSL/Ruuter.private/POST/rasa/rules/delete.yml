@@ -91,6 +91,16 @@ saveRulesFile:
   result: fileResult
   next: deleteOpenSearchEntry
 
+processOpenSearchDeletion:
+  switch:
+    - condition: ${rule.startsWith('rule_')}
+      next: reAssignRuleName
+  next: deleteOpenSearchEntry
+
+reAssignRuleName:
+  assign:
+    rule: ${rule.replace('rule_','rule')}
+
 deleteOpenSearchEntry:
   call: http.post
   args:

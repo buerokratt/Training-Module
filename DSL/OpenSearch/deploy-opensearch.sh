@@ -15,6 +15,7 @@ curl -H "Content-Type: application/x-ndjson" -X PUT "$URL/responses" -ku "$AUTH"
 if $MOCK_ALLOWED; then curl -H "Content-Type: application/x-ndjson" -X PUT "$URL/responses/_bulk" -ku "$AUTH" --data-binary "@mock/responses.json"; fi
 curl -L -X POST "$URL/_scripts/response-with-name-and-text" -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/response-with-name-and-text.json"
 curl -L -X POST "$URL/_scripts/response" -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/response.json"
+curl -L -X POST "$URL/_scripts/responses-with-pagination" -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/responses-with-pagination.json"
 
 # intents
 curl -XDELETE "$URL/intents?ignore_unavailable=true" -u "$AUTH" --insecure
@@ -31,6 +32,7 @@ curl -L -X POST "$URL/_scripts/rule-with-name" -H 'Content-Type: application/jso
 curl -L -X POST "$URL/_scripts/rule-with-forms" -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/rule-with-forms.json"
 curl -L -X POST "$URL/_scripts/rule-with-responses" -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/rule-with-responses.json"
 curl -L -X POST "$URL/_scripts/rule-with-slots" -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/rule-with-slots.json"
+curl -L -X POST "$URL/_scripts/rules-by-responses" -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/rules-by-responses.json"
 
 # stories
 curl -XDELETE "$URL/stories?ignore_unavailable=true" -u "$AUTH" --insecure
@@ -40,6 +42,7 @@ curl -L -X POST "$URL/_scripts/story-with-name" -H 'Content-Type: application/js
 curl -L -X POST "$URL/_scripts/story-with-forms" -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/story-with-forms.json"
 curl -L -X POST "$URL/_scripts/story-with-responses" -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/story-with-responses.json"
 curl -L -X POST "$URL/_scripts/story-with-slots" -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/story-with-slots.json"
+curl -L -X POST "$URL/_scripts/stories-by-responses" -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/stories-by-responses.json"
 
 # test-stories
 curl -XDELETE "$URL/test-stories?ignore_unavailable=true" -u "$AUTH" --insecure
