@@ -106,6 +106,7 @@ convertRulesJsonToYaml:
       rules: ${rulesData.response.body.rules}
   result: rulesYaml
 
+# todo remove all unused stuff
 # validateRuleDependency:
 #   # todo rules condition
 #   # switch:
@@ -254,6 +255,18 @@ removeFromDomainArray:
       value: ${intent}
   result: updatedIntents
 
+# todo remove responses here
+removeIntentRespoonses:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/object/intents/remove-responses"
+    headers:
+      type: "json"
+    body:
+      responses: ${domainData.response.body.response.responses}
+      intent: ${intent}
+  result: updatedResponses
+
 convertDomainJsonToYaml:
   call: http.post
   args:
@@ -265,7 +278,7 @@ convertDomainJsonToYaml:
       slots: ${domainData.response.body.response.slots}
       forms: ${domainData.response.body.response.forms}
       actions: ${domainData.response.body.response.actions}
-      responses: ${domainData.response.body.response.responses}
+      responses: ${updatedResponses.response.body}
       session_config: ${domainData.response.body.response.session_config}
   result: domainYaml
 
@@ -331,11 +344,12 @@ returnIntentFileMissing:
   status: 409
   next: end
 
-returnRuleDependency:
-  return: "Intent has dependency with rules"
-  wrapper: false
-  status: 409
-  next: end
+# todo remove all unused stuff
+# returnRuleDependency:
+#   return: "Intent has dependency with rules"
+#   wrapper: false
+#   status: 409
+#   next: end
 
 returnStoriesDependency:
   return: "Intent has dependency with stories"
