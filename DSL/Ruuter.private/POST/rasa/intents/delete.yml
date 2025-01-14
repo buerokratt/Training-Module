@@ -97,23 +97,34 @@ convertRulesYamlToJson:
       file: ${ruleFile.response.body.file}
   result: rulesData
 
+removeIntentRules:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/object/rules/remove-by-intent-name"
+    body:
+      rulesJson: ${rulesData.response.body.rules}
+      searchIntentName: ${intent}
+  result: updatedRules
+
 convertRulesJsonToYaml:
   call: http.post
   args:
     url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
     body:
       version: "3.0"
-      rules: ${rulesData.response.body.rules}
+      rules: ${updatedRules.response.body.result}
   result: rulesYaml
 
-# todo remove all unused stuff
-# validateRuleDependency:
-#   # todo rules condition
-#   # switch:
-#   #   - condition: ${rulesYaml.response.body.json.includes("intent:" + " " + parameters.name)}
-#   #     next: returnRuleDependency
-#   next: getStoriesFile
+saveRulesFile:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file-manager/create"
+    body:
+      file_path: ${fileLocations.response.body.response.rules_location}
+      content: ${rulesYaml.response.body.json}
+  result: fileResult
 
+# todo stroies
 getStoriesFile:
   call: http.post
   args:
