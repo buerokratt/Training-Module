@@ -124,40 +124,6 @@ saveRulesFile:
       content: ${rulesYaml.response.body.json}
   result: fileResult
 
-# todo stroies
-getStoriesFile:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/file-manager/read-file"
-    body:
-      file_path: ${fileLocations.response.body.response.stories_location}
-  result: storiesFile
-
-convertStoriesYamlToJson:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/conversion/yaml_to_json"
-    body:
-      file: ${storiesFile.response.body.file}
-  result: storiesData
-
-convertStoriesJsonToYaml:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
-    body:
-      version: "3.0"
-      stories: ${storiesData.response.body.stories}
-  result: storiesYaml
-
-# validateStoriesDependency:
-#   switch:
-#     - condition: ${storiesYaml.response.body.json.includes("intent:" + " " + parameters.name)}
-#       next: returnStoriesDependency
-#   next: getIntentFile
-
-# todo above stories dependency
-
 getDomainFile:
   call: http.get
   args:
