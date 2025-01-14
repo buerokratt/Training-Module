@@ -159,7 +159,7 @@ removeFromDomainArray:
 removeIntentRespoonses:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/object/intents/remove-responses"
+    url: "[#TRAINING_DMAPPER]/object/responses/remove-by-intent-name"
     headers:
       type: "json"
     body:
