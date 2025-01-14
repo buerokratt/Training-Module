@@ -139,89 +139,13 @@ convertStoriesJsonToYaml:
       stories: ${storiesData.response.body.stories}
   result: storiesYaml
 
-validateStoriesDependency:
-  switch:
-    - condition: ${storiesYaml.response.body.json.includes("intent:" + " " + parameters.name)}
-      next: returnStoriesDependency
-  next: getIntentFile
+# validateStoriesDependency:
+#   switch:
+#     - condition: ${storiesYaml.response.body.json.includes("intent:" + " " + parameters.name)}
+#       next: returnStoriesDependency
+#   next: getIntentFile
 
-getIntentFile:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/file-manager/read-file"
-    body:
-      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
-  result: intentFile
-
-convertYamlToJson:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/conversion/yaml_to_json"
-    body:
-      file: ${intentFile.response.body.file}
-  result: intentData
-
-checkIfIntentEmpty:
-  switch:
-    - condition: ${intentData.response.body.nlu[0] != undefined}
-      next: replaceString
-
-assignEmptyExamples:
-  assign:
-    examplesToWriteIntoYml: []
-  next: mapIntentsData
-
-replaceString:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/conversion/string-replace"
-    body:
-      data: ${intentData.response.body.nlu[0].examples}
-      search: "- "
-      replace: ""
-  result: replacedString
-
-splitExamples:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/conversion/string-split"
-    body:
-      data: ${replacedString.response.body}
-      separator: "\n"
-  result: splitExamples
-
-assignExamples:
-  assign:
-    examplesToWriteIntoYml: ${splitExamples.response.body}
-
-mapIntentsData:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/hbs/training/get_intent_file"
-    headers:
-      type: "json"
-    body:
-      intent: ${parameters.name}
-      examples: ${examplesToWriteIntoYml}
-  result: intentFileJson
-
-convertJsonToYaml:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
-    body:
-      version: "3.0"
-      nlu: ${intentFileJson.response.body}
-  result: intentYaml
-
-# saveIntentFile:
-#   call: http.post
-#   args:
-#     url: "[#TRAINING_DMAPPER]/file-manager/create"
-#     body:
-#       file_path: ${fileLocations.response.body.response.intents_location + "removed/" + intent + file_end}
-#       content: ${intentYaml.response.body.json}
-#   result: fileResult
+# todo above stories dependency
 
 getDomainFile:
   call: http.get
@@ -255,7 +179,6 @@ removeFromDomainArray:
       value: ${intent}
   result: updatedIntents
 
-# todo remove responses here
 removeIntentRespoonses:
   call: http.post
   args:
@@ -340,19 +263,6 @@ returnIntentMissing:
 
 returnIntentFileMissing:
   return: "Intent file to update is missing"
-  wrapper: false
-  status: 409
-  next: end
-
-# todo remove all unused stuff
-# returnRuleDependency:
-#   return: "Intent has dependency with rules"
-#   wrapper: false
-#   status: 409
-#   next: end
-
-returnStoriesDependency:
-  return: "Intent has dependency with stories"
   wrapper: false
   status: 409
   next: end
