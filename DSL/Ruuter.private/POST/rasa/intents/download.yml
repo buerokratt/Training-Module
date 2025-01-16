@@ -75,7 +75,7 @@ splitExamples:
 #       examples: ${splitExamples.response.body}
 #     headers:
 #       type: "csv"
-#   result: csvData # todo rename all
+#   result: csvData
 
 getXlsxFile:
   call: http.post
