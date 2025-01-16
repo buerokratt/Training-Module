@@ -44,12 +44,10 @@ interface IntentResponse {
 interface IntentDetailsProps {
   intentId: string;
   setSelectedIntent: Dispatch<SetStateAction<IntentWithExamplesCount | null>>;
-  // todo remove
-  listRefresh?: (newIntent?: string) => Promise<void>;
   setListIntents: Dispatch<SetStateAction<IntentWithExamplesCount[]>>;
 }
 
-const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, listRefresh, setListIntents }) => {
+const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, setListIntents }) => {
   const [intent, setIntent] = useState<Intent | null>(null);
 
   const [editingIntentTitle, setEditingIntentTitle] = useState<string | null>(null);

@@ -32,8 +32,6 @@ const Intents: FC = () => {
     [intents, setSelectedIntent]
   );
 
-  console.log('render intents', intents);
-
   const newIntentMutation = useMutation({
     mutationFn: (data: { name: string }) => addIntent(data),
     onMutate: () => {
@@ -110,7 +108,6 @@ const Intents: FC = () => {
             <IntentDetails
               intentId={selectedIntent.id}
               setSelectedIntent={setSelectedIntent}
-              // listRefresh={queryRefresh}
               setListIntents={setIntents}
             />
           )}
