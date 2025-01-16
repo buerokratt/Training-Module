@@ -21,7 +21,7 @@ import { useToast } from 'hooks/useToast';
 import { ROLES } from 'hoc/with-authorization';
 import useStore from '../../../store/store';
 import { editResponse } from 'services/responses';
-import { addStoryOrRule, deleteStoryOrRule } from 'services/stories';
+import { addStoryOrRule } from 'services/stories';
 import { RuleDTO } from 'types/rule';
 import ConnectServiceToIntentModal from 'pages/ConnectServiceToIntentModal';
 import LoadingDialog from 'components/LoadingDialog';
@@ -44,10 +44,12 @@ interface IntentResponse {
 interface IntentDetailsProps {
   intentId: string;
   setSelectedIntent: Dispatch<SetStateAction<IntentWithExamplesCount | null>>;
-  listRefresh: (newIntent?: string) => Promise<void>;
+  // todo remove
+  listRefresh?: (newIntent?: string) => Promise<void>;
+  setListIntents: Dispatch<SetStateAction<IntentWithExamplesCount[]>>;
 }
 
-const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, listRefresh }) => {
+const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, listRefresh, setListIntents }) => {
   const [intent, setIntent] = useState<Intent | null>(null);
 
   const [editingIntentTitle, setEditingIntentTitle] = useState<string | null>(null);
@@ -403,10 +405,9 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
       setShowConnectToServiceModal(false);
     },
     onSuccess: async () => {
+      setListIntents((prev) => prev.filter((intent) => intent.id !== intentId));
       setSelectedIntent(null);
-      await queryClient.invalidateQueries(['intents/with-examples-count']);
-      // Without the delay, back end still returns the deleted intent. Perhaps BE is deleting asynchronously?
-      setTimeout(() => listRefresh(), 300);
+
       toast.open({
         type: 'success',
         title: t('global.notification'),
