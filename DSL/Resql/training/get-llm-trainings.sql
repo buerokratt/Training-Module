@@ -31,6 +31,8 @@ WITH max_ids AS (
     lt.id, lt.model_type,
     CASE 
         WHEN lt.state = 'ACTIVATING' THEN 'ACTIVATING'
+        WHEN lt.state = 'DELETED' THEN 'DELETED'
+        WHEN lt.file_name = '' THEN 'DELETED'
         ELSE 'READY'
     END AS state,
     lt.trained_date, 
@@ -89,6 +91,7 @@ FROM (
         created
     FROM deployed_model
 ) AS combined_results
+where state <> 'DELETED'
 ORDER BY 
     CAST(SPLIT_PART(version_number, '_', 1) AS INTEGER), 
     CAST(SPLIT_PART(version_number, '_', 2) AS INTEGER);
