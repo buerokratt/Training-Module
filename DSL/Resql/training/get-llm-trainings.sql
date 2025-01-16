@@ -47,6 +47,12 @@ WITH max_ids AS (
         SELECT id
         FROM deployed_model
     )
+    AND NOT EXISTS (
+        SELECT 1
+        FROM llm_trainings AS lt
+        WHERE mi.version_number = lt.version_number
+        AND lt.state = 'DELETED' 
+    )
 )
 SELECT 
     model_type,
