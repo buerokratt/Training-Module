@@ -232,6 +232,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
     },
   });
 
+  // todo upload
   const handleIntentExamplesUpload = () => {
     const input = document.createElement('input');
     input.type = 'file';
@@ -258,6 +259,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
     input.click();
   };
 
+  // todo download
   const intentDownloadMutation = useMutation({
     mutationFn: (intentModelData: { intentName: string }) => downloadExamples(intentModelData),
     onSuccess: async (data) => {
@@ -499,8 +501,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
                     if (!hasSpecialCharacters.test(value) && !value.startsWith(' ')) {
                       setEditingIntentTitle(e.target.value);
                     }
-                   }
-                  }
+                  }}
                   hideLabel
                 />
               ) : (
