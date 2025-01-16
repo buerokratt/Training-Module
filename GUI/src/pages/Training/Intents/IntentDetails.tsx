@@ -87,9 +87,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
         `response-by-intent-id?intent=${intentId}`,
       ]);
       setResponse(responseResponse.response);
-
-      // const rulesResponse = await queryClient.fetchQuery<RuleResponse>([`rule-by-intent-id?intent=${intentId}`]);
-      // setIntentRule(rulesResponse.response.id);
     },
     [intentId, queryClient, setResponse, setSelectedIntent]
   );
