@@ -41,10 +41,6 @@ interface IntentResponse {
   response: Intent;
 }
 
-interface RuleResponse {
-  response: { id: string };
-}
-
 interface IntentDetailsProps {
   intentId: string;
   setSelectedIntent: Dispatch<SetStateAction<IntentWithExamplesCount | null>>;
@@ -59,7 +55,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
   const [showConnectToServiceModal, setShowConnectToServiceModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [response, setResponse] = useState<Response>({ name: '', text: '' });
-  const [intentRule, setIntentRule] = useState<string>('');
 
   const queryClient = useQueryClient();
   const toast = useToast();
@@ -93,8 +88,8 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
       ]);
       setResponse(responseResponse.response);
 
-      const rulesResponse = await queryClient.fetchQuery<RuleResponse>([`rule-by-intent-id?intent=${intentId}`]);
-      setIntentRule(rulesResponse.response.id);
+      // const rulesResponse = await queryClient.fetchQuery<RuleResponse>([`rule-by-intent-id?intent=${intentId}`]);
+      // setIntentRule(rulesResponse.response.id);
     },
     [intentId, queryClient, setResponse, setSelectedIntent]
   );
@@ -106,14 +101,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
   useEffect(() => {
     if (responseResponse) setResponse(responseResponse.response);
   }, [responseResponse]);
-
-  const { data: rulesResponse } = useQuery<RuleResponse>({
-    queryKey: [`rule-by-intent-id?intent=${intentId}`],
-  });
-
-  useEffect(() => {
-    if (rulesResponse) setIntentRule(rulesResponse.response.id);
-  }, [rulesResponse]);
 
   const markIntentServiceMutation = useMutation({
     mutationFn: (data: { name: string; isForService: boolean }) => markForService(data),
@@ -438,41 +425,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
     },
   });
 
-  const deleteRuleWithIntentMutation = useMutation({
-    mutationFn: (id: string | number) => deleteStoryOrRule(id, 'rules'),
-    onMutate: () => {
-      setRefreshing(true);
-    },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries([`intents/is-marked-for-service?intent=${intentId}`]);
-      await queryClient.invalidateQueries([`rule-by-intent-id?intent=${intentId}`]);
-      toast.open({
-        type: 'success',
-        title: t('global.notification'),
-        message: t('toast.storyDeleted'),
-      });
-    },
-    onError: (error: AxiosError) => {
-      toast.open({
-        type: 'error',
-        title: t('global.notificationError'),
-        message: error.message,
-      });
-    },
-    onSettled: () => {
-      deleteIntentMutation.mutate(intentId);
-      setRefreshing(false);
-    },
-  });
-
-  const handleDeleteIntent = async () => {
-    if (intentRule) {
-      await deleteRuleWithIntentMutation.mutateAsync(intentRule);
-    } else {
-      await deleteIntentMutation.mutateAsync(intentId);
-    }
-  };
-
   const updateSelectedIntent = (updatedIntent: Intent) => {
     setSelectedIntent(null);
     setTimeout(() => setSelectedIntent(updatedIntent), 20);
@@ -499,8 +451,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
                     if (!hasSpecialCharacters.test(value) && !value.startsWith(' ')) {
                       setEditingIntentTitle(e.target.value);
                     }
-                   }
-                  }
+                  }}
                   hideLabel
                 />
               ) : (
@@ -643,7 +594,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
               <Button appearance="secondary" onClick={() => setShowDeleteModal(false)}>
                 {t('global.no')}
               </Button>
-              <Button appearance="error" onClick={() => handleDeleteIntent()}>
+              <Button appearance="error" onClick={() => deleteIntentMutation.mutate(intentId)}>
                 {t('global.yes')}
               </Button>
             </>
