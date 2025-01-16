@@ -66,27 +66,36 @@ splitExamples:
       separator: "\n"
   result: splitExamples
 
-mapIntentsData:
+# mapIntentsData:
+#   call: http.post
+#   args:
+#     # todo remove get_intent_csv template
+#     url: "[#TRAINING_DMAPPER]/hbs/training/get_intent_csv"
+#     body:
+#       examples: ${splitExamples.response.body}
+#     headers:
+#       type: "csv"
+#   result: csvData # todo rename all
+
+getXlsxFile:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/hbs/training/get_intent_csv"
+    url: "[#TRAINING_DMAPPER]/conversion/array-to-xlsx"
     body:
-      examples: ${splitExamples.response.body}
-    headers:
-      type: "csv"
-  result: csvData
+      data: ${splitExamples.response.body}
+  result: xlsxFile
 
 checkResponse:
   switch:
-    - condition: ${csvData.response.body != undefined}
+    - condition: ${xlsxFile.response.body != undefined}
       next: returnSuccess
   next: returnIntentExamplesMissing
 
 returnSuccess:
   wrapper: false
   headers:
-    "Content-disposition": ${"attachment;filename=" + intentName + ".csv"}
-  return: ${csvData.response.body.response}
+    "Content-disposition": ${"attachment;filename=" + intentName + ".xlsx"}
+  return: "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,${xlsxFile.response.body.response}"
   next: end
 
 returnIntentFileMissing:
