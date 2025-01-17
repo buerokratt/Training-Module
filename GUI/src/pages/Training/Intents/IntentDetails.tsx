@@ -28,7 +28,6 @@ import ConnectServiceToIntentModal from 'pages/ConnectServiceToIntentModal';
 import LoadingDialog from 'components/LoadingDialog';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import { IntentWithExamplesCount } from 'types/intentWithExamplesCount';
-import { blob } from 'stream/consumers';
 
 interface Response {
   name: string;
