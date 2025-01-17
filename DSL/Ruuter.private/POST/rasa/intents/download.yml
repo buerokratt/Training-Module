@@ -85,6 +85,7 @@ getXlsxFile:
       data: ${splitExamples.response.body}
   result: xlsxFile
 
+# todo this is broken, body is always there now
 checkResponse:
   switch:
     - condition: ${xlsxFile.response.body != undefined}

@@ -261,17 +261,13 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
     input.click();
   };
 
-  // todo download
   const intentDownloadMutation = useMutation({
     mutationFn: (intentModelData: { intentName: string }) => downloadExamples(intentModelData),
     onSuccess: async (data) => {
-      // todo simpler?
-      const buffer = Buffer.from(data, 'base64');
-      const fileName = intent?.id + '.xlsx';
-      const file = new File([buffer], fileName, {
+      const blob = new Blob([Buffer.from(data, 'base64')], {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       });
-      const blob = new Blob([file], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const fileName = intent?.id + '.xlsx';
 
       if (window.showSaveFilePicker) {
         const handle = await window.showSaveFilePicker({ suggestedName: fileName });
