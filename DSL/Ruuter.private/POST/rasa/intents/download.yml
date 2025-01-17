@@ -43,7 +43,7 @@ checkIfIntentEmpty:
   switch:
     - condition: ${intentFile.response.body.response === 'Intent file is missing'}
       next: returnIntentFileMissing
-    - condition: ${intentFile.response.body.response.nlu[0] != undefined && intentFile.response.body.response != 'Intent file is missing'}
+    - condition: ${intentFile.response.body.response.nlu[0] != undefined && intentFile.response.body.response != 'Intent file is missing' && intentFile.response.body.response.nlu[0].examples.length > 0}
       next: replaceString
   next: returnIntentExamplesMissing
 
@@ -66,17 +66,6 @@ splitExamples:
       separator: "\n"
   result: splitExamples
 
-# mapIntentsData:
-#   call: http.post
-#   args:
-#     # todo remove get_intent_csv template
-#     url: "[#TRAINING_DMAPPER]/hbs/training/get_intent_csv"
-#     body:
-#       examples: ${splitExamples.response.body}
-#     headers:
-#       type: "csv"
-#   result: csvData
-
 getXlsxData:
   call: http.post
   args:
@@ -84,13 +73,6 @@ getXlsxData:
     body:
       data: ${splitExamples.response.body}
   result: xlsxData
-
-# todo this is broken, body is always there now
-checkResponse:
-  switch:
-    - condition: ${xlsxData.response.body != undefined}
-      next: returnSuccess
-  next: returnIntentExamplesMissing
 
 returnSuccess:
   wrapper: false

@@ -545,6 +545,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
               {t('training.intents.upload')}
             </Button>
             <Button
+              disabled={intent.examples?.length === 0}
               appearance="secondary"
               onClick={() =>
                 intentDownloadMutation.mutate({
