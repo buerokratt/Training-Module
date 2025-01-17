@@ -74,7 +74,6 @@ export async function downloadExamples(downloadExampleData: { intentName: string
 }
 
 export async function uploadExamples(intentName: string, file: File) {
-  // Convert file to base64
   const base64File = await new Promise((resolve) => {
     const reader = new FileReader();
     reader.onload = () => {
@@ -86,13 +85,9 @@ export async function uploadExamples(intentName: string, file: File) {
   });
 
   const formDataRequest = new FormData();
-  console.log('IGOR FILE', base64File);
   formDataRequest.append('file', base64File as string);
 
-  // console.log('IGOR FORM DATA', formDataRequest);
-
   const { data } = await rasaApi.post(`/intents/upload?intentName=${intentName}`, formDataRequest);
-  console.log('IGOR DATA', data);
   return data;
 }
 
