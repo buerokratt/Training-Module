@@ -21,7 +21,7 @@ import { useToast } from 'hooks/useToast';
 import { ROLES } from 'hoc/with-authorization';
 import useStore from '../../../store/store';
 import { editResponse } from 'services/responses';
-import { addStoryOrRule, deleteStoryOrRule } from 'services/stories';
+import { addStoryOrRule } from 'services/stories';
 import { RuleDTO } from 'types/rule';
 import ConnectServiceToIntentModal from 'pages/ConnectServiceToIntentModal';
 import LoadingDialog from 'components/LoadingDialog';
@@ -41,17 +41,13 @@ interface IntentResponse {
   response: Intent;
 }
 
-interface RuleResponse {
-  response: { id: string };
-}
-
 interface IntentDetailsProps {
   intentId: string;
   setSelectedIntent: Dispatch<SetStateAction<IntentWithExamplesCount | null>>;
-  listRefresh: (newIntent?: string) => Promise<void>;
+  setListIntents: Dispatch<SetStateAction<IntentWithExamplesCount[]>>;
 }
 
-const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, listRefresh }) => {
+const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, setListIntents }) => {
   const [intent, setIntent] = useState<Intent | null>(null);
 
   const [editingIntentTitle, setEditingIntentTitle] = useState<string | null>(null);
@@ -59,7 +55,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
   const [showConnectToServiceModal, setShowConnectToServiceModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [response, setResponse] = useState<Response>({ name: '', text: '' });
-  const [intentRule, setIntentRule] = useState<string>('');
 
   const queryClient = useQueryClient();
   const toast = useToast();
@@ -92,9 +87,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
         `response-by-intent-id?intent=${intentId}`,
       ]);
       setResponse(responseResponse.response);
-
-      const rulesResponse = await queryClient.fetchQuery<RuleResponse>([`rule-by-intent-id?intent=${intentId}`]);
-      setIntentRule(rulesResponse.response.id);
     },
     [intentId, queryClient, setResponse, setSelectedIntent]
   );
@@ -106,14 +98,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
   useEffect(() => {
     if (responseResponse) setResponse(responseResponse.response);
   }, [responseResponse]);
-
-  const { data: rulesResponse } = useQuery<RuleResponse>({
-    queryKey: [`rule-by-intent-id?intent=${intentId}`],
-  });
-
-  useEffect(() => {
-    if (rulesResponse) setIntentRule(rulesResponse.response.id);
-  }, [rulesResponse]);
 
   const markIntentServiceMutation = useMutation({
     mutationFn: (data: { name: string; isForService: boolean }) => markForService(data),
@@ -419,10 +403,9 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
       setShowConnectToServiceModal(false);
     },
     onSuccess: async () => {
+      setListIntents((prev) => prev.filter((intent) => intent.id !== intentId));
       setSelectedIntent(null);
-      await queryClient.invalidateQueries(['intents/with-examples-count']);
-      // Without the delay, back end still returns the deleted intent. Perhaps BE is deleting asynchronously?
-      setTimeout(() => listRefresh(), 300);
+
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -437,41 +420,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
       });
     },
   });
-
-  const deleteRuleWithIntentMutation = useMutation({
-    mutationFn: (id: string | number) => deleteStoryOrRule(id, 'rules'),
-    onMutate: () => {
-      setRefreshing(true);
-    },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries([`intents/is-marked-for-service?intent=${intentId}`]);
-      await queryClient.invalidateQueries([`rule-by-intent-id?intent=${intentId}`]);
-      toast.open({
-        type: 'success',
-        title: t('global.notification'),
-        message: t('toast.storyDeleted'),
-      });
-    },
-    onError: (error: AxiosError) => {
-      toast.open({
-        type: 'error',
-        title: t('global.notificationError'),
-        message: error.message,
-      });
-    },
-    onSettled: () => {
-      deleteIntentMutation.mutate(intentId);
-      setRefreshing(false);
-    },
-  });
-
-  const handleDeleteIntent = async () => {
-    if (intentRule) {
-      await deleteRuleWithIntentMutation.mutateAsync(intentRule);
-    } else {
-      await deleteIntentMutation.mutateAsync(intentId);
-    }
-  };
 
   const updateSelectedIntent = (updatedIntent: Intent) => {
     setSelectedIntent(null);
@@ -499,8 +447,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
                     if (!hasSpecialCharacters.test(value) && !value.startsWith(' ')) {
                       setEditingIntentTitle(e.target.value);
                     }
-                   }
-                  }
+                  }}
                   hideLabel
                 />
               ) : (
@@ -643,7 +590,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
               <Button appearance="secondary" onClick={() => setShowDeleteModal(false)}>
                 {t('global.no')}
               </Button>
-              <Button appearance="error" onClick={() => handleDeleteIntent()}>
+              <Button appearance="error" onClick={() => deleteIntentMutation.mutate(intentId)}>
                 {t('global.yes')}
               </Button>
             </>

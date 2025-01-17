@@ -62,6 +62,7 @@ export const useIntentsData = ({ queryKey }: UseIntentsDataProps) => {
 
   return {
     intents,
+    setIntents,
     selectedIntent,
     setSelectedIntent,
     queryRefresh,

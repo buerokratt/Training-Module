@@ -14,7 +14,7 @@ import IntentList from './IntentList';
 const CommonIntents: FC = () => {
   const { t } = useTranslation();
 
-  const { intents, selectedIntent, setSelectedIntent, queryRefresh, isLoading } = useIntentsData({
+  const { intents, setIntents, selectedIntent, setSelectedIntent, queryRefresh, isLoading } = useIntentsData({
     queryKey: 'intents/with-examples-count?prefix=common_',
   });
 
@@ -117,7 +117,7 @@ const CommonIntents: FC = () => {
             <IntentDetails
               intentId={selectedIntent.id}
               setSelectedIntent={setSelectedIntent}
-              listRefresh={queryRefresh}
+              setListIntents={setIntents}
             />
           )}
         </Tabs.Root>
