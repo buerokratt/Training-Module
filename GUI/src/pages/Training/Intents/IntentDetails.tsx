@@ -233,7 +233,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
     },
   });
 
-  // todo upload
   const handleIntentExamplesUpload = () => {
     const input = document.createElement('input');
     input.type = 'file';
