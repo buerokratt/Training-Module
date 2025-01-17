@@ -37,11 +37,6 @@ addExamples:
     body:
       intentName: ${intentName}
       intentExamples: []
-      # todo can accept [
-      # "apple","banana","orange",
-      # "red","yellow","green",
-      # "car","bus","train"
-      # ]
       newExamples: ${jsonData.response.body}
   result: addResult
 
