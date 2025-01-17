@@ -84,10 +84,9 @@ export async function uploadExamples(intentName: string, file: File) {
     reader.readAsDataURL(file);
   });
 
-  const formDataRequest = new FormData();
-  formDataRequest.append('file', base64File);
-
-  const { data } = await rasaApi.post(`/intents/upload?intentName=${intentName}`, formDataRequest);
+  const { data } = await rasaApi.post(`/intents/upload?intentName=${intentName}`, {
+    file: base64File,
+  });
   return data;
 }
 
