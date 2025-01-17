@@ -94,9 +94,6 @@ checkResponse:
 
 returnSuccess:
   wrapper: false
-  headers:
-    # todo do i need this? test firefox
-    "Content-disposition": ${"attachment;filename=" + intentName + ".xlsx"}
   return: ${xlsxFile.response.body.base64String}
   next: end
 
