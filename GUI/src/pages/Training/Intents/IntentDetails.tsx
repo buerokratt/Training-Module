@@ -9,6 +9,7 @@ import IntentExamplesTable from './IntentExamplesTable';
 import * as Tabs from '@radix-ui/react-tabs';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
+import { Buffer } from 'buffer';
 import {
   addRemoveIntentModel,
   deleteIntent,
@@ -27,6 +28,7 @@ import ConnectServiceToIntentModal from 'pages/ConnectServiceToIntentModal';
 import LoadingDialog from 'components/LoadingDialog';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import { IntentWithExamplesCount } from 'types/intentWithExamplesCount';
+import { blob } from 'stream/consumers';
 
 interface Response {
   name: string;
@@ -263,8 +265,13 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
   const intentDownloadMutation = useMutation({
     mutationFn: (intentModelData: { intentName: string }) => downloadExamples(intentModelData),
     onSuccess: async (data) => {
-      const blob = new Blob([data], { type: 'text/csv' });
-      const fileName = intent?.id + '.csv';
+      // todo simpler?
+      const buffer = Buffer.from(data, 'base64');
+      const fileName = intent?.id + '.xlsx';
+      const file = new File([buffer], fileName, {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+      const blob = new Blob([file], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
 
       if (window.showSaveFilePicker) {
         const handle = await window.showSaveFilePicker({ suggestedName: fileName });
