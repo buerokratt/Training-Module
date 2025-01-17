@@ -20,23 +20,13 @@ assign_values:
   assign:
     intentName: ${incoming.params.intentName}
 
-convertCsvToJson:
+convertXlsxToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/conversion/csv-to-json"
+    url: "[#TRAINING_DMAPPER]/conversion/xlsx-to-json"
     body:
       file: ${incoming.body}
   result: jsonData
-
-mapCsvToArray:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/hbs/training/csv_examples_to_array"
-    headers:
-      type: 'json'
-    body:
-      examples: ${jsonData.response.body}
-  result: examples
 
 addExamples:
   call: http.post
@@ -47,10 +37,14 @@ addExamples:
     body:
       intentName: ${intentName}
       intentExamples: []
-      newExamples: ${examples.response.body}
+      # todo can accept [
+      # "apple","banana","orange",
+      # "red","yellow","green",
+      # "car","bus","train"
+      # ]
+      newExamples: ${jsonData.response.body}
   result: addResult
 
 returnSuccess:
   return: ${addResult.response.body.response}
   next: end
-

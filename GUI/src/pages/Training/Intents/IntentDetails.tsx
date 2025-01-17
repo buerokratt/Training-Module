@@ -237,7 +237,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
   const handleIntentExamplesUpload = () => {
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = '.csv';
+    input.accept = '.xlsx';
 
     input.addEventListener('change', async (event) => {
       const fileInput = event.target as HTMLInputElement;
