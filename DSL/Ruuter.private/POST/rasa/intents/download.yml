@@ -77,24 +77,24 @@ splitExamples:
 #       type: "csv"
 #   result: csvData
 
-getXlsxFile:
+getXlsxData:
   call: http.post
   args:
     url: "[#TRAINING_DMAPPER]/conversion/string-to-xlsx"
     body:
       data: ${splitExamples.response.body}
-  result: xlsxFile
+  result: xlsxData
 
 # todo this is broken, body is always there now
 checkResponse:
   switch:
-    - condition: ${xlsxFile.response.body != undefined}
+    - condition: ${xlsxData.response.body != undefined}
       next: returnSuccess
   next: returnIntentExamplesMissing
 
 returnSuccess:
   wrapper: false
-  return: ${xlsxFile.response.body.base64String}
+  return: ${xlsxData.response.body.base64String}
   next: end
 
 returnIntentFileMissing:
