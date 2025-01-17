@@ -23,7 +23,7 @@ assign_values:
 convertXlsxToJson:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/conversion/xlsx-to-json"
+    url: "[#TRAINING_DMAPPER]/conversion/xlsx-to-array"
     body:
       file: ${incoming.body}
   result: jsonData

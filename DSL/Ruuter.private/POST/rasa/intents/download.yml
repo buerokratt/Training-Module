@@ -69,7 +69,7 @@ splitExamples:
 getXlsxData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/conversion/string-to-xlsx"
+    url: "[#TRAINING_DMAPPER]/conversion/array-to-xlsx"
     body:
       data: ${splitExamples.response.body}
   result: xlsxData
