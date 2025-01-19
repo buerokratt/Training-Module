@@ -24,6 +24,13 @@ assign_values:
     intent: ${incoming.body.newName.replaceAll(/\s+/g, "_")}
     intent_old_name: ${incoming.body.oldName.replaceAll(/\s+/g, "_")}
 
+assign_replace_items:
+  assign:
+    utter_old_name: "utter_${intent_old_name}"
+    utter_name: "utter_${intent}"
+    rule_old_name: "rule${intent_old_name}"
+    rule_name: "rule${intent}"
+    
 validateInputLength:
   switch:
     - condition: ${intent.length > 2}
@@ -113,7 +120,7 @@ saveRulesFile:
     url: "[#TRAINING_DMAPPER]/file-manager/create"
     body:
       file_path: ${fileLocations.response.body.response.rules_location}
-      content: ${updatedRules.response.body}
+      content: "${JSON.parse(JSON.stringify(updatedRules.response.body).replaceAll(utter_old_name, utter_name).replaceAll(rule_old_name, rule_name))}"
   result: rulesFileResult
   next: getStoriesFile
 
@@ -333,7 +340,7 @@ replaceExistingIntent:
       newValue: ${intent}
       array: ${domainData.response.body.response.intents}
   result: updatedIntents
-
+  
 convertDomainJsonToYaml:
   call: http.post
   args:
@@ -345,7 +352,7 @@ convertDomainJsonToYaml:
       slots: ${domainData.response.body.response.slots}
       forms: ${domainData.response.body.response.forms}
       actions: ${domainData.response.body.response.actions}
-      responses: ${domainData.response.body.response.responses}
+      responses: ${JSON.parse(JSON.stringify(domainData.response.body.response.responses).replaceAll(utter_old_name, utter_name))}
       session_config: ${domainData.response.body.response.session_config}
   result: domainYaml
 
