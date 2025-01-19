@@ -28,8 +28,6 @@ assign_replace_items:
   assign:
     utter_old_name: "utter_${intent_old_name}"
     utter_name: "utter_${intent}"
-    rule_old_name: "rule${intent_old_name}"
-    rule_name: "rule${intent}"
     
 validateInputLength:
   switch:
@@ -120,8 +118,17 @@ saveRulesFile:
     url: "[#TRAINING_DMAPPER]/file-manager/create"
     body:
       file_path: ${fileLocations.response.body.response.rules_location}
-      content: "${JSON.parse(JSON.stringify(updatedRules.response.body).replaceAll(utter_old_name, utter_name).replaceAll(rule_old_name, rule_name))}"
+      content: ${JSON.parse(JSON.stringify(updatedRules.response.body).replaceAll(utter_old_name, utter_name))}
   result: rulesFileResult
+  next: updateOpenSearchRules
+
+updateOpenSearchRules:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]/bulk/rules/rule"
+    body:
+      input: ${JSON.parse(JSON.stringify(updatedRules.response.body).replaceAll(utter_old_name, utter_name))}
+  result: updateSearchResult
   next: getStoriesFile
 
 getStoriesFile:
@@ -364,6 +371,15 @@ saveDomainFile:
       file_path: ${fileLocations.response.body.response.domain_location}
       content: ${domainYaml.response.body.json}
   result: fileResult
+  next: updateOpenSearchDomain
+
+updateOpenSearchDomain:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]/bulk/domain"
+    body:
+      input: ${domainYaml.response.body.json}
+  result: updateSearchResult
   next: returnSuccess
 
 returnSuccess:
