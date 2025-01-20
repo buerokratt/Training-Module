@@ -39,6 +39,7 @@ const IntentsFollowupTraining: FC = () => {
             {t('training.intents.regex')}
           </Tabs.Trigger>
         </Tabs.List>
+
         <Tabs.Content key="entities" value="entities" className="vertical-tabs__body">
           <Entities />
         </Tabs.Content>
