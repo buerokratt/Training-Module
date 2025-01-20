@@ -23,7 +23,6 @@ const IntentsFollowupTraining: FC = () => {
     <>
       <h1>{t('training.intents.followupTraining')}</h1>
 
-      <h4>Entities</h4>
       <Tabs.Root
         className="vertical-tabs"
         orientation="vertical"
@@ -47,20 +46,6 @@ const IntentsFollowupTraining: FC = () => {
           <Regex />
         </Tabs.Content>
       </Tabs.Root>
-
-      {/* todo clean up */}
-      {/* <h4>Regexes</h4>
-      <Tabs.Root
-        className="vertical-tabs"
-        orientation="vertical"
-        value={selectedTab ?? undefined}
-        onValueChange={setSelectedTab}
-        defaultValue="regex"
-      >
-        <Tabs.Content key="regex" value="regex" className="vertical-tabs__body">
-          <Regex />
-        </Tabs.Content>
-      </Tabs.Root> */}
     </>
   );
 };
