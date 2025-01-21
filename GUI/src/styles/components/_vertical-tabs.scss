@@ -4,7 +4,8 @@
   border: 1px solid get-color(black-coral-2);
   background-color: get-color(white);
   overflow-y: auto;
-
+  overflow-x: hidden;
+  
   &__list {
     display: flex;
     flex-direction: column;

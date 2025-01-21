@@ -484,7 +484,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
 
   return (
     <Tabs.Content key={intent.id} className="vertical-tabs__body" value={intent.id} style={{ overflowX: 'auto' }}>
-      <div className="vertical-tabs__content-header">
+      {/* <div className="vertical-tabs__content-header">
         <Track direction="vertical" align="stretch" gap={8}>
           <Track justify="between">
             <Track gap={16}>
@@ -595,7 +595,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
             </Tooltip>
           </Track>
         </Track>
-      </div>
+      </div> */}
 
       <div className="vertical-tabs__content">
         {intent?.examples && (
