@@ -334,7 +334,10 @@
       "nps": "NPS",
       "rating": "Rating",
       "feedback": "Feedback",
-      "forwarded": "Forwarded"
+      "forwarded": "Forwarded",
+      "statusAddedDate": "Status added date",
+      "chosenCsa": "Chosen csa(s)",
+      "chosenColumn": "Chosen column(s)"
     },
     "plainEvents": {
       "answered": "Answered",
