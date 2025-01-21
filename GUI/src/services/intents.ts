@@ -1,4 +1,4 @@
-import { fileApi, rasaApi } from './api';
+import { fileApi, rasaApi, rasaApi } from './api';
 
 export async function addIntent(newIntentData: { name: string }) {
   const { data } = await rasaApi.post('/intents/add', newIntentData);
@@ -73,11 +73,20 @@ export async function downloadExamples(downloadExampleData: { intentName: string
   return data;
 }
 
-export async function uploadExamples(intentName: string, formData: File) {
-  const formDataRequest = new FormData();
-  formDataRequest.append('file', formData);
+export async function uploadExamples(intentName: string, file: File) {
+  const base64File = await new Promise<string>((resolve) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64 = reader.result as string;
+      // Remove the data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64, prefix
+      resolve(base64.split(',')[1]);
+    };
+    reader.readAsDataURL(file);
+  });
 
-  const { data } = await fileApi.post(`/intents/upload?intentName=${intentName}`, formDataRequest);
+  const { data } = await rasaApi.post(`/intents/upload?intentName=${intentName}`, {
+    file: base64File,
+  });
   return data;
 }
 

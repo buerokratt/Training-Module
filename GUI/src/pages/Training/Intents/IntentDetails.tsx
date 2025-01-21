@@ -9,6 +9,7 @@ import IntentExamplesTable from './IntentExamplesTable';
 import * as Tabs from '@radix-ui/react-tabs';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
+import { Buffer } from 'buffer';
 import {
   addRemoveIntentModel,
   deleteIntent,
@@ -219,7 +220,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, se
   const handleIntentExamplesUpload = () => {
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = '.csv';
+    input.accept = '.xlsx';
 
     input.addEventListener('change', async (event) => {
       const fileInput = event.target as HTMLInputElement;
@@ -245,8 +246,10 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, se
   const intentDownloadMutation = useMutation({
     mutationFn: (intentModelData: { intentName: string }) => downloadExamples(intentModelData),
     onSuccess: async (data) => {
-      const blob = new Blob([data], { type: 'text/csv' });
-      const fileName = intent?.id + '.csv';
+      const blob = new Blob([Buffer.from(data, 'base64')], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+      const fileName = intent?.id + '.xlsx';
 
       if (window.showSaveFilePicker) {
         const handle = await window.showSaveFilePicker({ suggestedName: fileName });
@@ -489,6 +492,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, se
               {t('training.intents.upload')}
             </Button>
             <Button
+              disabled={intent.examples?.length === 0}
               appearance="secondary"
               onClick={() =>
                 intentDownloadMutation.mutate({
