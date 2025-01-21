@@ -499,8 +499,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
                     if (!hasSpecialCharacters.test(value) && !value.startsWith(' ')) {
                       setEditingIntentTitle(e.target.value);
                     }
-                   }
-                  }
+                  }}
                   hideLabel
                 />
               ) : (
