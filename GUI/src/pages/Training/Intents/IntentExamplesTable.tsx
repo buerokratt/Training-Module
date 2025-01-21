@@ -16,7 +16,6 @@ import { Intent } from '../../../types/intent';
 import LoadingDialog from '../../../components/LoadingDialog';
 import i18n from '../../../../i18n';
 import { getEntities } from 'services/entities';
-import './IntentExamplesTable.scss';
 
 type IntentExamplesTableProps = {
   intent: Intent;
@@ -291,7 +290,6 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({ intent, updateSelec
       <DataTable
         data={examples}
         columns={examplesColumns}
-        className="intent-examples"
         tableBodyPrefix={
           <tr>
             <td>

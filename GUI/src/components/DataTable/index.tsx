@@ -57,7 +57,6 @@ type DataTableProps = {
       unknown
     >
   >;
-  className?: string;
 };
 
 type ColumnMeta = {
@@ -119,7 +118,6 @@ const DataTable: FC<DataTableProps> = ({
   selectedRow,
   isFetching,
   fetchNextPage,
-  className,
 }) => {
   const id = useId();
   const { t } = useTranslation();
@@ -191,10 +189,7 @@ const DataTable: FC<DataTableProps> = ({
 
   return (
     <>
-      <div
-        className={clsx('data-table__scrollWrapper', className)}
-        onScroll={(e) => fetchMoreOnBottomReached(e.currentTarget)}
-      >
+      <div className="data-table__scrollWrapper" onScroll={(e) => fetchMoreOnBottomReached(e.currentTarget)}>
         <table className="data-table">
           {!disableHead && (
             <thead>

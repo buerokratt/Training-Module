@@ -49,9 +49,10 @@ interface IntentDetailsProps {
   intentId: string;
   setSelectedIntent: Dispatch<SetStateAction<IntentWithExamplesCount | null>>;
   listRefresh: (newIntent?: string) => Promise<void>;
+  forCommonIntentsPage?: boolean;
 }
 
-const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, listRefresh }) => {
+const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, listRefresh, forCommonIntentsPage }) => {
   const [intent, setIntent] = useState<Intent | null>(null);
 
   const [editingIntentTitle, setEditingIntentTitle] = useState<string | null>(null);
@@ -599,7 +600,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
       <div className="vertical-tabs__content">
         {intent?.examples && (
           <Track align="stretch" justify="between" gap={10} style={{ width: '100%' }}>
-            <div style={{ flex: 1, height: 'calc(100vh - 400px)' }}>
+            <div style={{ flex: 1, height: forCommonIntentsPage ? 'calc(100vh - 500px)' : 'calc(100vh - 400px)' }}>
               <IntentExamplesTable intent={intent} updateSelectedIntent={updateSelectedIntent} />
             </div>
             <div>
