@@ -43,7 +43,7 @@ checkIfIntentEmpty:
   switch:
     - condition: ${intentFile.response.body.response === 'Intent file is missing'}
       next: returnIntentFileMissing
-    - condition: ${intentFile.response.body.response.nlu[0] != undefined && intentFile.response.body.response != 'Intent file is missing'}
+    - condition: ${intentFile.response.body.response.nlu[0] != undefined && intentFile.response.body.response != 'Intent file is missing' && intentFile.response.body.response.nlu[0].examples.length > 0}
       next: replaceString
   next: returnIntentExamplesMissing
 
@@ -66,27 +66,17 @@ splitExamples:
       separator: "\n"
   result: splitExamples
 
-mapIntentsData:
+getXlsxData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/hbs/training/get_intent_csv"
+    url: "[#TRAINING_DMAPPER]/conversion/array-to-xlsx"
     body:
-      examples: ${splitExamples.response.body}
-    headers:
-      type: "csv"
-  result: csvData
-
-checkResponse:
-  switch:
-    - condition: ${csvData.response.body != undefined}
-      next: returnSuccess
-  next: returnIntentExamplesMissing
+      data: ${splitExamples.response.body}
+  result: xlsxData
 
 returnSuccess:
   wrapper: false
-  headers:
-    "Content-disposition": ${"attachment;filename=" + intentName + ".csv"}
-  return: ${csvData.response.body.response}
+  return: ${xlsxData.response.body.base64String}
   next: end
 
 returnIntentFileMissing:

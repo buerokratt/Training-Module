@@ -17,7 +17,7 @@ const Intents: FC = () => {
   const { t } = useTranslation();
   const toast = useToast();
 
-  const { intents, selectedIntent, setSelectedIntent, queryRefresh, isLoading } = useIntentsData({
+  const { intents, setIntents, selectedIntent, setSelectedIntent, queryRefresh, isLoading } = useIntentsData({
     queryKey: 'intents/with-examples-count',
   });
 
@@ -108,7 +108,7 @@ const Intents: FC = () => {
             <IntentDetails
               intentId={selectedIntent.id}
               setSelectedIntent={setSelectedIntent}
-              listRefresh={queryRefresh}
+              setListIntents={setIntents}
             />
           )}
         </Tabs.Root>
