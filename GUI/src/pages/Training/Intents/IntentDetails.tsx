@@ -485,7 +485,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
   return (
     <Tabs.Content key={intent.id} className="vertical-tabs__body" value={intent.id} style={{ overflowX: 'auto' }}>
       <div className="vertical-tabs__content-header">
-        {/* calc(100vh - 100px - 80px - 188px) */}
         <Track direction="vertical" align="stretch" gap={8}>
           <Track justify="between">
             <Track gap={16}>
@@ -600,7 +599,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, li
       <div className="vertical-tabs__content">
         {intent?.examples && (
           <Track align="stretch" justify="between" gap={10} style={{ width: '100%' }}>
-            <div style={{ flex: 1 }}>
+            <div style={{ flex: 1, height: 'calc(100vh - 400px)' }}>
               <IntentExamplesTable intent={intent} updateSelectedIntent={updateSelectedIntent} />
             </div>
             <div>
