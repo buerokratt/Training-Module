@@ -1,7 +1,7 @@
 import { FC, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createColumnHelper } from '@tanstack/react-table';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AxiosError, HttpStatusCode } from 'axios';
 import { MdDeleteOutline, MdOutlineModeEditOutline, MdOutlineSave, MdAddCircle } from 'react-icons/md';
 
@@ -15,6 +15,7 @@ import IntentExamplesEntry from './IntentExamplesEntry';
 import { Intent } from '../../../types/intent';
 import LoadingDialog from '../../../components/LoadingDialog';
 import i18n from '../../../../i18n';
+import { t } from 'i18next';
 import { getEntities } from 'services/entities';
 
 type IntentExamplesTableProps = {
