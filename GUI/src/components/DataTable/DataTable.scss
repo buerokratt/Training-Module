@@ -14,7 +14,10 @@
       overflow-x: auto;
       white-space: nowrap;
       display: block;
-      max-height: 60vh;
+      // max-height: 60vh;
+      // todo pass as className prop
+      // todo test with height
+      max-height: calc(100vh - 450px);
     }
 
     thead, tbody {
