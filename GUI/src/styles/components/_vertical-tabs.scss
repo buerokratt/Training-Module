@@ -29,8 +29,6 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    // todo should not be hardcoded? test other pages
-    overflow: hidden;
 
     &[data-state="inactive"] {
       display: none;
