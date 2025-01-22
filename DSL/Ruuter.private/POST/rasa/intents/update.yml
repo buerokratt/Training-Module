@@ -77,6 +77,24 @@ validateFileExists:
       next: getRulesFile
   next: assignTmpFilePath
 
+assignTmpFilePath:
+  assign:
+    file_end: "_nlu.yml.tmp"
+
+checkIntentFileTmp:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file-manager/exists"
+    body:
+      file_path: ${fileLocations.response.body.response.intents_location + intent_old_name + file_end}
+  result: tmpFileExists
+
+validateTmpFileExists:
+  switch:
+    - condition: ${tmpFileExists.response.body.error === false}
+      next: getRulesFile
+  next: returnIntentFileMissing  
+
 getRulesFile:
   call: http.post
   args:
@@ -175,24 +193,6 @@ saveStoriesFile:
       content: ${updatedStories.response.body}
   result: storiesFileResult
   next: getIntentFile
-
-assignTmpFilePath:
-  assign:
-    file_end: "_nlu.yml.tmp"
-
-checkIntentFileTmp:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/file-manager/exists"
-    body:
-      file_path: ${fileLocations.response.body.response.intents_location + intent_old_name + file_end}
-  result: tmpFileExists
-
-validateTmpFileExists:
-  switch:
-    - condition: ${tmpFileExists.response.body.error === false}
-      next: getIntentFile
-  next: returnIntentFileMissing
 
 getIntentFile:
   call: http.post
@@ -327,7 +327,7 @@ validateExistsInDomain:
   switch:
     - condition: ${domainData.response.body.response.intents.includes(intent_old_name)}
       next: mergeIntents
-  next: returnSuccess
+  next: convertDomainJsonToYamlForTempIntent
 
 mergeIntents:
   call: http.post
@@ -351,7 +351,7 @@ replaceExistingIntent:
 convertDomainJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
+    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml_domain"
     body:
       version: ${domainData.response.body.response.version}
       intents: ${updatedIntents.response.body}
@@ -362,6 +362,23 @@ convertDomainJsonToYaml:
       responses: ${JSON.parse(JSON.stringify(domainData.response.body.response.responses).replaceAll(utter_old_name, utter_name))}
       session_config: ${domainData.response.body.response.session_config}
   result: domainYaml
+  next: saveDomainFile
+
+convertDomainJsonToYamlForTempIntent:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml_domain"
+    body:
+      version: ${domainData.response.body.response.version}
+      intents: ${domainData.response.body.response.intents}
+      entities: ${domainData.response.body.response.entities}
+      slots: ${domainData.response.body.response.slots}
+      forms: ${domainData.response.body.response.forms}
+      actions: ${domainData.response.body.response.actions}
+      responses: ${JSON.parse(JSON.stringify(domainData.response.body.response.responses).replaceAll(utter_old_name, utter_name))}
+      session_config: ${domainData.response.body.response.session_config}
+  result: domainYaml
+  next: saveDomainFile
 
 saveDomainFile:
   call: http.post
