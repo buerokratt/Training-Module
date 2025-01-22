@@ -55,7 +55,7 @@ getIntentListLastChanged:
   args:
     url: "[#TRAINING_RESQL]/get-intents-list-last-changed"
     body:
-      intentsList: ${getIntentResult.response.body.hits.hits[0]._id}
+      intentsList: ${intent}
   result: getIntentListLastChangedResult
 
 assignResults:
