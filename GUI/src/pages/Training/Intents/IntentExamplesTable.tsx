@@ -21,9 +21,10 @@ import { getEntities } from 'services/entities';
 type IntentExamplesTableProps = {
   intent: Intent;
   updateSelectedIntent: (intent: Intent) => void;
+  reFetchIntents: () => void;
 };
 
-const IntentExamplesTable: FC<IntentExamplesTableProps> = ({ intent, updateSelectedIntent }) => {
+const IntentExamplesTable: FC<IntentExamplesTableProps> = ({ intent, updateSelectedIntent, reFetchIntents }) => {
   let updatedExampleTitle = '';
   const { t } = useTranslation();
   const toast = useToast();
@@ -143,6 +144,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({ intent, updateSelec
       });
       updateSelectedIntent(intent);
       deleteExampleFromList(oldExampleText);
+      reFetchIntents();
     },
     onError: (error: AxiosError) => {
       toast.open({
@@ -169,6 +171,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({ intent, updateSelec
         title: t('global.notification'),
         message: t('toast.newExampleAdded'),
       });
+      reFetchIntents();
     },
     onError: (error: AxiosError) => {
       toast.open({

@@ -108,6 +108,7 @@ const Intents: FC = () => {
             <IntentDetails
               intentId={selectedIntent.id}
               setSelectedIntent={setSelectedIntent}
+              updateIntentsCount={queryRefresh}
               setListIntents={setIntents}
             />
           )}

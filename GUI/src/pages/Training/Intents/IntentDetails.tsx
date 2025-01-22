@@ -46,9 +46,10 @@ interface IntentDetailsProps {
   intentId: string;
   setSelectedIntent: Dispatch<SetStateAction<IntentWithExamplesCount | null>>;
   setListIntents: Dispatch<SetStateAction<IntentWithExamplesCount[]>>;
+  updateIntentsCount: () => void;
 }
 
-const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, setListIntents }) => {
+const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, setListIntents,updateIntentsCount }) => {
   const [intent, setIntent] = useState<Intent | null>(null);
 
   const [editingIntentTitle, setEditingIntentTitle] = useState<string | null>(null);
@@ -172,7 +173,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, se
       newName,
     });
 
-    queryRefresh(newName);
+    await queryRefresh(newName);
   };
 
   const isValidDate = (dateString: string | number | Date) => {
@@ -552,7 +553,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, se
         {intent?.examples && (
           <Track align="stretch" justify="between" gap={10} style={{ width: '100%' }}>
             <div style={{ flex: 1 }}>
-              <IntentExamplesTable intent={intent} updateSelectedIntent={updateSelectedIntent} />
+              <IntentExamplesTable intent={intent} updateSelectedIntent={updateSelectedIntent} reFetchIntents={updateIntentsCount} />
             </div>
             <div>
               <Track align="right" justify="between" direction="vertical" gap={100}>
