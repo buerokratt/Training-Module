@@ -170,7 +170,7 @@ removeIntentResponses:
 convertDomainJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
+    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml_domain"
     body:
       version: ${domainData.response.body.response.version}
       intents: ${updatedIntents.response.body}
