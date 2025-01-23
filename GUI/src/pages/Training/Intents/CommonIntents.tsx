@@ -117,7 +117,9 @@ const CommonIntents: FC = () => {
             <IntentDetails
               intentId={selectedIntent.id}
               setSelectedIntent={setSelectedIntent}
+              updateIntentsCount={queryRefresh}
               setListIntents={setIntents}
+              forCommonIntentsPage
             />
           )}
         </Tabs.Root>

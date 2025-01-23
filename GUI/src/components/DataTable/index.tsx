@@ -26,9 +26,6 @@ import { Icon, Track } from 'components';
 import Filter from './Filter';
 import './DataTable.scss';
 import { FetchNextPageOptions, InfiniteQueryObserverResult } from '@tanstack/react-query';
-import { table } from 'console';
-import { id } from 'date-fns/locale';
-import { t } from 'i18next';
 
 type DataTableProps = {
   data: any;
@@ -191,7 +188,7 @@ const DataTable: FC<DataTableProps> = ({
   const pageIndexes = getShownPageIndexes();
 
   return (
-    <div>
+    <>
       <div className="data-table__scrollWrapper" onScroll={(e) => fetchMoreOnBottomReached(e.currentTarget)}>
         <table className="data-table">
           {!disableHead && (
@@ -387,7 +384,7 @@ const DataTable: FC<DataTableProps> = ({
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

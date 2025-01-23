@@ -47,9 +47,16 @@ interface IntentDetailsProps {
   setSelectedIntent: Dispatch<SetStateAction<IntentWithExamplesCount | null>>;
   setListIntents: Dispatch<SetStateAction<IntentWithExamplesCount[]>>;
   updateIntentsCount: () => void;
+  forCommonIntentsPage?: boolean;
 }
 
-const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, setListIntents,updateIntentsCount }) => {
+const IntentDetails: FC<IntentDetailsProps> = ({
+  intentId,
+  setSelectedIntent,
+  setListIntents,
+  updateIntentsCount,
+  forCommonIntentsPage,
+}) => {
   const [intent, setIntent] = useState<Intent | null>(null);
 
   const [editingIntentTitle, setEditingIntentTitle] = useState<string | null>(null);
@@ -435,7 +442,12 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, se
   if (!intent) return <>Loading...</>;
 
   return (
-    <Tabs.Content key={intent.id} className="vertical-tabs__body" value={intent.id} style={{ overflowX: 'auto' }}>
+    <Tabs.Content
+      key={intent.id}
+      className="vertical-tabs__body"
+      value={intent.id}
+      style={{ overflowX: 'auto', overflowY: 'hidden' }}
+    >
       <div className="vertical-tabs__content-header">
         <Track direction="vertical" align="stretch" gap={8}>
           <Track justify="between">
@@ -552,8 +564,12 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, se
       <div className="vertical-tabs__content">
         {intent?.examples && (
           <Track align="stretch" justify="between" gap={10} style={{ width: '100%' }}>
-            <div style={{ flex: 1 }}>
-              <IntentExamplesTable intent={intent} updateSelectedIntent={updateSelectedIntent} reFetchIntents={updateIntentsCount} />
+            <div style={{ flex: 1, height: forCommonIntentsPage ? 'calc(100vh - 500px)' : 'calc(100vh - 400px)' }}>
+              <IntentExamplesTable
+                intent={intent}
+                updateSelectedIntent={updateSelectedIntent}
+                reFetchIntents={updateIntentsCount}
+              />
             </div>
             <div>
               <Track align="right" justify="between" direction="vertical" gap={100}>
