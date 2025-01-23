@@ -1,5 +1,9 @@
 version: "3.0"
 rules:
+  - rule: ruleinvestor
+    steps:
+      - intent: investor
+      - action: utter_investor
   - rule: ruleigorxlsx
     steps:
       - intent: igorxlsx

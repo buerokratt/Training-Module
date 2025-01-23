@@ -28,6 +28,7 @@ intents:
   - common_service_nba_results
   - common_service_exchange_rate
   - igorxlsx
+  - investor
 entities:
   - asukoht
   - rk_liige
@@ -437,6 +438,8 @@ responses:
   utter_fdfdempty:
     - text: "fsdfsdfsdfsdf"
   utter_zelo:
+    - text: "dsdssd"
+  utter_investor:
     - text: "dsdssd"
 session_config:
   session_expiration_time: 60
