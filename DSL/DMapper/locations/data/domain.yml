@@ -436,6 +436,8 @@ responses:
     - text: "#service, /GET/currency, ({currency})"
   utter_notinmodel:
     - text: "notinmodel answer here"
+  utter_coffee:
+    - text: "coffee vastus"
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true
