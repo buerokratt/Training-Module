@@ -4,12 +4,6 @@ rules:
     steps:
       - intent: igorxlsx
       - action: utter_igorxlsx
-  - rule: common_csa
-    steps:
-      - intent: common_ask_csa
-      - action: utter_common_ask_csa
-      - intent: common_kinnitamine
-      - action: utter_common_klienditeenindajale_suunamine
   - rule: common_csa2
     steps:
       - intent: common_ask_csa
@@ -28,10 +22,6 @@ rules:
     steps:
       - intent: common_tervitus
       - action: utter_common_tervitus
-  - rule: common_kinnitamine
-    steps:
-      - intent: common_kinnitamine
-      - action: utter_fallback
   - rule: common_eitamine
     steps:
       - intent: common_eitamine

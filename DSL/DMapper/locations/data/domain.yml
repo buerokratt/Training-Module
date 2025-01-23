@@ -1,7 +1,6 @@
 version: "3.0"
 intents:
   - common_ask_csa
-  - common_kinnitamine
   - common_eitamine
   - common_tänamine
   - common_tervitus
