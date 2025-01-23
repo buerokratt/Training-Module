@@ -10,6 +10,7 @@ type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   name: string;
   hideLabel?: boolean;
   colorInput?: boolean;
+  className?: string;
 };
 
 const FieldInput = forwardRef<HTMLInputElement, InputProps>((
@@ -19,6 +20,7 @@ const FieldInput = forwardRef<HTMLInputElement, InputProps>((
     disabled,
     hideLabel,
     colorInput,
+    className,
     ...rest
   }
   , ref,
@@ -31,7 +33,7 @@ const FieldInput = forwardRef<HTMLInputElement, InputProps>((
   );
 
   return (
-    <div className={inputClasses}>
+    <div className={`${inputClasses} ${className}`}>
       {label && !hideLabel && <label htmlFor={id} className='input__label'>{label}</label>}
       <div className='input__wrapper'>
         <input

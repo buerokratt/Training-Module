@@ -338,7 +338,10 @@
       "nps": "Soovitusindeks",
       "rating": "Hinnang",
       "feedback": "Tagasiside",
-      "forwarded": "Suunatud"
+      "forwarded": "Suunatud",
+      "statusAddedDate": "Staatuse lisamise kuupäev",
+      "chosenCsa": "Valitud nõustaja(d)",
+      "chosenColumn": "Valitud tulba(d)"
     },
     "plainEvents": {
       "answered": "Vastatud",

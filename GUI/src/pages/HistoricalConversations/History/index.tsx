@@ -16,6 +16,7 @@ import {getColumns} from './columns';
 import withAuthorization, {ROLES} from 'hoc/with-authorization';
 import {useDebouncedCallback} from "use-debounce";
 import useStore from "../../../store/store";
+import "./History.scss";
 
 const History: FC = () => {
   const { t } = useTranslation();
@@ -25,6 +26,7 @@ const History: FC = () => {
   const userInfo = useStore((state) => state.userInfo);
   const [selectedChat, setSelectedChat] = useState<ChatType | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
+  const passedCustomerSupportIds = searchParams.getAll('customerSupportIds');
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: searchParams.get("page") ? parseInt(searchParams.get("page") as string) - 1 : 0,
     pageSize: 10,
@@ -34,6 +36,7 @@ const History: FC = () => {
   const preferences = getFromLocalStorage(
     CHAT_HISTORY_PREFERENCES_KEY
   ) as string[];
+  const [customerSupportAgents, setCustomerSupportAgents] = useState<any[]>([]);
 
   const [selectedColumns, setSelectedColumns] = useState<string[]>(
     preferences ?? []
@@ -43,6 +46,7 @@ const History: FC = () => {
     getAllEndedChats.mutate({
       startDate: format(new Date(startDate), 'yyyy-MM-dd'),
       endDate: format(new Date(endDate), 'yyyy-MM-dd'),
+      customerSupportIds: passedCustomerSupportIds,
       pagination,
       sorting,
       search,
@@ -60,6 +64,7 @@ const History: FC = () => {
         getAllEndedChats.mutate({
           startDate: format(new Date(startDate), 'yyyy-MM-dd'),
           endDate: format(new Date(endDate), 'yyyy-MM-dd'),
+          customerSupportIds: passedCustomerSupportIds,
           updatedPagination,
           sorting,
           search,
@@ -69,6 +74,10 @@ const History: FC = () => {
       console.error('Failed to fetch data');
     }
   };
+
+  useEffect(() => {
+    listCustomerSupportAgents.mutate();
+  }, []);
 
   const updatePagePreference = (pageResults: number): PaginationState => {
     const updatedPagination: PaginationState = {...pagination, pageSize: pageResults};
@@ -127,6 +136,7 @@ const History: FC = () => {
       getAllEndedChats.mutate({
         startDate: format(new Date(startDate), 'yyyy-MM-dd'),
         endDate: format(new Date(endDate), 'yyyy-MM-dd'),
+        customerSupportIds: passedCustomerSupportIds,
         pagination,
         sorting,
         search,
@@ -138,6 +148,7 @@ const History: FC = () => {
     mutationFn: (data: {
       startDate: string;
       endDate: string;
+      customerSupportIds: string[];
       pagination: PaginationState;
       sorting: SortingState;
       search: string;
@@ -151,16 +162,33 @@ const History: FC = () => {
       return api.post('agents/chats/ended', {
         startDate: data.startDate,
         endDate: data.endDate,
+        customerSupportIds: data.customerSupportIds,
         page: pagination.pageIndex + 1,
         page_size: pagination.pageSize,
         sorting: sortBy,
-        search,
+        search
       });
     },
     onSuccess: (res: any) => {
       filterChatsList(res.data.response ?? []);
       setTotalPages(res?.data?.response[0]?.totalPages ?? 1);
     },
+  });
+
+  const listCustomerSupportAgents = useMutation({
+    mutationFn: () => api.post('accounts/customer-support-agents', {
+      page: 0,
+      page_size: 99999,
+      sorting: 'name asc',
+      show_active_only: false,
+      roles: ["ROLE_CUSTOMER_SUPPORT_AGENT"],
+    }),
+    onSuccess: (res: any) => {
+      setCustomerSupportAgents(res.data.response.map(item => ({
+        label: [item.firstName, item.lastName].join(' ').trim(),
+        value: item.idCode,
+      })));
+    }
   });
 
   const updatePageSize = useMutation({
@@ -233,6 +261,7 @@ const History: FC = () => {
       <Card>
         <Track gap={16}>
           <FormInput
+            className="input-wrapper"
             label={t('chat.history.searchChats')}
             hideLabel
             name="searchChats"
@@ -263,6 +292,7 @@ const History: FC = () => {
                         getAllEndedChats.mutate({
                           startDate: start,
                           endDate: format(new Date(endDate), 'yyyy-MM-dd'),
+                          customerSupportIds: passedCustomerSupportIds,
                           pagination,
                           sorting,
                           search,
@@ -292,6 +322,7 @@ const History: FC = () => {
                         getAllEndedChats.mutate({
                           startDate: format(new Date(startDate), 'yyyy-MM-dd'),
                           endDate: end,
+                          customerSupportIds: passedCustomerSupportIds,
                           pagination,
                           sorting,
                           search,
@@ -302,17 +333,45 @@ const History: FC = () => {
               />
             </Track>
             <FormMultiselect
-              name="visibleColumns"
-              label={t('')}
-              options={visibleColumnOptions}
-              selectedOptions={visibleColumnOptions.filter((o) =>
-                selectedColumns.includes(o.value)
-              )}
-              onSelectionChange={(selection: any) => {
-                const columns = selection ? selection.map((s: any) => s.value) : [];
-                setSelectedColumns(columns);
-                setToLocalStorage(CHAT_HISTORY_PREFERENCES_KEY, columns);
-              }}
+                name="visibleColumns"
+                label={t('')}
+                placeholder={t('chat.history.chosenColumn')}
+                options={visibleColumnOptions}
+                selectedOptions={visibleColumnOptions.filter((o) =>
+                    selectedColumns.includes(o.value)
+                )}
+                onSelectionChange={(selection) => {
+                  const columns = selection?.map((s) => s.value) ?? [];
+                  setSelectedColumns(columns);
+                  setToLocalStorage(CHAT_HISTORY_PREFERENCES_KEY, columns);
+                }}
+            />
+            <FormMultiselect
+                name="agent"
+                label={t('')}
+                placeholder={t('chat.history.chosenCsa')}
+                options={customerSupportAgents}
+                selectedOptions={customerSupportAgents.filter((item) =>
+                    passedCustomerSupportIds.includes(item.value)
+                )}
+                onSelectionChange={(selection) => {
+                  setSearchParams((params) => {
+                    params.delete('customerSupportIds');
+                    selection?.forEach((s) =>
+                        params.append('customerSupportIds', s.value)
+                    );
+                    return params;
+                  });
+
+                  getAllEndedChats.mutate({
+                    startDate,
+                    endDate,
+                    customerSupportIds: selection?.map((s) => s.value) ?? [],
+                    pagination,
+                    sorting,
+                    search,
+                  });
+                }}
             />
           </Track>
         </Track>
@@ -337,6 +396,7 @@ const History: FC = () => {
             getAllEndedChats.mutate({
               startDate: format(new Date(startDate), 'yyyy-MM-dd'),
               endDate: format(new Date(endDate), 'yyyy-MM-dd'),
+              customerSupportIds: passedCustomerSupportIds,
               pagination: state,
               sorting,
               search,
@@ -347,6 +407,7 @@ const History: FC = () => {
             getAllEndedChats.mutate({
               startDate: format(new Date(startDate), 'yyyy-MM-dd'),
               endDate: format(new Date(endDate), 'yyyy-MM-dd'),
+              customerSupportIds: passedCustomerSupportIds,
               pagination,
               sorting: state,
               search,
