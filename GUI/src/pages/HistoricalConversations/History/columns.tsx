@@ -65,8 +65,8 @@ export const getColumns = ({
     }),
     columnHelper.accessor('comment', {
       id: 'comment',
-      header: i18n.t('chat.history.comment') || '',
-      cell: (props) =>
+      header: i18n.t('chat.history.comment') ?? '',
+      cell: (props) => 
         !props.getValue() ? (
           <></>
         ) : (
@@ -77,9 +77,7 @@ export const getColumns = ({
               onKeyDown={(e) => e.preventDefault()}
               style={{ cursor: 'pointer' }}
             >
-              {props.getValue() === undefined
-                ? ''
-                : props.getValue()?.slice(0, 30) + '...'}
+              {props.getValue()!.length <= 25 ? props.getValue() : `${props.getValue()?.slice(0, 25)}...`}
             </span>
           </Tooltip>
         ),
