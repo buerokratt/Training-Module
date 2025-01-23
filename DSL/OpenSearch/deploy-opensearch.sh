@@ -33,6 +33,7 @@ curl -L -X POST "$URL/_scripts/rule-with-forms" -H 'Content-Type: application/js
 curl -L -X POST "$URL/_scripts/rule-with-responses" -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/rule-with-responses.json"
 curl -L -X POST "$URL/_scripts/rule-with-slots" -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/rule-with-slots.json"
 curl -L -X POST "$URL/_scripts/rules-by-responses" -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/rules-by-responses.json"
+curl -L -X POST "$URL/_scripts/rule-by-intent" -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/rule-by-intent.json"
 
 # stories
 curl -XDELETE "$URL/stories?ignore_unavailable=true" -u "$AUTH" --insecure

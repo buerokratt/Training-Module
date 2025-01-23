@@ -227,12 +227,22 @@ deleteInDatabase:
 #   result: updateSearchResult
 #   next: returnSuccess
 
+getRuleByIntent:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]/rules/_search/template"
+    body:
+      id: "rule-by-intent"
+      params:
+        intent: ${intent}
+  result: getRuleByIntentResult
+
 deleteOpenSearchRule:
   call: http.post
   args:
     url: "[#TRAINING_PIPELINE]/delete/object/rules"
     body:
-      id: ${"rule" + intent}
+      id: ${getRuleByIntentResult.response.body.hits.hits[0]._source.rule}
   result: deleteRuleResult
 
 returnSuccess:
