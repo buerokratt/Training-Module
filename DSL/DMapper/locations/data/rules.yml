@@ -1,9 +1,9 @@
 version: "3.0"
 rules:
-  - rule: ruleinvestor
+  - rule: ruledelete_space
     steps:
-      - intent: investor
-      - action: utter_investor
+      - intent: delete_space
+      - action: utter_delete_space
   - rule: ruleigorxlsx
     steps:
       - intent: igorxlsx
