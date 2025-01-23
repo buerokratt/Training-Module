@@ -1,5 +1,9 @@
 version: "3.0"
 rules:
+  - rule: ruleigorxlsx
+    steps:
+      - intent: igorxlsx
+      - action: utter_igorxlsx
   - rule: common_csa
     steps:
       - intent: common_ask_csa

@@ -216,6 +216,23 @@ deleteInDatabase:
       status: "DELETED"
   result: getIntentLastChangedResult
 
+# updateOpenSearchRules:
+#   call: http.post
+#   args:
+#     url: "[#TRAINING_PIPELINE]/bulk/rules/rule"
+#     body:
+#       input: ${rulesYaml.response.body.json}
+#   result: updateSearchResult
+#   next: returnSuccess
+
+deleteOpenSearchRule:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]/delete/object/rules"
+    body:
+      id: ${"rule" + intent}
+  result: deleteRuleResult
+
 returnSuccess:
   return: "Intent updated"
   next: end
