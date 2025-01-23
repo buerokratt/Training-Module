@@ -1,9 +1,9 @@
 version: "3.0"
 rules:
-  - rule: ruledomainigor
+  - rule: rulerestartbeat
     steps:
-      - intent: domainigor
-      - action: utter_domainigor
+      - intent: restartbeat
+      - action: utter_restartbeat
   - rule: ruleigorxlsx
     steps:
       - intent: igorxlsx
