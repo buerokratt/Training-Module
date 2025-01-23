@@ -1,7 +1,6 @@
 version: "3.0"
 intents:
   - common_ask_csa
-  - common_hüvasti_jätmine
   - common_kinnitamine
   - common_eitamine
   - common_tänamine
@@ -347,8 +346,6 @@ responses:
     - text: "Suunan teid klienditeenindajale. Varuge natukene kannatust."
   utter_common_ei_suuna_klienditeenindajale:
     - text: "Selge. Kuidas saan veel abiks olla?"
-  utter_common_hüvasti_jätmine:
-    - text: "Head aega!"
   utter_common_tänamine:
     - text: "Meeldiv kuulda. Kuidas saan veel abiks olla?"
   utter_common_tervitus:
@@ -439,6 +436,8 @@ responses:
     - text: "notinmodel answer here"
   utter_igorxlsx:
     - text: "igorxlsx vatsuts"
+  utter_fdfdempty:
+    - text: "fsdfsdfsdfsdf"
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true

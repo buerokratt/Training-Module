@@ -109,7 +109,9 @@ removeIntentRules:
 convertRulesJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
+    url: "[#TRAINING_DMAPPER]/conversion/json-to-yaml-stories"
+    headers:
+      content-type: "application/json"
     body:
       version: "3.0"
       rules: ${updatedRules.response.body.result}
