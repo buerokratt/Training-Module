@@ -1,5 +1,9 @@
 version: "3.0"
 rules:
+  - rule: ruledomainigor
+    steps:
+      - intent: domainigor
+      - action: utter_domainigor
   - rule: ruleigorxlsx
     steps:
       - intent: igorxlsx
