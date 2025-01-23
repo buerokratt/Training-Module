@@ -28,6 +28,7 @@ intents:
   - common_service_nba_results
   - common_service_exchange_rate
   - igorxlsx
+  - total_space
 entities:
   - asukoht
   - rk_liige
