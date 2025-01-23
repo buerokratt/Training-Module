@@ -12,7 +12,7 @@
           "aggs": {
             "examples_counts": {
               "value_count": {
-                "field": "examples"
+                "field": "examples.raw"
               }
             }
           }
