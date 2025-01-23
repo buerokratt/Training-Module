@@ -46,6 +46,7 @@ interface IntentDetailsProps {
   intentId: string;
   setSelectedIntent: Dispatch<SetStateAction<IntentWithExamplesCount | null>>;
   setListIntents: Dispatch<SetStateAction<IntentWithExamplesCount[]>>;
+  updateIntentsCount: () => void;
   forCommonIntentsPage?: boolean;
 }
 
@@ -53,6 +54,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({
   intentId,
   setSelectedIntent,
   setListIntents,
+  updateIntentsCount,
   forCommonIntentsPage,
 }) => {
   const [intent, setIntent] = useState<Intent | null>(null);
@@ -178,7 +180,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({
       newName,
     });
 
-    queryRefresh(newName);
+    await queryRefresh(newName);
   };
 
   const isValidDate = (dateString: string | number | Date) => {
@@ -563,7 +565,11 @@ const IntentDetails: FC<IntentDetailsProps> = ({
         {intent?.examples && (
           <Track align="stretch" justify="between" gap={10} style={{ width: '100%' }}>
             <div style={{ flex: 1, height: forCommonIntentsPage ? 'calc(100vh - 500px)' : 'calc(100vh - 400px)' }}>
-              <IntentExamplesTable intent={intent} updateSelectedIntent={updateSelectedIntent} />
+              <IntentExamplesTable
+                intent={intent}
+                updateSelectedIntent={updateSelectedIntent}
+                reFetchIntents={updateIntentsCount}
+              />
             </div>
             <div>
               <Track align="right" justify="between" direction="vertical" gap={100}>
