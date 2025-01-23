@@ -1,9 +1,9 @@
 version: "3.0"
 rules:
-  - rule: rulezelo
+  - rule: ruleragnar
     steps:
-      - intent: zelo
-      - action: utter_zelo
+      - intent: ragnar
+      - action: utter_ragnar
   - rule: ruleigorxlsx
     steps:
       - intent: igorxlsx
