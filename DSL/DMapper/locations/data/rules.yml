@@ -1,5 +1,9 @@
 version: "3.0"
 rules:
+  - rule: ruletaavet_space
+    steps:
+      - intent: taavet_space
+      - action: utter_taavet_space
   - rule: ruleigorxlsx
     steps:
       - intent: igorxlsx
