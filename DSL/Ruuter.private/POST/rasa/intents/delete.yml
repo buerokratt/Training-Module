@@ -236,6 +236,15 @@ deleteOpenSearchRule:
       id: ${getRuleByIntentResult.response.body.hits.hits[0]._source.rule.replaceAll("_", "")}
   result: deleteRuleResult
 
+updateOpenSearchDomain:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]/bulk/domain"
+    body:
+      input: ${domainYaml.response.body.json}
+  result: updateSearchResult
+  next: returnSuccess
+
 returnSuccess:
   return: "Intent updated"
   next: end
