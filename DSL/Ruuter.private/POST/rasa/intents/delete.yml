@@ -227,13 +227,13 @@ updateOpenSearchRules:
   result: updateSearchResult
   # next: returnSuccess
 
-deleteOpenSearchRule:
-  call: http.post
-  args:
-    url: "[#TRAINING_PIPELINE]/delete/object/rules"
-    body:
-      id: ${"rule" + intent}
-  result: deleteRuleResult
+# deleteOpenSearchRule:
+#   call: http.post
+#   args:
+#     url: "[#TRAINING_PIPELINE]/delete/object/rules"
+#     body:
+#       id: ${"rule" + intent}
+#   result: deleteRuleResult
 
 returnSuccess:
   return: "Intent updated"

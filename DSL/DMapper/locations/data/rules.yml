@@ -1,9 +1,9 @@
 version: "3.0"
 rules:
-  - rule: rulestealth
+  - rule: rulezelo
     steps:
-      - intent: stealth
-      - action: utter_stealth
+      - intent: zelo
+      - action: utter_zelo
   - rule: ruleigorxlsx
     steps:
       - intent: igorxlsx
