@@ -225,7 +225,7 @@ updateOpenSearchRules:
     body:
       input: ${rulesYaml.response.body.json}
   result: updateSearchResult
-  # next: returnSuccess
+  next: returnSuccess
 
 # deleteOpenSearchRule:
 #   call: http.post
