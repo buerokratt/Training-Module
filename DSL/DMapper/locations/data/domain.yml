@@ -30,6 +30,7 @@ intents:
   - common_service_school_holiday
   - common_service_nba_results
   - common_service_exchange_rate
+  - coffee
 entities:
   - asukoht
   - rk_liige
@@ -293,10 +294,10 @@ responses:
         - type: slot
           name: common_teenus_ilm_asukoht
           value: null
-      text: "Hetkel oskan ma öelda ilma Eesti raames piirkonnapõhiselt. Palun sisestage korrektne piirkonna nimi."
+      text: Hetkel oskan ma öelda ilma Eesti raames piirkonnapõhiselt. Palun sisestage korrektne piirkonna nimi.
     - text: "#common_service, /POST/weather/EE, ({common_teenus_ilm_asukoht})"
   utter_ask_company_name:
-    - text: "Mis firma kohta sa infot soovid?"
+    - text: Mis firma kohta sa infot soovid?
   utter_common_service_companies:
     - condition:
         - type: slot
@@ -339,19 +340,19 @@ responses:
           value: common_service_companies_lihtandmed
       text: "#common_service, /POST/companies/search, (simple-company-data, {company_name})"
   utter_fallback:
-    - text: "UNKNOWN"
+    - text: UNKNOWN
   utter_common_ask_csa:
-    - text: "Kas suunan teid klienditeenindajale? (Jah/Ei)"
+    - text: Kas suunan teid klienditeenindajale? (Jah/Ei)
   utter_common_klienditeenindajale_suunamine:
-    - text: "Suunan teid klienditeenindajale. Varuge natukene kannatust."
+    - text: Suunan teid klienditeenindajale. Varuge natukene kannatust.
   utter_common_ei_suuna_klienditeenindajale:
-    - text: "Selge. Kuidas saan veel abiks olla?"
+    - text: Selge. Kuidas saan veel abiks olla?
   utter_common_hüvasti_jätmine:
-    - text: "Head aega!"
+    - text: Head aega!
   utter_common_tänamine:
-    - text: "Meeldiv kuulda. Kuidas saan veel abiks olla?"
+    - text: Meeldiv kuulda. Kuidas saan veel abiks olla?
   utter_common_tervitus:
-    - text: "Kuidas saan abiks olla?"
+    - text: Kuidas saan abiks olla?
   utter_common_teenus_citizien_initiative:
     - text: "#common_service, /GET/public-initiatives/most-recent"
   utter_common_teenus_citizien_initiative_popular:
@@ -361,14 +362,14 @@ responses:
         - type: slot
           name: rk_liige
           value: null
-      text: "Riigikogu liikme kohaloleku nägemiseks palun proovige uuesti, kasutades Riigikogu liikme täisnime."
+      text: Riigikogu liikme kohaloleku nägemiseks palun proovige uuesti, kasutades Riigikogu liikme täisnime.
     - text: "#common_service, /GET/riigikogu/members-participation, ({rk_liige})"
   utter_common_teenus_rk_hääletus_viimane:
     - text: "#common_service, /GET/riigikogu/recent-voting"
   utter_common_teenus_rk_hääletus_viimased:
     - text: "#common_service, /GET/riigikogu/five-most-recent"
   utter_common_teenus_rk_hääletus_fallback:
-    - text: "Ma ei saanud täpselt aru. Palun proovige uuesti!"
+    - text: Ma ei saanud täpselt aru. Palun proovige uuesti!
   utter_common_teenus_nordpool:
     - text: "#common_service, /GET/electricity/current-price"
   utter_common_teenus_nordpool_odav:
@@ -406,7 +407,7 @@ responses:
   utter_common_service_holidays_by_month:
     - text: "#common_service, /GET/calendar/national-holidays/find/by-month, ({by_month_holiday})"
   utter_ask_reg_number:
-    - text: "Mootorsõidukimaksu päringu tegemiseks palun sisestage Eestis registreeritud sõiduki kehtiv registreerimismärk."
+    - text: Mootorsõidukimaksu päringu tegemiseks palun sisestage Eestis registreeritud sõiduki kehtiv registreerimismärk.
   utter_common_service_motor_vehicle_tax:
     - text: "#common_service, /GET/motor-vehicle-tax/registration-number, ({reg_number})"
   utter_common_service_school_holiday:
@@ -432,12 +433,12 @@ responses:
         - type: slot
           name: currency
           value: null
-      text: "Palun korrake küsimust, kasutades valuuta koodi, mille kurssi soovite saada."
+      text: Palun korrake küsimust, kasutades valuuta koodi, mille kurssi soovite saada.
     - text: "#service, /GET/currency, ({currency})"
   utter_notinmodel:
-    - text: "notinmodel answer here"
+    - text: notinmodel answer here
   utter_coffee:
-    - text: "coffee vastus"
+    - text: coffee vastus
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true
