@@ -14,7 +14,6 @@ intents:
   - common_service_companies_revenue
   - common_service_companies_workforce_taxes
   - common_service_companies_national_taxes
-  - common_service_companies_beneficiaries
   - common_service_companies_related_persons
   - common_service_companies_contactdetails
   - common_service_companies_lihtandmed

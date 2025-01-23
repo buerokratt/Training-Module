@@ -114,12 +114,6 @@ rules:
       - action: common_service_companies_form
       - slot_was_set:
           - trigger_intent: common_service_companies_national_taxes
-  - rule: common_service_companies_beneficiaries
-    steps:
-      - intent: common_service_companies_beneficiaries
-      - action: common_service_companies_form
-      - slot_was_set:
-          - trigger_intent: common_service_companies_beneficiaries
   - rule: common_service_companies_related_persons
     steps:
       - intent: common_service_companies_related_persons
