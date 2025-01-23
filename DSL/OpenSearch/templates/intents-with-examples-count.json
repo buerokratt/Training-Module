@@ -6,7 +6,7 @@
       "aggs": {
         "hot": {
           "terms": {
-            "field": "intent",
+            "field": "intent.raw",
             "size": 10000
           },
           "aggs": {
@@ -20,7 +20,7 @@
       },
       "query": {
         "prefix": {
-          "intent": {
+          "intent.raw": {
             "value": "{{prefix}}"
           }
         }
