@@ -218,15 +218,6 @@ deleteInDatabase:
       status: "DELETED"
   result: getIntentLastChangedResult
 
-# updateOpenSearchRules:
-#   call: http.post
-#   args:
-#     url: "[#TRAINING_PIPELINE]/bulk/rules/rule"
-#     body:
-#       input: ${rulesYaml.response.body.json}
-#   result: updateSearchResult
-#   next: returnSuccess
-
 getRuleByIntent:
   call: http.post
   args:
