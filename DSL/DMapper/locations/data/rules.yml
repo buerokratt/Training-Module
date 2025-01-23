@@ -1,9 +1,9 @@
 version: "3.0"
 rules:
-  - rule: rulefdfdempty
+  - rule: rulestealth
     steps:
-      - intent: fdfdempty
-      - action: utter_fdfdempty
+      - intent: stealth
+      - action: utter_stealth
   - rule: ruleigorxlsx
     steps:
       - intent: igorxlsx
