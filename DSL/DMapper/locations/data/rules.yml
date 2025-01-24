@@ -1,330 +1,416 @@
 version: "3.0"
 rules:
-  - rule: rulepodpasosd
-    steps:
-      - intent: podpasosd
-      - action: utter_podpasosd
-  - rule: common_csa2
-    steps:
-      - intent: common_ask_csa
-      - action: utter_common_ask_csa
-      - intent: common_eitamine
-      - action: utter_common_ei_suuna_klienditeenindajale
-  - rule: nlu_fallback (1.0)(confidence kontrollimine)
-    steps:
-      - intent: nlu_fallback
-      - action: utter_fallback
-  - rule: common_tänamine
-    steps:
-      - intent: common_tänamine
-      - action: utter_common_tänamine
-  - rule: common_tervitus
-    steps:
-      - intent: common_tervitus
-      - action: utter_common_tervitus
-  - rule: common_eitamine
-    steps:
-      - intent: common_eitamine
-      - action: utter_fallback
-  - rule: common_klienditeenindajale_suunamine
-    steps:
-      - intent: common_klienditeenindajale_suunamine
-      - action: utter_common_klienditeenindajale_suunamine
-  - rule: common_teenus_ilm
-    steps:
-      - intent: common_teenus_ilm
-      - action: utter_common_teenus_ilm
-      - action: action_restart
-  - rule: common_teenus_nordpool
-    steps:
-      - intent: common_teenus_nordpool
-      - action: utter_common_teenus_nordpool
-      - action: action_restart
-  - rule: common_teenus_nordpool_odav
-    steps:
-      - slot_was_set:
-          - np_odav: true
-      - intent: common_teenus_nordpool2
-      - action: utter_common_teenus_nordpool_odav
-      - action: action_restart
-  - rule: common_teenus_nordpool_kallis
-    steps:
-      - slot_was_set:
-          - np_kallis: true
-      - intent: common_teenus_nordpool2
-      - action: utter_common_teenus_nordpool_kallis
-      - action: action_restart
-  - rule: common_teenus_citizien_initiative
-    steps:
-      - intent: common_teenus_citizien_initiative
-      - action: utter_common_teenus_citizien_initiative
-  - rule: common_teenus_citizien_initiative_popular
-    steps:
-      - intent: common_teenus_citizien_initiative_popular
-      - action: utter_common_teenus_citizien_initiative_popular
-  - rule: common_teenus_rk_isiku_kohalolu
-    steps:
-      - intent: common_teenus_rk_isiku_kohalolu
-      - action: utter_common_teenus_rk_isiku_kohalolu
-      - action: action_restart
-  - rule: common_teenus_rk_hääletus_viimane
-    steps:
-      - slot_was_set:
-          - rk_hääletus: true
-      - intent: common_teenus_rk_hääletus
-      - action: utter_common_teenus_rk_hääletus_viimane
-      - action: action_restart
-  - rule: common_teenus_rk_hääletus_viimased
-    steps:
-      - slot_was_set:
-          - rk_hääletused: true
-      - intent: common_teenus_rk_hääletus
-      - action: utter_common_teenus_rk_hääletus_viimased
-      - action: action_restart
-  - rule: common_teenus_rk_hääletus fallback
-    steps:
-      - slot_was_set:
-          - rk_hääletus: null
-      - slot_was_set:
-          - rk_hääletused: null
-      - intent: common_teenus_rk_hääletus
-      - action: utter_common_teenus_rk_hääletus_fallback
-      - action: action_restart
-  - rule: common_service_companies_employees
-    steps:
-      - intent: common_service_companies_employees
-      - action: common_service_companies_form
-      - slot_was_set:
-          - trigger_intent: common_service_companies_employees
-  - rule: common_service_companies_revenue
-    steps:
-      - intent: common_service_companies_revenue
-      - action: common_service_companies_form
-      - slot_was_set:
-          - trigger_intent: common_service_companies_revenue
-  - rule: common_service_companies_workforce_taxes
-    steps:
-      - intent: common_service_companies_workforce_taxes
-      - action: common_service_companies_form
-      - slot_was_set:
-          - trigger_intent: common_service_companies_workforce_taxes
-  - rule: common_service_companies_national_taxes
-    steps:
-      - intent: common_service_companies_national_taxes
-      - action: common_service_companies_form
-      - slot_was_set:
-          - trigger_intent: common_service_companies_national_taxes
-  - rule: common_service_companies_related_persons
-    steps:
-      - intent: common_service_companies_related_persons
-      - action: common_service_companies_form
-      - slot_was_set:
-          - trigger_intent: common_service_companies_related_persons
-  - rule: common_service_companies_contactdetails
-    steps:
-      - intent: common_service_companies_contactdetails
-      - action: common_service_companies_form
-      - slot_was_set:
-          - trigger_intent: common_service_companies_contactdetails
-  - rule: common_service_companies_lihtandmed
-    steps:
-      - intent: common_service_companies_lihtandmed
-      - action: common_service_companies_form
-      - slot_was_set:
-          - trigger_intent: common_service_companies_lihtandmed
-  - rule: common_service_companies form submit
-    steps:
-      - action: common_service_companies_form
-      - slot_was_set:
-          - requested_slot: null
-      - action: utter_common_service_companies
-      - action: action_restart
-  - rule: common_service_holidays
-    steps:
-      - intent: common_service_holidays
-      - action: utter_common_service_holidays
-      - action: action_restart
-  - rule: common_service_holidays_today
-    steps:
-      - slot_was_set:
-          - today_holiday: true
-      - intent: common_service_holidays
-      - action: utter_common_service_holidays_today
-      - action: action_restart
-  - rule: common_service_holidays_last_holiday
-    steps:
-      - slot_was_set:
-          - last_holiday: true
-      - intent: common_service_holidays
-      - action: utter_common_service_holidays_last_holiday
-      - action: action_restart
-  - rule: common_service_holidays_last_holidays
-    steps:
-      - slot_was_set:
-          - last_holidays: true
-      - intent: common_service_holidays
-      - action: utter_common_service_holidays_last_holidays
-      - action: action_restart
-  - rule: common_service_holidays_next_holiday
-    steps:
-      - slot_was_set:
-          - next_holiday: true
-      - intent: common_service_holidays
-      - action: utter_common_service_holidays_next_holiday
-      - action: action_restart
-  - rule: common_service_holidays_next_holidays
-    steps:
-      - slot_was_set:
-          - next_holidays: true
-      - intent: common_service_holidays
-      - action: utter_common_service_holidays_next_holidays
-      - action: action_restart
-  - rule: common_service_holidays_by_name
-    steps:
-      - slot_was_set:
-          - by_name_holiday: true
-      - intent: common_service_holidays
-      - action: utter_common_service_holidays_by_name
-      - action: action_restart
-  - rule: common_service_holidays_by_month
-    steps:
-      - slot_was_set:
-          - by_month_holiday: true
-      - intent: common_service_holidays
-      - action: utter_common_service_holidays_by_month
-      - action: action_restart
-  - rule: common_service_CPI_fallback
-    steps:
-      - slot_was_set:
-          - by_month_statistics: null
-          - by_year_statistics: null
-      - intent: common_service_CPI
-      - action: utter_common_service_CPI_fallback
-      - action: action_restart
-  - rule: common_service_CPI_previous_month
-    steps:
-      - slot_was_set:
-          - by_month_statistics: true
-          - by_year_statistics: null
-      - intent: common_service_CPI
-      - action: utter_common_service_CPI_previous_month
-      - action: action_restart
-  - rule: common_service_CPI_previous_year
-    steps:
-      - slot_was_set:
-          - by_month_statistics: null
-          - by_year_statistics: true
-      - intent: common_service_CPI
-      - action: utter_common_service_CPI_previous_year
-      - action: action_restart
-  - rule: common_service_CPI_time_horizon
-    steps:
-      - slot_was_set:
-          - by_month_statistics: true
-          - by_year_statistics: true
-      - intent: common_service_CPI
-      - action: utter_common_service_CPI_time_horizon
-      - action: action_restart
-  - rule: common_service_unemployment_rate
-    steps:
-      - slot_was_set:
-          - by_year_statistics: true
-      - intent: common_service_unemployment_rate
-      - action: utter_common_service_unemployment_rate
-      - action: action_restart
-  - rule: common_service_unemployment_rate_fallback
-    steps:
-      - slot_was_set:
-          - by_year_statistics: null
-      - intent: common_service_unemployment_rate
-      - action: utter_common_service_unemployment_rate_fallback
-      - action: action_restart
-  - rule: common_service_estimated_subsistence_minimum
-    steps:
-      - intent: common_service_estimated_subsistence_minimum
-      - action: utter_common_service_estimated_subsistence_minimum
-      - action: action_restart
-  - rule: common_service_motor_vehicle_tax with form
-    steps:
-      - slot_was_set:
-          - reg_number: null
-      - intent: common_service_motor_vehicle_tax
-      - action: common_service_motor_vehicle_tax_form
-  - rule: common_service_motor_vehicle_tax form submit
-    steps:
-      - action: common_service_motor_vehicle_tax_form
-      - slot_was_set:
-          - reg_number: true
-      - action: utter_common_service_motor_vehicle_tax
-      - action: action_restart
-  - rule: common_service_motor_vehicle_tax without form
-    steps:
-      - slot_was_set:
-          - reg_number: true
-      - intent: common_service_motor_vehicle_tax
-      - action: utter_common_service_motor_vehicle_tax
-      - action: action_restart
-  - rule: common_service_school_holiday
-    steps:
-      - intent: common_service_school_holiday
-      - action: utter_common_service_school_holiday
-      - action: action_restart
-  - rule: common_service_school_holiday_today
-    steps:
-      - slot_was_set:
-          - today_school_holiday: true
-      - intent: common_service_school_holiday
-      - action: utter_common_service_school_holiday_today
-      - action: action_restart
-  - rule: common_service_school_holiday_last_holidays
-    steps:
-      - slot_was_set:
-          - last_school_holidays: true
-      - intent: common_service_school_holiday
-      - action: utter_common_service_school_holiday_last_holidays
-      - action: action_restart
-  - rule: common_service_school_holiday_last_holiday
-    steps:
-      - slot_was_set:
-          - last_school_holiday: true
-      - intent: common_service_school_holiday
-      - action: utter_common_service_school_holiday_last_holiday
-      - action: action_restart
-  - rule: common_service_school_holiday_next_holidays
-    steps:
-      - slot_was_set:
-          - next_school_holidays: true
-      - intent: common_service_school_holiday
-      - action: utter_common_service_school_holiday_next_holidays
-      - action: action_restart
-  - rule: common_service_school_holiday_next_holiday
-    steps:
-      - slot_was_set:
-          - next_school_holiday: true
-      - intent: common_service_school_holiday
-      - action: utter_common_service_school_holiday_next_holiday
-      - action: action_restart
-  - rule: common_service_school_holiday_by_name
-    steps:
-      - slot_was_set:
-          - by_name_school_holiday: true
-      - intent: common_service_school_holiday
-      - action: utter_common_service_school_holiday_by_name
-      - action: action_restart
-  - rule: common_service_school_holiday_by_month
-    steps:
-      - slot_was_set:
-          - by_month_school_holiday: true
-      - intent: common_service_school_holiday
-      - action: utter_common_service_school_holiday_by_month
-      - action: action_restart
-  - rule: common_service_nba_results
-    steps:
-      - intent: common_service_nba_results
-      - action: utter_common_service_nba_results
-      - action: action_restart
-  - rule: common_service_exchange_rate
-    steps:
-      - intent: common_service_exchange_rate
-      - action: utter_common_service_exchange_rate
-      - action: action_restart
+- rule: common_csa
+  steps:
+  - intent: common_ask_csa
+  - action: utter_common_ask_csa
+  - intent: common_kinnitamine
+  - action: utter_common_klienditeenindajale_suunamine
+
+- rule: common_csa2
+  steps:
+  - intent: common_ask_csa
+  - action: utter_common_ask_csa
+  - intent: common_eitamine
+  - action: utter_common_ei_suuna_klienditeenindajale
+
+- rule: nlu_fallback (1.0)(confidence kontrollimine)
+  steps:
+  - intent: nlu_fallback
+  - action: utter_fallback
+  
+- rule: common_hüvasti_jätmine
+  steps:
+  - intent: common_hüvasti_jätmine
+  - action: utter_common_hüvasti_jätmine
+ 
+- rule: common_tänamine
+  steps:
+  - intent: common_tänamine
+  - action: utter_common_tänamine
+ 
+- rule: common_tervitus
+  steps:
+  - intent: common_tervitus
+  - action: utter_common_tervitus
+ 
+- rule: common_kinnitamine
+  steps:
+  - intent: common_kinnitamine
+  - action: utter_fallback
+
+- rule: common_eitamine
+  steps:
+  - intent: common_eitamine
+  - action: utter_fallback
+
+- rule: common_klienditeenindajale_suunamine
+  steps:
+  - intent: common_klienditeenindajale_suunamine
+  - action: utter_common_klienditeenindajale_suunamine
+
+- rule: common_teenus_ilm
+  steps:
+  - intent: common_teenus_ilm
+  - action: utter_common_teenus_ilm
+  - action: action_restart
+
+- rule: common_teenus_nordpool
+  steps:
+  - intent: common_teenus_nordpool
+  - action: utter_common_teenus_nordpool
+  - action: action_restart
+
+- rule: common_teenus_nordpool_odav
+  steps:
+  - slot_was_set:
+    - np_odav: true
+  - intent: common_teenus_nordpool2
+  - action: utter_common_teenus_nordpool_odav
+  - action: action_restart
+
+- rule: common_teenus_nordpool_kallis
+  steps:
+  - slot_was_set:
+    - np_kallis: true
+  - intent: common_teenus_nordpool2
+  - action: utter_common_teenus_nordpool_kallis
+  - action: action_restart
+
+- rule: common_teenus_citizien_initiative
+  steps:
+  - intent: common_teenus_citizien_initiative
+  - action: utter_common_teenus_citizien_initiative
+
+- rule: common_teenus_citizien_initiative_popular
+  steps:
+  - intent: common_teenus_citizien_initiative_popular
+  - action: utter_common_teenus_citizien_initiative_popular
+
+- rule: common_teenus_rk_isiku_kohalolu
+  steps:
+  - intent: common_teenus_rk_isiku_kohalolu
+  - action: utter_common_teenus_rk_isiku_kohalolu
+  - action: action_restart
+
+- rule: common_teenus_rk_hääletus_viimane
+  steps:
+  - slot_was_set:
+    - rk_hääletus: true
+  - intent: common_teenus_rk_hääletus
+  - action: utter_common_teenus_rk_hääletus_viimane
+  - action: action_restart
+
+- rule: common_teenus_rk_hääletus_viimased
+  steps:
+  - slot_was_set:
+    - rk_hääletused: true
+  - intent: common_teenus_rk_hääletus
+  - action: utter_common_teenus_rk_hääletus_viimased
+  - action: action_restart
+
+- rule: common_teenus_rk_hääletus fallback
+  steps:
+  - slot_was_set:
+    - rk_hääletus: null
+  - slot_was_set:
+    - rk_hääletused: null
+  - intent: common_teenus_rk_hääletus
+  - action: utter_common_teenus_rk_hääletus_fallback
+  - action: action_restart
+
+- rule: common_service_companies_employees
+  steps:
+  - intent: common_service_companies_employees
+  - action: common_service_companies_form
+  - active_loop: common_service_companies_form
+  - slot_was_set:
+    - trigger_intent: common_service_companies_employees
+
+- rule: common_service_companies_revenue
+  steps:
+  - intent: common_service_companies_revenue
+  - action: common_service_companies_form
+  - active_loop: common_service_companies_form
+  - slot_was_set:
+    - trigger_intent: common_service_companies_revenue
+
+- rule: common_service_companies_workforce_taxes
+  steps:
+  - intent: common_service_companies_workforce_taxes
+  - action: common_service_companies_form
+  - active_loop: common_service_companies_form
+  - slot_was_set:
+    - trigger_intent: common_service_companies_workforce_taxes
+
+- rule: common_service_companies_national_taxes
+  steps:
+  - intent: common_service_companies_national_taxes
+  - action: common_service_companies_form
+  - active_loop: common_service_companies_form
+  - slot_was_set:
+    - trigger_intent: common_service_companies_national_taxes
+
+- rule: common_service_companies_beneficiaries
+  steps:
+  - intent: common_service_companies_beneficiaries
+  - action: common_service_companies_form
+  - active_loop: common_service_companies_form
+  - slot_was_set:
+    - trigger_intent: common_service_companies_beneficiaries
+
+- rule: common_service_companies_related_persons
+  steps:
+  - intent: common_service_companies_related_persons
+  - action: common_service_companies_form
+  - active_loop: common_service_companies_form
+  - slot_was_set:
+    - trigger_intent: common_service_companies_related_persons
+
+- rule: common_service_companies_contactdetails
+  steps:
+  - intent: common_service_companies_contactdetails
+  - action: common_service_companies_form
+  - active_loop: common_service_companies_form
+  - slot_was_set:
+    - trigger_intent: common_service_companies_contactdetails
+
+- rule: common_service_companies_lihtandmed
+  steps:
+  - intent: common_service_companies_lihtandmed
+  - action: common_service_companies_form
+  - active_loop: common_service_companies_form
+  - slot_was_set:
+    - trigger_intent: common_service_companies_lihtandmed
+
+- rule: common_service_companies form submit
+  condition:
+  - active_loop: common_service_companies_form
+  steps:
+  - action: common_service_companies_form
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: utter_common_service_companies
+  - action: action_restart
+
+- rule: common_service_holidays
+  steps:
+  - intent: common_service_holidays
+  - action: utter_common_service_holidays
+  - action: action_restart
+
+- rule: common_service_holidays_today
+  steps:
+  - slot_was_set:
+    - today_holiday: true
+  - intent: common_service_holidays
+  - action: utter_common_service_holidays_today
+  - action: action_restart
+
+- rule: common_service_holidays_last_holiday
+  steps:
+  - slot_was_set:
+    - last_holiday: true
+  - intent: common_service_holidays
+  - action: utter_common_service_holidays_last_holiday
+  - action: action_restart
+
+- rule: common_service_holidays_last_holidays
+  steps:
+  - slot_was_set:
+    - last_holidays: true
+  - intent: common_service_holidays
+  - action: utter_common_service_holidays_last_holidays
+  - action: action_restart
+
+- rule: common_service_holidays_next_holiday
+  steps:
+  - slot_was_set:
+    - next_holiday: true
+  - intent: common_service_holidays
+  - action: utter_common_service_holidays_next_holiday
+  - action: action_restart
+
+- rule: common_service_holidays_next_holidays
+  steps:
+  - slot_was_set:
+    - next_holidays: true
+  - intent: common_service_holidays
+  - action: utter_common_service_holidays_next_holidays
+  - action: action_restart
+
+- rule: common_service_holidays_by_name
+  steps:
+  - slot_was_set:
+    - by_name_holiday: true
+  - intent: common_service_holidays
+  - action: utter_common_service_holidays_by_name
+  - action: action_restart
+
+- rule: common_service_holidays_by_month
+  steps:
+  - slot_was_set:
+    - by_month_holiday: true
+  - intent: common_service_holidays
+  - action: utter_common_service_holidays_by_month
+  - action: action_restart
+
+- rule: common_service_CPI_fallback
+  steps:
+  - slot_was_set:
+    - by_month_statistics: null
+    - by_year_statistics: null
+  - intent: common_service_CPI
+  - action: utter_common_service_CPI_fallback
+  - action: action_restart
+  
+- rule: common_service_CPI_previous_month
+  steps:
+  - slot_was_set:
+    - by_month_statistics: true
+    - by_year_statistics: null
+  - intent: common_service_CPI
+  - action: utter_common_service_CPI_previous_month
+  - action: action_restart
+  
+- rule: common_service_CPI_previous_year
+  steps:
+  - slot_was_set:
+    - by_month_statistics: null
+    - by_year_statistics: true
+  - intent: common_service_CPI
+  - action: utter_common_service_CPI_previous_year
+  - action: action_restart
+  
+- rule: common_service_CPI_time_horizon
+  steps:
+  - slot_was_set:
+    - by_month_statistics: true
+    - by_year_statistics: true
+  - intent: common_service_CPI
+  - action: utter_common_service_CPI_time_horizon
+  - action: action_restart
+
+- rule: common_service_unemployment_rate
+  steps:
+  - slot_was_set:
+    - by_year_statistics: true
+  - intent: common_service_unemployment_rate
+  - action: utter_common_service_unemployment_rate
+  - action: action_restart
+
+- rule: common_service_unemployment_rate_fallback
+  steps:
+  - slot_was_set:
+    - by_year_statistics: null
+  - intent: common_service_unemployment_rate
+  - action: utter_common_service_unemployment_rate_fallback
+  - action: action_restart
+
+- rule: common_service_estimated_subsistence_minimum
+  steps:
+  - intent: common_service_estimated_subsistence_minimum
+  - action: utter_common_service_estimated_subsistence_minimum
+  - action: action_restart
+
+- rule: common_service_motor_vehicle_tax with form
+  steps:
+  - slot_was_set:
+    - reg_number: null
+  - intent: common_service_motor_vehicle_tax
+  - action: common_service_motor_vehicle_tax_form
+  - active_loop: common_service_motor_vehicle_tax_form
+
+- rule: common_service_motor_vehicle_tax form submit
+  condition:
+  - active_loop: common_service_motor_vehicle_tax_form
+  steps:
+  - action: common_service_motor_vehicle_tax_form
+  - active_loop: null
+  - slot_was_set:
+    - reg_number: true
+  - action: utter_common_service_motor_vehicle_tax
+  - action: action_restart
+
+- rule: common_service_motor_vehicle_tax without form
+  steps:
+  - slot_was_set:
+    - reg_number: true
+  - intent: common_service_motor_vehicle_tax
+  - action: utter_common_service_motor_vehicle_tax
+  - action: action_restart
+
+- rule: common_service_school_holiday
+  steps:
+  - intent: common_service_school_holiday
+  - action: utter_common_service_school_holiday
+  - action: action_restart
+
+- rule: common_service_school_holiday_today
+  steps:
+  - slot_was_set:
+    - today_school_holiday: true
+  - intent: common_service_school_holiday
+  - action: utter_common_service_school_holiday_today
+  - action: action_restart
+
+- rule: common_service_school_holiday_last_holidays
+  steps:
+  - slot_was_set:
+    - last_school_holidays: true
+  - intent: common_service_school_holiday
+  - action: utter_common_service_school_holiday_last_holidays
+  - action: action_restart
+
+- rule: common_service_school_holiday_last_holiday
+  steps:
+  - slot_was_set:
+    - last_school_holiday: true
+  - intent: common_service_school_holiday
+  - action: utter_common_service_school_holiday_last_holiday
+  - action: action_restart
+
+- rule: common_service_school_holiday_next_holidays
+  steps:
+  - slot_was_set:
+    - next_school_holidays: true
+  - intent: common_service_school_holiday
+  - action: utter_common_service_school_holiday_next_holidays
+  - action: action_restart
+
+- rule: common_service_school_holiday_next_holiday
+  steps:
+  - slot_was_set:
+    - next_school_holiday: true
+  - intent: common_service_school_holiday
+  - action: utter_common_service_school_holiday_next_holiday
+  - action: action_restart
+
+- rule: common_service_school_holiday_by_name
+  steps:
+  - slot_was_set:
+    - by_name_school_holiday: true
+  - intent: common_service_school_holiday
+  - action: utter_common_service_school_holiday_by_name
+  - action: action_restart
+
+- rule: common_service_school_holiday_by_month
+  steps:
+  - slot_was_set:
+    - by_month_school_holiday: true
+  - intent: common_service_school_holiday
+  - action: utter_common_service_school_holiday_by_month
+  - action: action_restart
+
+- rule: common_service_nba_results
+  steps:
+  - intent: common_service_nba_results
+  - action: utter_common_service_nba_results
+  - action: action_restart
+
+- rule: common_service_exchange_rate
+  steps:
+  - intent: common_service_exchange_rate
+  - action: utter_common_service_exchange_rate
+  - action: action_restart
