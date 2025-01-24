@@ -1,4 +1,0 @@
-version: "3.0"
-nlu:
-  - intent: not_in_model
-    examples: ""

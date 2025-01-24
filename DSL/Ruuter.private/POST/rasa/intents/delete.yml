@@ -137,11 +137,11 @@ getDomainFile:
 # logStep:
 #   log:
 
-validateExistsInDomain:
-  switch:
-    - condition: ${domainData.response.body.response.intents.includes(intent)}
-      next: mergeIntents
-  next: deleteOldIntentFile
+# validateExistsInDomain:
+#   switch:
+#     - condition: ${domainData.response.body.response.intents.includes(intent)}
+#       next: mergeIntents
+#   next: deleteOldIntentFile
 
 mergeIntents:
   call: http.post
