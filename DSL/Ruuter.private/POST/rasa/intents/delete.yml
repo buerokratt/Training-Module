@@ -134,9 +134,6 @@ getDomainFile:
       cookie: ${incoming.headers.cookie}
   result: domainData
 
-# logStep:
-#   log:
-
 # validateExistsInDomain:
 #   switch:
 #     - condition: ${domainData.response.body.response.intents.includes(intent)}
