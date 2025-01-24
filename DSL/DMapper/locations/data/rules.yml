@@ -1,9 +1,5 @@
 version: "3.0"
 rules:
-  - rule: ruleagain_not_model
-    steps:
-      - intent: again_not_model
-      - action: utter_again_not_model
   - rule: rulepodpasosd
     steps:
       - intent: podpasosd
