@@ -244,7 +244,6 @@ validateRuleResponse:
   switch:
     - condition: ${getRuleByIntentResult.response.body.hits.hits[0] != undefined }
       next: deleteOpenSearchRule
-  # next: updateOpenSearchDomain
   next: returnSuccess
 
 deleteOpenSearchRule:
