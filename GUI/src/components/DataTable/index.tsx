@@ -188,7 +188,7 @@ const DataTable: FC<DataTableProps> = ({
   const pageIndexes = getShownPageIndexes();
 
   return (
-    <>
+    <div>
       <div className="data-table__scrollWrapper" onScroll={(e) => fetchMoreOnBottomReached(e.currentTarget)}>
         <table className="data-table">
           {!disableHead && (
@@ -249,6 +249,7 @@ const DataTable: FC<DataTableProps> = ({
                 {row.getVisibleCells().map((cell) => (
                   <td
                     key={cell.id}
+                    className={selectedRow?.(row) ? 'highlighted' : 'default'}
                     style={{
                       position: cell.column.columnDef.meta?.sticky ? 'sticky' : undefined,
                       left:
@@ -384,7 +385,7 @@ const DataTable: FC<DataTableProps> = ({
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 
