@@ -109,7 +109,9 @@ removeIntentRules:
 convertRulesJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
+    url: "[#TRAINING_DMAPPER]/conversion/json-to-yaml-stories"
+    headers:
+      content-type: "application/json"
     body:
       version: "3.0"
       rules: ${updatedRules.response.body.result}
@@ -131,21 +133,6 @@ getDomainFile:
     headers:
       cookie: ${incoming.headers.cookie}
   result: domainData
-
-validateExistsInDomain:
-  switch:
-    - condition: ${domainData.response.body.response.intents.includes(intent)}
-      next: mergeIntents
-  next: deleteOldIntentFile
-
-mergeIntents:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/file-manager/merge"
-    body:
-      array1: ${domainData.response.body.response.intents}
-      array2: ${[intent]}
-  result: mergedIntents
 
 removeFromDomainArray:
   call: http.post
@@ -190,6 +177,15 @@ saveDomainFile:
       file_path: ${fileLocations.response.body.response.domain_location}
       content: ${domainYaml.response.body.json}
   result: fileResult
+  next: updateOpenSearchDomain
+
+updateOpenSearchDomain:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]/bulk/domain"
+    body:
+      input: ${domainYaml.response.body.json}
+  result: updateSearchResult
 
 deleteOldIntentFile:
   call: http.post
@@ -215,6 +211,30 @@ deleteInDatabase:
       intent: ${incoming.body.name}
       status: "DELETED"
   result: getIntentLastChangedResult
+
+getRuleByIntent:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]/rules/_search/template"
+    body:
+      id: "rule-by-intent"
+      params:
+        intent: ${intent}
+  result: getRuleByIntentResult
+
+validateRuleResponse:
+  switch:
+    - condition: ${getRuleByIntentResult.response.body.hits.hits[0] != undefined }
+      next: deleteOpenSearchRule
+  next: returnSuccess
+
+deleteOpenSearchRule:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]/delete/object/rules"
+    body:
+      id: ${getRuleByIntentResult.response.body.hits.hits[0]._source.rule.replaceAll("_", "")}
+  result: deleteRuleResult
 
 returnSuccess:
   return: "Intent updated"
