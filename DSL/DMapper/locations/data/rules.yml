@@ -1,13 +1,5 @@
 version: "3.0"
 rules:
-  - rule: rulerestartbeat
-    steps:
-      - intent: restartbeat
-      - action: utter_restartbeat
-  - rule: ruleigorxlsx
-    steps:
-      - intent: igorxlsx
-      - action: utter_igorxlsx
   - rule: common_csa2
     steps:
       - intent: common_ask_csa

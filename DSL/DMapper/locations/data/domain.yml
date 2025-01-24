@@ -27,8 +27,6 @@ intents:
   - common_service_school_holiday
   - common_service_nba_results
   - common_service_exchange_rate
-  - igorxlsx
-  - restartbeat
 entities:
   - asukoht
   - rk_liige
@@ -439,8 +437,30 @@ responses:
     - text: "fsdfsdfsdfsdf"
   utter_zelo:
     - text: "dsdssd"
-  utter_restartbeat:
-    - text: "sdsdvsdf"
+  utter_moody:
+    - text: "dsdssdds"
+  utter_honey:
+    - text: "sddsdssd"
+  utter_greatest:
+    - text: "sdsdsd"
+  utter_pottery:
+    - text: "gffghfghfgh"
+  utter_mega:
+    - text: "sddssdsd"
+  utter_otter:
+    - text: "xcfxcxc"
+  utter_bad_theme:
+    - text: "dfdffdfd"
+  utter_kustok:
+    - text: "dffddffd"
+  utter_popular:
+    - text: "fffdfd"
+  utter_order_not_in_model:
+    - text: "fddffddf"
+  utter_another_one:
+    - text: "dfdffddf"
+  utter_docs_not:
+    - text: "fddffd"
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true

@@ -134,6 +134,9 @@ getDomainFile:
       cookie: ${incoming.headers.cookie}
   result: domainData
 
+# logStep:
+#   log:
+
 validateExistsInDomain:
   switch:
     - condition: ${domainData.response.body.response.intents.includes(intent)}
@@ -192,6 +195,15 @@ saveDomainFile:
       file_path: ${fileLocations.response.body.response.domain_location}
       content: ${domainYaml.response.body.json}
   result: fileResult
+  next: updateOpenSearchDomain
+
+updateOpenSearchDomain:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]/bulk/domain"
+    body:
+      input: ${domainYaml.response.body.json}
+  result: updateSearchResult
 
 deleteOldIntentFile:
   call: http.post
@@ -228,6 +240,13 @@ getRuleByIntent:
         intent: ${intent}
   result: getRuleByIntentResult
 
+validateRuleResponse:
+  switch:
+    - condition: ${getRuleByIntentResult.response.body.hits.hits[0] != undefined }
+      next: deleteOpenSearchRule
+  # next: updateOpenSearchDomain
+  next: returnSuccess
+
 deleteOpenSearchRule:
   call: http.post
   args:
@@ -235,15 +254,6 @@ deleteOpenSearchRule:
     body:
       id: ${getRuleByIntentResult.response.body.hits.hits[0]._source.rule.replaceAll("_", "")}
   result: deleteRuleResult
-
-updateOpenSearchDomain:
-  call: http.post
-  args:
-    url: "[#TRAINING_PIPELINE]/bulk/domain"
-    body:
-      input: ${domainYaml.response.body.json}
-  result: updateSearchResult
-  next: returnSuccess
 
 returnSuccess:
   return: "Intent updated"

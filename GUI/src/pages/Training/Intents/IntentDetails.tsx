@@ -49,8 +49,10 @@ interface IntentDetailsProps {
   updateIntentsCount: () => void;
 }
 
-const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, setListIntents,updateIntentsCount }) => {
+const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, setListIntents, updateIntentsCount }) => {
   const [intent, setIntent] = useState<Intent | null>(null);
+
+  console.log(intentId);
 
   const [editingIntentTitle, setEditingIntentTitle] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
@@ -553,7 +555,11 @@ const IntentDetails: FC<IntentDetailsProps> = ({ intentId, setSelectedIntent, se
         {intent?.examples && (
           <Track align="stretch" justify="between" gap={10} style={{ width: '100%' }}>
             <div style={{ flex: 1 }}>
-              <IntentExamplesTable intent={intent} updateSelectedIntent={updateSelectedIntent} reFetchIntents={updateIntentsCount} />
+              <IntentExamplesTable
+                intent={intent}
+                updateSelectedIntent={updateSelectedIntent}
+                reFetchIntents={updateIntentsCount}
+              />
             </div>
             <div>
               <Track align="right" justify="between" direction="vertical" gap={100}>
