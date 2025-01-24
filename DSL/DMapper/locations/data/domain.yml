@@ -465,6 +465,8 @@ responses:
     - text: "sdsdsd"
   utter_not_in_model:
     - text: "not in model ans"
+  utter_again_not_model:
+    - text: "fgdfghfgh"
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true
