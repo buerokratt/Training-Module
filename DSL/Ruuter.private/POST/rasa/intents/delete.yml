@@ -134,21 +134,6 @@ getDomainFile:
       cookie: ${incoming.headers.cookie}
   result: domainData
 
-# validateExistsInDomain:
-#   switch:
-#     - condition: ${domainData.response.body.response.intents.includes(intent)}
-#       next: mergeIntents
-#   next: removeIntentResponses
-
-# mergeIntents:
-#   call: http.post
-#   args:
-#     url: "[#TRAINING_DMAPPER]/file-manager/merge"
-#     body:
-#       array1: ${domainData.response.body.response.intents}
-#       array2: ${[intent]}
-#   result: mergedIntents
-
 removeFromDomainArray:
   call: http.post
   args:
