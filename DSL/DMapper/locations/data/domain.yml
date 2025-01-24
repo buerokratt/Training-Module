@@ -27,7 +27,6 @@ intents:
   - common_service_school_holiday
   - common_service_nba_results
   - common_service_exchange_rate
-  - olema
 entities:
   - asukoht
   - rk_liige
@@ -462,10 +461,10 @@ responses:
     - text: "dfdffddf"
   utter_docs_not:
     - text: "fddffd"
-  utter_olema:
-    - text: "olema vastus"
   utter_podpasosd:
     - text: "sdsdsd"
+  utter_not_in_model:
+    - text: "not in model ans"
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true

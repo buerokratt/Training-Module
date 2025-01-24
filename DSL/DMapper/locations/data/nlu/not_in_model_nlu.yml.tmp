@@ -1,4 +1,4 @@
 version: "3.0"
 nlu:
-  - intent: olema
+  - intent: not_in_model
     examples: ""

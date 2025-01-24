@@ -1,13 +1,13 @@
 version: "3.0"
 rules:
+  - rule: rulenot_in_model
+    steps:
+      - intent: not_in_model
+      - action: utter_not_in_model
   - rule: rulepodpasosd
     steps:
       - intent: podpasosd
       - action: utter_podpasosd
-  - rule: ruleolema
-    steps:
-      - intent: olema
-      - action: utter_olema
   - rule: common_csa2
     steps:
       - intent: common_ask_csa
