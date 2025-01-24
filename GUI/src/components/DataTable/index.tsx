@@ -288,7 +288,7 @@ const DataTable: FC<DataTableProps> = ({
               >
                 <MdOutlineWest />
               </button>
-              <nav role="navigation" aria-label={t('global.paginationNavigation') || ''}>
+              <nav role="navigation" aria-label={t('global.paginationNavigation') ?? ''}>
                 <ul className="links">
                   {pageIndexes[0] > 0 && (
                     <>
