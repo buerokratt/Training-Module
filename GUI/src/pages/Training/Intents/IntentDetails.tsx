@@ -64,6 +64,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({
   const [showConnectToServiceModal, setShowConnectToServiceModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [response, setResponse] = useState<Response>({ name: '', text: '' });
+  const withBackSlash = /\\/;
 
   const queryClient = useQueryClient();
   const toast = useToast();
@@ -585,11 +586,13 @@ const IntentDetails: FC<IntentDetailsProps> = ({
                     hideLabel
                     maxLength={RESPONSE_TEXT_LENGTH}
                     showMaxLength
-                    onChange={(e) =>
-                      setResponse({
-                        name: response?.name ?? '',
-                        text: e.target.value ?? '',
-                      })
+                    onChange={(e) => {
+                      if(!withBackSlash.test(e.target.value) && !e.target.value.startsWith(' ')) {
+                        setResponse({
+                          name: response?.name ?? '',
+                          text: e.target.value ?? '',
+                        })
+                      }}
                     }
                   />
                 </Track>
