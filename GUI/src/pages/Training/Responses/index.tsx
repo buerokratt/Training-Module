@@ -44,6 +44,7 @@ const Responses: FC = () => {
   const [deletableRow, setDeletableRow] = useState<string | null>(null);
   const { register, control, handleSubmit, resetField } = useForm<NewResponse>();
   const [refreshing, setRefreshing] = useState(false);
+  const withBackSlash = /\\/;
 
   let editingTrainingTitle: string;
   useDocumentEscapeListener(() => setEditableRow(null));
@@ -262,8 +263,12 @@ const Responses: FC = () => {
                       maxLength={RESPONSE_TEXT_LENGTH}
                       showMaxLength
                       onChange={(e) => {
-                        field.onChange(e.target.value);
-                        setEditingTrainingTitle(e.target.value);
+                        if(!withBackSlash.test(e.target.value) && !e.target.value.startsWith(' ')) {
+                          field.onChange(e.target.value);
+                          setEditingTrainingTitle(e.target.value);
+                        } else {
+                          e.target.value = editingTrainingTitle || '';
+                        }
                       }}
                     />
                   )}
@@ -336,18 +341,30 @@ const buildDependenciesCell = (rules: JSX.Element[] | undefined, stories: JSX.El
 };
 
 const buildTextCell = (value: string, isEditable: boolean, onEdit: (value: string) => void) => {
+  const withBackSlash = /\\/;
+  let lastValidValue = value;
+
   if (isEditable) {
     return (
-      <FormTextarea
-        label="label"
-        name="name"
-        defaultValue={value}
-        hideLabel
-        minRows={1}
-        maxLength={RESPONSE_TEXT_LENGTH}
-        showMaxLength
-        onChange={(e) => onEdit(e.target.value)}
-      />
+        <FormTextarea
+            label="label"
+            name="name"
+            defaultValue={value}
+            hideLabel
+            minRows={1}
+            maxLength={RESPONSE_TEXT_LENGTH}
+            showMaxLength
+            onChange={(e) => {
+              const userInput = e.target.value;
+
+              if (withBackSlash.test(userInput)) {
+                e.target.value = lastValidValue;
+              } else {
+                lastValidValue = userInput;
+                onEdit(userInput);
+              }
+            }}
+        />
     );
   }
 
