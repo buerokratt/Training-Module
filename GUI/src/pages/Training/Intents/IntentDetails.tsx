@@ -590,10 +590,12 @@ const IntentDetails: FC<IntentDetailsProps> = ({
                       if(!withBackSlash.test(e.target.value) && !e.target.value.startsWith(' ')) {
                         setResponse({
                           name: response?.name ?? '',
-                          text: e.target.value ?? '',
+                          text: e.target.value || '',
                         })
-                      }}
-                    }
+                      } else {
+                        e.target.value = response.text;
+                      }
+                    }}
                   />
                 </Track>
                 <Button appearance="text" onClick={() => handleIntentResponseSubmit()}>
