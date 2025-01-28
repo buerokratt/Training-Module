@@ -2,7 +2,7 @@ name: Build and publish GUI
 
 on:
   push:
-    branches: [ v2.0.2 ]
+    branches: [ varmoh-patch-4 ]
     paths:
       - '.env.pipeimg'
 
