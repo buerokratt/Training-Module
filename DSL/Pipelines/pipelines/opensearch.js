@@ -65,11 +65,15 @@ export async function osDeleteIndex(index_name) {
 }
 
 export async function osDeleteObject(index_name, obj_id) {
-  const client = os_open_client();
-  await client.delete({
-    index: index_name,
-    id: obj_id,
-  });
+  try {
+    const client = os_open_client();
+    await client.delete({
+      index: index_name,
+      id: obj_id,
+    });
+  } catch (e) {
+    console.error(e);
+  }
 }
 
 function getInput(req) {
