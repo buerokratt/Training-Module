@@ -11,6 +11,7 @@ type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   hideLabel?: boolean;
   colorInput?: boolean;
   className?: string;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 const FieldInput = forwardRef<HTMLInputElement, InputProps>((
@@ -21,6 +22,7 @@ const FieldInput = forwardRef<HTMLInputElement, InputProps>((
     hideLabel,
     colorInput,
     className,
+    onChange = () => {},
     ...rest
   }
   , ref,
@@ -42,6 +44,7 @@ const FieldInput = forwardRef<HTMLInputElement, InputProps>((
           id={id}
           ref={ref}
           aria-label={hideLabel ? label : undefined}
+          onChange={onChange}
           pattern={colorInput ? '^#([a-fA-F0-9]{3}){1,2}$' : undefined}
           {...rest}
         />
