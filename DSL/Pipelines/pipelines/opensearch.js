@@ -69,7 +69,6 @@ export async function osDeleteObject(index_name, obj_id) {
   await client.delete({
     index: index_name,
     id: obj_id,
-    ignore: [404],
   });
 }
 
@@ -196,7 +195,7 @@ router.post("/delete/object/:index_name", (req, res) => {
       res.json(JSON.stringify(ret)).end();
     })
     .catch((e) => {
-      res.status(500);
+      res.status(200);
       res.end();
       console.log(e);
     });
