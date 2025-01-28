@@ -112,17 +112,17 @@ returnSuccess:
 returnTooShortError:
   status: 409
   wrapper: false
-  return: "Intent name is too short"
+  return: "{\"intentTooShort\": true}"
   next: end
 
 returnIntentExists:
   status: 409
   wrapper: false
-  return: "Intent with that name already exists"
+  return: "{\"intentExists\": true}"
   next: end
 
 returnIntentsError:
   status: 409
   wrapper: false
-  return: "Intents parsing error"
+  return: "{\"intentParsing\": true}"
   next: end

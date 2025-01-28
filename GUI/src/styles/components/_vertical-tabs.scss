@@ -25,12 +25,17 @@
     padding: get-spacing(haapsalu);
   }
 
+  &__input {
+    width: auto;
+    flex-grow: 1;
+  }
+
   &__body {
     flex: 1;
     display: flex;
     flex-direction: column;
 
-    &[data-state="inactive"] {
+    &[data-state='inactive'] {
       display: none;
     }
   }
@@ -61,7 +66,7 @@
     line-height: 24px;
     color: get-color(sapphire-blue-20);
 
-    &[aria-selected=true] {
+    &[aria-selected='true'] {
       color: get-color(sapphire-blue-10);
       background-color: get-color(white);
     }

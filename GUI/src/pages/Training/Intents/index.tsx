@@ -21,6 +21,7 @@ const Intents: FC = () => {
     queryKey: 'intents/with-examples-count',
   });
 
+  const [intentSearch, setIntentSearch] = useState('');
   const [refreshing, setRefreshing] = useState(false);
   const [filter, setFilter] = useState('');
 
@@ -73,11 +74,19 @@ const Intents: FC = () => {
         >
           <Tabs.List className="vertical-tabs__list" aria-label={t('training.intents.title') || ''}>
             <div className="vertical-tabs__list-search">
-              <Track gap={8}>
+              <Track gap={8} isMultiline>
                 <FormInput
                   name="intentSearch"
                   label={t('training.intents.searchIntentPlaceholder')}
                   placeholder={t('training.intents.searchIntentPlaceholder') + '...' || ''}
+                  value={intentSearch}
+                  onChange={(e) => setIntentSearch(e.target.value)}
+                  hideLabel
+                />
+                <FormInput
+                  name="newIntentName"
+                  label={t('training.intents.newIntentNamePlaceholder')}
+                  placeholder={t('training.intents.newIntentNamePlaceholder') || ''}
                   value={filter}
                   onChange={(e) => {
                     const value = e.target.value;
@@ -87,6 +96,7 @@ const Intents: FC = () => {
                     }
                   }}
                   hideLabel
+                  className="vertical-tabs__input"
                 />
                 <Button onClick={() => newIntentMutation.mutate({ name: filter.trim() })} disabled={!filter}>
                   {t('global.add')}
@@ -96,7 +106,7 @@ const Intents: FC = () => {
 
             <IntentTabList
               intents={intents}
-              filter={filter}
+              filter={intentSearch}
               onDismiss={() => {
                 if (!selectedIntent?.isCommon) return;
                 setSelectedIntent(null);

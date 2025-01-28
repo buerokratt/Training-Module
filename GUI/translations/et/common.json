@@ -125,7 +125,8 @@
       "title": "Teemad",
       "commonIntents": "Üldised teemad",
       "responseTitle": "Vastus",
-      "searchIntentPlaceholder": "Otsi teemat",
+      "searchIntentPlaceholder": "Otsi olemasolevat teemat",
+      "newIntentNamePlaceholder": "Uue teema nimetus",
       "addToModel": "Lisa mudelisse",
       "removeFromModel": "Eemalda mudelist",
       "examples": "Näited",
@@ -152,6 +153,9 @@
       "changeConnectedService": "Muutke teenust",
       "deleteTooltip": "Ainult teema kustutatakse ja teenus jääb alles, selle kustutamine saab toimuda Teenuste moodulis",
       "error": {
+        "intentAlreadyExists": "Teema on juba olemas, palun kontrolli olemasolevast nimekirjast",
+        "intentNameTooShort": "Teema nimi on liiga lühike",
+        "intentParsing": "Teema parsimise viga",
         "turnExampleIntoIntent": "Näidet ei saa teenuseks muuta"
       },
       "sortingType": {
