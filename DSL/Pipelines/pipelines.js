@@ -4,7 +4,7 @@ const app = express();
 import opensearch from "./pipelines/opensearch.js";
 
 const PORT = process.env.PORT || 3010;
-const REQUEST_SIZE_LIMIT = "300mb";
+const REQUEST_SIZE_LIMIT = 600mb";
 
 app.disable('x-powered-by');
 app.use(express.json({ limit: REQUEST_SIZE_LIMIT }));
