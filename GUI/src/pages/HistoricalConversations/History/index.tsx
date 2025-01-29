@@ -184,10 +184,19 @@ const History: FC = () => {
       roles: ["ROLE_CUSTOMER_SUPPORT_AGENT"],
     }),
     onSuccess: (res: any) => {
-      setCustomerSupportAgents(res.data.response.map(item => ({
+      const csaList = res.data.response.map((item: any) => ({
         label: [item.firstName, item.lastName].join(' ').trim(),
         value: item.idCode,
-      })));
+      }));
+      setCustomerSupportAgents([...csaList,{label: 'Bürokratt', value: 'chatbot'}].sort((a,b) => {
+        if (a.label.toLowerCase() < b.label.toLowerCase()) {
+          return -1;
+        }
+        if (a.label.toLowerCase() > b.label.toLowerCase()) {
+          return 1;
+        }
+        return 0;
+      }));
     }
   });
 
