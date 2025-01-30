@@ -47,7 +47,7 @@ export const getColumns = ({
     columnHelper.accessor('customerSupportDisplayName', {
       id: 'customerSupportDisplayName',
       header: i18n.t('chat.history.csaName') || '',
-      cell: (info) => info.getValue() || '-',
+      cell: (info) => info.getValue() || '\u00A0-',
     }),
     columnHelper.accessor(
       (row) => `${row.endUserFirstName} ${row.endUserLastName}`,
