@@ -123,7 +123,8 @@
       "title": "Intents",
       "commonIntents": "Common intents",
       "responseTitle": "Response",
-      "searchIntentPlaceholder": "Search for intent",
+      "searchIntentPlaceholder": "Search for existing intent",
+      "newIntentNamePlaceholder": "New intent name",
       "addToModel": "Add to model",
       "removeFromModel": "Remove from model",
       "examples": "Examples",
@@ -150,6 +151,9 @@
       "changeConnectedService": "Change service",
       "deleteTooltip": "Only the Intent is deleted and the service remains, its deletion can be done in the Service module",
       "error": {
+        "intentAlreadyExists": "Intent already exists, please check the existing list",
+        "intentNameTooShort": "Intent name is too short",
+        "intentParsing": "Intent parsing error",
         "turnExampleIntoIntent": "Unable to turn this example into intent"
       },
       "sortingType": {
