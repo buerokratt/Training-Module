@@ -148,6 +148,7 @@ CROSS JOIN NPS
 WHERE (
           (
               LENGTH(:customerSupportIds) = 0 OR
+              ('-' = ANY(string_to_array(:customerSupportIds, ',')) AND c.customer_support_id = '') OR
               c.customer_support_id = ANY(string_to_array(:customerSupportIds, ','))
               ) AND (
               :search IS NULL OR

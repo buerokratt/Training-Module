@@ -188,7 +188,7 @@ const History: FC = () => {
         label: [item.firstName, item.lastName].join(' ').trim(),
         value: item.idCode,
       }));
-      setCustomerSupportAgents([...csaList,{label: 'Bürokratt', value: 'chatbot'}].sort((a,b) => {
+      setCustomerSupportAgents([...csaList,{label: 'Bürokratt', value: 'chatbot'},{label: '-', value: '-'}].sort((a,b) => {
         if (a.label.toLowerCase() < b.label.toLowerCase()) {
           return -1;
         }
