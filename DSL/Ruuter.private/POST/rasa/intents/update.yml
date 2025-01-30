@@ -28,7 +28,7 @@ assign_replace_items:
   assign:
     utter_old_name: "utter_${intent_old_name}"
     utter_name: "utter_${intent}"
-    
+
 validateInputLength:
   switch:
     - condition: ${intent.length > 2}
@@ -93,7 +93,7 @@ validateTmpFileExists:
   switch:
     - condition: ${tmpFileExists.response.body.error === false}
       next: getRulesFile
-  next: returnIntentFileMissing  
+  next: returnIntentFileMissing
 
 getRulesFile:
   call: http.post
@@ -272,16 +272,6 @@ saveIntentFile:
       content: ${intentYaml.response.body.json}
   result: fileResult
 
-removePipe:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/conversion/string-replace"
-    body:
-      data: ${intentYaml.response.body.json}
-      search: "|"
-      replace: ""
-  result: pipelineIntent
-
 removeOldIntentFromPipeline:
   call: http.post
   args:
@@ -295,7 +285,7 @@ addNewIntentInPipeline:
   args:
     url: "[#TRAINING_PIPELINE]/put/intents/intent"
     body:
-      input: ${pipelineIntent.response.body}
+      input: ${intentYaml.response.body.json}
   result: updateSearchResult
 
 addInDatabase:
@@ -347,7 +337,7 @@ replaceExistingIntent:
       newValue: ${intent}
       array: ${domainData.response.body.response.intents}
   result: updatedIntents
-  
+
 convertDomainJsonToYaml:
   call: http.post
   args:

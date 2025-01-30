@@ -2,7 +2,7 @@
     "id": "{{intents.intents.0._source.id}}",
     "examples": [
     {{#each intents.intents.0._source.examples}}
-        "{{{this}}}"{{#unless @last}},{{/unless}}
+        "{{{escapeQuotes this}}}"{{#unless @last}},{{/unless}}
     {{/each}}
     ],
     "inModel": {{isInModel intents.intents.0._source.intent intents}},
