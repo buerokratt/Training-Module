@@ -138,10 +138,14 @@ const HistoricalChat: FC<ChatProps> = ({ chat, trigger }) => {
     messagesList.forEach((message) => {
       message.event = message.event?.toLowerCase();
       const lastGroup = groupedMessages[groupedMessages.length - 1];
-      const isGreeting = !message.event || message.event.toLowerCase() === 'greeting';
-      if (lastGroup?.type === message.authorRole && isGreeting) {
+      const isAMessageEvent =
+        !message.event ||
+        message.event.toLowerCase() === 'greeting' ||
+        message.event.toLowerCase() === 'waiting_validation' ||
+        message.event.toLowerCase() === 'approved_validation';
+      if (lastGroup?.type === message.authorRole && isAMessageEvent) {
         lastGroup.messages.push(message);
-      } else if (isGreeting) {
+      } else if (isAMessageEvent) {
         groupedMessages.push({
           name: getUserName(message),
           type: message.authorRole,

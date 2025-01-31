@@ -174,22 +174,12 @@ saveIntentFile:
       content: ${intentYaml.response.body.json}
   result: fileResult
 
-removePipe:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/conversion/string-replace"
-    body:
-      data: ${intentYaml.response.body.json}
-      search: "|"
-      replace: ""
-  result: pipelineIntent
-
 addNewIntentInPipeline:
   call: http.post
   args:
     url: "[#TRAINING_PIPELINE]/put/intents/intent"
     body:
-      input: ${pipelineIntent.response.body}
+      input: ${intentYaml.response.body.json}
   result: updateSearchResult
 
 addInDatabase:

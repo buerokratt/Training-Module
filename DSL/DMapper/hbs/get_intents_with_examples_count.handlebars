@@ -2,8 +2,10 @@
   "intents": [
       {{#each buckets}}
         {
-         "intent": "{{key}}",
-         "examples_count": {{examples_counts.value}}
+         "id": "{{key}}",
+         "examplesCount": {{examples_counts.value}},
+         "inModel": {{isInModel key ../intents}},
+         "modifiedAt": "{{findModifiedAt key ../intents/intentsModifiedAt}}"
         }{{#unless @last}},{{/unless}}
       {{/each}}
     ]

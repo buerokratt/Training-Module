@@ -59,7 +59,8 @@
     "appealDeleted": "Appeal deleted",
     "copied": "Copied to clipboard",
     "modelDeleted": "Model deleted",
-    "modelActivated": "Model activated",
+    "modelActivated": "Model has been published",
+    "modelActivationTimedOut": "Model activation expired",
     "testStoryDeleted": "Test story deleted",
     "configurationSaved": "Configuration saved",
     "newFormAdded": "New form added",
@@ -122,7 +123,8 @@
       "title": "Intents",
       "commonIntents": "Common intents",
       "responseTitle": "Response",
-      "searchIntentPlaceholder": "Search for intent",
+      "searchIntentPlaceholder": "Search for existing intent",
+      "newIntentNamePlaceholder": "New intent name",
       "addToModel": "Add to model",
       "removeFromModel": "Remove from model",
       "examples": "Examples",
@@ -149,6 +151,9 @@
       "changeConnectedService": "Change service",
       "deleteTooltip": "Only the Intent is deleted and the service remains, its deletion can be done in the Service module",
       "error": {
+        "intentAlreadyExists": "Intent already exists, please check the existing list",
+        "intentNameTooShort": "Intent name is too short",
+        "intentParsing": "Intent parsing error",
         "turnExampleIntoIntent": "Unable to turn this example into intent"
       },
       "sortingType": {
@@ -312,6 +317,7 @@
       "popupNotifications": "Popup notifications",
       "newUnansweredChat": "New unanswered chat",
       "newForwardedChat": "New forwarded chat",
+      "newValidationMessage": "New message to validate",
       "useAutocorrect": "Text auto corrector"
     }
   },
@@ -332,7 +338,10 @@
       "nps": "NPS",
       "rating": "Rating",
       "feedback": "Feedback",
-      "forwarded": "Forwarded"
+      "forwarded": "Forwarded",
+      "statusAddedDate": "Status added date",
+      "chosenCsa": "Chosen csa(s)",
+      "chosenColumn": "Chosen column(s)"
     },
     "plainEvents": {
       "answered": "Answered",
@@ -364,12 +373,18 @@
       "inactive-chat-ended": "Ended cue to inactivity",
       "contact-information-skipped": "Contact Information Skipped",
       "unavailable-contact-information-fulfilled": "Contact information provided",
-      "unavailable_organization": "Organization Unavailable",
-      "unavailable_csas": "CSA's Unavailable",
+      "unavailable_organization": "Organization is unavailable",
+      "unavailable_organization_ask_contacts": "Organization is unavailable and asked for contacts",
+      "unavailable_csas": "Advisors are not available",
+      "unavailable_csas_ask_contacts": "Advisors are not available and asked for contacts",
       "unavailable_holiday": "Holiday",
+      "unavailable_holiday_ask_contacts": "Holiday and asked for contacts",
       "message-read": "Read",
       "user-reached": "User contacted",
-      "user-not-reached": "User could not be reached"
+      "user-not-reached": "User could not be reached",
+      "ask_to_forward_to_csa": "Asked to forward the conversation to a customer service agent",
+      "forwarded_to_backoffice": "Conversation forwarded to back office",
+      "continue_chatting_with_bot": "Continue conversation with bürokratt"
     },
     "status": {
       "active": "Active",
@@ -405,13 +420,19 @@
       "message-read": "Read",
       "contact-information-skipped": "Contact Information Skipped",
       "unavailable-contact-information-fulfilled": "Contact information provided",
-      "unavailable_organization": "Organization Unavailable",
-      "unavailable_csas": "CSA's Unavailable",
+      "unavailable_organization": "Organization is unavailable",
+      "unavailable_organization_ask_contacts": "Organization is unavailable and asked for contacts",
+      "unavailable_csas": "Advisors are not available",
+      "unavailable_csas_ask_contacts": "Advisors are not available and asked for contacts",
       "unavailable_holiday": "Holiday",
+      "unavailable_holiday_ask_contacts": "Holiday and asked for contacts",
       "pending-assigned": "{{name}} assigned to contact user",
       "user-reached": "{{name}} contacted the user",
       "user-not-reached": "{{name}} could not reach the user",
-      "user-authenticated": "{{name}} is authenticated {{date}}"
+      "user-authenticated": "{{name}} is authenticated {{date}}",
+      "ask_to_forward_to_csa": "Asked to forward the conversation to a customer service agent",
+      "forwarded_to_backoffice": "Conversation forwarded to back office",
+      "continue_chatting_with_bot": "Continue conversation with bürokratt"
     }
   },
   "submit": {

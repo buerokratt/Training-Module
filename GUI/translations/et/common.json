@@ -61,7 +61,8 @@
     "appealDeleted": "Apellatsioon kustutatud",
     "copied": "Kopeeriti lõikelauale",
     "modelDeleted": "Mudel kustutatud",
-    "modelActivated": "Mudel aktiveeritud",
+    "modelActivated": "Mudel on avalikustatud",
+    "modelActivationTimedOut": "Mudeli aktiveerimine aegus",
     "testStoryDeleted": "Testlugu kustutatud",
     "configurationSaved": "Seadistus salvestatud",
     "newFormAdded": "Uus ankeet lisatud",
@@ -124,7 +125,8 @@
       "title": "Teemad",
       "commonIntents": "Üldised teemad",
       "responseTitle": "Vastus",
-      "searchIntentPlaceholder": "Otsi teemat",
+      "searchIntentPlaceholder": "Otsi olemasolevat teemat",
+      "newIntentNamePlaceholder": "Uue teema nimetus",
       "addToModel": "Lisa mudelisse",
       "removeFromModel": "Eemalda mudelist",
       "examples": "Näited",
@@ -151,6 +153,9 @@
       "changeConnectedService": "Muutke teenust",
       "deleteTooltip": "Ainult teema kustutatakse ja teenus jääb alles, selle kustutamine saab toimuda Teenuste moodulis",
       "error": {
+        "intentAlreadyExists": "Teema on juba olemas, palun kontrolli olemasolevast nimekirjast",
+        "intentNameTooShort": "Teema nimi on liiga lühike",
+        "intentParsing": "Teema parsimise viga",
         "turnExampleIntoIntent": "Näidet ei saa teenuseks muuta"
       },
       "sortingType": {
@@ -315,6 +320,7 @@
       "popupNotifications": "Pop-up märguanded",
       "newUnansweredChat": "Uus vastamata vestlus",
       "newForwardedChat": "Uus suunatud vestlus",
+      "newValidationMessage": "Uus teade kinnitamiseks",
       "useAutocorrect": "Teksti autokorrektor"
     }
   },
@@ -336,7 +342,10 @@
       "nps": "Soovitusindeks",
       "rating": "Hinnang",
       "feedback": "Tagasiside",
-      "forwarded": "Suunatud"
+      "forwarded": "Suunatud",
+      "statusAddedDate": "Staatuse lisamise kuupäev",
+      "chosenCsa": "Valitud nõustaja(d)",
+      "chosenColumn": "Valitud tulba(d)"
     },
     "plainEvents": {
       "answered": "Vastatud",
@@ -370,10 +379,16 @@
       "contact-information-skipped": "Kontaktandmeid ei saadetud",
       "unavailable-contact-information-fulfilled": "Kontaktandmed on antud",
       "unavailable_organization": "Organisatsioon pole saadaval",
+      "unavailable_organization_ask_contacts": "Organisatsioon pole saadaval ja küsitakse kontakte",
       "unavailable_csas": "Nõustajad pole saadaval",
+      "unavailable_csas_ask_contacts": "Nõustajad ei ole kättesaadavad ja küsitakse kontakte",
       "unavailable_holiday": "Puhkus",
+      "unavailable_holiday_ask_contacts": "Puhkus ja küsis kontakte",
       "user-reached": "Kasutajaga võeti ühendust",
-      "user-not-reached": "Kasutajaga ei õnnestunud ühendust saada"
+      "user-not-reached": "Kasutajaga ei õnnestunud ühendust saada",
+      "ask_to_forward_to_csa": "Paluti vestlus klienditeenindajale üle kanda",
+      "forwarded_to_backoffice": "Vestlus suunatakse tagasi kontorisse",
+      "continue_chatting_with_bot": "Jätkake vestlust kasutajaga bürokratt"
     },
     "status": {
       "active": "Aktiivne",
@@ -410,12 +425,18 @@
       "contact-information-skipped": "Kontaktandmeid pole esitatud",
       "unavailable-contact-information-fulfilled": "Kontaktandmed on antud",
       "unavailable_organization": "Organisatsioon pole saadaval",
+      "unavailable_organization_ask_contacts": "Organisatsioon pole saadaval ja küsitakse kontakte",
       "unavailable_csas": "Nõustajad pole saadaval",
+      "unavailable_csas_ask_contacts": "Nõustajad ei ole kättesaadavad ja küsitakse kontakte",
       "unavailable_holiday": "Puhkus",
+      "unavailable_holiday_ask_contacts": "Puhkus ja küsis kontakte",
       "pending-assigned": "{{name}} määratud kontaktkasutajale",
       "user-reached": "{{name}} võttis kasutajaga ühendust",
       "user-not-reached": "{{name}} ei saanud kasutajaga ühendust",
-      "user-authenticated": "{{name}} on autenditud {{date}}"
+      "user-authenticated": "{{name}} on autenditud {{date}}",
+      "ask_to_forward_to_csa": "Paluti vestlus klienditeenindajale üle kanda",
+      "forwarded_to_backoffice": "Vestlus suunatakse tagasi kontorisse",
+      "continue_chatting_with_bot": "Jätkake vestlust kasutajaga bürokratt"
     }
   },
   "submit": {

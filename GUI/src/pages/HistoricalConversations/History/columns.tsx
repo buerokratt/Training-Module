@@ -60,13 +60,14 @@ export const getColumns = ({
       header: i18n.t('global.idCode') || '',
     }),
     columnHelper.accessor('contactsMessage', {
+      id: 'contactsMessage',
       header: i18n.t('chat.history.contact') || '',
       cell: (props) => (props.getValue() ? i18n.t('global.yes') : i18n.t('global.no')),
     }),
     columnHelper.accessor('comment', {
       id: 'comment',
-      header: i18n.t('chat.history.comment') || '',
-      cell: (props) =>
+      header: i18n.t('chat.history.comment') ?? '',
+      cell: (props) => 
         !props.getValue() ? (
           <></>
         ) : (
@@ -77,18 +78,18 @@ export const getColumns = ({
               onKeyDown={(e) => e.preventDefault()}
               style={{ cursor: 'pointer' }}
             >
-              {props.getValue() === undefined
-                ? ''
-                : props.getValue()?.slice(0, 30) + '...'}
+              {props.getValue()!.length <= 25 ? props.getValue() : `${props.getValue()?.slice(0, 25)}...`}
             </span>
           </Tooltip>
         ),
     }),
     columnHelper.accessor('rating', {
+      id: 'rating',
       header: i18n.t('chat.history.rating') || '',
       cell: (props) => props.getValue() && <span>{`${props.getValue()}/10`}</span>,
     }),
     columnHelper.accessor('feedback', {
+      id: 'feedback',
       header: i18n.t('chat.history.feedback') || '',
       cell: (props) => (
         props.getValue() && <span style={{ minWidth: '250px' }}>{`${props.getValue()}`}</span>
@@ -143,7 +144,7 @@ export const getColumns = ({
         </Button>
       ),
       meta: {
-        size: '1%',
+        size: '3%',
         sticky: 'right',
       },
     }),

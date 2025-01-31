@@ -1,0 +1,25 @@
+{
+  "script": {
+    "lang": "mustache",
+    "source": {
+      "size": 10000,
+      "query": {
+        "bool": {
+          "must": [
+            {
+              "term": {
+                "_id": "responses"
+              }
+            }
+          ]
+        }
+      },
+      "_source": {
+        "includes": ["responses.{{response_name}}"]
+      }
+    },
+    "params": {
+      "response_name": ""
+    }
+  }
+}

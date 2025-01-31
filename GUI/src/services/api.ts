@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios';
-import {useTranslation} from "react-i18next";
-import {useEffect} from "react";
+import { useTranslation } from 'react-i18next';
+import { useEffect } from 'react';
 
 const api = axios.create({
   baseURL: import.meta.env.REACT_APP_RUUTER_API_URL,
@@ -53,7 +53,7 @@ const AxiosInterceptor = ({ children }) => {
       import.meta.env.DEBUG_ENABLED && console.debug(response);
 
       return response;
-    }
+    };
 
     const errInterceptor = (error: any) => {
       import.meta.env.DEBUG_ENABLED && console.debug(error);
@@ -61,13 +61,39 @@ const AxiosInterceptor = ({ children }) => {
       let message = t('global.notificationErrorMsg');
 
       return Promise.reject(new Error(message));
-    }
+    };
+
+    const rasaErrInterceptor = (error: any) => {
+      import.meta.env.DEBUG_ENABLED && console.debug(error);
+
+      let message = t('global.notificationErrorMsg');
+
+      if (error.response && error.response.data) {
+        const data = error.response.data;
+
+        switch (true) {
+          case data.intentExists:
+            message = t('training.intents.error.intentAlreadyExists');
+            break;
+          case data.intentTooShort:
+            message = t('training.intents.error.intentNameTooShort');
+            break;
+          case data.intentParsing:
+            message = t('training.intents.error.intentParsing');
+            break;
+          default:
+            break;
+        }
+      }
+
+      return Promise.reject(new Error(message));
+    };
 
     const apiInterceptor = api.interceptors.response.use(resInterceptor, errInterceptor);
     const authApiInterceptor = authApi.interceptors.response.use(resInterceptor, errInterceptor);
     const fileApiInterceptor = fileApi.interceptors.response.use(resInterceptor, errInterceptor);
     const genericInterceptor = genericApi.interceptors.response.use(resInterceptor, errInterceptor);
-    const rasaApiInterceptor = rasaApi.interceptors.response.use(resInterceptor, errInterceptor);
+    const rasaApiInterceptor = rasaApi.interceptors.response.use(resInterceptor, rasaErrInterceptor);
 
     return () => {
       api.interceptors.response.eject(apiInterceptor);
@@ -76,11 +102,10 @@ const AxiosInterceptor = ({ children }) => {
       genericApi.interceptors.response.eject(genericInterceptor);
       rasaApi.interceptors.response.eject(rasaApiInterceptor);
     };
-
   }, [t]);
 
   return children;
-}
+};
 
 const handleRequestError = (error: AxiosError) => {
   import.meta.env.DEBUG_ENABLED && console.debug(error);
@@ -91,31 +116,16 @@ const handleRequestError = (error: AxiosError) => {
     // To be added: handle forbidden requests
   }
   return Promise.reject(new Error(error.message));
-}
+};
 
-api.interceptors.request.use(
-  (axiosRequest) => axiosRequest,
-  handleRequestError
-);
+api.interceptors.request.use((axiosRequest) => axiosRequest, handleRequestError);
 
-authApi.interceptors.request.use(
-  (axiosRequest) => axiosRequest,
-  handleRequestError
-);
+authApi.interceptors.request.use((axiosRequest) => axiosRequest, handleRequestError);
 
-fileApi.interceptors.request.use(
-  (axiosRequest) => axiosRequest,
-  handleRequestError
-);
+fileApi.interceptors.request.use((axiosRequest) => axiosRequest, handleRequestError);
 
-genericApi.interceptors.request.use(
-  (axiosRequest) => axiosRequest,
-  handleRequestError
-);
+genericApi.interceptors.request.use((axiosRequest) => axiosRequest, handleRequestError);
 
-rasaApi.interceptors.request.use(
-  (axiosRequest) => axiosRequest,
-  handleRequestError
-);
+rasaApi.interceptors.request.use((axiosRequest) => axiosRequest, handleRequestError);
 
 export { api, authApi, fileApi, genericApi, rasaApi, AxiosInterceptor };

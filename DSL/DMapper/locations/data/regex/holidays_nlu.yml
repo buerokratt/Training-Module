@@ -15,6 +15,11 @@ nlu:
      - jõululaupäev
      - esimene jõulupüha
      - teine jõulupüha
+     - talve vaheaeg
+     - kevad vaheaeg
+     - suve vaheaeg
+     - jõulu vaheaeg
+     - sügis vaheaeg
 
   - regex: by_month
     examples: |

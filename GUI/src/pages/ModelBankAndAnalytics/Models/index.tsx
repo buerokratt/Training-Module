@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns';
 import { AxiosError } from 'axios';
 import { MdOutlineSettingsInputAntenna } from 'react-icons/md';
+import './Models.scss'
 
 import {
   Button,
@@ -24,7 +25,7 @@ import withAuthorization, { ROLES } from 'hoc/with-authorization';
 
 const Models: FC = () => {
   const MODEL_FETCH_INTERVAL = 5000;
-  const MODEL_FETCH_TIMEOUT = 300000;
+  const MODEL_FETCH_TIMEOUT = 120000;
 
   const { t } = useTranslation();
   const toast = useToast();
@@ -89,6 +90,13 @@ const Models: FC = () => {
     setSelectedModel(deployedModel);
     setCurrentlyLoadedModel(deployedModel);
     setPreviouslyLoadedModel(deployedModel);
+
+    const activatingModel = models?.find((m) => m.state === 'ACTIVATING')
+    if (activatingModel) {
+      setSelectedModel(activatingModel);
+      setCurrentlyLoadedModel(activatingModel);
+      setIsFetching(true);
+    }
   }, [models]);
 
   useEffect(() => {
@@ -100,6 +108,11 @@ const Models: FC = () => {
       const timeoutId = setTimeout(() => {
         clearInterval(intervalId);
         setIsFetching(false);
+        toast.open({
+          type: 'error',
+          title: t('global.notificationError'),
+          message: t('toast.modelActivationTimedOut'),
+        });
       }, MODEL_FETCH_TIMEOUT);
 
       if (currentlyLoadedModel?.id === previouslyLoadedModel?.id) {
@@ -163,6 +176,7 @@ const Models: FC = () => {
             {selectedModel.state !== 'DEPLOYED' && (
               <Button
                 appearance="success"
+                disabled={isFetching}
                 onClick={() => setModelConfirmation(selectedModel.id)}
               >
                 {isFetching &&
@@ -181,6 +195,7 @@ const Models: FC = () => {
         <Card header={<h2 className="h3">{t('training.mba.allModels')}</h2>}>
           <DataTable
             data={models}
+            selectedRow={(row) => row.original.versionNumber === selectedModel?.versionNumber}
             columns={modelsColumns}
             sortable
             sorting={sorting}
@@ -188,10 +203,7 @@ const Models: FC = () => {
             setSelectedRow={(row: Row<Model>) => setSelectedModel(row.original)}
             meta={{
               getRowStyles: (row: Row<Model>) => ({
-                backgroundColor:
-                  row.original.versionNumber === selectedModel?.versionNumber
-                    ? '#E1E2E5'
-                    : undefined,
+                cursor: 'pointer'
               }),
             }}
           />
@@ -238,10 +250,10 @@ const Models: FC = () => {
                 {t('global.no')}
               </Button>
               <Button
-                appearance="error"
+                appearance="primary"
                 onClick={() =>
                   activateModelMutation.mutate({
-                    data: { versionNumber: selectedModel.versionNumber },
+                    data: { versionNumber: selectedModel.versionNumber, name: selectedModel.name },
                   })
                 }
               >

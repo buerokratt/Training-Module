@@ -26,6 +26,13 @@ intents:
   - common_teenus_rk_isiku_kohalolu
   - common_teenus_rk_hääletus
   - common_service_holidays
+  - common_service_CPI
+  - common_service_unemployment_rate
+  - common_service_estimated_subsistence_minimum
+  - common_service_motor_vehicle_tax
+  - common_service_school_holiday
+  - common_service_nba_results
+  - common_service_exchange_rate
 
 entities:
   - asukoht
@@ -41,6 +48,9 @@ entities:
   - next_holidays
   - last_holiday
   - last_holidays
+  - by_year
+  - reg_number
+  - currency
   
 slots:
   common_teenus_ilm_asukoht:
@@ -50,6 +60,26 @@ slots:
     - type: from_entity
       entity: asukoht
       intent: common_teenus_ilm
+
+  currency:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: currency
+      intent: common_service_exchange_rate
+
+  reg_number:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: reg_number
+      intent: common_service_motor_vehicle_tax
+    - type: from_text
+      conditions:
+      - active_loop: common_service_motor_vehicle_tax_form
+        requested_slot: reg_number
 
   company_name:
     type: text
@@ -129,6 +159,25 @@ slots:
       entity: np_odav
       intent: common_teenus_nordpool2
 
+  by_year_statistics:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: by_year
+      intent: common_service_CPI
+    - type: from_entity
+      entity: by_year
+      intent: common_service_unemployment_rate
+
+  by_month_statistics:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: by_month
+      intent: common_service_CPI
+
   today_holiday:
     type: text
     influence_conversation: true
@@ -185,6 +234,62 @@ slots:
       entity: by_month
       intent: common_service_holidays
 
+  today_school_holiday:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: today
+      intent: common_service_school_holiday
+
+  next_school_holiday:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: next_holiday
+      intent: common_service_school_holiday
+
+  next_school_holidays:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: next_holidays
+      intent: common_service_school_holiday
+
+  last_school_holiday:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: last_holiday
+      intent: common_service_school_holiday
+
+  last_school_holidays:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: last_holidays
+      intent: common_service_school_holiday
+
+  by_name_school_holiday:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: by_name
+      intent: common_service_school_holiday
+
+  by_month_school_holiday:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: by_month
+      intent: common_service_school_holiday
+
   affirm_deny:
     type: text
     influence_conversation: true
@@ -206,6 +311,9 @@ forms:
   direct_to_customer_support_form:
     required_slots:
         - affirm_deny
+  common_service_motor_vehicle_tax_form:
+    required_slots:
+        - reg_number
 
 actions:
 - action_ask_custom_fallback_form_affirm_deny
@@ -220,7 +328,7 @@ responses:
           name: common_teenus_ilm_asukoht
           value: null
       text: "Hetkel oskan ma öelda ilma Eesti raames piirkonnapõhiselt. Palun sisestage korrektne piirkonna nimi."
-    - text: "#weather, {common_teenus_ilm_asukoht}"
+    - text: "#common_service, /POST/weather/EE, ({common_teenus_ilm_asukoht})"
 
   utter_ask_company_name:
   - text: "Mis firma kohta sa infot soovid?"
@@ -230,42 +338,42 @@ responses:
         - type: slot
           name: trigger_intent
           value: common_service_companies_employees
-      text: "OPENSEARCH {company_name}"
+      text: "#common_service, /POST/companies/search, (employees, {company_name})"
     - condition:
         - type: slot
           name: trigger_intent
           value: common_service_companies_revenue
-      text: "REVENUEOPENSEARCH {company_name}"
+      text: "#common_service, /POST/companies/search, (revenue, {company_name})"
     - condition:
         - type: slot
           name: trigger_intent
           value: common_service_companies_workforce_taxes
-      text: "WORKFORCETAXOPENSEARCH {company_name}"
+      text: "#common_service, /POST/companies/search, (work-force-taxes, {company_name})"
     - condition:
         - type: slot
           name: trigger_intent
           value: common_service_companies_national_taxes
-      text: "NATIONALTAXOPENSEARCH {company_name}"
+      text: "#common_service, /POST/companies/search, (national-taxes, {company_name})"
     - condition:
         - type: slot
           name: trigger_intent
           value: common_service_companies_beneficiaries
-      text: "BENEFICIARIESOPENSEARCH {company_name}"
+      text: "#common_service, /POST/companies/search, (company-beneficial-owners, {company_name})"
     - condition:
         - type: slot
           name: trigger_intent
           value: common_service_companies_related_persons
-      text: "RELATEDPEOPLEOPENSEARCH {company_name}"
+      text: "#common_service, /POST/companies/search, (company-related-persons, {company_name})"
     - condition:
         - type: slot
           name: trigger_intent
           value: common_service_companies_contactdetails
-      text: "COMPANYDETAILSOPENSEARCH {company_name}"
+      text: "#common_service, /POST/companies/search, (detailed-company-data, {company_name})"
     - condition:
         - type: slot
           name: trigger_intent
           value: common_service_companies_lihtandmed
-      text: "SIMPLECOMPANYOPENSEARCH {company_name}"
+      text: "#common_service, /POST/companies/search, (simple-company-data, {company_name})"
 
   utter_fallback:
   - text: "UNKNOWN"
@@ -289,10 +397,10 @@ responses:
   - text: "Kuidas saan abiks olla?"
 
   utter_common_teenus_citizien_initiative:
-  - text: "#initiative-events-latest"
+  - text: "#common_service, /GET/public-initiatives/most-recent"
 
   utter_common_teenus_citizien_initiative_popular:
-  - text: "#initiative-events-popular"
+  - text: "#common_service, /GET/public-initiatives/most-popular"
 
   utter_common_teenus_rk_isiku_kohalolu:
     - condition:
@@ -300,46 +408,109 @@ responses:
           name: rk_liige
           value: null
       text: "Riigikogu liikme kohaloleku nägemiseks palun proovige uuesti, kasutades Riigikogu liikme täisnime."
-    - text: "#riigikogu-attendance, {rk_liige}"
+    - text: "#common_service, /GET/riigikogu/members-participation, ({rk_liige})"
 
   utter_common_teenus_rk_hääletus_viimane:
-  - text: "#recentVoting"
+  - text: "#common_service, /GET/riigikogu/recent-voting"
 
   utter_common_teenus_rk_hääletus_viimased:
-  - text: "#riigikogu-five-latest-votings"
+  - text: "#common_service, /GET/riigikogu/five-most-recent"
 
   utter_common_teenus_rk_hääletus_fallback:
   - text: "Ma ei saanud täpselt aru. Palun proovige uuesti!"
 
   utter_common_teenus_nordpool:
-  - text: "#nordpool"
+  - text: "#common_service, /GET/electricity/current-price"
 
   utter_common_teenus_nordpool_odav:
-  - text: "#nordpool2"
+  - text: "#common_service, /GET/electricity/lowest-price"
 
   utter_common_teenus_nordpool_kallis:
-  - text: "#nordpool3"
+  - text: "#common_service, /GET/electricity/highest-price"
+
+  utter_common_service_CPI_fallback:
+  - text: "#common_service, /GET/statistics-estonia/consumer-price-index"
+
+  utter_common_service_CPI_previous_year:
+  - text: "#common_service, /GET/statistics-estonia/consumer-price-index, (previous_year,,{by_year_statistics})"
+
+  utter_common_service_CPI_previous_month:
+  - text: "#common_service, /GET/statistics-estonia/consumer-price-index, (previous_month,{by_month_statistics},)"
+
+  utter_common_service_CPI_time_horizon:
+  - text: "#common_service, /GET/statistics-estonia/consumer-price-index, (previous_year,{by_month_statistics},{by_year_statistics})"
+
+  utter_common_service_unemployment_rate:
+  - text: "#common_service, /GET/statistics-estonia/unemployment-rate, ({by_year_statistics})"
+
+  utter_common_service_unemployment_rate_fallback:
+  - text: "#common_service, /GET/statistics-estonia/unemployment-rate"
+
+  utter_common_service_estimated_subsistence_minimum:
+  - text: "#common_service, /GET/statistics-estonia/estimated-subsistence-minimum"
 
   utter_common_service_holidays:
-  - text: "#all_national_holidays"
+  - text: "#common_service, /GET/calendar/national-holidays/national-holidays"
 
   utter_common_service_holidays_next_holidays:
-  - text: "#national_holidays_eoy"
+  - text: "#common_service, /GET/calendar/national-holidays/eoy"
 
   utter_common_service_holidays_last_holidays:
-  - text: "#national_holidays_ytd"
+  - text: "#common_service, /GET/calendar/national-holidays/ytd"
 
   utter_common_service_holidays_last_holiday:
-  - text: "#prev_national_holiday"
+  - text: "#common_service, /GET/calendar/national-holidays/previous"
 
   utter_common_service_holidays_next_holiday:
-  - text: "#next_national_holiday"
+  - text: "#common_service, /GET/calendar/national-holidays/next"
 
   utter_common_service_holidays_today:
-  - text: "#national_holidays_today"
+  - text: "#common_service, /GET/calendar/national-holidays/today"
 
   utter_common_service_holidays_by_name:
-  - text: "#national_holidays_by_name"
+  - text: "#common_service, /GET/calendar/national-holidays/find/by-name, ({by_name_holiday})"
 
   utter_common_service_holidays_by_month:
-  - text: "#national_holidays_by_month"
+  - text: "#common_service, /GET/calendar/national-holidays/find/by-month, ({by_month_holiday})"
+
+  utter_ask_reg_number:
+  - text: "Mootorsõidukimaksu päringu tegemiseks palun sisestage Eestis registreeritud sõiduki kehtiv registreerimismärk."
+
+  utter_common_service_motor_vehicle_tax:
+  - text: "#common_service, /GET/motor-vehicle-tax/registration-number, ({reg_number})"
+
+  utter_common_service_school_holiday:
+  - text: "#common_service, /GET/calendar/school-holidays/school-holidays"
+
+  utter_common_service_school_holiday_next_holidays:
+  - text: "#common_service, /GET/calendar/school-holidays/eoy"
+
+  utter_common_service_school_holiday_last_holidays:
+  - text: "#common_service, /GET/calendar/school-holidays/ytd"
+
+  utter_common_service_school_holiday_last_holiday:
+  - text: "#common_service, /GET/calendar/school-holidays/previous"
+
+  utter_common_service_school_holiday_next_holiday:
+  - text: "#common_service, /GET/calendar/school-holidays/next"
+
+  utter_common_service_school_holiday_today:
+  - text: "#common_service, /GET/calendar/school-holidays/today"
+
+  utter_common_service_school_holiday_by_name:
+  - text: "#common_service, /GET/calendar/school-holidays/find/by-name, ({by_name_school_holiday})"
+
+  utter_common_service_school_holiday_by_month:
+  - text: "#common_service, /GET/calendar/school-holidays/find/by-month, ({by_month_school_holiday})"
+
+  utter_common_service_nba_results:
+  - text: "#common_service, /GET/sports/nba-results"
+
+  utter_common_service_exchange_rate:
+    - condition:
+        - type: slot
+          name: currency
+          value: null
+      text: "Palun korrake küsimust, kasutades valuuta koodi, mille kurssi soovite saada."
+    - text: "#service, /GET/currency, ({currency})"
+  

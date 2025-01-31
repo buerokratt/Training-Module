@@ -1,0 +1,70 @@
+version: "3.0"
+nlu:
+- regex: reg_number
+  examples: |
+    - \b\d{3}\s?[A-Za-z]{3}\b
+
+- intent: common_service_motor_vehicle_tax
+  examples: |
+    - Automaks reg nr [111xyz](reg_number)
+    - automaksu kalkulaator
+    - kui suur on minu automaks
+    - automaks registreerimismärgi järgi
+    - Kui suur on automaks
+    - Mis on minu automaks?
+    - Kui palju on minu automaks?
+    - Kui suur on automaks?
+    - Tahaksin teada automaksu suurust.
+    - Kuidas arvutada minu auto maks?
+    - Mitu eurot on minu automaks ?
+    - Kas ma pean maksma automaksu?
+    - Kui palju maksab automaks aastas?
+    - Kuidas leida välja minu automaks?
+    - Mis on autode maksusüsteem?
+    - Millised on automaksu määrad?
+    - Kuidas teada saada oma auto maksumus?
+    - Kuidas arvutada autode makse?
+    - Kui palju maksan ma automaksu oma auto eest?
+    - Mis on autode maksude suurus?
+    - Kui palju pean ma automaksu maksma?
+    - Millised on autode maksustamise reeglid?
+    - Kui palju maksab autode maks aastas?
+    - Mis on automaks Eestis?
+    - Kui suur on automaks?
+    - Kas automaks on kallis
+    - Kas ma pean automaksu maksma igal aastal?
+    - Mis on Eesti automaksu reeglid?
+    - Kuidas leida minu auto maksumäär?
+    - Kui palju on uue auto automaks?
+    - Kuidas arvutada kasutatud auto maksud?
+    - Kui kallis on automaks aastas?
+    - Kui suur on autode aastamaks?
+    - Kas automaks sõltub auto vanusest?
+    - Millest sõltub minu automaks?
+    - Kas automaks sõltub auto mootorist?
+    - Kui suur on automaks elektriautodele?
+    - Kui palju on automaks hübriidautodele?
+    - Kas väiksemate autode puhul on väiksem maks?
+    - Kas suuremate autode maksud on kallimad?
+    - Kui palju pean maksma automaksu diiselauto eest?
+    - Kui palju maksan ma bensiiniauto automaksu?
+    - Kui palju on luksusautode automaks?
+    - Kas automaksu saab vähendada?
+    - Kuidas mõjutab auto heitgaasi automaksu?
+    - Kui palju pean ma maksma automaksu iga kuu?
+    - Kui palju maksab elektriauto maks Eestis?
+    - Kas Eesti automaks on kõrgem kui teistes riikides?
+    - Mis mõjutab automaksu arvutamist?
+    - Kui palju on automaks madala heitkogusega autodele?
+    - Kui suur on automaks linnamaasturile?
+    - Kui palju maksab luksusauto omamine Eestis?
+    - Kuidas arvutatakse automaks maasturitele?
+    - Kui palju maksan ma automaksu väikese sõiduauto eest?
+    - Kas ma pean maksma rohkem automaksu vana auto eest?
+    - Kas autode vanus mõjutab maksustamist?
+    - Kui palju maksab sportauto automaks?
+    - Kas diiselautode maksud on suuremad?
+    - Kui palju on automaks täiselektrilistele autodele?
+    - Kuidas arvutatakse kasutatud autode maksustamine?
+    - Kas hübriidautodel on madalam maks?
+    - Kui palju on maks väikesel pereautol?

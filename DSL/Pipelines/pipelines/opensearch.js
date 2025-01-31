@@ -100,13 +100,16 @@ router.post(
 
     const obj = input[0];
 
+    console.log(index_name);
+    console.log(index_type);
+    console.log(obj);
+	  
     if (index_type) obj.id = obj[index_type].replaceAll(/\s+/g, "_");
-    if (obj.examples && !Array.isArray(obj.examples)) {
-      obj.examples = obj.examples
-        .split("\n")
-        .map((e) => e.replace("- ", ""))
-        .filter((e) => e);
-    }
+    // Using multiline string instead of an array for better special characters support
+    obj.examples = obj.examples
+      .split("\n")
+      .map((e) => e.replace("- ", ""))
+      .filter((e) => e);
 
     osPut(index_name, obj)
       .then((ret) => {

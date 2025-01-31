@@ -6,7 +6,8 @@
       "aggs": {
         "hot": {
           "terms": {
-            "field": "intent.keyword"
+            "field": "intent.raw",
+            "size": 10000
           },
           "aggs": {
             "examples_counts": {
@@ -18,20 +19,18 @@
         }
       },
       "query": {
-        "bool": {
-          "must": [
-            {
-              "query_string": {
-                "query": "*{{intent}}*",
-                "default_field": "intent"
-              }
-            }
-          ]
+        "prefix": {
+          "intent.raw": {
+            "value": "{{prefix}}"
+          }
         }
       }
     },
     "params": {
-      "intent": ""
+      "prefix": {
+        "type": "string",
+        "description": "Optional prefix to filter intents"
+      }
     }
   }
 }
