@@ -60,6 +60,7 @@ export const getColumns = ({
       header: i18n.t('global.idCode') || '',
     }),
     columnHelper.accessor('contactsMessage', {
+      id: 'contactsMessage',
       header: i18n.t('chat.history.contact') || '',
       cell: (props) => (props.getValue() ? i18n.t('global.yes') : i18n.t('global.no')),
     }),
@@ -83,10 +84,12 @@ export const getColumns = ({
         ),
     }),
     columnHelper.accessor('rating', {
+      id: 'rating',
       header: i18n.t('chat.history.rating') || '',
       cell: (props) => props.getValue() && <span>{`${props.getValue()}/10`}</span>,
     }),
     columnHelper.accessor('feedback', {
+      id: 'feedback',
       header: i18n.t('chat.history.feedback') || '',
       cell: (props) => (
         props.getValue() && <span style={{ minWidth: '250px' }}>{`${props.getValue()}`}</span>
@@ -141,7 +144,7 @@ export const getColumns = ({
         </Button>
       ),
       meta: {
-        size: '1%',
+        size: '3%',
         sticky: 'right',
       },
     }),

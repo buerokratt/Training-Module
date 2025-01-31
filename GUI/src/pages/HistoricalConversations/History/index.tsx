@@ -184,10 +184,19 @@ const History: FC = () => {
       roles: ["ROLE_CUSTOMER_SUPPORT_AGENT"],
     }),
     onSuccess: (res: any) => {
-      setCustomerSupportAgents(res.data.response.map(item => ({
+      const csaList = res.data.response.map((item: any) => ({
         label: [item.firstName, item.lastName].join(' ').trim(),
         value: item.idCode,
-      })));
+      }));
+      setCustomerSupportAgents([...csaList,{label: 'Bürokratt', value: 'chatbot'}].sort((a,b) => {
+        if (a.label.toLowerCase() < b.label.toLowerCase()) {
+          return -1;
+        }
+        if (a.label.toLowerCase() > b.label.toLowerCase()) {
+          return 1;
+        }
+        return 0;
+      }));
     }
   });
 
@@ -231,7 +240,15 @@ const History: FC = () => {
     );
   };
 
-  const endedChatsColumns = useMemo(() => getColumns({ copyValueToClipboard, setSelectedChat}), []);
+  const endedChatsColumns = useMemo(() => {
+    const columns = getColumns({ copyValueToClipboard, setSelectedChat });
+
+    if (selectedColumns.length === 0) {
+      return columns;
+    }
+
+    return columns.filter((col) => selectedColumns.includes(col.id) || col.id === "detail");
+  }, [copyValueToClipboard, setSelectedChat, selectedColumns]);
 
   const visibleColumnOptions = useMemo(
     () => [
@@ -242,11 +259,9 @@ const History: FC = () => {
       { label: t('global.idCode'), value: 'endUserId' },
       { label: t('chat.history.contact'), value: 'contactsMessage' },
       { label: t('chat.history.comment'), value: 'comment' },
-      { label: t('chat.history.label'), value: 'labels' },
       { label: t('chat.history.rating'), value: 'rating' },
       { label: t('chat.history.feedback'), value: 'feedback' },
       { label: t('global.status'), value: 'status' },
-      { label: t('chat.history.nps'), value: 'nps' },
       { label: 'ID', value: 'id' },
     ],
     [t]
@@ -342,7 +357,8 @@ const History: FC = () => {
                 )}
                 onSelectionChange={(selection) => {
                   const columns = selection?.map((s) => s.value) ?? [];
-                  setSelectedColumns(columns);
+                  const result = columns.length === 0 ? [] : [...columns, "detail"]
+                  setSelectedColumns(result);
                   setToLocalStorage(CHAT_HISTORY_PREFERENCES_KEY, columns);
                 }}
             />
