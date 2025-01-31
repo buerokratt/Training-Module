@@ -71,7 +71,7 @@ getXlsxData:
   args:
     url: "[#TRAINING_DMAPPER]/conversion/array-to-xlsx"
     body:
-      data: ${splitExamples.response.body}
+      data: ${[splitExamples.response.body]}
   result: xlsxData
 
 returnSuccess:
