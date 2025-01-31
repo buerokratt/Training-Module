@@ -47,7 +47,16 @@ export const getColumns = ({
     columnHelper.accessor('customerSupportDisplayName', {
       id: 'customerSupportDisplayName',
       header: i18n.t('chat.history.csaName') || '',
-      cell: (info) => info.getValue() || '\u00A0-',
+      cell: (info) => {
+        const row = info.row.original;
+        const lastMessage = row.lastMessage;
+        const displayName = info.getValue();
+        if(displayName) {
+          return displayName;
+        } else {
+          return lastMessage.startsWith('Suunan') ? 'Bürokratt' :  '\u00A0-';
+        }
+      },
     }),
     columnHelper.accessor(
       (row) => `${row.endUserFirstName} ${row.endUserLastName}`,
