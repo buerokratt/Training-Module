@@ -67,7 +67,7 @@ convertStringToArray:
   args:
     url: "[#TRAINING_DMAPPER]/conversion/string-to-array"
     body:
-      data: ${regexesData.response.body.data.examples}
+      data: ${regexesData.response.body.examples}
   result: convertedArray
 
 filterArrays:

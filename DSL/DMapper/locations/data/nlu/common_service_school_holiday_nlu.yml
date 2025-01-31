@@ -1,0 +1,261 @@
+version: "3.0"
+nlu:
+- intent: common_service_school_holiday
+  examples: |
+    - Millal on selle aasta koolivaheajad?
+    - Mis kuupäevadel on koolivaheajad sel aastal?
+    - Millal algavad koolivaheaeg?
+    - Kas sa tead, millal on koolivaheaeg?
+    - Millal lõpeb koolivaheaeg?
+    - Millal on koolivaheajad?
+    - Millal on koolivaheaeg?
+    - Mis kuupäeval algab vaheaeg?
+    - Millal on koolivaheajad?
+    - Palun ütle, millal algab koolivaheaeg.
+    - Millal algavad vaheajad?
+    - Mis ajavahemikul on sel aastal koolivaheajad?
+    - Millal lõppevad koolivaheajad?
+    - Kas ma saaksin teada, millal algavad vaheajad?
+    - Millised on selle aasta koolivaheaegade kuupäevad?
+    - Millal on kevadine koolivaheaeg?
+    - Palun ütle mulle, millal on vaheaeg.
+    - Kas koolivaheajad on lähiajal tulemas?
+    - Mis kuupäeval algab vaheaeg?
+    - Millal algab koolivaheaeg?
+    - Millal on vaheaeg tänavu?
+    - Mis kuupäeval algavad koolivaheajad?
+    - Millal on vaheaja algus?
+    - Millal lõpeb vaheaeg?
+    - Millal algab koolivaheaeg sel aastal?
+    - Millal on esimene koolivaheaeg?
+    - Mis on koolivaheaegade alguse kuupäevad?
+    - Millal lõppeb koolivaheaeg?
+    - Millal koolivaheajad algavad?
+    - Kas koolivaheajad on varsti tulemas?
+    - Mis on [järgmised](next_holidays) tähtsad koolivaheajad sel aastal?
+    - Millal on [järgmine](next_holiday) koolivaheaeg?
+    - Kas sa oskad öelda, millal on [järgmine](next_holiday) vaheaeg?
+    - Palun ütle, millal on [järgmised](next_holidays) koolivaheajad.
+    - Millised on [järgmised](next_holidays) koolivaheajad sel aastal?
+    - Millal algab [järgmine](next_holiday) koolivaheaeg?
+    - Millal on järgmine [tähtis](next_holiday) koolivaheaeg?
+    - Kas koolivaheaeg on tulemas? Millal on [järgmine](next_holiday)?
+    - Mis kuupäeval algab [järgmine](next_holiday) vaheaeg?
+    - Kas [järgmised](next_holidays) koolivaheajad on juba teada?
+    - Millal lõpeb praegune ja algab [järgmine](next_holiday) vaheaeg?
+    - Kas sa tead, millal on [järgmine](next_holiday) koolivaheaja algus?
+    - Millal on [järgmine](next_holiday) vaheaeg sel aastal?
+    - Mis on [järgmised](next_holidays) koolivaheajad peale suve?
+    - Kas saaksin teada, millal on [järgmised](next_holidays) koolivaheajad?
+    - Mis kuupäevadel algavad [järgmised](next_holidays) vaheajad?
+    - Kas [järgmine](next_holiday) koolivaheaeg on varsti tulemas?
+    - Mis on [järgmine](next_holiday) vaheaeg, mis algab pärast talve?
+    - Millal on [järgmine](next_holiday) suurem koolivaheaeg?
+    - Kas koolivaheaegade [järgmised](next_holidays) kuupäevad on paigas?
+    - Millised on [järgmised](next_holidays) tähtsad vaheajad?
+    - Millal algavad [järgmised](next_holidays) koolivaheajad peale kevadet?
+    - Kas ma saan teada [järgmised](next_holidays) koolivaheaja kuupäevad?
+    - Millal algab [järgmine](next_holiday) oluline koolivaheaeg?
+    - Kas [järgmised](next_holidays) koolivaheajad on sel aastal lähitulevikus?
+    - Palun ütle, millal on [järgmine](next_holiday) vaheaeg pärast suve.
+    - Millised koolivaheajad on [järgmised](next_holidays)?
+    - Kas on teada, millal on [järgmine](next_holiday) koolivaheaja algus?
+    - Millised on kooliaasta [järgmised](next_holidays) vaheajad?
+    - Mis kuupäeval algavad [järgmised](next_holidays) tähtsad vaheajad?
+    - Mis olid [eelmised](last_holidays) tähtsad koolivaheajad sel aastal?
+    - Millal olid [eelmised](last_holidays) koolivaheajad?
+    - Kas sa tead, millal olid [eelmised](last_holidays) koolivaheajad?
+    - Mis kuupäevadel olid [eelmised](last_holidays) vaheajad?
+    - Millal lõppes [eelmine](last_holiday) koolivaheaeg?
+    - Kas sa saad öelda, millal olid [eelmised](last_holidays) vaheajad?
+    - Mis on [eelmised](last_holidays) koolivaheajad sel aastal?
+    - Kas [eelmine](last_holiday) koolivaheaeg oli eelmisel kuul?
+    - Millised olid [eelmised](last_holidays) koolivaheajad eelmisel aastal?
+    - Kas sa tead, millal lõppes [eelmine](last_holiday) koolivaheaeg?
+    - Mis olid kooliaasta [eelmised](last_holidays) tähtsad vaheajad?
+    - Millal lõppes viimane koolivaheaeg, st [eelmine](last_holiday)?
+    - Millal olid [eelmised](last_holidays) vaheajad?
+    - Kas [eelmine](last_holiday) vaheaeg lõppes hiljuti?
+    - Millal olid [eelmised](last_holidays) suuremad koolivaheajad?
+    - Kas koolivaheajad on muutunud? Millal olid [eelmised](last_holidays)?
+    - Millal oli viimane koolivaheaeg ehk [eelmine](last_holiday)?
+    - Millised koolivaheajad olid [eelmised](last_holidays)?
+    - Millal olid [eelmised](last_holidays) suvevaheajad?
+    - Mis kuupäeval lõppes [eelmine](last_holiday) koolivaheaeg?
+    - Millal lõppes [eelmine](last_holiday) koolivaheaeg?
+    - Millal lõppes [eelmine](last_holiday) talvine koolivaheaeg?
+    - Millised olid [eelmised](last_holidays) olulised vaheajad?
+    - Kas sa tead, millal lõppesid [eelmised](last_holidays) vaheajad?
+    - Millal lõppesid kooliaasta [eelmised](last_holidays) vaheajad?
+    - Kas [eelmised](last_holidays) koolivaheajad olid alles hiljuti?
+    - Millised koolivaheajad olid [eelmised](last_holidays) talvel?
+    - Kas [eelmine](last_holiday) koolivaheaeg lõppes eelmisel nädalal?
+    - Mis kuupäevadel lõppesid [eelmised](last_holidays) tähtsad vaheajad?
+    - Millal lõppes [eelmine](last_holiday) sügisene koolivaheaeg?
+    - Mis olid [eelmised](last_holidays) tähtsad koolivaheajad sel aastal?
+    - Millal olid [eelmised](last_holidays) koolivaheajad?
+    - Kas sa tead, millal olid [eelmised](last_holidays) koolivaheajad?
+    - Mis kuupäevadel olid [eelmised](last_holidays) vaheajad?
+    - Millal lõppes [eelmine](last_holiday) koolivaheaeg?
+    - Kas sa saad öelda, millal olid [eelmised](last_holidays) vaheajad?
+    - Mis on [eelmised](last_holidays) koolivaheajad sel aastal?
+    - Kas [eelmine](last_holiday) koolivaheaeg oli eelmisel kuul?
+    - Millised olid [eelmised](last_holidays) koolivaheajad eelmisel aastal?
+    - Kas sa tead, millal lõppes [eelmine](last_holiday) koolivaheaeg?
+    - Mis olid kooliaasta [eelmised](last_holidays) tähtsad vaheajad?
+    - Millal lõppes viimane koolivaheaeg, st [eelmine](last_holiday)?
+    - Millal olid [eelmised](last_holidays) vaheajad?
+    - Kas [eelmine](last_holiday) vaheaeg lõppes hiljuti?
+    - Millal olid [eelmised](last_holidays) suuremad koolivaheajad?
+    - Kas koolivaheajad on muutunud? Millal olid [eelmised](last_holidays)?
+    - Millal oli viimane koolivaheaeg ehk [eelmine](last_holiday)?
+    - Millised koolivaheajad olid [eelmised](last_holidays)?
+    - Millal olid [eelmised](last_holidays) suvevaheajad?
+    - Mis kuupäeval lõppes [eelmine](last_holiday) koolivaheaeg?
+    - Millal lõppes [eelmine](last_holiday) koolivaheaeg?
+    - Millal lõppes [eelmine](last_holiday) talvine koolivaheaeg?
+    - Millised olid [eelmised](last_holidays) olulised vaheajad?
+    - Kas sa tead, millal lõppesid [eelmised](last_holidays) vaheajad?
+    - Millal lõppesid kooliaasta [eelmised](last_holidays) vaheajad?
+    - Kas [eelmised](last_holidays) koolivaheajad olid alles hiljuti?
+    - Millised koolivaheajad olid [eelmised](last_holidays) talvel?
+    - Kas [eelmine](last_holiday) koolivaheaeg lõppes eelmisel nädalal?
+    - Mis kuupäevadel lõppesid [eelmised](last_holidays) tähtsad vaheajad?
+    - Millal lõppes [eelmine](last_holiday) sügisene koolivaheaeg?
+    - Millised on [järgmised](next_holidays) tähtsad koolivaheajad sel aastal?
+    - Mis koolivaheajad on [järgmised](next_holidays) aasta lõpus?
+    - Millal algavad [järgmised](next_holidays) koolivaheajad aasta lõpus?
+    - Mis kuupäevadel on [järgmised](next_holidays) koolivaheajad 2024. aastal?
+    - Kas [järgmised](next_holidays) koolivaheajad on aasta lõpus?
+    - Millal on [järgmised](next_holidays) koolivaheajad enne aasta lõppu?
+    - Kas järgmised koolivaheajad on [aasta lõpus](eoy_holiday)?
+    - Millal on [järgmised](next_holidays) koolivaheajad detsembris?
+    - Kas aasta lõpus on veel koolivaheaeg?
+    - Millised koolivaheajad on [järgmised](next_holidays) pärast suve ja enne aasta lõppu?
+    - Mis kuupäevadel on [järgmised](next_holidays) koolivaheajad enne uut aastat?
+    - Millised koolivaheajad jäävad [aasta lõppu](eoy_holiday)?
+    - Kas [järgmised](next_holidays) koolivaheajad on detsembris või jaanuaris?
+    - Kas aasta lõpus on koolivaheaeg?
+    - Millised on koolivaheajad [aasta lõpus](eoy_holiday)?
+    - Millal on [järgmine](next_holiday) koolivaheaeg enne aastavahetust?
+    - Kas aasta lõpus on [järgmised](next_holidays) koolivaheajad?
+    - Millal algavad koolivaheajad [aasta lõpus](eoy_holiday)?
+    - Mis kuupäevadel on koolivaheajad [aasta lõpus](eoy_holiday)?
+    - Millal lõpeb [järgmine](next_holiday) koolivaheaeg ja algab aasta lõpu vaheaeg?
+    - Millised on [järgmised](next_holidays) koolivaheajad enne uue aasta algust?
+    - Millised koolivaheajad on [järgmised](next_holidays) detsembris ja jaanuaris?
+    - Millal lõpevad koolivaheajad ja algavad [järgmised](next_holidays) aasta lõpus?
+    - Millised koolivaheajad on aasta lõpus [järgmised](next_holidays)?
+    - Mis kuupäevadel algavad koolivaheajad [järgmised](next_holidays)?
+    - Kas [järgmised](next_holidays) koolivaheajad on enne uut aastat?
+    - Kas [järgmised](next_holidays) koolivaheajad on jõulude ajal?
+    - Kas koolivaheajad on [järgmised](next_holidays) aasta lõpus?
+    - Millised olid [eelmised](last_holidays) tähtsad koolivaheajad sel aastal?
+    - Mis koolivaheajad olid [eelmised](last_holidays) sel aastal?
+    - Millal olid [eelmised](last_holidays) koolivaheajad sel aastal?
+    - Millised koolivaheajad olid [eelmised](last_holidays) kevadel?
+    - Kas [eelmised](last_holidays) koolivaheajad olid hiljuti?
+    - Millised olid [eelmised](last_holidays) koolivaheajad enne suve?
+    - Millal algasid [eelmised](last_holidays) koolivaheajad?
+    - Kas [eelmised](last_holidays) koolivaheajad olid hiljuti?
+    - Mis kuupäevadel olid [eelmised](last_holidays) koolivaheajad?
+    - Millised koolivaheajad olid [eelmised](last_holidays) talvel?
+    - Millal algasid [eelmised](last_holidays) koolivaheajad talvel?
+    - Millised olid [eelmised](last_holidays) koolivaheajad enne kevadet?
+    - Kas [eelmised](last_holidays) koolivaheajad olid hiljuti toimunud?
+    - Mis kuupäevadel lõppesid [eelmised](last_holidays) koolivaheajad?
+    - Kas [eelmised](last_holidays) koolivaheajad olid suvel?
+    - Millal lõppesid [eelmised](last_holidays) koolivaheajad?
+    - Kas [eelmised](last_holidays) koolivaheajad olid detsembris?
+    - Millised olid [eelmised](last_holidays) koolivaheajad aasta alguses?
+    - Millal olid [eelmised](last_holidays) koolivaheajad pärast suve?
+    - Millised koolivaheajad olid [eelmised](last_holidays) suvel?
+    - Kas koolivaheajad on muutunud? Millised olid [eelmised](last_holidays)?
+    - Kas [eelmised](last_holidays) koolivaheajad olid kevadel või sügisel?
+    - Millised koolivaheajad olid [eelmised](last_holidays) hiljuti?
+    - Millal olid [eelmised](last_holidays) koolivaheajad pärast kevadet?
+    - Millised olid [eelmised](last_holidays) koolivaheajad enne talve?
+    - Kas koolivaheajad on juba lõppenud? Millised olid [eelmised](last_holidays)?
+    - Mis kuupäevadel lõppesid [eelmised](last_holidays) koolivaheajad ja algas uus kooliaasta?
+    - Millal olid [eelmised](last_holidays) koolivaheajad enne kevadpühi?
+    - Kas [täna](today) on koolivaheaeg?
+    - Kas [täna](today) on koolivaheajad?
+    - Kas [täna](today) on koolivaheaeg või on koolipäev?
+    - On [täna](today) koolivaheaeg?
+    - Kas [täna](today) on koolivaheaeg või koolitundide aeg?
+    - Kas [täna](today) on kooli puhkus?
+    - Kas [täna](today) on koolivaheajad?
+    - Millal algab [täna](today) koolivaheaeg?
+    - On [täna](today) kooli vaheaeg?
+    - Kas [täna](today) on kooli vaheaeg või on tunde?
+    - Kas [täna](today) on koolis puhkus?
+    - Kas [täna](today) on kooli puhkusperiood?
+    - Kas [täna](today) on koolivaheajad algamas?
+    - Kas [täna](today) on puhkepäev koolis?
+    - On [täna](today) koolivaheaeg või on koolitund?
+    - Kas [täna](today) on kooli puhkepäev?
+    - Kas [täna](today) on õpilastele koolivaheaeg?
+    - Kas [täna](today) on koolivaheline päev?
+    - Kas [täna](today) on kooli puhkusepäev?
+    - On [täna](today) koolivaheline puhkus?
+    - Kas [täna](today) on koolis puhkepäev?
+    - Kas [täna](today) on koolivaheaeg algamas või lõppemas?
+    - Kas [täna](today) on koolivaheaeg?
+    - Kas [täna](today) on kooli vaheaeg?
+    - Kas [täna](today) on koolivaheline periood?
+    - Kas [täna](today) on kooli puhkuseperiood?
+    - On [täna](today) koolivaheaeg või tunde?
+    - Millal on [HOL2](by_name)?
+    - Mis kuupäevadel on [HOL2](by_name)?
+    - Kas [HOL2](by_name) on koolivaheaeg sel aastal?
+    - Millal algab [HOL2](by_name) koolivaheaeg?
+    - Millal lõpeb [HOL2](by_name)?
+    - Millised on koolivaheajad [HOL2](by_name) ajal?
+    - Millal on [HOL2](by_name) koolivaheaeg järgmisel aastal?
+    - Kas [HOL2](by_name) on koolivaheeg või koolipäev?
+    - Kas [HOL2](by_name) on koolivaheline puhkus?
+    - Mis kuupäevadel toimub [HOL2](by_name) koolivaheaeg?
+    - Kas [HOL2](by_name) on kooli puhkusperiood?
+    - Kui kaua kestab [HOL2](by_name)?
+    - Mis päevadel toimub [HOL2](by_name)?
+    - Millal algab ja lõpeb [HOL2](by_name) koolivaheaeg?
+    - Kas [HOL2](by_name) on enne või pärast kevadpühi?
+    - Millal saab alustada puhkust [HOL2](by_name)?
+    - Kas [HOL2](by_name) on seotud talvevaheajaga?
+    - Millal toimub [HOL2](by_name) koolivaheaeg sel aastal?
+    - Kas [HOL2](by_name) on seotud suvevaheajaga?
+    - Kas [HOL2](by_name) on igal aastal samal ajal?
+    - Millal toimub [HOL2](by_name) järgmine kord?
+    - Kas [HOL2](by_name) on seotud kooli pidustustega?
+    - Kui kaua kestab [HOL2](by_name) koolivaheaeg?
+    - Millised on koolivaheajad [HOL2](by_name)?
+    - Kas [HOL2](by_name) on õpetajatele või õpilastele?
+    - Mis kuupäevadel algab ja lõpeb [HOL2](by_name)?
+    - Kas [HOL2](by_name) on kooli tähtsaim puhkus?
+    - Millal on [HOL2](by_name) koolivaheaeg pärast talve?
+    - Mis koolivaheajad on [HOL3](by_month)?
+    - Millised koolivaheajad on [HOL3](by_month)?
+    - Millal on koolivaheajad [HOL3](by_month)?
+    - Mis kuupäevadel on koolivaheajad [HOL3](by_month)?
+    - Millal algavad koolivaheajad [HOL3](by_month)?
+    - Kas [HOL3](by_month) on koolivaheline periood?
+    - Millised koolivaheajad toimuvad [HOL3](by_month)?
+    - Kas [HOL3](by_month) kuulub kooli puhkusperioodi?
+    - Millised koolivaheajad on [HOL3](by_month) ajal?
+    - Kas [HOL3](by_month) on koolivaheaeg?
+    - Kas [HOL3](by_month) on seotud talvevaheajaga?
+    - Mis kuupäevadel on koolivaheajad [HOL3](by_month)?
+    - Kas [HOL3](by_month) on kooli puhkus?
+    - Millal algavad ja lõpevad koolivaheajad [HOL3](by_month)?
+    - Millised koolivaheajad on [HOL3](by_month) kuu jooksul?
+    - Millal on koolivaheajad [HOL3](by_month)?
+    - Kas [HOL3](by_month) kuulub suvevaheaja hulka?
+    - Millised koolivaheajad on [HOL3](by_month) jooksul?
+    - Kas [HOL3](by_month) on seotud kevadpühadega?
+    - Kas [HOL3](by_month) on kooli tähtsaim puhkus?
+    - Kas [HOL3](by_month) on aasta alguses?
+    - Millal toimub koolivaheaeg [HOL3](by_month)?
+    - Kas [HOL3](by_month) on seotud õppeaasta lõpu või algusega?
+    - Millised koolivaheajad on [HOL3](by_month) kuu esimeses pooles?
+    - Kas koolivaheajad [HOL3](by_month) on talvised?
+    - Mis kuupäevadel toimub koolivaheaeg [HOL3](by_month)?

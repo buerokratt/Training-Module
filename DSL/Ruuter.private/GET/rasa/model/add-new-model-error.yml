@@ -29,6 +29,27 @@ updateInDatabase:
       training_data_checksum: ""
   result: dbModelResult
 
+clearModelList:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]/notifications/_delete_by_query?conflicts=proceed"
+    body:
+      query:
+        term:
+          channelId: "model-list"
+  result: clear_chat_res
+  next: postNotificationAboutModel
+
+postNotificationAboutModel:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]/notifications/_doc"
+    body:
+      channelId: "model-list"
+      timestamp: ${new Date().toISOString()}
+      payload: { "status": "Status Changed", "state": "ERROR" }
+  result: notification_result
+
 returnSuccess:
   return: "Inserted model with ERROR status. "
   wrapper: false

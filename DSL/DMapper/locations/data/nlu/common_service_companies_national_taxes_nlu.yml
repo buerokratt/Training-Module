@@ -1,0 +1,18 @@
+version: "3.0"
+nlu:
+- intent: common_service_companies_national_taxes
+  examples: |
+    - ettevõtte tasutud riiklikud maksud
+    - kui palju maksis ettevõte riiklikke makse
+    - firma poolt tasutud riiklikud maksud
+    - ettevõtte makstud riiklikud maksud
+    - firma riiklikud maksud
+    - ettevõtte riiklikud maksud
+    - kui palju on firma maksnud riiklike makse?
+    - riiklikud maksud
+    - riiklikud maksud firma nime järgi
+    - kui palju riiklikke makse on firma tasunud?
+    - ettevõtte maksude info
+    - ettevõtte riiklike maksude info
+    - milliseid riiklikke makse on ettevõte tasunud?
+    - kui palju on firma tasunud riiklikke makse

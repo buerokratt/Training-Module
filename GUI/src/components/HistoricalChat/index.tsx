@@ -15,7 +15,7 @@ import ChatEvent from './ChatEvent';
 import NewExampleModal from './NewExampleModal';
 import NewResponseModal from './NewResponseModal';
 import './HistoricalChat.scss';
-import apiDev from '../../services/api-dev';
+import { api } from '../../services/api';
 
 type ChatProps = {
   chat: ChatType;
@@ -46,7 +46,7 @@ const HistoricalChat: FC<ChatProps> = ({ chat, trigger }) => {
   }, [trigger]);
 
   const getMessages = async () => {
-    const { data: res } = await apiDev.post('agents/messages-by-id', {
+    const { data: res } = await api.post('agents/messages-by-id', {
       chatId: chat.id,
     });
     setMessagesList(res.response);
@@ -73,7 +73,7 @@ const HistoricalChat: FC<ChatProps> = ({ chat, trigger }) => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'New example added',
+        message: t('toast.newExampleAdded'),
       });
     },
     onError: (error: AxiosError) => {
@@ -99,7 +99,7 @@ const HistoricalChat: FC<ChatProps> = ({ chat, trigger }) => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'New response added',
+        message: t('toast.newResponseAdded'),
       });
     },
     onError: (error: AxiosError) => {
@@ -138,10 +138,14 @@ const HistoricalChat: FC<ChatProps> = ({ chat, trigger }) => {
     messagesList.forEach((message) => {
       message.event = message.event?.toLowerCase();
       const lastGroup = groupedMessages[groupedMessages.length - 1];
-      const isGreeting = !message.event || message.event.toLowerCase() === 'greeting';
-      if (lastGroup?.type === message.authorRole && isGreeting) {
+      const isAMessageEvent =
+        !message.event ||
+        message.event.toLowerCase() === 'greeting' ||
+        message.event.toLowerCase() === 'waiting_validation' ||
+        message.event.toLowerCase() === 'approved_validation';
+      if (lastGroup?.type === message.authorRole && isAMessageEvent) {
         lastGroup.messages.push(message);
-      } else if (isGreeting) {
+      } else if (isAMessageEvent) {
         groupedMessages.push({
           name: getUserName(message),
           type: message.authorRole,

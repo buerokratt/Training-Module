@@ -46,7 +46,7 @@ domainEntities:
 
 validateDomainEntities:
   switch:
-    - condition: ${domainEntities.response.statusCodeValue == 200}
+    - condition: ${!domainEntities.response.body.response}
       next: regexEntities
   next: returnEntityHasDependencyToDomain
 
@@ -63,7 +63,7 @@ regexEntities:
 
 validateRegexEntities:
   switch:
-    - condition: ${regexEntities.response.statusCodeValue == 200}
+    - condition: ${!regexEntities.response.body.response}
       next: intentEntities
   next: returnEntityHasDependencyToRegex
 
@@ -80,7 +80,7 @@ intentEntities:
 
 validateIntentEntities:
   switch:
-    - condition: ${intentEntities.response.statusCodeValue == 200}
+    - condition: ${!intentEntities.response.body.response}
       next: deleteEntity
   next: returnEntityHasDependencyToIntent
 
@@ -102,7 +102,7 @@ convertJsonToYaml:
     body:
       version: ${domainData.response.body.response.version}
       intents: ${domainData.response.body.response.intents}
-      entities: ${deleteEntitiesData.response.body.data}
+      entities: ${deleteEntitiesData.response.body.data ?? deleteEntitiesData.response.body}
       slots: ${domainData.response.body.response.slots}
       forms: ${domainData.response.body.response.forms}
       actions: ${domainData.response.body.response.actions}

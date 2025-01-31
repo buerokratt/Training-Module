@@ -78,22 +78,12 @@ saveIntentFile:
       content: ${intentYaml.response.body.json}
   result: fileResult
 
-removePipe:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/conversion/string-replace"
-    body:
-      data: ${intentYaml.response.body.json}
-      search: "|"
-      replace: ""
-  result: pipelineIntent
-
 addInPipeline:
   call: http.post
   args:
     url: "[#TRAINING_PIPELINE]/put/intents/intent"
     body:
-      input: ${pipelineIntent.response.body}
+      input: ${intentYaml.response.body.json}
   result: updateSearchResult
 
 addInDatabase:
@@ -112,17 +102,17 @@ returnSuccess:
 returnTooShortError:
   status: 409
   wrapper: false
-  return: "Intent name is too short"
+  return: "{\"intentTooShort\": true}"
   next: end
 
 returnIntentExists:
   status: 409
   wrapper: false
-  return: "Intent with that name already exists"
+  return: "{\"intentExists\": true}"
   next: end
 
 returnIntentsError:
   status: 409
   wrapper: false
-  return: "Intents parsing error"
+  return: "{\"intentParsing\": true}"
   next: end

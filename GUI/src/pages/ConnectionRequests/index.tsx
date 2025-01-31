@@ -9,7 +9,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useToast } from "hooks/useToast";
 import { updateConnectionRequest } from "services/requests";
 import withAuthorization, { ROLES } from "hoc/with-authorization";
-import api from "services/api";
+import { rasaApi } from "services/api";
 import { useSearchParams } from "react-router-dom";
 
 const ConnectionRequests: React.FC = () => {
@@ -28,7 +28,7 @@ const ConnectionRequests: React.FC = () => {
     if (sorting.length > 0) 
       sort = sorting[0].id + " " + (sorting[0].desc ? "desc" : "asc");
 
-    return api.post('/services/connection-requests', {
+    return rasaApi.post('/services/connection-requests', {
       page: pagination.pageIndex + 1,
       page_size: pagination.pageSize,
       sorting: sort,

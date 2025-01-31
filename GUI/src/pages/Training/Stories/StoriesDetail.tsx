@@ -29,12 +29,16 @@ import { useToast } from 'hooks/useToast';
 import { addStoryOrRule, deleteStoryOrRule, editStoryOrRule } from 'services/stories';
 import CustomNode from './CustomNode';
 import useDocumentEscapeListener from '../../../hooks/useDocumentEscapeListener';
-import { generateStoryStepsFromNodes, generateNodesFromStorySteps } from 'services/rasa';
+import {
+  generateStoryStepsFromNodes,
+  generateNodesFromRuleActions,
+  generateNodesFromStorySteps,
+} from 'services/rasa';
 import { GRID_UNIT, generateNewEdge, generateNewNode } from 'services/nodes';
-import './StoriesDetail.scss';
 import LoadingDialog from "../../../components/LoadingDialog";
 import {Rule, RuleDTO} from "../../../types/rule";
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
+import './StoriesDetail.scss';
 
 const nodeTypes = {
   customNode: CustomNode,
@@ -116,6 +120,28 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
           nodes.push(generateNewNode({...x, nodes, handleNodeDelete, handleNodePayloadChange,}));
         });
 
+    if (
+      currentEntityData && (
+        'conversation_start' in currentEntityData ||
+          'wait_for_user_input' in currentEntityData
+      )
+    ) {
+      generateNodesFromRuleActions(
+        currentEntityData?.conversation_start ?? '',
+        currentEntityData?.wait_for_user_input ?? ''
+      ).forEach((x) => {
+        edges.push(generateNewEdge(nodes, edges));
+        nodes.push(
+          generateNewNode({
+            ...x,
+            nodes,
+            handleNodeDelete,
+            handleNodePayloadChange,
+          })
+        );
+      });
+    }
+
     setNodes(nodes);
     setEdges(edges);
 
@@ -123,7 +149,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
 
   const addStoryMutation = useMutation({
     mutationFn: ({ data, category }: { data: StoryDTO | RuleDTO, category: string }) => {
-      if (location.state.category === 'stories') {
+      if (category === 'stories') {
         return addStoryOrRule(data as StoryDTO, category);
       } else {
         return addStoryOrRule(data as RuleDTO, category);
@@ -135,7 +161,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Story added',
+        message: t('toast.storyAdded'),
       });
     },
     onError: (error: AxiosError) => {
@@ -150,7 +176,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
 
   const editStoryMutation = useMutation({
     mutationFn: ({ id, data, category }: { id: string, data: StoryDTO | RuleDTO, category: string }) => {
-      if (location.state.category === 'stories') {
+      if (category === 'stories') {
         return editStoryOrRule(id, data as StoryDTO, category);
       } else {
         return editStoryOrRule(id, data as RuleDTO, category);
@@ -162,7 +188,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Story updated',
+        message: t('toast.storyUpdated'),
       });
     },
     onError: (error: AxiosError) => {
@@ -176,16 +202,16 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   });
 
   const deleteStoryMutation = useMutation({
-    mutationFn: ({ id }: { id: string | number }) => deleteStoryOrRule(id, location.state.category),
+    mutationFn: ({ id, category }: { id: string | number, category: string }) => deleteStoryOrRule(id, category),
     onMutate: () => setRefreshing(true),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['stories']);
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Story deleted',
+        message: t('toast.storyDeleted'),
       });
-      navigate(import.meta.env.BASE_URL + 'treening/treening/stories');
+      navigate(`${import.meta.env.BASE_URL}/stories`);
     },
     onError: (error: AxiosError) => {
       toast.open({
@@ -270,13 +296,19 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
       toast.open({
         type: 'error',
         title: t('global.notificationError'),
-        message: 'Title cannot be empty',
+        message: t('toast.titleCannotBeEmpty'),
       });
       return;
     }
     const data = {
       [category === 'stories' ? 'story' : 'rule']: editableTitle || id || title,
       steps: generateStoryStepsFromNodes(nodes),
+      ...(nodes.some(
+        (node) => node.data.label === 'conversation_start: true'
+      ) && { conversation_start: true }),
+      ...(nodes.some(
+        (node) => node.data.label === 'wait_for_user_input: false'
+      ) && { wait_for_user_input: false }),
     };
 
     setRefreshing(true);
@@ -289,7 +321,13 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     await handleMutationLoadingAfterPopulateTable(data);
 
     if (isRename) {
-      navigate(`/training/stories/${editableTitle}`, { replace: true });
+      navigate(`${import.meta.env.BASE_URL}/stories/${editableTitle}`, {
+        replace: true,
+        state: {
+          id: editableTitle,
+          category: location.state?.category || category,
+        },
+      });
       setEditableTitle(null);
       setCurrentEntity({ steps: story?.steps, story: editableTitle });
     }
@@ -300,8 +338,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
 
     if (!currentEntityId && editableTitle) {
       setCurrentEntityId(editableTitle);
-      await refetchCurrentEntity();
-      updatedData = refetchCurrentEntity();
+      updatedData = await refetchCurrentEntity();
     }
 
     updatedData?.then((storyOrRuleObject) => {
@@ -335,7 +372,12 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   return (
     <Track gap={16} align='left' style={{ margin: '-16px' }}>
       <div style={{ flex: 1, maxWidth: 'calc(100% / 3)', padding: '16px 0 16px 16px' }}>
-        <Track direction='vertical' gap={16} align='stretch'>
+        <Track
+            direction="vertical"
+            gap={16}
+            align="stretch"
+            style={{ maxHeight: 'calc(100vh - 100px)', overflow: 'auto', paddingBottom: '5vh' }}
+          >
           {category === 'rules' && (
               <Collapsible title={t('training.conditions')}>
                 <Track direction='vertical' align='stretch' gap={4}>
@@ -437,25 +479,33 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
 
           <Collapsible title={t('training.actions.title')}>
             <Track direction='vertical' align='stretch' gap={4}>
-              <button
-                onClick={() => handleNodeAdd({
-                  label: 'Checkpoints:',
-                  type: 'actionNode',
-                  className: 'action',
-                  checkpoint: true,
-                })}
-              >
-                <Box color='orange'>checkpoints</Box>
-              </button>
-              <button
-                onClick={() => handleNodeAdd({
-                  label: 'conversation_start: true',
-                  type: 'actionNode',
-                  className: 'action',
-                })}
-              >
-                <Box color='orange'>conversation_start</Box>
-              </button>
+              {category === 'stories' && (
+                <button
+                  onClick={() =>
+                    handleNodeAdd({
+                      label: 'Checkpoints:',
+                      type: 'actionNode',
+                      className: 'action',
+                      checkpoint: true,
+                    })
+                  }
+                >
+                  <Box color="orange">checkpoints</Box>
+                </button>
+              )}
+              {category === 'rules' && (
+                <button
+                  onClick={() =>
+                    handleNodeAdd({
+                      label: 'conversation_start: true',
+                      type: 'actionNode',
+                      className: 'action',
+                    })
+                  }
+                >
+                  <Box color="orange">conversation_start</Box>
+                </button>
+              )}
               <button
                 onClick={() => handleNodeAdd({
                   label: 'action_listen',
@@ -474,15 +524,17 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
               >
                 <Box color='orange'>action_restart</Box>
               </button>
-              <button
-                onClick={() => handleNodeAdd({
-                  label: 'wait_for_user_input: false',
-                  type: 'actionNode',
-                  className: 'action',
-                })}
-              >
-                <Box color='orange'>wait_for_user_input</Box>
-              </button>
+              {category === 'rules' && (
+                <button
+                  onClick={() => handleNodeAdd({
+                    label: 'wait_for_user_input: false',
+                    type: 'actionNode',
+                    className: 'action',
+                  })}
+                >
+                  <Box color='orange'>wait_for_user_input</Box>
+                </button>
+              )}
             </Track>
           </Collapsible>
         </Track>
@@ -590,7 +642,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
               <Button appearance='secondary' onClick={() => setDeleteConfirmation(false)}>{t('global.no')}</Button>
               <Button
                 appearance='error'
-                onClick={() => deleteStoryMutation.mutate({ id })}
+                onClick={() => deleteStoryMutation.mutate({ id, category })}
               >
                 {t('global.yes')}
               </Button>

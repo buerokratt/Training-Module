@@ -1,5 +1,5 @@
 export interface Entity {
-  readonly id: number;
+  id: string;
   name: string;
   relatedIntents: string[] | null;
 }

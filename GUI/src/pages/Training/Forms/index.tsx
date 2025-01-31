@@ -32,7 +32,7 @@ const Forms: FC = () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Form deleted',
+        message: t('toast.formDeleted'),
       });
     },
     onError: (error: AxiosError) => {

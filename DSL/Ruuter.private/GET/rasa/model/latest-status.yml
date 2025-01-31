@@ -1,0 +1,29 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'LATEST_STATUS'"
+  method: get
+  accepts: json
+  returns: json
+  namespace: training
+
+getLatestStatus:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/get-latest-llm-training-status"
+  result: res
+
+check_response:
+  switch:
+    - condition: ${res.response.body.latestVersion !== null && res.response.body.length > 0}
+      next: return_result
+  next: return_error
+
+return_result:
+  return: ${res.response.body[0]}
+  wrapper: false
+  next: end
+
+return_error:
+  return: 'Error'
+  next: end

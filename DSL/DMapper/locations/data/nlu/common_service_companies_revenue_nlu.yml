@@ -1,0 +1,16 @@
+version: "3.0"
+nlu:
+- intent: common_service_companies_revenue
+  examples: |
+    - mis oli ettevõtte aasta käive
+    - firma käive
+    - ettevõtte käive
+    - kui suur oli eelmisel aastal ettevõtte käive
+    - kui palju teenis firma
+    - ettevõtte kulud ja tulud
+    - kui suurt tulu tekib firmale aastas
+    - eelmise aasta käive firmal
+    - ettevõtte aasta käive
+    - firma käive aasta kohta
+    - ettevõtte käive nime järgi
+    - firma käibe info

@@ -1,39 +1,32 @@
-import React, { FC, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useMutation } from '@tanstack/react-query';
-import { PaginationState, SortingState } from '@tanstack/react-table';
-import { format } from 'date-fns';
-import {
-  Card,
-  DataTable,
-  Drawer,
-  FormDatepicker,
-  FormInput,
-  FormMultiselect,
-  HistoricalChat,
-  Track,
-} from 'components';
-import { Chat as ChatType } from 'types/chat';
-import { Message } from 'types/message';
-import { Controller, useForm } from 'react-hook-form';
-import apiDev from '../../../services/api-dev';
-import { useLocation, useSearchParams } from 'react-router-dom';
-import {
-  getFromLocalStorage,
-  setToLocalStorage,
-} from '../../../utils/local-storage-utils';
-import { CHAT_HISTORY_PREFERENCES_KEY } from 'constants/config';
-import { useToast } from '../../../hooks/useToast';
-import { getColumns } from './columns';
-import withAuthorization, { ROLES } from 'hoc/with-authorization';
-import { useDebouncedCallback } from "use-debounce";
+import React, {FC, useEffect, useMemo, useState} from 'react';
+import {useTranslation} from 'react-i18next';
+import {useMutation} from '@tanstack/react-query';
+import {PaginationState, SortingState} from '@tanstack/react-table';
+import {format} from 'date-fns';
+import {Card, DataTable, Drawer, FormDatepicker, FormInput, FormMultiselect, HistoricalChat, Track,} from 'components';
+import {Chat as ChatType} from 'types/chat';
+import {Message} from 'types/message';
+import {Controller, useForm} from 'react-hook-form';
+import {api} from '../../../services/api';
+import {useLocation, useSearchParams} from 'react-router-dom';
+import {getFromLocalStorage, setToLocalStorage,} from '../../../utils/local-storage-utils';
+import {CHAT_HISTORY_PREFERENCES_KEY} from 'constants/config';
+import {useToast} from '../../../hooks/useToast';
+import {getColumns} from './columns';
+import withAuthorization, {ROLES} from 'hoc/with-authorization';
+import {useDebouncedCallback} from "use-debounce";
+import useStore from "../../../store/store";
+import "./History.scss";
 
 const History: FC = () => {
   const { t } = useTranslation();
   const toast = useToast();
+  const [initialLoad, setInitialLoad] = useState<boolean>(true);
   const [search, setSearch] = useState('');
+  const userInfo = useStore((state) => state.userInfo);
   const [selectedChat, setSelectedChat] = useState<ChatType | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
+  const passedCustomerSupportIds = searchParams.getAll('customerSupportIds');
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: searchParams.get("page") ? parseInt(searchParams.get("page") as string) - 1 : 0,
     pageSize: 10,
@@ -43,6 +36,7 @@ const History: FC = () => {
   const preferences = getFromLocalStorage(
     CHAT_HISTORY_PREFERENCES_KEY
   ) as string[];
+  const [customerSupportAgents, setCustomerSupportAgents] = useState<any[]>([]);
 
   const [selectedColumns, setSelectedColumns] = useState<string[]>(
     preferences ?? []
@@ -52,11 +46,44 @@ const History: FC = () => {
     getAllEndedChats.mutate({
       startDate: format(new Date(startDate), 'yyyy-MM-dd'),
       endDate: format(new Date(endDate), 'yyyy-MM-dd'),
+      customerSupportIds: passedCustomerSupportIds,
       pagination,
       sorting,
       search,
     });
   }, 500);
+
+  const fetchData = async () => {
+    setInitialLoad(false);
+    try {
+      const response = await api.get('/accounts/get-page-preference', {
+        params: {user_id: userInfo?.idCode, page_name: window.location.pathname},
+      });
+      if (response.data.pageResults !== undefined) {
+        const updatedPagination = updatePagePreference(response.data.pageResults)
+        getAllEndedChats.mutate({
+          startDate: format(new Date(startDate), 'yyyy-MM-dd'),
+          endDate: format(new Date(endDate), 'yyyy-MM-dd'),
+          customerSupportIds: passedCustomerSupportIds,
+          updatedPagination,
+          sorting,
+          search,
+        });
+      }
+    } catch (err) {
+      console.error('Failed to fetch data');
+    }
+  };
+
+  useEffect(() => {
+    listCustomerSupportAgents.mutate();
+  }, []);
+
+  const updatePagePreference = (pageResults: number): PaginationState => {
+    const updatedPagination: PaginationState = {...pagination, pageSize: pageResults};
+    setPagination(updatedPagination);
+    return updatedPagination;
+  }
 
   const copyValueToClipboard = async (value: string) => {
     await navigator.clipboard.writeText(value);
@@ -64,7 +91,7 @@ const History: FC = () => {
     toast.open({
       type: 'success',
       title: t('global.notification'),
-      message: t('toast.succes.copied'),
+      message: t('toast.copied'),
     });
   };
   const routerLocation = useLocation();
@@ -103,19 +130,25 @@ const History: FC = () => {
   }, [passedChatId]);
 
   useEffect(() => {
-    getAllEndedChats.mutate({
-      startDate: format(new Date(startDate), 'yyyy-MM-dd'),
-      endDate: format(new Date(endDate), 'yyyy-MM-dd'),
-      pagination,
-      sorting,
-      search,
-    });
+    if(initialLoad) {
+      fetchData();
+    } else {
+      getAllEndedChats.mutate({
+        startDate: format(new Date(startDate), 'yyyy-MM-dd'),
+        endDate: format(new Date(endDate), 'yyyy-MM-dd'),
+        customerSupportIds: passedCustomerSupportIds,
+        pagination,
+        sorting,
+        search,
+      });
+    }
   }, []);
 
   const getAllEndedChats = useMutation({
     mutationFn: (data: {
       startDate: string;
       endDate: string;
+      customerSupportIds: string[];
       pagination: PaginationState;
       sorting: SortingState;
       search: string;
@@ -126,13 +159,14 @@ const History: FC = () => {
         sortBy = `${sorting[0].id} ${sortType}`;
       }
 
-      return apiDev.post('agents/chats/ended', {
+      return api.post('agents/chats/ended', {
         startDate: data.startDate,
         endDate: data.endDate,
+        customerSupportIds: data.customerSupportIds,
         page: pagination.pageIndex + 1,
         page_size: pagination.pageSize,
         sorting: sortBy,
-        search,
+        search
       });
     },
     onSuccess: (res: any) => {
@@ -141,9 +175,46 @@ const History: FC = () => {
     },
   });
 
+  const listCustomerSupportAgents = useMutation({
+    mutationFn: () => api.post('accounts/customer-support-agents', {
+      page: 0,
+      page_size: 99999,
+      sorting: 'name asc',
+      show_active_only: false,
+      roles: ["ROLE_CUSTOMER_SUPPORT_AGENT"],
+    }),
+    onSuccess: (res: any) => {
+      const csaList = res.data.response.map((item: any) => ({
+        label: [item.firstName, item.lastName].join(' ').trim(),
+        value: item.idCode,
+      }));
+      setCustomerSupportAgents([...csaList,{label: 'Bürokratt', value: 'chatbot'}].sort((a,b) => {
+        if (a.label.toLowerCase() < b.label.toLowerCase()) {
+          return -1;
+        }
+        if (a.label.toLowerCase() > b.label.toLowerCase()) {
+          return 1;
+        }
+        return 0;
+      }));
+    }
+  });
+
+  const updatePageSize = useMutation({
+    mutationFn: (data: {
+      page_results: number;
+    }) => {
+      return api.post('accounts/update-page-preference', {
+        user_id: userInfo?.idCode,
+        page_name: window.location.pathname,
+        page_results: data.page_results,
+      });
+    }
+  });
+
   const getChatById = useMutation({
     mutationFn: () => {
-      return apiDev.post('chat/chat-by-id', {
+      return api.post('chat/chat-by-id', {
         chatId: passedChatId,
       });
     },
@@ -163,13 +234,21 @@ const History: FC = () => {
 
     setFilteredEndedChatsList(
       chatsList.filter((c) => {
-        const created = Date.parse(format(new Date(c.created), 'MM/dd/yyyy'));
-        return created >= startDate && created <= endDate;
+        const ended = Date.parse(format(new Date(c.ended), 'MM/dd/yyyy'));
+        return ended >= startDate && ended <= endDate;
       })
     );
   };
 
-  const endedChatsColumns = useMemo(() => getColumns({ copyValueToClipboard, setSelectedChat}), []);
+  const endedChatsColumns = useMemo(() => {
+    const columns = getColumns({ copyValueToClipboard, setSelectedChat });
+
+    if (selectedColumns.length === 0) {
+      return columns;
+    }
+
+    return columns.filter((col) => selectedColumns.includes(col.id) || col.id === "detail");
+  }, [copyValueToClipboard, setSelectedChat, selectedColumns]);
 
   const visibleColumnOptions = useMemo(
     () => [
@@ -180,7 +259,8 @@ const History: FC = () => {
       { label: t('global.idCode'), value: 'endUserId' },
       { label: t('chat.history.contact'), value: 'contactsMessage' },
       { label: t('chat.history.comment'), value: 'comment' },
-      { label: t('chat.history.label'), value: 'labels' },
+      { label: t('chat.history.rating'), value: 'rating' },
+      { label: t('chat.history.feedback'), value: 'feedback' },
       { label: t('global.status'), value: 'status' },
       { label: 'ID', value: 'id' },
     ],
@@ -196,6 +276,7 @@ const History: FC = () => {
       <Card>
         <Track gap={16}>
           <FormInput
+            className="input-wrapper"
             label={t('chat.history.searchChats')}
             hideLabel
             name="searchChats"
@@ -226,6 +307,7 @@ const History: FC = () => {
                         getAllEndedChats.mutate({
                           startDate: start,
                           endDate: format(new Date(endDate), 'yyyy-MM-dd'),
+                          customerSupportIds: passedCustomerSupportIds,
                           pagination,
                           sorting,
                           search,
@@ -255,6 +337,7 @@ const History: FC = () => {
                         getAllEndedChats.mutate({
                           startDate: format(new Date(startDate), 'yyyy-MM-dd'),
                           endDate: end,
+                          customerSupportIds: passedCustomerSupportIds,
                           pagination,
                           sorting,
                           search,
@@ -265,17 +348,46 @@ const History: FC = () => {
               />
             </Track>
             <FormMultiselect
-              name="visibleColumns"
-              label={t('')}
-              options={visibleColumnOptions}
-              selectedOptions={visibleColumnOptions.filter((o) =>
-                selectedColumns.includes(o.value)
-              )}
-              onSelectionChange={(selection: any) => {
-                const columns = selection?.value ? [selection.value] : [];
-                setSelectedColumns(columns);
-                setToLocalStorage(CHAT_HISTORY_PREFERENCES_KEY, columns);
-              }}
+                name="visibleColumns"
+                label={t('')}
+                placeholder={t('chat.history.chosenColumn')}
+                options={visibleColumnOptions}
+                selectedOptions={visibleColumnOptions.filter((o) =>
+                    selectedColumns.includes(o.value)
+                )}
+                onSelectionChange={(selection) => {
+                  const columns = selection?.map((s) => s.value) ?? [];
+                  const result = columns.length === 0 ? [] : [...columns, "detail"]
+                  setSelectedColumns(result);
+                  setToLocalStorage(CHAT_HISTORY_PREFERENCES_KEY, columns);
+                }}
+            />
+            <FormMultiselect
+                name="agent"
+                label={t('')}
+                placeholder={t('chat.history.chosenCsa')}
+                options={customerSupportAgents}
+                selectedOptions={customerSupportAgents.filter((item) =>
+                    passedCustomerSupportIds.includes(item.value)
+                )}
+                onSelectionChange={(selection) => {
+                  setSearchParams((params) => {
+                    params.delete('customerSupportIds');
+                    selection?.forEach((s) =>
+                        params.append('customerSupportIds', s.value)
+                    );
+                    return params;
+                  });
+
+                  getAllEndedChats.mutate({
+                    startDate,
+                    endDate,
+                    customerSupportIds: selection?.map((s) => s.value) ?? [],
+                    pagination,
+                    sorting,
+                    search,
+                  });
+                }}
             />
           </Track>
         </Track>
@@ -285,9 +397,10 @@ const History: FC = () => {
         <DataTable
           data={filteredEndedChatsList}
           sortable
-          columns={endedChatsColumns}
+          columns={endedChatsColumns.filter((c) => selectedColumns.length > 0 ? selectedColumns.includes(c.id ?? '') : true)}
           pagination={pagination}
           sorting={sorting}
+          selectedRow={(row) => row.original.id === selectedChat?.id}
           setPagination={(state: PaginationState) => {
             if (
               state.pageIndex === pagination.pageIndex &&
@@ -295,9 +408,11 @@ const History: FC = () => {
             )
               return;
             setPagination(state);
+            updatePageSize.mutate({page_results: state.pageSize});
             getAllEndedChats.mutate({
               startDate: format(new Date(startDate), 'yyyy-MM-dd'),
               endDate: format(new Date(endDate), 'yyyy-MM-dd'),
+              customerSupportIds: passedCustomerSupportIds,
               pagination: state,
               sorting,
               search,
@@ -308,6 +423,7 @@ const History: FC = () => {
             getAllEndedChats.mutate({
               startDate: format(new Date(startDate), 'yyyy-MM-dd'),
               endDate: format(new Date(endDate), 'yyyy-MM-dd'),
+              customerSupportIds: passedCustomerSupportIds,
               pagination,
               sorting: state,
               search,

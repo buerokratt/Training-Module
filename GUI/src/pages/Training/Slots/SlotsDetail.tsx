@@ -13,6 +13,7 @@ import { useToast } from 'hooks/useToast';
 import { createSlot, editSlot } from 'services/slots';
 import { Slot, SlotCreateDTO, SlotEditDTO } from 'types/slot';
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
+import { getEntities } from 'services/entities';
 
 type SlotsDetailProps = {
   mode: 'new' | 'edit';
@@ -50,8 +51,9 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
   const { data: intents } = useQuery<Intent[]>({
     queryKey: ['intent-and-id'],
   });
-  const { data: entities } = useQuery<Entity[]>({
+  const { data } = useQuery<{ response: Entity[]}>({
     queryKey: ['entities'],
+    queryFn: () => getEntities(),
   });
 
   const { register, formState: { errors },control, handleSubmit, reset } = useForm<SlotCreateDTO>({
@@ -75,7 +77,7 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'New slot added',
+        message: t('toast.newSlotAdded'),
       });
     },
     onError: (error: AxiosError) => {
@@ -95,7 +97,7 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Slot changes saved',
+        message: t('toast.slotChangesSaved'),
       });
     },
     onError: (error: AxiosError) => {
@@ -162,13 +164,13 @@ const SlotsDetail: FC<SlotsDetailProps> = ({ mode }) => {
               <h2 className='h5'>{t('training.slots.mapping')}</h2>
             }>
               <Track direction='vertical' gap={8} align='left'>
-                {entities && selectedSlotType === 'from_entity' && (
+                {data?.response && selectedSlotType === 'from_entity' && (
                     <Controller name='mappings.entity' control={control} render={({ field }) =>
                         <FormSelect
                             {...field}
                             label='Entity'
                             defaultValue={selectedEntity}
-                            options={entities.map((entity) => ({ label: entity.name, value: entity.name }))}
+                            options={data.response.map((entity) => ({ label: entity.name, value: entity.name }))}
                             onSelectionChange={(selection) => {
                               setSelectedEntity((selection?.value));
                               field.onChange(selection?.value);

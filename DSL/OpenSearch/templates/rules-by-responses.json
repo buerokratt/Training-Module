@@ -1,0 +1,10 @@
+{
+  "script": {
+    "lang": "mustache",
+    "source": "{\n  \"query\": {\n    \"bool\": {\n      \"should\": [\n        {\n          \"terms\": {\n            \"steps.action\": {{#toJson}}responses{{/toJson}}\n          }\n        }\n      ],\n      \"minimum_should_match\": 1\n    }\n  },\n  \"_source\": [\"rule\", \"steps.action\"],\n  \"size\": {{size}}\n}",
+    "params": {
+      "responses": [],
+      "size": 1000
+    }
+  }
+}

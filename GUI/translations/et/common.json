@@ -13,6 +13,7 @@
     "search": "Otsi",
     "notification": "Teade",
     "notificationError": "Veateade",
+    "notificationErrorMsg": "Midagi läks valesti",
     "active": "Aktiivne",
     "activate": "Aktiveeri",
     "deactivate": "Deaktiveeri",
@@ -36,11 +37,13 @@
     "away": "Eemal",
     "idCode": "Isikukood",
     "status": "Staatus",
+    "statusChangeQuestion": "Kas soovid muuta staatuseks \"kohal\"?",
     "anonymous": "Anonüümne",
     "title": "Pealkiri",
     "missing": "Puudub",
     "updatingDataHead": "Palun oota",
     "updatingDataBody": "Andmeid uuendatakse...",
+    "chosen": "Valitud",
     "days": {
       "monday": "Esmaspäev",
       "tuesday": "Teisipäev",
@@ -50,6 +53,56 @@
       "saturday": "Laupäev",
       "sunday": "Pühapäev"
     }
+  },
+  "toast": {
+    "newExampleAdded": "Uus näide lisatud",
+    "newResponseAdded": "Uus vastus lisatud",
+    "newAppealAdded": "Uus apellatsioon lisatud",
+    "appealDeleted": "Apellatsioon kustutatud",
+    "copied": "Kopeeriti lõikelauale",
+    "modelDeleted": "Mudel kustutatud",
+    "modelActivated": "Mudel on avalikustatud",
+    "modelActivationTimedOut": "Mudeli aktiveerimine aegus",
+    "testStoryDeleted": "Testlugu kustutatud",
+    "configurationSaved": "Seadistus salvestatud",
+    "newFormAdded": "Uus ankeet lisatud",
+    "formChangesSaved": "Ankeedi muudatused on salvestatud",
+    "formDeleted": "Ankeet kustutatud",
+    "intentRemovedFromModel": "Teema mudelist eemaldatud",
+    "intentUpdated": "Teema uuendatud",
+    "intentAddedToModel": "Teema mudelisse lisatud",
+    "intentDeleted": "Teema kustutatud",
+    "examplesSentForDownloading": "Näited saadeti alla laadimiseks",
+    "fileUploadedSuccessfully": "Fail on edukalt üles laaditud",
+    "intentToServiceSuccess": "Teema on edukalt teenusega seotud",
+    "newIntentAdded": "Uus teema lisatud",
+    "intentTitleSaved": "Teema pealkiri on salvestatud",
+    "entityDeletedFromExample": "Olem on näitest kustutatud",
+    "exampleConvertedtoIntent": "Näide muudeti teemaks",
+    "exampleDeleted": "Näide kustutatud",
+    "newEntityAdded": "Uus olem lisatud",
+    "entityChangesSaved": "Olemi muudatused on salvestatud",
+    "entityDeleted": "Olem kustutatud",
+    "newRegexAdded": "Lisati uus regex",
+    "regexDeleted": "Regex kustutatud",
+    "newRegexExampleAdded": "Lisati uus regexi näide",
+    "exampleAdded": "Näide lisatud",
+    "exampleChanged": "Näide muudetud",
+    "downloadedExamples": "Alla laaditud näited",
+    "responseSaved": "Vastus salvestatud",
+    "responseDeleted": "Vastus kustutatud",
+    "slotDeleted": "Mälukoht kustutatud",
+    "newSlotAdded": "Uus mälukoht lisatud",
+    "slotChangesSaved": "Mälukoha muudatused on salvestatud",
+    "storyDeleted": "Vestlusvoog kustutatud",
+    "storyAdded": "Vestlusvoog lisatud",
+    "storyUpdated": "Vestlusvoog värskendatud",
+    "titleCannotBeEmpty": "Pealkiri ei tohi olla tühi",
+    "trainSettingsChangesSaved": "Seadete muudatused on salvestatud",
+    "trainingIsInitialized": "Treenimine käivitati",
+    "trainingSuccess": "Treenimine õnnestus",
+    "alreadyTrained": "Praeguste andmetega on mudel juba treenitud",
+    "trainingFailure": "Treenimine ebaõnnestus"
   },
   "mainMenu": {
     "menuLabel": "Peamenüü",
@@ -62,7 +115,7 @@
     "intent": "Teema",
     "response": "Vastus",
     "conditions": "Tingimused",
-    "form": "Vorm",
+    "form": "Ankeet",
     "slot": "Mälukoht",
     "checkpoints": "Kontrollpunktid",
     "value": "väärtus",
@@ -71,15 +124,17 @@
     "intents": {
       "title": "Teemad",
       "commonIntents": "Üldised teemad",
-      "searchIntentPlaceholder": "Otsi teemat",
+      "responseTitle": "Vastus",
+      "searchIntentPlaceholder": "Otsi olemasolevat teemat",
+      "newIntentNamePlaceholder": "Uue teema nimetus",
       "addToModel": "Lisa mudelisse",
       "removeFromModel": "Eemalda mudelist",
       "examples": "Näited",
       "example": "Näide",
       "amountOfExamples": "Näidete arv",
       "intentInModel": "Teema on mudelis",
-      "upload": "Lae ülesse näited",
-      "download": "Lae alla näited",
+      "upload": "Laadi ülesse näited",
+      "download": "Laadi alla näited",
       "moreFromGithub": "Rohkem infot Githubist",
       "entity": "Olem",
       "entityName": "Olemi nimetus",
@@ -92,13 +147,25 @@
       "regexExampleTitle": "Regex näite pealkiri",
       "deleteEntity": "Kustuta olem",
       "turnExampleIntoIntent": "Muuda teemaks",
-      "turnIntoService": "Muuda teenuseks",
       "connectToService": "Seo teenusega",
+      "markForService": "Märgi teenuse kasutamiseks",
       "connectToServiceTooltip": "Teenuse ühendamiseks tuleb teenus eelnevalt luua Teenuste moodulis",
       "changeConnectedService": "Muutke teenust",
-      "deleteTooltip": "Ainult kavatsus kustutatakse ja teenus jääb alles, selle kustutamine saab toimuda teenuse moodulis",
+      "deleteTooltip": "Ainult teema kustutatakse ja teenus jääb alles, selle kustutamine saab toimuda Teenuste moodulis",
       "error": {
+        "intentAlreadyExists": "Teema on juba olemas, palun kontrolli olemasolevast nimekirjast",
+        "intentNameTooShort": "Teema nimi on liiga lühike",
+        "intentParsing": "Teema parsimise viga",
         "turnExampleIntoIntent": "Näidet ei saa teenuseks muuta"
+      },
+      "sortingType": {
+        "label": "Sorteerimise tüüp",
+        "alphabeticalAsc": "Tähestiku järjekorras (A-Z)",
+        "alphabeticalDesc": "Tähestiku järjekorras (Z-A)",
+        "inModelFirst": "Mudelis teemad esimesena",
+        "inModelLast": "Mudelis teemad viimasena",
+        "lastModifiedAsc": "Viimati muudetud (vanimad esimesena)",
+        "lastModifiedDesc": "Viimati muudetud (uusimad esimesena)"
       }
     },
     "responses": {
@@ -106,6 +173,7 @@
       "searchResponse": "Otsi vastust",
       "response": "Vastus",
       "newResponseTextPlaceholder": "Lisa vastuse tekst sellele mallile",
+      "deleteIntent": "Kustuta teema",
       "deleteResponse": "Kustuta vastus",
       "deleteStory": "Kustuta vestlusvoog",
       "responseName": "Vastuse nimetus",
@@ -129,7 +197,7 @@
       "title": "Vestlusvood ja reeglid",
       "stories": "Vestlusvood",
       "rules": "Reeglid",
-      "entityWarning": "Kaks järjestikust olemit sama nimega ei ole lubatud",
+      "entityWarning": "Kaks järjestikust sama nimega olemit ei ole lubatud",
       "noEntitiesAvailable": "Olemid puuduvad"
     },
     "slots": {
@@ -143,13 +211,13 @@
       "deleteSlot": "Kustuta mälukoht"
     },
     "forms": {
-      "title": "Vormid",
-      "titleOne": "Vorm",
-      "form": "Vormi nimi",
+      "title": "Ankeedid",
+      "titleOne": "Ankeet",
+      "form": "Ankeedi nimi",
       "formName": "utter_ask_",
       "requiredSlots": "Kohustuslikud mälukohad",
       "ignoredIntents": "Eiratud teemad",
-      "deleteForm": "Kustuta vorm"
+      "deleteForm": "Kustuta ankeet"
     },
     "actions": {
       "title": "Tegevused"
@@ -201,7 +269,10 @@
     "trainNew": {
       "title": "Treeni ja testi",
       "lastTrained": "Viimati treenitud {{date}}, {{time}}",
-      "trainNow": "Treeni kohe",
+      "trainAndTest": "Treeni ja testi",
+      "train": "Treeni",
+      "trainTooltip": "Treeni mudel ilma testimiseta (Sobib väiksemateks parandusteks/muudatusteks)",
+      "trainAndTestTooltip": "Treeni ja testi mudel sobib suuremateks muudatusteks (Võimaldab teemade tagasiside ja ülevaate) Testimine võtab märkimisväärselt rohkem aega.",
       "warning": "NB! Viimane treening kukkus läbi. ({{date}}, {{time}})",
       "trainingTitle": "Treenimise ja testimise andmed",
       "folds": "Folds arv",
@@ -209,7 +280,16 @@
       "planTitle": "Planeeritud treening",
       "date": "Alates",
       "days": "Nädalapäevad",
-      "time": "Treenimise kellaaeg"
+      "time": "Treenimise kellaaeg",
+      "trainingState": "Praegu treenitakse mudelit olekuga: {{state}}",
+      "state": {
+        "ready": "Valmis",
+        "processing": "Töötlemine",
+        "testing": "Testimine",
+        "cross_validating": "Ristvalideerimine",
+        "error": "Viga",
+        "already_trained": "Juba koolitatud"
+      }
     }
   },
   "roles": {
@@ -226,7 +306,8 @@
       "name": "Nimi",
       "idCode": "Isikukood",
       "role": "Roll",
-      "displayName": "Tiitel",
+      "displayName": "Kuvatav nimi",
+      "userTitle": "Tiitel",
       "email": "E-post",
       "addUser": "Lisa kasutaja",
       "editUser": "Muuda kasutajat",
@@ -239,12 +320,14 @@
       "popupNotifications": "Pop-up märguanded",
       "newUnansweredChat": "Uus vastamata vestlus",
       "newForwardedChat": "Uus suunatud vestlus",
+      "newValidationMessage": "Uus teade kinnitamiseks",
       "useAutocorrect": "Teksti autokorrektor"
     }
   },
   "chat": {
     "unanswered": "Vastamata",
     "forwarded": "Suunatud",
+    "pending": "Ootel",
     "redirectedMessage": "{{from}} suunas vestluse kasutajale {{to}} {{date}}",
     "clientLeft": "Klient lahkus",
     "history": {
@@ -257,7 +340,12 @@
       "comment": "Kommentaar",
       "label": "Märksõna",
       "nps": "Soovitusindeks",
-      "forwarded": "Suunatud"
+      "rating": "Hinnang",
+      "feedback": "Tagasiside",
+      "forwarded": "Suunatud",
+      "statusAddedDate": "Staatuse lisamise kuupäev",
+      "chosenCsa": "Valitud nõustaja(d)",
+      "chosenColumn": "Valitud tulba(d)"
     },
     "plainEvents": {
       "answered": "Vastatud",
@@ -291,10 +379,16 @@
       "contact-information-skipped": "Kontaktandmeid ei saadetud",
       "unavailable-contact-information-fulfilled": "Kontaktandmed on antud",
       "unavailable_organization": "Organisatsioon pole saadaval",
+      "unavailable_organization_ask_contacts": "Organisatsioon pole saadaval ja küsitakse kontakte",
       "unavailable_csas": "Nõustajad pole saadaval",
+      "unavailable_csas_ask_contacts": "Nõustajad ei ole kättesaadavad ja küsitakse kontakte",
       "unavailable_holiday": "Puhkus",
+      "unavailable_holiday_ask_contacts": "Puhkus ja küsis kontakte",
       "user-reached": "Kasutajaga võeti ühendust",
-      "user-not-reached": "Kasutajaga ei õnnestunud ühendust saada"
+      "user-not-reached": "Kasutajaga ei õnnestunud ühendust saada",
+      "ask_to_forward_to_csa": "Paluti vestlus klienditeenindajale üle kanda",
+      "forwarded_to_backoffice": "Vestlus suunatakse tagasi kontorisse",
+      "continue_chatting_with_bot": "Jätkake vestlust kasutajaga bürokratt"
     },
     "status": {
       "active": "Aktiivne",
@@ -331,12 +425,18 @@
       "contact-information-skipped": "Kontaktandmeid pole esitatud",
       "unavailable-contact-information-fulfilled": "Kontaktandmed on antud",
       "unavailable_organization": "Organisatsioon pole saadaval",
+      "unavailable_organization_ask_contacts": "Organisatsioon pole saadaval ja küsitakse kontakte",
       "unavailable_csas": "Nõustajad pole saadaval",
+      "unavailable_csas_ask_contacts": "Nõustajad ei ole kättesaadavad ja küsitakse kontakte",
       "unavailable_holiday": "Puhkus",
+      "unavailable_holiday_ask_contacts": "Puhkus ja küsis kontakte",
       "pending-assigned": "{{name}} määratud kontaktkasutajale",
       "user-reached": "{{name}} võttis kasutajaga ühendust",
       "user-not-reached": "{{name}} ei saanud kasutajaga ühendust",
-      "user-authenticated": "{{name}} on autenditud {{date}}"
+      "user-authenticated": "{{name}} on autenditud {{date}}",
+      "ask_to_forward_to_csa": "Paluti vestlus klienditeenindajale üle kanda",
+      "forwarded_to_backoffice": "Vestlus suunatakse tagasi kontorisse",
+      "continue_chatting_with_bot": "Jätkake vestlust kasutajaga bürokratt"
     }
   },
   "submit": {
@@ -345,9 +445,10 @@
   },
   "axios": {
     "error": {
-      "formRulesDependency": "Vormi kustutamine on keelatud, kuna sellel on seos reegliga.",
-      "formStoriesDependency": "Vormi kustutamine on keelatud, kuna sellel on seos vestlusvooga.",
-      "formNotFound": "Ei leia vastavat vormi kustutamiseks."
+      "formRulesDependency": "Ankeedi kustutamine on keelatud, kuna sellel on seos reegliga.",
+      "formStoriesDependency": "Ankeedi kustutamine on keelatud, kuna sellel on seos vestlusvooga.",
+      "formNotFound": "Ei leia vastavat ankeeti kustutamiseks.",
+      "conflict": "Seda muudatust ei ole võimalik teha."
     }
   },
   "connectionRequests": {

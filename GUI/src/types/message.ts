@@ -14,4 +14,11 @@ export interface Message {
   rating?: string;
   created?: string;
   updated?: string;
+  buttons?: string;
+  options?: string;
+}
+
+export interface MessageButton {
+  title: string;
+  payload: string;
 }

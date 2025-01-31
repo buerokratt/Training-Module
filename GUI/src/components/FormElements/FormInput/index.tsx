@@ -10,6 +10,8 @@ type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   name: string;
   hideLabel?: boolean;
   colorInput?: boolean;
+  className?: string;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 const FieldInput = forwardRef<HTMLInputElement, InputProps>((
@@ -19,6 +21,8 @@ const FieldInput = forwardRef<HTMLInputElement, InputProps>((
     disabled,
     hideLabel,
     colorInput,
+    className,
+    onChange = () => {},
     ...rest
   }
   , ref,
@@ -31,7 +35,7 @@ const FieldInput = forwardRef<HTMLInputElement, InputProps>((
   );
 
   return (
-    <div className={inputClasses}>
+    <div className={`${inputClasses} ${className}`}>
       {label && !hideLabel && <label htmlFor={id} className='input__label'>{label}</label>}
       <div className='input__wrapper'>
         <input
@@ -40,6 +44,7 @@ const FieldInput = forwardRef<HTMLInputElement, InputProps>((
           id={id}
           ref={ref}
           aria-label={hideLabel ? label : undefined}
+          onChange={onChange}
           pattern={colorInput ? '^#([a-fA-F0-9]{3}){1,2}$' : undefined}
           {...rest}
         />

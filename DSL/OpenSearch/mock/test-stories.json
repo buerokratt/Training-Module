@@ -1,4 +1,4 @@
-{"index":{"_id":"1"}}
+{"index":{"_id":"common_tervitus"}}
 {"story":"common_tervitus","steps":[{"user":"tere\\n","intent":"common_tervitus"}, {"action": "utter_common_tervitus"}]}
-{"index":{"_id":"2"}}
+{"index":{"_id":"common_hüvasti_jätmine"}}
 {"story":"common_hüvasti_jätmine","steps":[{"user":"headaega\\n","intent":"common_hüvasti_jätmine"}, {"action": "utter_common_hüvasti_jätmine"}]}

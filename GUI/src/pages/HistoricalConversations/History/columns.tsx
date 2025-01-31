@@ -4,6 +4,7 @@ import { format } from 'date-fns';
 import i18n from "../../../../i18n";
 import { Button, Icon, Tooltip } from "components";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
+import { et } from 'date-fns/locale';
 
 export const getColumns = ({
   copyValueToClipboard,
@@ -27,13 +28,21 @@ export const getColumns = ({
       id: 'created',
       header: i18n.t('chat.history.startTime') || '',
       cell: (props) =>
-        format(new Date(props.getValue()), 'd. MMM yyyy HH:mm:ss'),
+        format(
+          new Date(props.getValue()),
+          'dd.MM.yyyy HH:mm:ss',
+          i18n.language === 'et' ? { locale: et } : undefined
+        ),
     }),
     columnHelper.accessor('ended', {
       id: 'ended',
       header: i18n.t('chat.history.endTime') || '',
       cell: (props) =>
-        format(new Date(props.getValue()), 'd. MMM yyyy HH:mm:ss'),
+        format(
+          new Date(props.getValue()),
+          'dd.MM.yyyy HH:mm:ss',
+          i18n.language === 'et' ? { locale: et } : undefined
+        ),
     }),
     columnHelper.accessor('customerSupportDisplayName', {
       id: 'customerSupportDisplayName',
@@ -51,28 +60,40 @@ export const getColumns = ({
       header: i18n.t('global.idCode') || '',
     }),
     columnHelper.accessor('contactsMessage', {
+      id: 'contactsMessage',
       header: i18n.t('chat.history.contact') || '',
       cell: (props) => (props.getValue() ? i18n.t('global.yes') : i18n.t('global.no')),
     }),
     columnHelper.accessor('comment', {
       id: 'comment',
-      header: i18n.t('chat.history.comment') || '',
-      cell: (props) =>
+      header: i18n.t('chat.history.comment') ?? '',
+      cell: (props) => 
         !props.getValue() ? (
           <></>
         ) : (
           <Tooltip content={props.getValue()}>
-            <span>
-              {props.getValue() === undefined
-                ? ''
-                : props.getValue()?.slice(0, 30) + '...'}
+            <span
+              role="button"
+              onClick={() => copyValueToClipboard(props.getValue())}
+              onKeyDown={(e) => e.preventDefault()}
+              style={{ cursor: 'pointer' }}
+            >
+              {props.getValue()!.length <= 25 ? props.getValue() : `${props.getValue()?.slice(0, 25)}...`}
             </span>
           </Tooltip>
         ),
     }),
-    columnHelper.accessor('labels', {
-      header: i18n.t('chat.history.label') || '',
-      cell: () => <span></span>,
+    columnHelper.accessor('rating', {
+      id: 'rating',
+      header: i18n.t('chat.history.rating') || '',
+      cell: (props) => props.getValue() && <span>{`${props.getValue()}/10`}</span>,
+    }),
+    columnHelper.accessor('feedback', {
+      id: 'feedback',
+      header: i18n.t('chat.history.feedback') || '',
+      cell: (props) => (
+        props.getValue() && <span style={{ minWidth: '250px' }}>{`${props.getValue()}`}</span>
+      ),
     }),
     columnHelper.accessor('status', {
       id: 'status',
@@ -98,10 +119,17 @@ export const getColumns = ({
     columnHelper.accessor('id', {
       id: 'id',
       header: 'ID',
-      cell: (props) => (
-        <button onClick={() => copyValueToClipboard(props.getValue())}>
-          {props.getValue()}
-        </button>
+      cell: (props: any) => (
+        <Tooltip content={props.getValue()}>
+          <span
+            role="button"
+            onClick={() => copyValueToClipboard(props.getValue())}
+            onKeyDown={(e) => e.preventDefault()}
+            style={{ cursor: 'pointer' }}
+          >
+            {props.getValue().split('-')[0]}
+          </span>
+        </Tooltip>
       ),
     }),
     columnHelper.display({
@@ -116,7 +144,8 @@ export const getColumns = ({
         </Button>
       ),
       meta: {
-        size: '1%',
+        size: '3%',
+        sticky: 'right',
       },
     }),
   ]

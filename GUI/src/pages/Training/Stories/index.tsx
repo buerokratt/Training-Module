@@ -2,7 +2,7 @@ import {FC, useEffect, useMemo, useState} from 'react';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import * as Tabs from '@radix-ui/react-tabs';
-import {useMutation, useQuery} from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { MdDeleteOutline, MdOutlineModeEditOutline } from 'react-icons/md';
 
@@ -15,18 +15,21 @@ import LoadingDialog from "../../../components/LoadingDialog";
 import { useToast } from 'hooks/useToast';
 import i18n from '../../../../i18n';
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
+import { isHiddenFeaturesEnabled } from 'constants/config';
 
 
 const Stories: FC = () => {
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { data: storiesResponse } = useQuery<StoriesType>({
     queryKey: ['stories'],
+    enabled: isHiddenFeaturesEnabled,
   });
   const { data: rulesResponse } = useQuery<Rules>({
     queryKey: ['rules'],
   });
-  const [selectedTab, setSelectedTab] = useState<string>('stories');
+  const [selectedTab, setSelectedTab] = useState<string>(isHiddenFeaturesEnabled ? 'stories' : 'rules');
   const [filter, setFilter] = useState('');
   const [stories, setStories] = useState<Story[]>([]);
   const [rules, setRules] = useState<Rules[]>([]);
@@ -70,10 +73,11 @@ const Stories: FC = () => {
     mutationFn: ({ id, category }: { id: string, category: string }) => deleteStoryOrRule(id, category),
     onMutate: () => setRefreshing(true),
     onSuccess: async () => {
+      await queryClient.invalidateQueries([selectedTab])
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Story deleted',
+        message: t('toast.storyDeleted'),
       });
       if (selectedTab === 'stories') {
         setStories(stories.filter(story => story.id !== deleteId));
@@ -96,7 +100,7 @@ const Stories: FC = () => {
 
   return (
     <>
-      <h1>{t('training.stories.title')}</h1>
+      <h1>{t(isHiddenFeaturesEnabled ? 'training.stories.title' : 'training.stories.rules')}</h1>
 
       <Tabs.Root
         className='vertical-tabs'
@@ -105,9 +109,9 @@ const Stories: FC = () => {
         defaultValue={selectedTab}
       >
         <Tabs.List className='vertical-tabs__list' aria-label={t('training.stories.title') || ''}>
-          <Tabs.Trigger className='vertical-tabs__trigger' value='stories'>
+          {isHiddenFeaturesEnabled && <Tabs.Trigger className='vertical-tabs__trigger' value='stories'>
             {t('training.stories.stories')}
-          </Tabs.Trigger>
+          </Tabs.Trigger>}
           <Tabs.Trigger className='vertical-tabs__trigger' value='rules'>
             {t('training.stories.rules')}
           </Tabs.Trigger>

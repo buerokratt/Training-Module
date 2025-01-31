@@ -1,9 +1,9 @@
-import React, { FC } from 'react';
-import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
+import React, {FC, useEffect} from 'react';
+import {useForm} from 'react-hook-form';
+import {useTranslation} from 'react-i18next';
 
-import { Button, Dialog, FormInput, Track } from 'components';
-import { Message } from 'types/message';
+import {Button, Dialog, FormInput, Track} from 'components';
+import {Message} from 'types/message';
 
 type NewResponseModalProps = {
   message: Message;
@@ -13,9 +13,15 @@ type NewResponseModalProps = {
 
 const NewResponseModal: FC<NewResponseModalProps> = ({ message, setMessage, onSubmitResponse }) => {
   const { t } = useTranslation();
-  const { register, handleSubmit } = useForm<{ name: string; text: string; }>({
+  const { register, handleSubmit, setValue } = useForm<{ name: string; text: string; }>({
     mode: 'onChange',
   });
+
+  const sanitizedDefaultValue = message.content ? message.content.replace(/\\/g, '') : '';
+
+  useEffect(() => {
+    setValue('text', sanitizedDefaultValue);
+  }, [message.content, setValue]);
 
   const handleNewResponse = handleSubmit((data) => {
     onSubmitResponse(data);
@@ -41,12 +47,22 @@ const NewResponseModal: FC<NewResponseModalProps> = ({ message, setMessage, onSu
             value: 1,
             message: 'Name cant be empty'
           }})} label={'utter_'} />
-        <FormInput {...register('text',{
-          required: t('submit.slotNameRequired').toString(),
-          minLength: {
-            value: 1,
-            message: 'Text cant be empty'
-          }})} label={t('training.responses.response')} defaultValue={decodeURIComponent(message.content || '')} />
+        <FormInput
+            {...register('text', {
+              required: t('submit.slotNameRequired').toString(),
+              minLength: {
+                value: 1,
+                message: 'Text cant be empty',
+              },
+            })}
+            label={t('training.responses.response')}
+            defaultValue={message.content || ''}
+            onChange={(e) => {
+              const value = e.target.value;
+              const cleanValue = value.replace(/\\/g, '');
+              setValue('text', cleanValue);
+            }}
+        />
       </Track>
     </Dialog>
   );

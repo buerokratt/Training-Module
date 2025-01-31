@@ -1,0 +1,26 @@
+version: "3.0"
+nlu:
+- intent: common_service_unemployment_rate
+  examples: |
+    - otsin värskemat statistikat mittehõivatute osakaalu kohta Eestis
+    - [YR0000](by_year) töötus
+    - kui palju on töötuid
+    - kui suur oli töötuse määr [YR0000](by_year). aasta IV kvartalis?
+    - Kui suur on Eestis värskeimate andmete kohaselt töötuse määr?
+    - Kuidas ma leian [YR0000](by_year) kõige värskemad andmed pikaajaliste  töötute kohta
+    - Kuidas võiksin leida andmed Narva töötute protsendi kohta
+    - Kust leian jooksva töötuse määra? aprilli ja märtsi [YR0000](by_year) kohta?
+    - Tere, kus ma leian andmed töötu kohta?
+    - Töötus energeetika majandusharus
+    - kas on võimalik saada andmeid valla põhiselt töötuse muutumisest
+    - milline on töötuse määr Jõgeval
+    - määra ei leidnud, vajan töötute osakaalu %-na
+    - otsin andmeid töötute kohta
+    - milline on töötuse määr Harju maakonnas?
+    - Mis on töötuse määr Eestis?
+    - Kui palju töötuid oli [YR0000](by_year)?
+    - Palju inimesi on töötud?
+    - Mitu protsenti inimestest Eestis on töötud?
+    - Töötute arv Eestis.
+    - Palju inimesi on Eestis tööta?
+    - Töötuse määr Eestis [YR0000](by_year).

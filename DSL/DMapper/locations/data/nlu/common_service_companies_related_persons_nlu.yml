@@ -1,0 +1,15 @@
+version: "3.0"
+nlu:
+- intent: common_service_companies_related_persons
+  examples: |
+    - ettevõttega seotud isikud
+    - firmaga seotud inimesed
+    - seotud isikud firma kohta
+    - firma seotud isikud
+    - kes on ettevõttega seotud inimesed?
+    - seotud isikud
+    - seotud isikud ettevõtte kohta
+    - firmaga seotud isikud
+    - kes on ettevõtte seotud isikud
+    - firma seotud isikute info
+    - kes on firmaga seotud isikud?

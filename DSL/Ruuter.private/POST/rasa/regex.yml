@@ -20,19 +20,26 @@ getRegexesWithName:
       params: ${params}
   result: getRegexesResult
 
-assignExamples:
+validateRegexesResult:
+  switch:
+    - condition: ${getRegexesResult.response.body.hits.total.value == 0}
+      next: assignEmptyResponse
+  next: convertStringToArray
+
+assignEmptyResponse:
   assign:
-    examplesArray: ${getRegexesResult.response.body.hits.hits[0]._source.examples}
+    examplesArray: ${getRegexesResult.response.body.hits.hits}
+  next: mapRegexesData
 
 convertStringToArray:
   call: http.post
   args:
     url: "[#TRAINING_DMAPPER]/conversion/string-to-array"
     body:
-      data: ${examplesArray}
+      data: ${getRegexesResult.response.body.hits.hits[0]._source.examples}
   result: convertedArray
 
-reassignExamples:
+assignExamples:
   assign:
     examplesArray: ${convertedArray.response.body}
 
@@ -51,8 +58,4 @@ mapRegexesData:
 
 returnSuccess:
   return: ${regexesData.response.body}
-  next: end
-
-returnUnauthorized:
-  return: "error: unauthorized"
   next: end

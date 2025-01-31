@@ -29,6 +29,27 @@ updateInDatabase:
       training_data_checksum: ${dbModelResult.response.body[0].trainingDataChecksum}
   result: dbModelResult
 
+clearModelList:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]/notifications/_delete_by_query?conflicts=proceed"
+    body:
+      query:
+        term:
+          channelId: "model-list"
+  result: clear_chat_res
+  next: postNotificationAboutModel
+
+postNotificationAboutModel:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]/notifications/_doc"
+    body:
+      channelId: "model-list"
+      timestamp: ${new Date().toISOString()}
+      payload: { "status": "Status Changed", "state": "ALREADY_TRAINED" }
+  result: notification_result
+
 returnSuccess:
   return: "Inserted model with ALREADY_TRAINED status."
   wrapper: false

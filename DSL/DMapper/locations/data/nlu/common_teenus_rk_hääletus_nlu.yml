@@ -1,0 +1,29 @@
+version: "3.0"
+nlu:
+- intent: common_teenus_rk_hääletus
+  examples: |
+    - mis on viimased [hääletused](rk_hääletused) parlamendis?
+    - tahaks informatsiooni viimaste parlamendi [hääletuste](rk_hääletused) kohta
+    - Mis on olnud parlamendi viimased [hääletused](rk_hääletused)?
+    - viimased parlamendi [hääletused](rk_hääletused)
+    - parlamendi [hääletused](rk_hääletused)
+    - viimased riigikogu [hääletused](rk_hääletused)
+    - viimased viis parlamendi [hääletust](rk_hääletused)
+    - millised on olnud viimased [hääletused](rk_hääletused) parlamendis?
+    - viimased [hääletused](rk_hääletused) parlamendis?
+    - mille üle on viimasel ajal [hääletatud](rk_hääletused) parlamendis?
+    - Milline oli viimane riigikogu [hääletus](rk_hääletus)?
+    - palun informatsiooni viimase riigikogu [hääletuse](rk_hääletus) kohta
+    - tahaks informatsiooni viimase riigikogu [hääletuse](rk_hääletus) kohta
+    - Sooviksin teada kuidas kulges viimane [hääletus](rk_hääletus) riigikogus?
+    - Mis oli riigikogu viimane [hääletus](rk_hääletus)?
+    - parlamendi viimane [hääletus](rk_hääletus)
+    - riigikogu [hääletus](rk_hääletus)
+- synonym: hääletused
+  examples: |
+    - hääletuste
+    - hääletust
+    - hääletatud
+- synonym: hääletus
+  examples: |
+    - hääletuse

@@ -61,7 +61,7 @@ MaxChats AS (
   FROM chat
   WHERE ended IS NOT NULL
   AND status <> 'IDLE'
-  AND created::date BETWEEN :start::date AND :end::date
+  AND ended::date BETWEEN :start::date AND :end::date
   GROUP BY base_id
 ),
 EndedChatMessages AS (
@@ -83,9 +83,32 @@ EndedChatMessages AS (
     forwarded_to_name,
     received_from,
     labels,
+    feedback_rating,
+    feedback_text,
     created
   FROM chat
   RIGHT JOIN MaxChats ON id = maxId
+),
+RatedChats AS (
+	SELECT MAX(feedback_rating) AS rating
+  FROM chat
+  WHERE feedback_rating IS NOT NULL
+  GROUP BY base_id
+),
+RatedChatsCount AS (
+	SELECT COUNT(rating) AS total FROM RatedChats
+),
+Promoters AS (
+	SELECT COUNT(rating) AS p FROM RatedChats WHERE rating >= 9
+),
+Detractors AS (
+	SELECT COUNT(rating) AS d FROM RatedChats WHERE rating <= 6
+), 
+NPS AS (
+  SELECT ROUND(((p / (GREATEST(total, 1) * 1.0)) - (d / (GREATEST(total, 1) * 1.0))) * 100.0, 2) AS nps
+  FROM RatedChatsCount
+  CROSS JOIN Promoters
+  CROSS JOIN Detractors
 )
 SELECT c.base_id AS id,
        c.customer_support_id,
@@ -110,6 +133,9 @@ SELECT c.base_id AS id,
        (CASE WHEN m.event = '' THEN NULL ELSE LOWER(m.event) END) as last_message_event,
        ContactsMessage.content AS contacts_message,
        m.updated AS last_message_timestamp,
+       c.feedback_text as feedback,
+       c.feedback_rating as rating,
+       nps,
        CEIL(COUNT(*) OVER() / :page_size::DECIMAL) AS total_pages
 FROM EndedChatMessages AS c
 JOIN Messages AS m ON c.base_id = m.chat_base_id
@@ -118,18 +144,31 @@ JOIN LastContentMessage ON c.base_id = LastContentMessage.chat_base_id
 JOIN FirstContentMessage ON c.base_id = FirstContentMessage.chat_base_id
 LEFT JOIN ContactsMessage ON ContactsMessage.chat_base_id = c.base_id
 CROSS JOIN TitleVisibility
+CROSS JOIN NPS
 WHERE (
-  :search IS NULL OR
-  :search = '' OR
-  c.customer_support_display_name LIKE ('%' || :search || '%') OR
-  c.end_user_first_name LIKE ('%' || :search || '%') OR
-  ContactsMessage.content LIKE ('%' || :search || '%') OR
-  s.comment LIKE ('%' || :search || '%') OR
-  c.status LIKE ('%' || :search || '%') OR
-  m.event LIKE ('%' || :search || '%') OR
-  LastContentMessage.content LIKE ('%' || :search || '%') OR
-  c.base_id LIKE ('%' || :search || '%')
-)
+          (
+              LENGTH(:customerSupportIds) = 0 OR
+              c.customer_support_id = ANY(string_to_array(:customerSupportIds, ','))
+              ) AND (
+              :search IS NULL OR
+              :search = '' OR
+              LOWER(c.customer_support_display_name) LIKE LOWER('%' || :search || '%') OR
+              LOWER(c.end_user_first_name) LIKE LOWER('%' || :search || '%') OR
+              LOWER(ContactsMessage.content) LIKE LOWER('%' || :search || '%') OR
+              LOWER(s.comment) LIKE LOWER('%' || :search || '%') OR
+              LOWER(c.status) LIKE LOWER('%' || :search || '%') OR
+              LOWER(m.event) LIKE LOWER('%' || :search || '%') OR
+              LOWER(c.base_id) LIKE LOWER('%' || :search || '%') OR
+              TO_CHAR(FirstContentMessage.created, 'DD.MM.YYYY HH24:MI:SS') LIKE '%' || :search || '%' OR
+              TO_CHAR(c.ended, 'DD.MM.YYYY HH24:MI:SS') LIKE '%' || :search || '%' OR
+              EXISTS (
+                  SELECT 1
+                  FROM message AS msg
+                  WHERE msg.chat_base_id = c.base_id
+                    AND LOWER(msg.content) LIKE LOWER('%' || :search || '%')
+              )
+              )
+          )
 ORDER BY 
    CASE WHEN :sorting = 'created asc' THEN FirstContentMessage.created END ASC,
    CASE WHEN :sorting = 'created desc' THEN FirstContentMessage.created END DESC,

@@ -97,128 +97,33 @@ convertRulesYamlToJson:
       file: ${ruleFile.response.body.file}
   result: rulesData
 
+removeIntentRules:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/object/rules/remove-by-intent-name"
+    body:
+      rulesJson: ${rulesData.response.body.rules}
+      searchIntentName: ${intent}
+  result: updatedRules
+
 convertRulesJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
+    url: "[#TRAINING_DMAPPER]/conversion/json-to-yaml-stories"
+    headers:
+      content-type: "application/json"
     body:
       version: "3.0"
-      rules: ${rulesData.response.body.rules}
+      rules: ${updatedRules.response.body.result}
   result: rulesYaml
 
-validateRuleDependency:
-  switch:
-    - condition: ${rulesYaml.response.body.json.includes("intent:" + " " + parameters.name)}
-      next: returnRuleDependency
-  next: getStoriesFile
-
-getStoriesFile:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/file-manager/read-file"
-    body:
-      file_path: ${fileLocations.response.body.response.stories_location}
-  result: storiesFile
-
-convertStoriesYamlToJson:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/conversion/yaml_to_json"
-    body:
-      file: ${storiesFile.response.body.file}
-  result: storiesData
-
-convertStoriesJsonToYaml:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
-    body:
-      version: "3.0"
-      stories: ${storiesData.response.body.stories}
-  result: storiesYaml
-
-validateStoriesDependency:
-  switch:
-    - condition: ${storiesYaml.response.body.json.includes("intent:" + " " + parameters.name)}
-      next: returnStoriesDependency
-  next: getIntentFile
-
-getIntentFile:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/file-manager/read-file"
-    body:
-      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
-  result: intentFile
-
-convertYamlToJson:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/conversion/yaml_to_json"
-    body:
-      file: ${intentFile.response.body.file}
-  result: intentData
-
-checkIfIntentEmpty:
-  switch:
-    - condition: ${intentData.response.body.nlu[0] != undefined}
-      next: replaceString
-
-assignEmptyExamples:
-  assign:
-    examplesToWriteIntoYml: []
-  next: mapIntentsData
-
-replaceString:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/conversion/string-replace"
-    body:
-      data: ${intentData.response.body.nlu[0].examples}
-      search: "- "
-      replace: ""
-  result: replacedString
-
-splitExamples:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/conversion/string-split"
-    body:
-      data: ${replacedString.response.body}
-      separator: "\n"
-  result: splitExamples
-
-assignExamples:
-  assign:
-    examplesToWriteIntoYml: ${splitExamples.response.body}
-
-mapIntentsData:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/hbs/training/get_intent_file"
-    headers:
-      type: "json"
-    body:
-      intent: ${parameters.name}
-      examples: ${examplesToWriteIntoYml}
-  result: intentFileJson
-
-convertJsonToYaml:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
-    body:
-      version: "3.0"
-      nlu: ${intentFileJson.response.body}
-  result: intentYaml
-
-saveIntentFile:
+saveRulesFile:
   call: http.post
   args:
     url: "[#TRAINING_DMAPPER]/file-manager/create"
     body:
-      file_path: ${fileLocations.response.body.response.intents_location + "removed/" + intent + file_end}
-      content: ${intentYaml.response.body.json}
+      file_path: ${fileLocations.response.body.response.rules_location}
+      content: ${rulesYaml.response.body.json}
   result: fileResult
 
 getDomainFile:
@@ -229,21 +134,6 @@ getDomainFile:
       cookie: ${incoming.headers.cookie}
   result: domainData
 
-validateExistsInDomain:
-  switch:
-    - condition: ${domainData.response.body.response.intents.includes(intent)}
-      next: mergeIntents
-  next: deleteOldIntentFile
-
-mergeIntents:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/file-manager/merge"
-    body:
-      array1: ${domainData.response.body.response.intents}
-      array2: ${[intent]}
-  result: mergedIntents
-
 removeFromDomainArray:
   call: http.post
   args:
@@ -253,10 +143,21 @@ removeFromDomainArray:
       value: ${intent}
   result: updatedIntents
 
+removeIntentResponses:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/object/responses/remove-by-intent-name"
+    headers:
+      type: "json"
+    body:
+      responses: ${domainData.response.body.response.responses}
+      intent: ${intent}
+  result: updatedResponses
+
 convertDomainJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
+    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml_domain"
     body:
       version: ${domainData.response.body.response.version}
       intents: ${updatedIntents.response.body}
@@ -264,7 +165,7 @@ convertDomainJsonToYaml:
       slots: ${domainData.response.body.response.slots}
       forms: ${domainData.response.body.response.forms}
       actions: ${domainData.response.body.response.actions}
-      responses: ${domainData.response.body.response.responses}
+      responses: ${updatedResponses.response.body}
       session_config: ${domainData.response.body.response.session_config}
   result: domainYaml
 
@@ -276,6 +177,15 @@ saveDomainFile:
       file_path: ${fileLocations.response.body.response.domain_location}
       content: ${domainYaml.response.body.json}
   result: fileResult
+  next: updateOpenSearchDomain
+
+updateOpenSearchDomain:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]/bulk/domain"
+    body:
+      input: ${domainYaml.response.body.json}
+  result: updateSearchResult
 
 deleteOldIntentFile:
   call: http.post
@@ -302,6 +212,30 @@ deleteInDatabase:
       status: "DELETED"
   result: getIntentLastChangedResult
 
+getRuleByIntent:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]/rules/_search/template"
+    body:
+      id: "rule-by-intent"
+      params:
+        intent: ${intent}
+  result: getRuleByIntentResult
+
+validateRuleResponse:
+  switch:
+    - condition: ${getRuleByIntentResult.response.body.hits.hits[0] != undefined }
+      next: deleteOpenSearchRule
+  next: returnSuccess
+
+deleteOpenSearchRule:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]/delete/object/rules"
+    body:
+      id: ${getRuleByIntentResult.response.body.hits.hits[0]._source.rule.replaceAll("_", "")}
+  result: deleteRuleResult
+
 returnSuccess:
   return: "Intent updated"
   next: end
@@ -326,18 +260,6 @@ returnIntentMissing:
 
 returnIntentFileMissing:
   return: "Intent file to update is missing"
-  wrapper: false
-  status: 409
-  next: end
-
-returnRuleDependency:
-  return: "Intent has dependency with rules"
-  wrapper: false
-  status: 409
-  next: end
-
-returnStoriesDependency:
-  return: "Intent has dependency with stories"
   wrapper: false
   status: 409
   next: end

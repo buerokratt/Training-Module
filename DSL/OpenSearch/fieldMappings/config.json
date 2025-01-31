@@ -1,0 +1,61 @@
+{
+  "mappings": {
+    "properties": {
+      "recipe": {
+        "type": "text"
+      },
+      "language": {
+        "type": "text"
+      },
+      "pipeline": {
+        "type": "array",
+        "properties": {
+          "name": {
+            "type": "text"
+          },
+          "analyzer": {
+            "type": "text"
+          },
+          "min_ngram": {
+            "type": "integer"
+          },
+          "max_ngram": {
+            "type": "integer"
+          },
+          "entity_recognition": {
+            "type": "boolean"
+          },
+          "epochs": {
+            "type": "integer"
+          },
+          "random_seed": {
+            "type": "integer"
+          },
+          "case_sensitive": {
+            "type": "boolean"
+          },
+          "use_regexes": {
+            "type": "boolean"
+          },
+          "threshold": {
+            "type": "float"
+          }
+        }
+      },
+      "policies": {
+        "type": "array",
+        "properties": {
+          "name": {
+            "type": "text"
+          },
+          "core_fallback_threshold": {
+            "type": "float"
+          },
+          "restrict_rules": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  }
+}

@@ -24,6 +24,11 @@ assign_values:
     intent: ${incoming.body.newName.replaceAll(/\s+/g, "_")}
     intent_old_name: ${incoming.body.oldName.replaceAll(/\s+/g, "_")}
 
+assign_replace_items:
+  assign:
+    utter_old_name: "utter_${intent_old_name}"
+    utter_name: "utter_${intent}"
+
 validateInputLength:
   switch:
     - condition: ${intent.length > 2}
@@ -72,6 +77,24 @@ validateFileExists:
       next: getRulesFile
   next: assignTmpFilePath
 
+assignTmpFilePath:
+  assign:
+    file_end: "_nlu.yml.tmp"
+
+checkIntentFileTmp:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file-manager/exists"
+    body:
+      file_path: ${fileLocations.response.body.response.intents_location + intent_old_name + file_end}
+  result: tmpFileExists
+
+validateTmpFileExists:
+  switch:
+    - condition: ${tmpFileExists.response.body.error === false}
+      next: getRulesFile
+  next: returnIntentFileMissing
+
 getRulesFile:
   call: http.post
   args:
@@ -113,8 +136,17 @@ saveRulesFile:
     url: "[#TRAINING_DMAPPER]/file-manager/create"
     body:
       file_path: ${fileLocations.response.body.response.rules_location}
-      content: ${updatedRules.response.body}
+      content: ${JSON.parse(JSON.stringify(updatedRules.response.body).replaceAll(utter_old_name, utter_name))}
   result: rulesFileResult
+  next: updateOpenSearchRules
+
+updateOpenSearchRules:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]/bulk/rules/rule"
+    body:
+      input: ${JSON.parse(JSON.stringify(updatedRules.response.body).replaceAll(utter_old_name, utter_name))}
+  result: updateSearchResult
   next: getStoriesFile
 
 getStoriesFile:
@@ -161,24 +193,6 @@ saveStoriesFile:
       content: ${updatedStories.response.body}
   result: storiesFileResult
   next: getIntentFile
-
-assignTmpFilePath:
-  assign:
-    file_end: "_nlu.yml.tmp"
-
-checkIntentFileTmp:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/file-manager/exists"
-    body:
-      file_path: ${fileLocations.response.body.response.intents_location + intent_old_name + file_end}
-  result: tmpFileExists
-
-validateTmpFileExists:
-  switch:
-    - condition: ${tmpFileExists.response.body.error === false}
-      next: getIntentFile
-  next: returnIntentFileMissing
 
 getIntentFile:
   call: http.post
@@ -258,16 +272,6 @@ saveIntentFile:
       content: ${intentYaml.response.body.json}
   result: fileResult
 
-removePipe:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/conversion/string-replace"
-    body:
-      data: ${intentYaml.response.body.json}
-      search: "|"
-      replace: ""
-  result: pipelineIntent
-
 removeOldIntentFromPipeline:
   call: http.post
   args:
@@ -281,7 +285,7 @@ addNewIntentInPipeline:
   args:
     url: "[#TRAINING_PIPELINE]/put/intents/intent"
     body:
-      input: ${pipelineIntent.response.body}
+      input: ${intentYaml.response.body.json}
   result: updateSearchResult
 
 addInDatabase:
@@ -313,7 +317,7 @@ validateExistsInDomain:
   switch:
     - condition: ${domainData.response.body.response.intents.includes(intent_old_name)}
       next: mergeIntents
-  next: returnSuccess
+  next: convertDomainJsonToYamlForTempIntent
 
 mergeIntents:
   call: http.post
@@ -337,7 +341,7 @@ replaceExistingIntent:
 convertDomainJsonToYaml:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
+    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml_domain"
     body:
       version: ${domainData.response.body.response.version}
       intents: ${updatedIntents.response.body}
@@ -345,9 +349,26 @@ convertDomainJsonToYaml:
       slots: ${domainData.response.body.response.slots}
       forms: ${domainData.response.body.response.forms}
       actions: ${domainData.response.body.response.actions}
-      responses: ${domainData.response.body.response.responses}
+      responses: ${JSON.parse(JSON.stringify(domainData.response.body.response.responses).replaceAll(utter_old_name, utter_name))}
       session_config: ${domainData.response.body.response.session_config}
   result: domainYaml
+  next: saveDomainFile
+
+convertDomainJsonToYamlForTempIntent:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml_domain"
+    body:
+      version: ${domainData.response.body.response.version}
+      intents: ${domainData.response.body.response.intents}
+      entities: ${domainData.response.body.response.entities}
+      slots: ${domainData.response.body.response.slots}
+      forms: ${domainData.response.body.response.forms}
+      actions: ${domainData.response.body.response.actions}
+      responses: ${JSON.parse(JSON.stringify(domainData.response.body.response.responses).replaceAll(utter_old_name, utter_name))}
+      session_config: ${domainData.response.body.response.session_config}
+  result: domainYaml
+  next: saveDomainFile
 
 saveDomainFile:
   call: http.post
@@ -357,6 +378,15 @@ saveDomainFile:
       file_path: ${fileLocations.response.body.response.domain_location}
       content: ${domainYaml.response.body.json}
   result: fileResult
+  next: updateOpenSearchDomain
+
+updateOpenSearchDomain:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]/bulk/domain"
+    body:
+      input: ${domainYaml.response.body.json}
+  result: updateSearchResult
   next: returnSuccess
 
 returnSuccess:

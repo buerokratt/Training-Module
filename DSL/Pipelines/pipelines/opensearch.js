@@ -17,7 +17,7 @@ const upload = multer({
 
  const rateLimit = setRateLimit({
   windowMs: 60 * 1000,
-  max: 30,
+  max: 2000,
   message: "Too many requests",
   headers: true,
   statusCode: 429,
@@ -100,9 +100,16 @@ router.post(
 
     const obj = input[0];
 
-    if (index_type) {
-      obj.id = obj[index_type].replaceAll(/\s+/g, "_");
-    }
+    console.log(index_name);
+    console.log(index_type);
+    console.log(obj);
+	  
+    if (index_type) obj.id = obj[index_type].replaceAll(/\s+/g, "_");
+    // Using multiline string instead of an array for better special characters support
+    obj.examples = obj.examples
+      .split("\n")
+      .map((e) => e.replace("- ", ""))
+      .filter((e) => e);
 
     osPut(index_name, obj)
       .then((ret) => {

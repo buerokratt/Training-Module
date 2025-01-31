@@ -36,7 +36,7 @@ const ConditionNode: FC<NodeDataProps> = ({ data }) => {
   });
   const { control, watch } = useForm<Conditions>({
     defaultValues: {
-      conditions: [{ active_loop: '' }, { slot: '', value: 'null' }],
+      conditions: [{ active_loop: '' }, { slot: '', value: '' }],
     },
   });
   const { fields, append, remove } = useFieldArray({
@@ -112,7 +112,7 @@ const ConditionNode: FC<NodeDataProps> = ({ data }) => {
                                       field.onChange(selection);
                                     }}
                                     value={field.value?.label ?? null}
-                                    label="slot"
+                                    label={t('training.slot')}
                                     options={Array.from(new Set(slots || [])).map((f) => ({
                                       label: f.id,
                                       value: String(f.id),
@@ -157,7 +157,7 @@ const ConditionNode: FC<NodeDataProps> = ({ data }) => {
           <Button
               appearance="success"
               size="s"
-              onClick={() => append({ slot: '', value: 'null' })}
+              onClick={() => append({ slot: '', value: '' })}
           >
             {t('global.add')} slot
           </Button>

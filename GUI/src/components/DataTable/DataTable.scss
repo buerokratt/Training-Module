@@ -105,7 +105,7 @@
 
   &__pagination-wrapper {
     display: flex;
-    box-shadow: 0 -1px 0 get-color(black-coral-10);
+    border-top: 1px solid get-color(black-coral-10);
     padding: 6px 16px;
   }
 
@@ -188,4 +188,12 @@
       background-position: top 11px right 10px;
     }
   }
+}
+
+.highlighted {
+  background-color: get-color(sapphire-blue-1);
+}
+
+.default {
+  background-color: white;
 }
