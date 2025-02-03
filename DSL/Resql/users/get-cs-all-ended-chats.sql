@@ -23,7 +23,7 @@ FirstContentMessage AS (
   JOIN MessageWithContent ON message.id = MessageWithContent.minId
 ),
 LastContentMessage AS (
-  SELECT content, chat_base_id
+  SELECT content, chat_base_id, author_id
   FROM message
   JOIN MessageWithContent ON message.id = MessageWithContent.maxId
 ),
@@ -148,7 +148,10 @@ CROSS JOIN NPS
 WHERE (
           (
               LENGTH(:customerSupportIds) = 0 OR
-              c.customer_support_id = ANY(string_to_array(:customerSupportIds, ','))
+              ('-' = ANY(string_to_array(:customerSupportIds, ','))
+                  AND (LastContentMessage.author_id IS NULL OR LastContentMessage.author_id = ''))
+                  OR ('chatbot' = ANY(string_to_array(:customerSupportIds, ',')) AND LastContentMessage.author_id = 'chatbot')
+                  OR c.customer_support_id = ANY(string_to_array(:customerSupportIds, ','))
               ) AND (
               :search IS NULL OR
               :search = '' OR
