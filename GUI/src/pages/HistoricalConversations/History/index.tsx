@@ -9,8 +9,6 @@ import {Message} from 'types/message';
 import {Controller, useForm} from 'react-hook-form';
 import {api} from '../../../services/api';
 import {useLocation, useSearchParams} from 'react-router-dom';
-import {getFromLocalStorage, setToLocalStorage,} from '../../../utils/local-storage-utils';
-import {CHAT_HISTORY_PREFERENCES_KEY} from 'constants/config';
 import {useToast} from '../../../hooks/useToast';
 import {getColumns} from './columns';
 import withAuthorization, {ROLES} from 'hoc/with-authorization';
@@ -33,14 +31,9 @@ const History: FC = () => {
   });
   const [sorting, setSorting] = useState<SortingState>([]);
   const [totalPages, setTotalPages] = useState<number>(1);
-  const preferences = getFromLocalStorage(
-    CHAT_HISTORY_PREFERENCES_KEY
-  ) as string[];
   const [customerSupportAgents, setCustomerSupportAgents] = useState<any[]>([]);
 
-  const [selectedColumns, setSelectedColumns] = useState<string[]>(
-    preferences ?? []
-  );
+  const [selectedColumns, setSelectedColumns] = useState<string[]>([]);
 
   const debouncedGetAllEnded = useDebouncedCallback((search) => {
     getAllEndedChats.mutate({
@@ -60,6 +53,8 @@ const History: FC = () => {
         params: {user_id: userInfo?.idCode, page_name: window.location.pathname},
       });
       if (response.data.pageResults !== undefined) {
+        const newSelectedColumns = response.data?.selectedColumns.length === 1 && response.data?.selectedColumns[0] === "" ? [] : response.data?.selectedColumns;
+        setSelectedColumns(newSelectedColumns)
         const updatedPagination = updatePagePreference(response.data.pageResults)
         getAllEndedChats.mutate({
           startDate: format(new Date(startDate), 'yyyy-MM-dd'),
@@ -200,14 +195,16 @@ const History: FC = () => {
     }
   });
 
-  const updatePageSize = useMutation({
+  const updatePagePreferences = useMutation({
     mutationFn: (data: {
       page_results: number;
+      selected_columns: string[];
     }) => {
       return api.post('accounts/update-page-preference', {
         user_id: userInfo?.idCode,
         page_name: window.location.pathname,
         page_results: data.page_results,
+        selected_columns: `{"${data.selected_columns.join('","')}"}`
       });
     }
   });
@@ -348,6 +345,7 @@ const History: FC = () => {
               />
             </Track>
             <FormMultiselect
+                key={selectedColumns.length}
                 name="visibleColumns"
                 label={t('')}
                 placeholder={t('chat.history.chosenColumn')}
@@ -359,7 +357,7 @@ const History: FC = () => {
                   const columns = selection?.map((s) => s.value) ?? [];
                   const result = columns.length === 0 ? [] : [...columns, "detail"]
                   setSelectedColumns(result);
-                  setToLocalStorage(CHAT_HISTORY_PREFERENCES_KEY, columns);
+                  updatePagePreferences.mutate({page_results: pagination.pageSize, selected_columns: result})
                 }}
             />
             <FormMultiselect
@@ -408,7 +406,7 @@ const History: FC = () => {
             )
               return;
             setPagination(state);
-            updatePageSize.mutate({page_results: state.pageSize});
+            updatePagePreferences.mutate({page_results: state.pageSize, selected_columns: selectedColumns});
             getAllEndedChats.mutate({
               startDate: format(new Date(startDate), 'yyyy-MM-dd'),
               endDate: format(new Date(endDate), 'yyyy-MM-dd'),
