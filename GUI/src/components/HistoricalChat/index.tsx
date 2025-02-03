@@ -199,7 +199,7 @@ const HistoricalChat: FC<ChatProps> = ({ chat, trigger }) => {
                         )}
                       </div>
                       <div className="historical-chat__group-name">
-                        {group.name}
+                        {group.name === 'buerokratt' ? 'Bürokratt' : group.name}
                       </div>
                       <div className="historical-chat__messages">
                         {group.messages.map((message, i) => (
