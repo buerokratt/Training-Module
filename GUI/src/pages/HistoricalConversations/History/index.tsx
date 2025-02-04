@@ -111,7 +111,7 @@ const History: FC = () => {
       endDate: searchParams.get('end') ? new Date(searchParams.get('end') as string) :new Date(
         new Date().getUTCFullYear(),
         new Date().getUTCMonth(),
-        new Date().getUTCDate() + 1
+        new Date().getUTCDate()
       ),
     },
   });
