@@ -32,6 +32,7 @@ const History: FC = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [customerSupportAgents, setCustomerSupportAgents] = useState<any[]>([]);
+  const [counterKey, setCounterKey] = useState<number>(0)
 
   const [selectedColumns, setSelectedColumns] = useState<string[]>([]);
 
@@ -56,6 +57,7 @@ const History: FC = () => {
         const newSelectedColumns = response.data?.selectedColumns.length === 1 && response.data?.selectedColumns[0] === "" ? [] : response.data?.selectedColumns;
         setSelectedColumns(newSelectedColumns)
         const updatedPagination = updatePagePreference(response.data.pageResults)
+        setCounterKey(counterKey + 1)
         getAllEndedChats.mutate({
           startDate: format(new Date(startDate), 'yyyy-MM-dd'),
           endDate: format(new Date(endDate), 'yyyy-MM-dd'),
@@ -345,7 +347,7 @@ const History: FC = () => {
               />
             </Track>
             <FormMultiselect
-                key={selectedColumns.length}
+                key={counterKey}
                 name="visibleColumns"
                 label={t('')}
                 placeholder={t('chat.history.chosenColumn')}
