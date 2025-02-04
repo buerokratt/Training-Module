@@ -44,7 +44,7 @@ const Rules: FC = () => {
     setDeleteId(id);
   };
 
-  const rulesColumns = useMemo(() => getRulesColumns(handleDelete, navigate), []);
+  const rulesColumns = useMemo(() => getRulesColumns(handleDelete, navigate), [navigate]);
 
   const deleteRuleMutation = useMutation({
     mutationFn: ({ id }: { id: string }) => deleteRule(id),
