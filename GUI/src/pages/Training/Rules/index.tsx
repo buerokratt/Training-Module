@@ -1,14 +1,12 @@
 import { FC, useEffect, useMemo, useState } from 'react';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import * as Tabs from '@radix-ui/react-tabs';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { MdDeleteOutline, MdOutlineModeEditOutline } from 'react-icons/md';
 
 import { Button, DataTable, Dialog, FormInput, Icon, Track } from 'components';
 import { Rule, Rules } from 'types/rule';
-import { Stories as StoriesType, Story } from 'types/story';
 import { deleteStoryOrRule } from '../../../services/stories';
 import { AxiosError } from 'axios';
 import LoadingDialog from '../../../components/LoadingDialog';
@@ -21,6 +19,7 @@ const Stories: FC = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  // todo remove DSL + related?
   // const { data: storiesResponse } = useQuery<StoriesType>({
   //   queryKey: ['stories'],
   //   enabled: isHiddenFeaturesEnabled,
@@ -28,36 +27,22 @@ const Stories: FC = () => {
   const { data: rulesResponse } = useQuery<Rules>({
     queryKey: ['rules'],
   });
-  const [selectedTab, setSelectedTab] = useState<string>(isHiddenFeaturesEnabled ? 'stories' : 'rules');
   const [filter, setFilter] = useState('');
-  const [stories, setStories] = useState<Story[]>([]);
-  const [rules, setRules] = useState<Rules[]>([]);
+  const [rules, setRules] = useState<{ id: string; rule: string }[]>([]);
   const toast = useToast();
   const [deleteConfirmation, setDeleteConfirmation] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [deleteId, setDeleteId] = useState<string>('');
 
   useEffect(() => {
-    // if (selectedTab === 'stories' && storiesResponse) {
-    //   setStories(
-    //     storiesResponse.response.map((r, i) => ({
-    //       id: r.id,
-    //       story: r.id,
-    //     }))
-    //   );
-    // } else if (selectedTab === 'rules' && rulesResponse) {
     if (rulesResponse) {
       setRules(
-        rulesResponse.response.map((r, i) => ({
+        rulesResponse.response.map((r) => ({
           id: r.id,
           rule: r.id,
         }))
       );
     }
-    // } else {
-    //   setStories([]);
-    //   setRules([]);
-    // }
   }, [rulesResponse]);
 
   const handleDelete = (id: string) => {
@@ -65,30 +50,20 @@ const Stories: FC = () => {
     setDeleteId(id);
   };
 
-  const storiesColumns = useMemo(() => getStoriesColumns(handleDelete, navigate, filter), []);
-
   const rulesColumns = useMemo(() => getRulesColumns(handleDelete, navigate), []);
 
-  const handleTabChange = (value: string) => {
-    setFilter('');
-    setSelectedTab(value);
-  };
-
-  const deleteStoryMutation = useMutation({
-    mutationFn: ({ id, category }: { id: string; category: string }) => deleteStoryOrRule(id, category),
+  const deleteRuleMutation = useMutation({
+    // todo investigate deleteStoryOrRule
+    mutationFn: ({ id }: { id: string }) => deleteStoryOrRule(id, 'rules'),
     onMutate: () => setRefreshing(true),
     onSuccess: async () => {
-      await queryClient.invalidateQueries([selectedTab]);
+      await queryClient.invalidateQueries(['rules']);
       toast.open({
         type: 'success',
         title: t('global.notification'),
         message: t('toast.storyDeleted'),
       });
-      if (selectedTab === 'stories') {
-        setStories(stories.filter((story) => story.id !== deleteId));
-      } else {
-        setRules(rules.filter((rule) => rule.id !== deleteId));
-      }
+      setRules(rules.filter((rule) => rule.id !== deleteId));
       navigate(import.meta.env.BASE_URL + '/rules');
     },
     onError: (error: AxiosError) => {
@@ -137,7 +112,7 @@ const Stories: FC = () => {
               <Button
                 appearance="error"
                 onClick={() => {
-                  deleteStoryMutation.mutate({ id: deleteId, category: selectedTab });
+                  deleteRuleMutation.mutate({ id: deleteId });
                   setDeleteConfirmation(false);
                 }}
               >
@@ -157,45 +132,6 @@ const Stories: FC = () => {
       )}
     </>
   );
-};
-
-const getStoriesColumns = (handleDelete: (id: string) => void, navigate: NavigateFunction, filter: string) => {
-  const storiesColumnHelper = createColumnHelper<Story>();
-
-  return [
-    storiesColumnHelper.accessor('id', {
-      header: 'Story',
-    }),
-    storiesColumnHelper.display({
-      header: '',
-      cell: (props) => (
-        <Button
-          appearance="text"
-          onClick={() => navigate(`${props.row.original.id}`, { state: { storyTitle: filter, category: 'stories' } })}
-        >
-          <Icon label={i18n.t('global.edit')} icon={<MdOutlineModeEditOutline color={'rgba(0,0,0,0.54)'} />} />
-          {i18n.t('global.edit')}
-        </Button>
-      ),
-      id: 'edit',
-      meta: {
-        size: '1%',
-      },
-    }),
-    storiesColumnHelper.display({
-      header: '',
-      cell: (props) => (
-        <Button appearance="text" onClick={() => handleDelete(props.row.original.id)}>
-          <Icon label={i18n.t('global.delete')} icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />} />
-          {i18n.t('global.delete')}
-        </Button>
-      ),
-      id: 'delete',
-      meta: {
-        size: '1%',
-      },
-    }),
-  ];
 };
 
 const getRulesColumns = (handleDelete: (id: string) => void, navigate: NavigateFunction) => {
