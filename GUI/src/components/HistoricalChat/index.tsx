@@ -5,7 +5,7 @@ import { AxiosError } from 'axios';
 import clsx from 'clsx';
 
 import { ReactComponent as BykLogoWhite } from 'assets/logo-white.svg';
-import { Chat as ChatType } from 'types/chat';
+import { BACKOFFICE_NAME, Chat as ChatType } from 'types/chat';
 import { Message } from 'types/message';
 import { useToast } from 'hooks/useToast';
 import { addExampleFromHistory, addIntentWithExample } from 'services/intents';
@@ -129,6 +129,8 @@ const HistoricalChat: FC<ChatProps> = ({ chat, trigger }) => {
       return endUserFullName;
     if(message.authorRole === 'backoffice-user')
       return `${message.authorFirstName} ${message.authorLastName}`;
+    if (message.authorRole === 'buerokratt')
+      return BACKOFFICE_NAME.DEFAULT;
     return message.authorRole;
   }
 
