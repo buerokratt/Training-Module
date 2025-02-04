@@ -6,20 +6,19 @@ import { createColumnHelper } from '@tanstack/react-table';
 import { MdDeleteOutline, MdOutlineModeEditOutline } from 'react-icons/md';
 
 import { Button, Card, DataTable, Dialog, FormInput, Icon, Track } from 'components';
-import { Rule, Rules } from 'types/rule';
+import { Rule } from 'types/rule';
 import { deleteRule } from '../../../services/rules';
 import { AxiosError } from 'axios';
 import LoadingDialog from '../../../components/LoadingDialog';
 import { useToast } from 'hooks/useToast';
 import i18n from '../../../../i18n';
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
-import { isHiddenFeaturesEnabled } from 'constants/config';
 
-const Stories: FC = () => {
+const Rules: FC = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const { data: rulesResponse } = useQuery<Rules>({
+  const { data: rulesResponse } = useQuery<{ response: Rule[] }>({
     queryKey: ['rules'],
   });
   const [filter, setFilter] = useState('');
@@ -74,9 +73,7 @@ const Stories: FC = () => {
 
   return (
     <>
-      {/* todo fix and delete unused strings */}
-      {/* todo also in details component */}
-      <h1>{t(isHiddenFeaturesEnabled ? 'training.stories.title' : 'training.stories.rules')}</h1>
+      <h1>{t('training.rules.title')}</h1>
 
       <Card>
         <Track gap={16}>
@@ -169,7 +166,7 @@ const getRulesColumns = (handleDelete: (id: string) => void, navigate: NavigateF
   ];
 };
 
-export default withAuthorization(Stories, [
+export default withAuthorization(Rules, [
   ROLES.ROLE_ADMINISTRATOR,
   ROLES.ROLE_CHATBOT_TRAINER,
   ROLES.ROLE_SERVICE_MANAGER,

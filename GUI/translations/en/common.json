@@ -191,10 +191,8 @@
       "coreFallbackThreshold": "Core fallback threshold",
       "moreFromKratid": "More info from kratid.ee"
     },
-    "stories": {
-      "title": "Stories and rules",
-      "stories": "Stories",
-      "rules": "Rules",
+    "rules": {
+      "title": "Rules",
       "entityWarning": "There are two entities with the same name in intent '{{intent}}'",
       "noEntitiesAvailable": "No Entities available"
     },

@@ -20,10 +20,6 @@ export interface Rule {
   wait_for_user_input?: string;
 }
 
-export interface Rules {
-  response: Rule[];
-}
-
 export interface RuleDTO extends Omit<Rule, 'id'> {
   rule: string;
 }
