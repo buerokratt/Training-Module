@@ -356,7 +356,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({
   });
 
   const addRuleMutation = useMutation({
-    mutationFn: ({ data }: { data: RuleDTO }) => addRule(data as RuleDTO, 'rules'),
+    mutationFn: ({ data }: { data: RuleDTO }) => addRule(data),
     onMutate: () => {
       setRefreshing(true);
     },

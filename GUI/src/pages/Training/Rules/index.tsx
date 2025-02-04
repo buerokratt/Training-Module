@@ -7,7 +7,7 @@ import { MdDeleteOutline, MdOutlineModeEditOutline } from 'react-icons/md';
 
 import { Button, Card, DataTable, Dialog, FormInput, Icon, Track } from 'components';
 import { Rule, Rules } from 'types/rule';
-import { deleteStoryOrRule } from '../../../services/rules';
+import { deleteRule } from '../../../services/rules';
 import { AxiosError } from 'axios';
 import LoadingDialog from '../../../components/LoadingDialog';
 import { useToast } from 'hooks/useToast';
@@ -19,11 +19,6 @@ const Stories: FC = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  // todo remove DSL + related?
-  // const { data: storiesResponse } = useQuery<StoriesType>({
-  //   queryKey: ['stories'],
-  //   enabled: isHiddenFeaturesEnabled,
-  // });
   const { data: rulesResponse } = useQuery<Rules>({
     queryKey: ['rules'],
   });
@@ -53,8 +48,7 @@ const Stories: FC = () => {
   const rulesColumns = useMemo(() => getRulesColumns(handleDelete, navigate), []);
 
   const deleteRuleMutation = useMutation({
-    // todo investigate deleteStoryOrRule
-    mutationFn: ({ id }: { id: string }) => deleteStoryOrRule(id, 'rules'),
+    mutationFn: ({ id }: { id: string }) => deleteRule(id),
     onMutate: () => setRefreshing(true),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['rules']);
@@ -81,6 +75,7 @@ const Stories: FC = () => {
   return (
     <>
       {/* todo fix and delete unused strings */}
+      {/* todo also in details component */}
       <h1>{t(isHiddenFeaturesEnabled ? 'training.stories.title' : 'training.stories.rules')}</h1>
 
       <Card>
