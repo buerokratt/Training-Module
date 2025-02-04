@@ -193,10 +193,8 @@
       "coreFallbackThreshold": "Tuvastamise kindluskünnis",
       "moreFromKratid": "Rohkem infot kratid.ee"
     },
-    "stories": {
-      "title": "Vestlusvood ja reeglid",
-      "stories": "Vestlusvood",
-      "rules": "Reeglid",
+    "rules": {
+      "title": "Reeglid",
       "entityWarning": "Kaks järjestikust sama nimega olemit ei ole lubatud",
       "noEntitiesAvailable": "Olemid puuduvad"
     },
