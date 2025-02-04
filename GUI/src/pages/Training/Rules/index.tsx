@@ -80,6 +80,7 @@ const Stories: FC = () => {
 
   return (
     <>
+      {/* todo also fix in menu */}
       {/* todo fix and delete unused strings */}
       <h1>{t(isHiddenFeaturesEnabled ? 'training.stories.title' : 'training.stories.rules')}</h1>
 
