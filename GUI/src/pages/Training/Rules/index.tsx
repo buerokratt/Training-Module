@@ -5,7 +5,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { MdDeleteOutline, MdOutlineModeEditOutline } from 'react-icons/md';
 
-import { Button, DataTable, Dialog, FormInput, Icon, Track } from 'components';
+import { Button, Card, DataTable, Dialog, FormInput, Icon, Track } from 'components';
 import { Rule, Rules } from 'types/rule';
 import { deleteStoryOrRule } from '../../../services/stories';
 import { AxiosError } from 'axios';
@@ -80,9 +80,10 @@ const Stories: FC = () => {
 
   return (
     <>
+      {/* todo fix and delete unused strings */}
       <h1>{t(isHiddenFeaturesEnabled ? 'training.stories.title' : 'training.stories.rules')}</h1>
 
-      <div className="vertical-tabs__content-header">
+      <Card>
         <Track gap={16}>
           <FormInput
             label={t('global.search')}
@@ -95,10 +96,11 @@ const Stories: FC = () => {
             {t('global.add')}
           </Button>
         </Track>
-      </div>
-      <div className="vertical-tabs__content">
+      </Card>
+
+      <Card>
         {rules && <DataTable data={rules} columns={rulesColumns} globalFilter={filter} setGlobalFilter={setFilter} />}
-      </div>
+      </Card>
 
       {deleteId && deleteConfirmation && (
         <Dialog
