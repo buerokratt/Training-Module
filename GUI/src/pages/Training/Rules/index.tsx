@@ -147,7 +147,7 @@ const getRulesColumns = (handleDelete: (id: string) => void, navigate: NavigateF
       cell: (props) => (
         <Button
           appearance="text"
-          onClick={() => navigate(`rules/${props.row.original.id}`, { state: { category: 'rules' } })}
+          onClick={() => navigate(`${props.row.original.id}`, { state: { category: 'rules' } })}
         >
           <Icon label={i18n.t('global.edit')} icon={<MdOutlineModeEditOutline color={'rgba(0,0,0,0.54)'} />} />
           {i18n.t('global.edit')}
