@@ -15,11 +15,7 @@ import { useToast } from 'hooks/useToast';
 import { addRule, deleteRule, editRule } from 'services/rules';
 import CustomNode from './CustomNode';
 import useDocumentEscapeListener from '../../../hooks/useDocumentEscapeListener';
-import {
-  generateStoryStepsFromNodes,
-  generateNodesFromRuleActions,
-  generateNodesFromStorySteps as generateNodesFromRuleSteps,
-} from 'services/rasa';
+import { generateRuleStepsFromNodes, generateNodesFromRuleActions, generateNodesFromRuleSteps } from 'services/rasa';
 import { GRID_UNIT, generateNewEdge, generateNewNode } from 'services/nodes';
 import LoadingDialog from '../../../components/LoadingDialog';
 import { Rule, RuleDTO } from '../../../types/rule';
@@ -281,7 +277,7 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     }
     const data = {
       rule: editableTitle || id || title,
-      steps: generateStoryStepsFromNodes(nodes),
+      steps: generateRuleStepsFromNodes(nodes),
       ...(nodes.some((node) => node.data.label === 'conversation_start: true') && { conversation_start: true }),
       ...(nodes.some((node) => node.data.label === 'wait_for_user_input: false') && { wait_for_user_input: false }),
     };
@@ -304,7 +300,7 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
         },
       });
       setEditableTitle(null);
-      setCurrentEntity({ steps: story?.steps, story: editableTitle });
+      setCurrentEntity({ steps: currentEntityData?.steps ?? [], id: editableTitle });
     }
   };
 

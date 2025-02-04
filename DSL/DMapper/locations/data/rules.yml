@@ -1,5 +1,11 @@
 version: "3.0"
 rules:
+  - rule: rahvaarv_olemas_igor
+    steps:
+      - intent: rahvaarv
+      - action: utter_rahvaarv_puudu
+      - intent: common_klienditeenindajale_suunamine
+      - intent: common_klienditeenindajale_suunamine
   - rule: rahvaarv_olemas
     steps:
       - intent: rahvaarv
