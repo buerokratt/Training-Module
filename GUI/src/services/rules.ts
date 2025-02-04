@@ -1,5 +1,11 @@
 import { rasaApi } from './api';
-import { RuleDTO } from '../types/rule';
+import { Rule, RuleDTO } from '../types/rule';
+import { PaginationParams } from 'types/api';
+
+export const getRules = async ({ pageParam, pageSize, filter }: PaginationParams): Promise<{ response: Rule[] }> => {
+  const { data } = await rasaApi.get(`/rules?size=${pageSize}&filter=${filter}&from=${pageParam}`);
+  return data;
+};
 
 export async function addRule(ruleData: RuleDTO) {
   const { data } = await rasaApi.post('rules/add', ruleData);
