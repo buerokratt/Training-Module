@@ -7,7 +7,7 @@ USER nonroot
 ENV NODE_ENV development
 WORKDIR /usr/src/app
 
-COPY --chown=nonroot:nonroot . .
+COPY . .
 
 RUN npm install
 ENTRYPOINT ["npm","start"]
