@@ -128,7 +128,6 @@ const DataTable: FC<DataTableProps> = ({
     (containerRefElement?: HTMLDivElement | null) => {
       if (containerRefElement) {
         const { scrollHeight, scrollTop, clientHeight } = containerRefElement;
-        // Once the user has scrolled within 500px of the bottom of the table
         if (scrollHeight - scrollTop - clientHeight < 500 && !isFetching && fetchNextPage) {
           fetchNextPage();
         }

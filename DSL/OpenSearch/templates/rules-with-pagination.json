@@ -1,0 +1,18 @@
+{
+  "script": {
+    "lang": "mustache",
+    "source": {
+      "from": "{{from}}",
+      "size": "{{size}}",
+      "_source": false,
+      "query": {
+        "match_all": {}
+      }
+    },
+    "params": {
+      "from": 0,
+      "size": 10,
+      "filter": ""
+    }
+  }
+}

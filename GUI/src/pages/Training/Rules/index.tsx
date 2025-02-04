@@ -1,27 +1,33 @@
 import { FC, useEffect, useMemo, useState } from 'react';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { MdDeleteOutline, MdOutlineModeEditOutline } from 'react-icons/md';
 
 import { Button, Card, DataTable, Dialog, FormInput, Icon, Track } from 'components';
 import { Rule } from 'types/rule';
-import { deleteRule } from '../../../services/rules';
+import { deleteRule, getRules } from '../../../services/rules';
 import { AxiosError } from 'axios';
 import LoadingDialog from '../../../components/LoadingDialog';
 import { useToast } from 'hooks/useToast';
 import i18n from '../../../../i18n';
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
+import { useInfinitePagination } from 'hooks/useInfinitePagination';
+import { flattenPaginatedData } from 'utils/api-utils';
 
 const Rules: FC = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const { data: rulesResponse } = useQuery<{ response: Rule[] }>({
-    queryKey: ['rules'],
-  });
   const [filter, setFilter] = useState('');
+  const { data, fetchNextPage, isFetching } = useInfinitePagination<Rule>({
+    queryKey: ['rules', filter],
+    fetchFn: getRules,
+    filter,
+  });
+  const flatData = useMemo(() => flattenPaginatedData(data), [data]);
+
   const [rules, setRules] = useState<{ id: string; rule: string }[]>([]);
   const toast = useToast();
   const [deleteConfirmation, setDeleteConfirmation] = useState(false);
@@ -29,15 +35,15 @@ const Rules: FC = () => {
   const [deleteId, setDeleteId] = useState<string>('');
 
   useEffect(() => {
-    if (rulesResponse) {
+    if (flatData) {
       setRules(
-        rulesResponse.response.map((r) => ({
+        flatData.map((r) => ({
           id: r.id,
           rule: r.id,
         }))
       );
     }
-  }, [rulesResponse]);
+  }, [flatData]);
 
   const handleDelete = (id: string) => {
     setDeleteConfirmation(true);
@@ -91,7 +97,9 @@ const Rules: FC = () => {
       </Card>
 
       <Card>
-        {rules && <DataTable data={rules} columns={rulesColumns} globalFilter={filter} setGlobalFilter={setFilter} />}
+        {rules && (
+          <DataTable data={rules} columns={rulesColumns} isFetching={isFetching} fetchNextPage={fetchNextPage} />
+        )}
       </Card>
 
       {deleteId && deleteConfirmation && (
