@@ -364,7 +364,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: t('toast.storyAdded'),
+        message: t('toast.ruleAdded'),
       });
     },
     onError: (error: AxiosError) => {

@@ -135,7 +135,7 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: t('toast.storyAdded'),
+        message: t('toast.ruleAdded'),
       });
     },
     onError: (error: AxiosError) => {
@@ -158,7 +158,7 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: t('toast.storyUpdated'),
+        message: t('toast.ruleUpdated'),
       });
     },
     onError: (error: AxiosError) => {
@@ -179,7 +179,7 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: t('toast.storyDeleted'),
+        message: t('toast.ruleDeleted'),
       });
       navigate(`${import.meta.env.BASE_URL}/rules`);
     },
@@ -589,7 +589,7 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
 
       {deleteId && (
         <Dialog
-          title={t('training.responses.deleteStory')}
+          title={t('training.responses.deleteRule')}
           onClose={() => setDeleteId('')}
           footer={
             <>
@@ -608,7 +608,7 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
 
       {id && deleteConfirmation && (
         <Dialog
-          title={t('training.responses.deleteStory')}
+          title={t('training.responses.deleteRule')}
           onClose={() => setDeleteConfirmation(false)}
           footer={
             <>

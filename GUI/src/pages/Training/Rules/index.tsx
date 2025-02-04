@@ -55,7 +55,7 @@ const Stories: FC = () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: t('toast.storyDeleted'),
+        message: t('toast.ruleDeleted'),
       });
       setRules(rules.filter((rule) => rule.id !== deleteId));
       navigate(import.meta.env.BASE_URL + '/rules');
@@ -99,7 +99,7 @@ const Stories: FC = () => {
 
       {deleteId && deleteConfirmation && (
         <Dialog
-          title={t('training.responses.deleteStory')}
+          title={t('training.responses.deleteRule')}
           onClose={() => setDeleteConfirmation(false)}
           footer={
             <>
