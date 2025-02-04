@@ -10,7 +10,7 @@ import CommonIntents from 'pages/Training/Intents/CommonIntents';
 import Responses from 'pages/Training/Responses';
 import Configuration from 'pages/Training/Configuration';
 import Rules from 'pages/Training/Rules';
-import StoriesDetail from 'pages/Training/Rules/StoriesDetail';
+import RulesDetail from 'pages/Training/Rules/RulesDetail';
 import Slots from 'pages/Training/Slots';
 import SlotsDetail from 'pages/Training/Slots/SlotsDetail';
 import Forms from 'pages/Training/Forms';
@@ -57,9 +57,9 @@ const App: FC = () => {
         <Route path="/training/responses" element={<Responses />} />
         <Route path="/training/configuration" element={<Configuration />} />
         <Route path="/training/rules" element={<Rules />} />
-        <Route path="/training/rules/new" element={<StoriesDetail mode="new" />} />
-        <Route path="/training/rules/:id" element={<StoriesDetail mode="edit" />} />
-        <Route path="/training/:id" element={<StoriesDetail mode="edit" />} />
+        <Route path="/training/rules/new" element={<RulesDetail mode="new" />} />
+        <Route path="/training/rules/:id" element={<RulesDetail mode="edit" />} />
+        <Route path="/training/:id" element={<RulesDetail mode="edit" />} />
         <Route path="/training/slots" element={<Slots />} />
         <Route path="/training/slots/new" element={<SlotsDetail mode="new" />} />
         <Route path="/training/slots/:id" element={<SlotsDetail mode="edit" />} />

@@ -7,7 +7,7 @@ import { MdDeleteOutline, MdOutlineModeEditOutline } from 'react-icons/md';
 
 import { Button, Card, DataTable, Dialog, FormInput, Icon, Track } from 'components';
 import { Rule, Rules } from 'types/rule';
-import { deleteStoryOrRule } from '../../../services/stories';
+import { deleteStoryOrRule } from '../../../services/rules';
 import { AxiosError } from 'axios';
 import LoadingDialog from '../../../components/LoadingDialog';
 import { useToast } from 'hooks/useToast';

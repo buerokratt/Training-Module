@@ -22,7 +22,7 @@ import { useToast } from 'hooks/useToast';
 import { ROLES } from 'hoc/with-authorization';
 import useStore from '../../../store/store';
 import { editResponse } from 'services/responses';
-import { addStoryOrRule } from 'services/stories';
+import { addRule } from 'services/rules';
 import { RuleDTO } from 'types/rule';
 import ConnectServiceToIntentModal from 'pages/ConnectServiceToIntentModal';
 import LoadingDialog from 'components/LoadingDialog';
@@ -356,7 +356,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({
   });
 
   const addRuleMutation = useMutation({
-    mutationFn: ({ data }: { data: RuleDTO }) => addStoryOrRule(data as RuleDTO, 'rules'),
+    mutationFn: ({ data }: { data: RuleDTO }) => addRule(data as RuleDTO, 'rules'),
     onMutate: () => {
       setRefreshing(true);
     },
@@ -587,11 +587,11 @@ const IntentDetails: FC<IntentDetailsProps> = ({
                     maxLength={RESPONSE_TEXT_LENGTH}
                     showMaxLength
                     onChange={(e) => {
-                      if(!withBackSlash.test(e.target.value) && !e.target.value.startsWith(' ')) {
+                      if (!withBackSlash.test(e.target.value) && !e.target.value.startsWith(' ')) {
                         setResponse({
                           name: response?.name ?? '',
                           text: e.target.value || '',
-                        })
+                        });
                       } else {
                         e.target.value = response.text;
                       }

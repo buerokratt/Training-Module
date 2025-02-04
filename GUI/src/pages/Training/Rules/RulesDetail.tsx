@@ -9,19 +9,22 @@ import 'reactflow/dist/style.css';
 
 import { Box, Button, Collapsible, Dialog, FormInput, Icon, Track } from 'components';
 import { Responses } from 'types/response';
-import { Story, StoryDTO } from 'types/story';
 import { Form } from 'types/form';
 import { Slot } from 'types/slot';
 import { useToast } from 'hooks/useToast';
-import { addStoryOrRule, deleteStoryOrRule, editStoryOrRule } from 'services/stories';
+import { addRule, deleteRule, editRule } from 'services/rules';
 import CustomNode from './CustomNode';
 import useDocumentEscapeListener from '../../../hooks/useDocumentEscapeListener';
-import { generateStoryStepsFromNodes, generateNodesFromRuleActions, generateNodesFromStorySteps } from 'services/rasa';
+import {
+  generateStoryStepsFromNodes,
+  generateNodesFromRuleActions,
+  generateNodesFromStorySteps as generateNodesFromRuleSteps,
+} from 'services/rasa';
 import { GRID_UNIT, generateNewEdge, generateNewNode } from 'services/nodes';
 import LoadingDialog from '../../../components/LoadingDialog';
 import { Rule, RuleDTO } from '../../../types/rule';
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
-import './StoriesDetail.scss';
+import './RulesDetail.scss';
 
 const nodeTypes = {
   customNode: CustomNode,
@@ -44,7 +47,7 @@ const initialNodes: Node[] = [
   },
 ];
 
-const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
+const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const [currentEntityId, setCurrentEntityId] = useState<string | undefined>(id);
@@ -56,16 +59,16 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   const [restartConfirmation, setRestartConfirmation] = useState(false);
   const [deleteId, setDeleteId] = useState('');
   const [editableTitle, setEditableTitle] = useState<string | null>(null);
-  const [currentEntity, setCurrentEntity] = useState<Story | Rule | null>(null);
+  const [currentEntity, setCurrentEntity] = useState<Rule | null>(null);
   const [refreshing, setRefreshing] = useState(false);
-  const [category, setCategory] = useState<string>('stories');
+  const [category, setCategory] = useState<string>('rules');
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const onConnect = useCallback((params: Connection) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
 
-  const { data: currentEntityData, refetch: refetchCurrentEntity } = useQuery<Story | Rule>({
-    queryKey: [category === 'rules' ? 'rule-by-name' : 'story-by-name', currentEntityId],
+  const { data: currentEntityData, refetch: refetchCurrentEntity } = useQuery<Rule>({
+    queryKey: ['rule-by-name', currentEntityId],
     enabled: !!currentEntityId,
   });
 
@@ -97,7 +100,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     let nodes = [...initialNodes];
     let edges: any[] = [];
 
-    generateNodesFromStorySteps(currentEntityData?.steps || currentEntity?.steps || []).forEach((x) => {
+    generateNodesFromRuleSteps(currentEntityData?.steps || currentEntity?.steps || []).forEach((x) => {
       edges.push(generateNewEdge(nodes, edges));
       nodes.push(generateNewNode({ ...x, nodes, handleNodeDelete, handleNodePayloadChange }));
     });
@@ -126,17 +129,13 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     setEdges(edges);
   }, [location.state, category, currentEntity, currentEntityData, setNodes, setEdges]);
 
-  const addStoryMutation = useMutation({
-    mutationFn: ({ data, category }: { data: StoryDTO | RuleDTO; category: string }) => {
-      if (category === 'stories') {
-        return addStoryOrRule(data as StoryDTO, category);
-      } else {
-        return addStoryOrRule(data as RuleDTO, category);
-      }
+  const addRuleMutation = useMutation({
+    mutationFn: ({ data }: { data: RuleDTO }) => {
+      return addRule(data);
     },
     onMutate: () => setRefreshing(true),
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['stories']);
+      await queryClient.invalidateQueries(['rules']);
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -153,17 +152,13 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     onSettled: () => setRefreshing(false),
   });
 
-  const editStoryMutation = useMutation({
-    mutationFn: ({ id, data, category }: { id: string; data: StoryDTO | RuleDTO; category: string }) => {
-      if (category === 'stories') {
-        return editStoryOrRule(id, data as StoryDTO, category);
-      } else {
-        return editStoryOrRule(id, data as RuleDTO, category);
-      }
+  const editRuleMutation = useMutation({
+    mutationFn: ({ id, data }: { id: string; data: RuleDTO }) => {
+      return editRule(id, data);
     },
     onMutate: () => setRefreshing(true),
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['stories']);
+      await queryClient.invalidateQueries(['rules']);
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -180,11 +175,11 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     onSettled: () => setRefreshing(false),
   });
 
-  const deleteStoryMutation = useMutation({
-    mutationFn: ({ id, category }: { id: string | number; category: string }) => deleteStoryOrRule(id, category),
+  const deleteRuleMutation = useMutation({
+    mutationFn: ({ id }: { id: string | number }) => deleteRule(id),
     onMutate: () => setRefreshing(true),
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['stories']);
+      await queryClient.invalidateQueries(['rules']);
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -285,7 +280,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
       return;
     }
     const data = {
-      [category === 'stories' ? 'story' : 'rule']: editableTitle || id || title,
+      rule: editableTitle || id || title,
       steps: generateStoryStepsFromNodes(nodes),
       ...(nodes.some((node) => node.data.label === 'conversation_start: true') && { conversation_start: true }),
       ...(nodes.some((node) => node.data.label === 'wait_for_user_input: false') && { wait_for_user_input: false }),
@@ -293,15 +288,15 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
 
     setRefreshing(true);
     if (mode === 'new') {
-      addStoryMutation.mutate({ data, category });
+      addRuleMutation.mutate({ data, category });
     }
     if (mode === 'edit' && id) {
-      editStoryMutation.mutate({ id, data, category });
+      editRuleMutation.mutate({ id, data, category });
     }
     await handleMutationLoadingAfterPopulateTable(data);
 
     if (isRename) {
-      navigate(`${import.meta.env.BASE_URL}/stories/${editableTitle}`, {
+      navigate(`${import.meta.env.BASE_URL}/rules/${editableTitle}`, {
         replace: true,
         state: {
           id: editableTitle,
@@ -321,12 +316,8 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
       updatedData = await refetchCurrentEntity();
     }
 
-    updatedData?.then((storyOrRuleObject) => {
-      if (
-        mode === 'new' &&
-        storyOrRuleObject.data != null &&
-        (storyOrRuleObject.data.story === editableTitle || storyOrRuleObject.data.rule === editableTitle)
-      ) {
+    updatedData?.then((ruleObject) => {
+      if (mode === 'new' && ruleObject.data != null && ruleObject.data.rule === editableTitle) {
         setRefreshing(false);
       } else {
         setTimeout(() => {
@@ -464,7 +455,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
 
           <Collapsible title={t('training.actions.title')}>
             <Track direction="vertical" align="stretch" gap={4}>
-              {category === 'stories' && (
+              {category === 'rules' && (
                 <button
                   onClick={() =>
                     handleNodeAdd({
@@ -542,8 +533,8 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
           <Track gap={16}>
             {editableTitle !== null ? (
               <FormInput
-                label="Story title"
-                name="storyTitle"
+                label="Rule title"
+                name="ruleTitle"
                 value={editableTitle}
                 onChange={(e) => setEditableTitle(e.target.value)}
                 hideLabel
@@ -628,7 +619,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
               <Button appearance="secondary" onClick={() => setDeleteConfirmation(false)}>
                 {t('global.no')}
               </Button>
-              <Button appearance="error" onClick={() => deleteStoryMutation.mutate({ id, category })}>
+              <Button appearance="error" onClick={() => deleteRuleMutation.mutate({ id })}>
                 {t('global.yes')}
               </Button>
             </>
@@ -660,7 +651,7 @@ const StoriesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   );
 };
 
-export default withAuthorization(StoriesDetail, [
+export default withAuthorization(RulesDetail, [
   ROLES.ROLE_ADMINISTRATOR,
   ROLES.ROLE_CHATBOT_TRAINER,
   ROLES.ROLE_SERVICE_MANAGER,
