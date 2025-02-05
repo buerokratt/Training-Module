@@ -25,6 +25,7 @@ import { useDebouncedFilter } from 'hooks/useDebouncedFilter';
 import { useInfinitePagination } from 'hooks/useInfinitePagination';
 import { getResponses } from 'services/responses';
 import { flattenPaginatedData } from 'utils/api-utils';
+import InfiniteScrollList from 'components/InfiniteScrollList';
 
 const nodeTypes = {
   customNode: CustomNode,
@@ -76,26 +77,26 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   const { filter, setFilter } = useDebouncedFilter();
   //  todo maybe make stories and rules optional if not too hard
   // todo reset page size in hook!!!
-  const { data, fetchNextPage, isFetching, isLoading, hasNextPage } = useInfinitePagination<Response>({
-    queryKey: ['responses', filter],
-    fetchFn: getResponses,
-    filter,
-  });
-  const responses = useMemo(() => flattenPaginatedData(data), [data]);
-  const observer = useRef<IntersectionObserver | null>(null);
-  const lastElement = useCallback(
-    (element: HTMLButtonElement) => {
-      if (isLoading) return;
-      if (observer.current) observer.current.disconnect();
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && hasNextPage && !isFetching) {
-          fetchNextPage();
-        }
-      });
-      if (element) observer.current.observe(element);
-    },
-    [isLoading, hasNextPage, isFetching, fetchNextPage]
-  );
+  // const { data, fetchNextPage, isFetching, isLoading, hasNextPage } = useInfinitePagination<Response>({
+  //   queryKey: ['responses', filter],
+  //   fetchFn: getResponses,
+  //   filter,
+  // });
+  // const responses = useMemo(() => flattenPaginatedData(data), [data]);
+  // const observer = useRef<IntersectionObserver | null>(null);
+  // const lastElement = useCallback(
+  //   (element: HTMLButtonElement) => {
+  //     if (isLoading) return;
+  //     if (observer.current) observer.current.disconnect();
+  //     observer.current = new IntersectionObserver((entries) => {
+  //       if (entries[0].isIntersecting && hasNextPage && !isFetching) {
+  //         fetchNextPage();
+  //       }
+  //     });
+  //     if (element) observer.current.observe(element);
+  //   },
+  //   [isLoading, hasNextPage, isFetching, fetchNextPage]
+  // );
 
   const { data: intents } = useQuery<string[]>({
     queryKey: ['intents'],
@@ -421,9 +422,10 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
             </Collapsible>
           )}
 
-          {responses && (
-            <Collapsible title={t('training.responses.title')}>
-              <Track direction="vertical" align="stretch" gap={4}>
+          {/* todo responses */}
+          {/* {responses && ( */}
+          <Collapsible title={t('training.responses.title')}>
+            {/* <Track direction="vertical" align="stretch" gap={4}>
                 {responses.map((response, index) => (
                   <button
                     key={response.response}
@@ -439,9 +441,29 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
                     <Box color="yellow">{response.response}</Box>
                   </button>
                 ))}
-              </Track>
-            </Collapsible>
-          )}
+              </Track> */}
+            <InfiniteScrollList
+              queryKey={['responses', filter]}
+              fetchFn={getResponses}
+              filter={filter}
+              renderItem={(response, ref) => (
+                <button
+                  key={response.response}
+                  onClick={() =>
+                    handleNodeAdd({
+                      label: response.response,
+                      type: 'responseNode',
+                      className: 'response',
+                    })
+                  }
+                  ref={ref}
+                >
+                  <Box color="yellow">{response.response}</Box>
+                </button>
+              )}
+            />
+          </Collapsible>
+          {/* )} */}
 
           {forms && Array.isArray(forms) && (
             <Collapsible title={t('training.forms.title')}>
