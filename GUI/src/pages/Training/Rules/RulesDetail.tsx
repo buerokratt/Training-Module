@@ -72,22 +72,20 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     enabled: !!currentEntityId,
   });
 
+  // todo filter
   const { filter, setFilter } = useDebouncedFilter();
-  // const [responses, setResponses] = useState<Response[]>([]);
   //  todo maybe make stories and rules optional if not too hard
   // todo reset page size in hook!!!
-  const { data, refetch, fetchNextPage, isFetching, isLoading, hasNextPage } = useInfinitePagination<Response>({
+  const { data, fetchNextPage, isFetching, isLoading, hasNextPage } = useInfinitePagination<Response>({
     queryKey: ['responses', filter],
     fetchFn: getResponses,
     filter,
   });
   const responses = useMemo(() => flattenPaginatedData(data), [data]);
 
-  console.log(responses);
-
   const observer = useRef<IntersectionObserver | null>(null);
   const lastElement = useCallback(
-    (element: HTMLDivElement) => {
+    (element: HTMLButtonElement) => {
       if (isLoading) return;
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
@@ -97,7 +95,7 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
       });
       if (element) observer.current.observe(element);
     },
-    [isLoading, hasNextPage]
+    [isLoading, hasNextPage, isFetching, fetchNextPage]
   );
 
   const { data: intents } = useQuery<string[]>({
