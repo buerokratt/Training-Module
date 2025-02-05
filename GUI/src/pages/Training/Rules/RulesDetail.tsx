@@ -73,7 +73,7 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
 
   // todo simply fn + hook. NEXT3
   const { filter, setFilter } = useDebouncedFilter();
-  //  todo maybe make stories and rules optional if not too hard
+  //  todo maybe make stories and rules optional if not too hard - in query
   // todo reset page size in hook!!!
 
   const { data: intents } = useQuery<string[]>({
