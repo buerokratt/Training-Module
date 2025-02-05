@@ -75,7 +75,8 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   const { filter, setFilter } = useDebouncedFilter();
   // const [responses, setResponses] = useState<Response[]>([]);
   //  todo maybe make stories and rules optional if not too hard
-  const { data, refetch, fetchNextPage, isFetching } = useInfinitePagination<Response>({
+  // todo reset page size in hook!!!
+  const { data, refetch, fetchNextPage, isFetching, isLoading, hasNextPage } = useInfinitePagination<Response>({
     queryKey: ['responses', filter],
     fetchFn: getResponses,
     filter,
@@ -83,6 +84,21 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   const responses = useMemo(() => flattenPaginatedData(data), [data]);
 
   console.log(responses);
+
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastElement = useCallback(
+    (element: HTMLDivElement) => {
+      if (isLoading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasNextPage && !isFetching) {
+          fetchNextPage();
+        }
+      });
+      if (element) observer.current.observe(element);
+    },
+    [isLoading, hasNextPage]
+  );
 
   const { data: intents } = useQuery<string[]>({
     queryKey: ['intents'],
@@ -412,7 +428,7 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
             </Collapsible>
           )}
 
-          {responses && Array.isArray(responses) && (
+          {responses && (
             <Collapsible title={t('training.responses.title')}>
               <Track direction="vertical" align="stretch" gap={4}>
                 {responses.map((response, index) => (
@@ -425,6 +441,7 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
                         className: 'response',
                       })
                     }
+                    ref={responses.length === index + 1 ? lastElement : null}
                   >
                     <Box color="yellow">{response.response}</Box>
                   </button>
