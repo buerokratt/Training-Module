@@ -73,6 +73,7 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   });
 
   // todo filter --- NEXT
+  // todo common component NEXT2
   const { filter, setFilter } = useDebouncedFilter();
   //  todo maybe make stories and rules optional if not too hard
   // todo reset page size in hook!!!
