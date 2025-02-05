@@ -72,7 +72,6 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     enabled: !!currentEntityId,
   });
 
-  // todo filter --- NEXT
   // todo common component NEXT2
   const { filter, setFilter } = useDebouncedFilter();
   //  todo maybe make stories and rules optional if not too hard
@@ -381,7 +380,7 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
               name="search"
               placeholder={t('global.search') + '...'}
               hideLabel
-              // onChange={(e) => setFilter(e.target.value)}
+              onChange={(e) => setFilter(e.target.value)}
             />
           </Card>
           {category === 'rules' && (
