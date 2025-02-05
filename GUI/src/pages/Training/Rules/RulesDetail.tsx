@@ -442,7 +442,7 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
                   </button>
                 ))}
               </Track> */}
-            <InfiniteScrollList
+            <InfiniteScrollList<Response>
               queryKey={['responses', filter]}
               fetchFn={getResponses}
               filter={filter}
