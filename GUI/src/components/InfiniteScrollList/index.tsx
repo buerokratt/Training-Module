@@ -8,10 +8,9 @@ export interface InfiniteScrollListProps<T> {
   fetchFn: (params: any) => Promise<any>;
   filter?: string;
   renderItem: (item: T, ref?: (element: HTMLElement | null) => void) => ReactNode;
-  className?: string;
 }
 
-function InfiniteScrollList<T>({ queryKey, fetchFn, filter = '', renderItem, className }: InfiniteScrollListProps<T>) {
+function InfiniteScrollList<T>({ queryKey, fetchFn, filter = '', renderItem }: InfiniteScrollListProps<T>) {
   const { data, fetchNextPage, isFetching, isLoading, hasNextPage } = useInfinitePagination<T>({
     queryKey,
     fetchFn,
@@ -38,7 +37,7 @@ function InfiniteScrollList<T>({ queryKey, fetchFn, filter = '', renderItem, cla
   );
 
   return (
-    <Track direction="vertical" align="stretch" gap={4} className={className}>
+    <Track direction="vertical" align="stretch" gap={4}>
       {items.map((item, index) => renderItem(item, index === items.length - 1 ? lastElement : undefined))}
     </Track>
   );
