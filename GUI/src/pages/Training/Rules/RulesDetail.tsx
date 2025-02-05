@@ -72,7 +72,7 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     enabled: !!currentEntityId,
   });
 
-  // todo filter
+  // todo filter --- NEXT
   const { filter, setFilter } = useDebouncedFilter();
   //  todo maybe make stories and rules optional if not too hard
   // todo reset page size in hook!!!
