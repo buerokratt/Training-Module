@@ -39,7 +39,6 @@ function InfiniteScrollList<T>({ queryKey, fetchFn, filter = '', renderItem, cla
 
   return (
     <Track direction="vertical" align="stretch" gap={4} className={className}>
-      {/* todo maybe null and not undefined */}
       {items.map((item, index) => renderItem(item, index === items.length - 1 ? lastElement : undefined))}
     </Track>
   );
