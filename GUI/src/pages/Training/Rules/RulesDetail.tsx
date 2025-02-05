@@ -82,7 +82,6 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     filter,
   });
   const responses = useMemo(() => flattenPaginatedData(data), [data]);
-
   const observer = useRef<IntersectionObserver | null>(null);
   const lastElement = useCallback(
     (element: HTMLButtonElement) => {
@@ -101,10 +100,6 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   const { data: intents } = useQuery<string[]>({
     queryKey: ['intents'],
   });
-  // const { data: all } = useQuery<Responses>({
-  //   queryKey: ['responses'],
-  // });
-  // // console.log(all);
   const { data: forms } = useQuery<Form[]>({
     queryKey: ['forms'],
   });
