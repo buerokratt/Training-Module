@@ -1,0 +1,10 @@
+{
+  "rules": [
+    {{#each hits}}
+      {
+        "id":"{{this._id}}"
+      }
+      {{#unless @last}},{{/unless}}
+    {{/each}}
+  ]
+}

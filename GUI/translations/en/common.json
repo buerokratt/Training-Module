@@ -92,9 +92,9 @@
     "slotDeleted": "Slot deleted",
     "newSlotAdded": "New slot added",
     "slotChangesSaved": "Slot changes saved",
-    "storyDeleted": "Story deleted",
-    "storyAdded": "Story added",
-    "storyUpdated": "Story updated",
+    "ruleDeleted": "Rule deleted",
+    "ruleAdded": "Rule added",
+    "ruleUpdated": "Rule updated",
     "titleCannotBeEmpty": "Title cannot be empty",
     "trainSettingsChangesSaved": "Train settings changes saved",
     "trainingIsInitialized": "Training is Initialized",
@@ -173,7 +173,7 @@
       "newResponseTextPlaceholder": "Add a response text for this template",
       "deleteIntent": "Delete intent",
       "deleteResponse": "Delete response",
-      "deleteStory": "Delete story",
+      "deleteRule": "Delete rule",
       "responseName": "Response name",
       "responseText": "Response text",
       "addNewResponse": "Add new response"
@@ -191,10 +191,8 @@
       "coreFallbackThreshold": "Core fallback threshold",
       "moreFromKratid": "More info from kratid.ee"
     },
-    "stories": {
-      "title": "Stories and rules",
-      "stories": "Stories",
-      "rules": "Rules",
+    "rules": {
+      "title": "Rules",
       "entityWarning": "There are two entities with the same name in intent '{{intent}}'",
       "noEntitiesAvailable": "No Entities available"
     },

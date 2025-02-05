@@ -6,19 +6,32 @@ declaration:
   accepts: json
   returns: json
   namespace: training
+  params:
+    - field: filter
+      type: string
+      description: "Query string"
+    - field: from
+      type: string
+      description: "Item number"
+    - field: size
+      type: string
+      description: "Page size"
 
 getRules:
-  call: http.get
+  call: http.post
   args:
-    url: "[#TRAINING_OPENSEARCH]/rules/_search?size=10000"
+    url: "[#TRAINING_OPENSEARCH]/rules/_search/template"
+    body:
+      id: "rules-with-pagination"
+      params: ${incoming.params}
   result: getRulesResult
 
 mapRulesData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/hbs/training/get_rules"
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_rule_ids"
     headers:
-      type: 'json'
+      type: "json"
     body:
       hits: ${getRulesResult.response.body.hits.hits}
   result: rulesData
