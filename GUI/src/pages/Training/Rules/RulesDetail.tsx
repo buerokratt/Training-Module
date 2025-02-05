@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { MdPlayCircleFilled, MdOutlineStop, MdOutlineSave, MdOutlineModeEditOutline } from 'react-icons/md';
@@ -7,8 +7,8 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import 'reactflow/dist/style.css';
 
-import { Box, Button, Collapsible, Dialog, FormInput, Icon, Track } from 'components';
-import { Responses } from 'types/response';
+import { Box, Button, Card, Collapsible, Dialog, FormInput, Icon, Track } from 'components';
+import type { Response } from 'types/response';
 import { Form } from 'types/form';
 import { Slot } from 'types/slot';
 import { useToast } from 'hooks/useToast';
@@ -21,6 +21,10 @@ import LoadingDialog from '../../../components/LoadingDialog';
 import { Rule, RuleDTO } from '../../../types/rule';
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
 import './RulesDetail.scss';
+import { useDebouncedFilter } from 'hooks/useDebouncedFilter';
+import { useInfinitePagination } from 'hooks/useInfinitePagination';
+import { getResponses } from 'services/responses';
+import { flattenPaginatedData } from 'utils/api-utils';
 
 const nodeTypes = {
   customNode: CustomNode,
@@ -68,12 +72,25 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     enabled: !!currentEntityId,
   });
 
+  const { filter, setFilter } = useDebouncedFilter();
+  // const [responses, setResponses] = useState<Response[]>([]);
+  //  todo maybe make stories and rules optional if not too hard
+  const { data, refetch, fetchNextPage, isFetching } = useInfinitePagination<Response>({
+    queryKey: ['responses', filter],
+    fetchFn: getResponses,
+    filter,
+  });
+  const responses = useMemo(() => flattenPaginatedData(data), [data]);
+
+  console.log(responses);
+
   const { data: intents } = useQuery<string[]>({
     queryKey: ['intents'],
   });
-  const { data: responses } = useQuery<Responses>({
-    queryKey: ['responses'],
-  });
+  // const { data: all } = useQuery<Responses>({
+  //   queryKey: ['responses'],
+  // });
+  // // console.log(all);
   const { data: forms } = useQuery<Form[]>({
     queryKey: ['forms'],
   });
@@ -348,6 +365,15 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
           align="stretch"
           style={{ maxHeight: 'calc(100vh - 100px)', overflow: 'auto', paddingBottom: '5vh' }}
         >
+          <Card>
+            <FormInput
+              label={t('global.search')}
+              name="search"
+              placeholder={t('global.search') + '...'}
+              hideLabel
+              // onChange={(e) => setFilter(e.target.value)}
+            />
+          </Card>
           {category === 'rules' && (
             <Collapsible title={t('training.conditions')}>
               <Track direction="vertical" align="stretch" gap={4}>
@@ -391,16 +417,16 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
               <Track direction="vertical" align="stretch" gap={4}>
                 {responses.map((response, index) => (
                   <button
-                    key={response.name}
+                    key={response.response}
                     onClick={() =>
                       handleNodeAdd({
-                        label: response.name,
+                        label: response.response,
                         type: 'responseNode',
                         className: 'response',
                       })
                     }
                   >
-                    <Box color="yellow">{response.name}</Box>
+                    <Box color="yellow">{response.response}</Box>
                   </button>
                 ))}
               </Track>
