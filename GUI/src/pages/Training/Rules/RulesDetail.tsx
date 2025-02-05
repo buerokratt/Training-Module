@@ -22,9 +22,7 @@ import { Rule, RuleDTO } from '../../../types/rule';
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
 import './RulesDetail.scss';
 import { useDebouncedFilter } from 'hooks/useDebouncedFilter';
-import { useInfinitePagination } from 'hooks/useInfinitePagination';
 import { getResponses } from 'services/responses';
-import { flattenPaginatedData } from 'utils/api-utils';
 import InfiniteScrollList from 'components/InfiniteScrollList';
 
 const nodeTypes = {
@@ -73,30 +71,10 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     enabled: !!currentEntityId,
   });
 
-  // todo common component NEXT2
+  // todo simply fn + hook. NEXT3
   const { filter, setFilter } = useDebouncedFilter();
   //  todo maybe make stories and rules optional if not too hard
   // todo reset page size in hook!!!
-  // const { data, fetchNextPage, isFetching, isLoading, hasNextPage } = useInfinitePagination<Response>({
-  //   queryKey: ['responses', filter],
-  //   fetchFn: getResponses,
-  //   filter,
-  // });
-  // const responses = useMemo(() => flattenPaginatedData(data), [data]);
-  // const observer = useRef<IntersectionObserver | null>(null);
-  // const lastElement = useCallback(
-  //   (element: HTMLButtonElement) => {
-  //     if (isLoading) return;
-  //     if (observer.current) observer.current.disconnect();
-  //     observer.current = new IntersectionObserver((entries) => {
-  //       if (entries[0].isIntersecting && hasNextPage && !isFetching) {
-  //         fetchNextPage();
-  //       }
-  //     });
-  //     if (element) observer.current.observe(element);
-  //   },
-  //   [isLoading, hasNextPage, isFetching, fetchNextPage]
-  // );
 
   const { data: intents } = useQuery<string[]>({
     queryKey: ['intents'],
@@ -423,25 +401,7 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
           )}
 
           {/* todo responses */}
-          {/* {responses && ( */}
           <Collapsible title={t('training.responses.title')}>
-            {/* <Track direction="vertical" align="stretch" gap={4}>
-                {responses.map((response, index) => (
-                  <button
-                    key={response.response}
-                    onClick={() =>
-                      handleNodeAdd({
-                        label: response.response,
-                        type: 'responseNode',
-                        className: 'response',
-                      })
-                    }
-                    ref={responses.length === index + 1 ? lastElement : null}
-                  >
-                    <Box color="yellow">{response.response}</Box>
-                  </button>
-                ))}
-              </Track> */}
             <InfiniteScrollList<Response>
               queryKey={['responses', filter]}
               fetchFn={getResponses}
@@ -463,7 +423,6 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
               )}
             />
           </Collapsible>
-          {/* )} */}
 
           {forms && Array.isArray(forms) && (
             <Collapsible title={t('training.forms.title')}>
