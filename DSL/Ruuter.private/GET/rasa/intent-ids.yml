@@ -22,7 +22,7 @@ getIntents:
   args:
     url: "[#TRAINING_OPENSEARCH]/intents/_search/template"
     body:
-      id: "rules-with-pagination"
+      id: "intents-with-pagination"
       params: ${incoming.params}
   result: getIntentsResult
 
