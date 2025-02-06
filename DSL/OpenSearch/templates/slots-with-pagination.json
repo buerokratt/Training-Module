@@ -1,0 +1,6 @@
+{
+  "script": {
+    "lang": "mustache",
+    "source": "{\"query\":{\"term\":{\"_id\":\"slots\"}},\"script_fields\":{\"filtered_slots\":{\"script\":{\"lang\":\"painless\",\"source\":\"def slots = params._source.slots.keySet(); def searchTerm = '{{filter}}'; int from = {{from}}; int size = {{size}}; def filtered = slots.findAll(slot -> slot.toLowerCase().contains(searchTerm.toLowerCase())); int start = (int)Math.min(from, filtered.size()); int end = (int)Math.min(from + size, filtered.size()); Map result = new HashMap(); result.put(\\\"totalCount\\\", filtered.size()); result.put(\\\"slots\\\", filtered.subList(start, end)); return result;\"}}}}"
+  }
+}
