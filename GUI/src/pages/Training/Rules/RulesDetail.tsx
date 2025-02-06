@@ -77,11 +77,8 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   //  todo maybe make stories and rules optional if not too hard - in query
   // todo reset page size in hook!!!
 
-  // todo these three
-  // todo add counts
-  // const { data: intents } = useQuery<string[]>({
-  //   queryKey: ['intents'],
-  // });
+  // todo add counts!!!!
+  // todo these two
   const { data: forms } = useQuery<Form[]>({
     queryKey: ['forms'],
   });
@@ -382,48 +379,31 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
               </Track>
             </Collapsible>
           )}
-          {
-            <Collapsible title={t('training.intents.title')} defaultOpen>
-              {/* <Track direction="vertical" align="stretch" gap={4}>
-                {intents.map((intent) => (
-                  <button
-                    key={intent}
-                    onClick={() =>
-                      handleNodeAdd({
-                        label: intent,
-                        type: 'intentNode',
-                        className: 'intent',
-                      })
-                    }
-                  >
-                    <Box color="blue">{intent}</Box>
-                  </button>
-                ))}
-              </Track> */}
-              <InfiniteScrollList<IntentId>
-                queryKey={['intent-ids', filter]}
-                fetchFn={getIntentIds}
-                filter={filter}
-                renderItem={(intent, ref) => (
-                  <button
-                    key={intent.id}
-                    onClick={() =>
-                      handleNodeAdd({
-                        label: intent.id,
-                        type: 'intentNode',
-                        className: 'intent',
-                      })
-                    }
-                    ref={ref}
-                  >
-                    <Box color="blue">{intent.id}</Box>
-                  </button>
-                )}
-              />
-            </Collapsible>
-          }
 
-          {/* todo responses */}
+          <Collapsible title={t('training.intents.title')} defaultOpen>
+            <InfiniteScrollList<IntentId>
+              queryKey={['intent-ids', filter]}
+              fetchFn={getIntentIds}
+              filter={filter}
+              renderItem={(intent, ref) => (
+                <button
+                  key={intent.id}
+                  onClick={() =>
+                    handleNodeAdd({
+                      label: intent.id,
+                      type: 'intentNode',
+                      className: 'intent',
+                    })
+                  }
+                  ref={ref}
+                >
+                  <Box color="blue">{intent.id}</Box>
+                </button>
+              )}
+            />
+          </Collapsible>
+
+          {/* todo responses DONE */}
           <Collapsible title={t('training.responses.title')}>
             <InfiniteScrollList<Response>
               queryKey={['responses', filter]}

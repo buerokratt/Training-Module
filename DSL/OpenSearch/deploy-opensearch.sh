@@ -23,6 +23,7 @@ curl -H "Content-Type: application/x-ndjson" -X PUT "$URL/intents" -ku "$AUTH" -
 if $MOCK_ALLOWED; then curl -H "Content-Type: application/x-ndjson" -X PUT "$URL/intents/_bulk" -ku "$AUTH" --data-binary "@mock/intents.json"; fi
 curl -L -X POST "$URL/_scripts/intent-with-name" -H 'Content-Type: application/json' --data-binary "@templates/intent-with-name.json"
 curl -L -X POST "$URL/_scripts/intents-with-examples-count" -H 'Content-Type: application/json' --data-binary "@templates/intents-with-examples-count.json"
+curl -L -X POST "$URL/_scripts/intents-with-pagination" -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/intents-with-pagination.json"
 
 # rules
 curl -XDELETE "$URL/rules?ignore_unavailable=true" -u "$AUTH" --insecure
