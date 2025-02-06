@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { MdPlayCircleFilled, MdOutlineStop, MdOutlineSave, MdOutlineModeEditOutline } from 'react-icons/md';
@@ -23,7 +23,7 @@ import withAuthorization, { ROLES } from 'hoc/with-authorization';
 import './RulesDetail.scss';
 import { useDebouncedFilter } from 'hooks/useDebouncedFilter';
 import { getResponses } from 'services/responses';
-import InfiniteScrollList from 'components/InfiniteScrollList';
+import NodeList from 'pages/Training/Intents/NodeList';
 import { getIntentIds } from 'services/intents';
 import { IntentId } from 'types/intent';
 
@@ -68,6 +68,7 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const onConnect = useCallback((params: Connection) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
 
+  // todo wtf is this?
   const { data: currentEntityData, refetch: refetchCurrentEntity } = useQuery<Rule>({
     queryKey: ['rule-by-name', currentEntityId],
     enabled: !!currentEntityId,
@@ -76,8 +77,8 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   const { filter, setFilter } = useDebouncedFilter();
   //  todo maybe make stories and rules optional if not too hard - in query
   // todo reset page size in hook!!!
+  // todo add count for responses
 
-  // todo add counts!!!!
   // todo ask freddy why only intents are open?
   // todo these two
   const { data: forms } = useQuery<Form[]>({
@@ -381,7 +382,7 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
             </Collapsible>
           )}
 
-          <InfiniteScrollList<IntentId>
+          <NodeList<IntentId>
             queryKey={['intent-ids', filter]}
             fetchFn={getIntentIds}
             filter={filter}
@@ -404,7 +405,7 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
             )}
           />
 
-          <InfiniteScrollList<Response>
+          <NodeList<Response>
             queryKey={['responses', filter]}
             fetchFn={getResponses}
             filter={filter}

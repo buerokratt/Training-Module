@@ -4,7 +4,7 @@ import { ReactNode, useMemo, useRef, useCallback } from 'react';
 import { flattenPaginatedData } from 'utils/api-utils';
 import Collapsible from 'components/Collapsible';
 
-export interface InfiniteScrollListProps<T> {
+export interface NodeListProps<T> {
   queryKey: string[];
   fetchFn: (params: any) => Promise<any>;
   filter?: string;
@@ -13,14 +13,7 @@ export interface InfiniteScrollListProps<T> {
   renderItem: (item: T, ref?: (element: HTMLElement | null) => void) => ReactNode;
 }
 
-function InfiniteScrollList<T>({
-  queryKey,
-  fetchFn,
-  filter = '',
-  title,
-  defaultOpen,
-  renderItem,
-}: InfiniteScrollListProps<T>) {
+function NodeList<T>({ queryKey, fetchFn, filter = '', title, defaultOpen, renderItem }: NodeListProps<T>) {
   const { data, fetchNextPage, isFetching, isLoading, hasNextPage } = useInfinitePagination<T>({
     queryKey,
     fetchFn,
@@ -28,7 +21,7 @@ function InfiniteScrollList<T>({
   });
 
   const items = useMemo(() => flattenPaginatedData(data), [data]);
-  const totalCount = data?.pages[0]?.totalCount ?? 0;
+  const totalCount = data?.pages[0]?.totalCount ? `(${data.pages[0].totalCount})` : '';
   const observer = useRef<IntersectionObserver | null>(null);
 
   const lastElement = useCallback(
@@ -48,7 +41,7 @@ function InfiniteScrollList<T>({
   );
 
   return (
-    <Collapsible title={`${title} (${totalCount})`} defaultOpen={defaultOpen}>
+    <Collapsible title={`${title} ${totalCount}`} defaultOpen={defaultOpen}>
       <Track direction="vertical" align="stretch" gap={4}>
         {items.map((item, index) => renderItem(item, index === items.length - 1 ? lastElement : undefined))}
       </Track>
@@ -56,4 +49,4 @@ function InfiniteScrollList<T>({
   );
 }
 
-export default InfiniteScrollList;
+export default NodeList;
