@@ -31,6 +31,7 @@ const Appeals: FC = () => {
     queryKey: ['intent-ids', filter],
     fetchFn: getIntentIds,
     filter,
+    pageSize: 1000,
   });
   const intents = useMemo(() => flattenPaginatedData(data), [data]);
   const { register, handleSubmit } = useForm<{ message: string }>();
