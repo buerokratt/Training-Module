@@ -20,9 +20,9 @@ declaration:
 getIntents:
   call: http.post
   args:
-    url: "[#TRAINING_OPENSEARCH]/rules/_search/template"
+    url: "[#TRAINING_OPENSEARCH]/intents/_search/template"
     body:
-      id: "basic-pagination"
+      id: "rules-with-pagination"
       params: ${incoming.params}
   result: getIntentsResult
 

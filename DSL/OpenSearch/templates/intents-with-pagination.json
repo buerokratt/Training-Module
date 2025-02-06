@@ -4,9 +4,11 @@
     "source": {
       "from": "{{from}}",
       "size": "{{size}}",
-      "_source": false,
+      "_source": ["intent"],
       "query": {
-        "match_all": {}
+        "wildcard": {
+          "intent": "*{{filter}}*"
+        }
       }
     },
     "params": {

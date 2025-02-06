@@ -22,7 +22,7 @@ getRules:
   args:
     url: "[#TRAINING_OPENSEARCH]/rules/_search/template"
     body:
-      id: "basic-pagination"
+      id: "rules-with-pagination"
       params: ${incoming.params}
   result: getRulesResult
 

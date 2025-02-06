@@ -24,6 +24,8 @@ import './RulesDetail.scss';
 import { useDebouncedFilter } from 'hooks/useDebouncedFilter';
 import { getResponses } from 'services/responses';
 import InfiniteScrollList from 'components/InfiniteScrollList';
+import { getIntentIds } from 'services/intents';
+import { IntentId } from 'types/intent';
 
 const nodeTypes = {
   customNode: CustomNode,
@@ -76,9 +78,10 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   // todo reset page size in hook!!!
 
   // todo these three
-  const { data: intents } = useQuery<string[]>({
-    queryKey: ['intents'],
-  });
+  // todo add counts
+  // const { data: intents } = useQuery<string[]>({
+  //   queryKey: ['intents'],
+  // });
   const { data: forms } = useQuery<Form[]>({
     queryKey: ['forms'],
   });
@@ -379,9 +382,9 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
               </Track>
             </Collapsible>
           )}
-          {intents && Array.isArray(intents) && (
+          {
             <Collapsible title={t('training.intents.title')} defaultOpen>
-              <Track direction="vertical" align="stretch" gap={4}>
+              {/* <Track direction="vertical" align="stretch" gap={4}>
                 {intents.map((intent) => (
                   <button
                     key={intent}
@@ -396,9 +399,29 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
                     <Box color="blue">{intent}</Box>
                   </button>
                 ))}
-              </Track>
+              </Track> */}
+              <InfiniteScrollList<IntentId>
+                queryKey={['intent-ids', filter]}
+                fetchFn={getIntentIds}
+                filter={filter}
+                renderItem={(intent, ref) => (
+                  <button
+                    key={intent.id}
+                    onClick={() =>
+                      handleNodeAdd({
+                        label: intent.id,
+                        type: 'intentNode',
+                        className: 'intent',
+                      })
+                    }
+                    ref={ref}
+                  >
+                    <Box color="blue">{intent.id}</Box>
+                  </button>
+                )}
+              />
             </Collapsible>
-          )}
+          }
 
           {/* todo responses */}
           <Collapsible title={t('training.responses.title')}>
