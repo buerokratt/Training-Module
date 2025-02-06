@@ -73,19 +73,17 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     enabled: !!currentEntityId,
   });
 
-  // todo 'entities' request - from SlotsDetail?
-
   const { filter, setFilter } = useDebouncedFilter();
   //  todo maybe make stories and rules optional if not too hard - in query
   // todo reset page size in hook!!!
   // todo add count for responses
-
   // todo ask freddy why only intents are open?
-  // todo search template ready
+  // todo 'entities' request - from SlotsDetail? - seprate bug
+
+  // todo use domain-objects-with-pagination for forms and slots
   const { data: forms } = useQuery<Form[]>({
     queryKey: ['forms'],
   });
-  // todo need search template, returning IDs only is OK - maybe have common template?
   const { data: slots } = useQuery<Slot[]>({
     queryKey: ['slots'],
   });
