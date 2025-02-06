@@ -2,7 +2,7 @@ name: Build and publish GUI
 
 on:
   push:
-    branches: [ v2.0.2 ]
+    branches: [ dev ]
     paths:
       - '.env.pipeimg'
 
