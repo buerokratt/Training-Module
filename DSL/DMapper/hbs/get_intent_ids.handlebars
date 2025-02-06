@@ -1,6 +1,7 @@
 {
-  "intents": [
-    {{#each hits}}
+  "totalCount": {{hits.total.value}},
+  "response": [
+    {{#each hits.hits}}
       {
         "id":"{{this._id}}"
       }

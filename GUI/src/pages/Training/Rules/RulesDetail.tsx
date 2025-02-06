@@ -78,6 +78,7 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   // todo reset page size in hook!!!
 
   // todo add counts!!!!
+  // todo ask freddy why only intents are open?
   // todo these two
   const { data: forms } = useQuery<Form[]>({
     queryKey: ['forms'],
@@ -380,52 +381,50 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
             </Collapsible>
           )}
 
-          <Collapsible title={t('training.intents.title')} defaultOpen>
-            <InfiniteScrollList<IntentId>
-              queryKey={['intent-ids', filter]}
-              fetchFn={getIntentIds}
-              filter={filter}
-              renderItem={(intent, ref) => (
-                <button
-                  key={intent.id}
-                  onClick={() =>
-                    handleNodeAdd({
-                      label: intent.id,
-                      type: 'intentNode',
-                      className: 'intent',
-                    })
-                  }
-                  ref={ref}
-                >
-                  <Box color="blue">{intent.id}</Box>
-                </button>
-              )}
-            />
-          </Collapsible>
+          <InfiniteScrollList<IntentId>
+            queryKey={['intent-ids', filter]}
+            fetchFn={getIntentIds}
+            filter={filter}
+            title={t('training.intents.title')}
+            defaultOpen
+            renderItem={(intent, ref) => (
+              <button
+                key={intent.id}
+                onClick={() =>
+                  handleNodeAdd({
+                    label: intent.id,
+                    type: 'intentNode',
+                    className: 'intent',
+                  })
+                }
+                ref={ref}
+              >
+                <Box color="blue">{intent.id}</Box>
+              </button>
+            )}
+          />
 
-          {/* todo responses DONE */}
-          <Collapsible title={t('training.responses.title')}>
-            <InfiniteScrollList<Response>
-              queryKey={['responses', filter]}
-              fetchFn={getResponses}
-              filter={filter}
-              renderItem={(response, ref) => (
-                <button
-                  key={response.response}
-                  onClick={() =>
-                    handleNodeAdd({
-                      label: response.response,
-                      type: 'responseNode',
-                      className: 'response',
-                    })
-                  }
-                  ref={ref}
-                >
-                  <Box color="yellow">{response.response}</Box>
-                </button>
-              )}
-            />
-          </Collapsible>
+          <InfiniteScrollList<Response>
+            queryKey={['responses', filter]}
+            fetchFn={getResponses}
+            filter={filter}
+            title={t('training.responses.title')}
+            renderItem={(response, ref) => (
+              <button
+                key={response.response}
+                onClick={() =>
+                  handleNodeAdd({
+                    label: response.response,
+                    type: 'responseNode',
+                    className: 'response',
+                  })
+                }
+                ref={ref}
+              >
+                <Box color="yellow">{response.response}</Box>
+              </button>
+            )}
+          />
 
           {forms && Array.isArray(forms) && (
             <Collapsible title={t('training.forms.title')}>

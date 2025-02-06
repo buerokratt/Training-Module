@@ -33,11 +33,12 @@ mapIntentsData:
     headers:
       type: "json"
     body:
-      hits: ${getIntentsResult.response.body.hits.hits}
+      hits: ${getIntentsResult.response.body.hits}
   result: intentsData
   next: returnSuccess
 
 returnSuccess:
-  return: ${intentsData.response.body.intents}
-  # wrapper: false
+  return: ${intentsData.response.body}
+  # todo
+  wrapper: false
   next: end
