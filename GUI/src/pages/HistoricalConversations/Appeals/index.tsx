@@ -8,11 +8,14 @@ import { MdDeleteOutline, MdOutlineSave } from 'react-icons/md';
 
 import { Button, Card, DataTable, Dialog, FormInput, FormSelect, Icon, Track } from 'components';
 import { Appeal } from 'types/appeal';
-import { Intent } from 'types/intent';
+import { Intent, IntentId } from 'types/intent';
 import { addAppeal, deleteAppeal } from 'services/appeals';
 import { useToast } from 'hooks/useToast';
 import i18n from '../../../../i18n';
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
+import { useInfinitePagination } from 'hooks/useInfinitePagination';
+import { getIntentIds } from 'services/intents';
+import { flattenPaginatedData } from 'utils/api-utils';
 
 const Appeals: FC = () => {
   const { t } = useTranslation();
@@ -24,9 +27,12 @@ const Appeals: FC = () => {
   const { data: appeals } = useQuery<Appeal[]>({
     queryKey: ['appeals'],
   });
-  const { data: intents } = useQuery<Intent[]>({
-    queryKey: ['intents'],
+  const { data } = useInfinitePagination<IntentId>({
+    queryKey: ['intent-ids', filter],
+    fetchFn: getIntentIds,
+    filter,
   });
+  const intents = useMemo(() => flattenPaginatedData(data), [data]);
   const { register, handleSubmit } = useForm<{ message: string }>();
 
   const newAppealMutation = useMutation({
@@ -72,7 +78,10 @@ const Appeals: FC = () => {
     onSettled: () => setDeletableAppeal(null),
   });
 
-  const appealsColumns = useMemo(() => getColumns(handleNewAppealSubmit, setDeletableAppeal, intents), [intents]);
+  const appealsColumns = useMemo(
+    () => getColumns(handleNewAppealSubmit, setDeletableAppeal, intents),
+    [handleNewAppealSubmit, intents]
+  );
 
   if (!appeals) return <>Loading...</>;
 
@@ -140,7 +149,7 @@ const Appeals: FC = () => {
 const getColumns = (
   handleNewAppealSubmit: () => void,
   setDeletableAppeal: (id: number) => void,
-  intents?: Intent[]
+  intents?: IntentId[]
 ) => {
   const columnHelper = createColumnHelper<Appeal>();
 
@@ -165,8 +174,8 @@ const getColumns = (
           hideLabel
           options={
             intents?.map((intent) => ({
-              label: intent.intent,
-              value: intent.intent,
+              label: intent.id,
+              value: intent.id,
             })) || []
           }
         />

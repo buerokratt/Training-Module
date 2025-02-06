@@ -1,7 +1,7 @@
 declaration:
   call: declare
   version: 0.1
-  description: "Decription placeholder for 'RULES'"
+  description: "Decription placeholder for 'INTENTS'"
   method: get
   accepts: json
   returns: json
@@ -17,26 +17,27 @@ declaration:
       type: string
       description: "Page size"
 
-getRules:
+getIntents:
   call: http.post
   args:
     url: "[#TRAINING_OPENSEARCH]/rules/_search/template"
     body:
       id: "basic-pagination"
       params: ${incoming.params}
-  result: getRulesResult
+  result: getIntentsResult
 
-mapRulesData:
+mapIntentsData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/hbs/training/get_rule_ids"
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_intent_ids"
     headers:
       type: "json"
     body:
-      hits: ${getRulesResult.response.body.hits.hits}
-  result: rulesData
+      hits: ${getIntentsResult.response.body.hits.hits}
+  result: intentsData
   next: returnSuccess
 
 returnSuccess:
-  return: ${rulesData.response.body.rules}
+  return: ${intentsData.response.body.intents}
+  # wrapper: false
   next: end
