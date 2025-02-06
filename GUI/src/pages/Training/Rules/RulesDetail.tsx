@@ -68,11 +68,12 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const onConnect = useCallback((params: Connection) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
 
-  // todo wtf is this?
   const { data: currentEntityData, refetch: refetchCurrentEntity } = useQuery<Rule>({
     queryKey: ['rule-by-name', currentEntityId],
     enabled: !!currentEntityId,
   });
+
+  // todo 'entities' request - from SlotsDetail?
 
   const { filter, setFilter } = useDebouncedFilter();
   //  todo maybe make stories and rules optional if not too hard - in query
