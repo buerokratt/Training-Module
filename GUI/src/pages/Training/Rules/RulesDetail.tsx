@@ -81,10 +81,11 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   // todo add count for responses
 
   // todo ask freddy why only intents are open?
-  // todo these two
+  // todo search template ready
   const { data: forms } = useQuery<Form[]>({
     queryKey: ['forms'],
   });
+  // todo need search template, returning IDs only is OK - maybe have common template?
   const { data: slots } = useQuery<Slot[]>({
     queryKey: ['slots'],
   });
