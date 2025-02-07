@@ -1,12 +1,12 @@
 import { IntentId } from 'types/intent';
 import { rasaApi } from './api';
-import { PaginationParams } from 'types/api';
+import { PaginatedResponse, PaginationParams } from 'types/api';
 
 export const getIntentIds = async ({
   pageParam,
   pageSize,
   filter,
-}: PaginationParams): Promise<{ response: IntentId[] }> => {
+}: PaginationParams): Promise<PaginatedResponse<IntentId>> => {
   const { data } = await rasaApi.get(`/intent-ids?size=${pageSize}&filter=${filter}&from=${pageParam}`);
   return data;
 };
