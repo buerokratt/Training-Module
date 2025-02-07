@@ -374,6 +374,7 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
               </Track>
             </Collapsible>
           )}
+
           <NodeList<IntentId>
             queryKey={['intent-ids', filter]}
             fetchFn={getIntentIds}
@@ -396,6 +397,7 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
               </button>
             )}
           />
+
           <NodeList<Response>
             queryKey={['responses', filter]}
             fetchFn={getResponses}
@@ -417,6 +419,7 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
               </button>
             )}
           />
+
           <NodeList<string>
             queryKey={['forms-list', filter]}
             fetchFn={getForms}
@@ -438,6 +441,7 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
               </button>
             )}
           />
+
           <NodeList<string>
             queryKey={['slots-list', filter]}
             fetchFn={getSlots}
