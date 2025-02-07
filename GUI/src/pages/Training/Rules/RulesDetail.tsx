@@ -48,6 +48,9 @@ const initialNodes: Node[] = [
   },
 ];
 
+// More conditions to be added in the future
+const conditions = [{ label: '', text: 'condition', type: 'conditionNode', className: 'condition' }];
+
 const actions = [
   { label: 'Checkpoints:', text: 'checkpoints', checkpoint: true },
   { label: 'conversation_start: true', text: 'conversation_start' },
@@ -82,9 +85,6 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   });
 
   const { filter, setFilter } = useDebouncedFilter();
-  // todo reset page size in hook!!!
-
-  // todo filter and count: first - can be more elements?
 
   useDocumentEscapeListener(() => setEditableTitle(null));
 
@@ -267,6 +267,9 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   const title = currentEntityId || t('global.title');
 
   const filteredActions = actions.filter(({ text }) => !filter || text.toLowerCase().includes(filter.toLowerCase()));
+  const filteredConditions = conditions.filter(
+    ({ text }) => !filter || text.toLowerCase().includes(filter.toLowerCase())
+  );
 
   const handleGraphSave = async () => {
     const isRename = editableTitle && editableTitle !== id;
@@ -365,19 +368,22 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
             />
           </Card>
 
-          <Collapsible title={t('training.conditions')}>
+          <Collapsible title={`${t('training.conditions')} (${filteredConditions.length})`}>
             <Track direction="vertical" align="stretch" gap={4}>
-              <button
-                onClick={() =>
-                  handleNodeAdd({
-                    label: '',
-                    type: 'conditionNode',
-                    className: 'condition',
-                  })
-                }
-              >
-                <Box color="green">condition</Box>
-              </button>
+              {filteredConditions.map(({ label, text, type, className }) => (
+                <button
+                  key={text}
+                  onClick={() =>
+                    handleNodeAdd({
+                      label,
+                      type,
+                      className,
+                    })
+                  }
+                >
+                  <Box color="green">{text}</Box>
+                </button>
+              ))}
             </Track>
           </Collapsible>
 

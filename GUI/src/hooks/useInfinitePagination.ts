@@ -11,7 +11,7 @@ interface UseInfinitePaginationProps<T> {
 export function useInfinitePagination<T>({
   queryKey,
   fetchFn,
-  pageSize = 10,
+  pageSize = 50,
   filter = '',
 }: UseInfinitePaginationProps<T>) {
   return useInfiniteQuery<PaginatedResponse<T>>({
