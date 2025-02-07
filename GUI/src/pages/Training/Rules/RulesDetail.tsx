@@ -27,6 +27,7 @@ import NodeList from 'pages/Training/Intents/NodeList';
 import { getIntentIds } from 'services/intents';
 import { IntentId } from 'types/intent';
 import { getForms } from 'services/forms';
+import { getSlots } from 'services/slots';
 
 const nodeTypes = {
   customNode: CustomNode,
@@ -379,7 +380,6 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
               </Track>
             </Collapsible>
           )}
-
           <NodeList<IntentId>
             queryKey={['intent-ids', filter]}
             fetchFn={getIntentIds}
@@ -402,7 +402,6 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
               </button>
             )}
           />
-
           <NodeList<Response>
             queryKey={['responses', filter]}
             fetchFn={getResponses}
@@ -424,7 +423,6 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
               </button>
             )}
           />
-
           <NodeList<string>
             queryKey={['forms', filter]}
             fetchFn={getForms}
@@ -446,8 +444,30 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
               </button>
             )}
           />
+          <NodeList<string>
+            queryKey={['slots', filter]}
+            fetchFn={getSlots}
+            filter={filter}
+            title={t('training.slots.title')}
+            renderItem={(slot, ref) => (
+              <button
+                key={slot}
+                onClick={() =>
+                  handleNodeAdd({
+                    label: slot,
+                    type: 'slotNode',
+                    className: 'slot',
+                  })
+                }
+                ref={ref}
+              >
+                <Box color="dark-blue">{slot}</Box>
+              </button>
+            )}
+          />
 
-          {slots && Array.isArray(slots) && (
+          {/* // ... existing code ... */}
+          {/* {slots && Array.isArray(slots) && (
             <Collapsible title={t('training.slots.title')}>
               <Track direction="vertical" align="stretch" gap={4}>
                 {slots.map((slot) => (
@@ -466,8 +486,7 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
                 ))}
               </Track>
             </Collapsible>
-          )}
-
+          )} */}
           <Collapsible title={t('training.actions.title')}>
             <Track direction="vertical" align="stretch" gap={4}>
               {category === 'rules' && (
