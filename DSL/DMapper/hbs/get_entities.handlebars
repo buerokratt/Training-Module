@@ -1,7 +1,7 @@
 {
     "entities": [
     {{#each data.hits}}
-        {{#each this.fields.filtered_entities}}
+        {{#each this.fields.filtered_items.[0].response}}
             {
                 "id": "{{{ this }}}",
                 "name": "{{{ this }}}"
