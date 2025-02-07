@@ -357,23 +357,22 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
               onChange={(e) => setFilter(e.target.value)}
             />
           </Card>
-          {category === 'rules' && (
-            <Collapsible title={t('training.conditions')}>
-              <Track direction="vertical" align="stretch" gap={4}>
-                <button
-                  onClick={() =>
-                    handleNodeAdd({
-                      label: '',
-                      type: 'conditionNode',
-                      className: 'condition',
-                    })
-                  }
-                >
-                  <Box color="green">condition</Box>
-                </button>
-              </Track>
-            </Collapsible>
-          )}
+
+          <Collapsible title={t('training.conditions')}>
+            <Track direction="vertical" align="stretch" gap={4}>
+              <button
+                onClick={() =>
+                  handleNodeAdd({
+                    label: '',
+                    type: 'conditionNode',
+                    className: 'condition',
+                  })
+                }
+              >
+                <Box color="green">condition</Box>
+              </button>
+            </Track>
+          </Collapsible>
 
           <NodeList<IntentId>
             queryKey={['intent-ids', filter]}
@@ -397,7 +396,6 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
               </button>
             )}
           />
-
           <NodeList<Response>
             queryKey={['responses', filter]}
             fetchFn={getResponses}
@@ -419,7 +417,6 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
               </button>
             )}
           />
-
           <NodeList<string>
             queryKey={['forms-list', filter]}
             fetchFn={getForms}
@@ -441,7 +438,6 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
               </button>
             )}
           />
-
           <NodeList<string>
             queryKey={['slots-list', filter]}
             fetchFn={getSlots}
@@ -463,36 +459,31 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
               </button>
             )}
           />
-
           <Collapsible title={t('training.actions.title')}>
             <Track direction="vertical" align="stretch" gap={4}>
-              {category === 'rules' && (
-                <button
-                  onClick={() =>
-                    handleNodeAdd({
-                      label: 'Checkpoints:',
-                      type: 'actionNode',
-                      className: 'action',
-                      checkpoint: true,
-                    })
-                  }
-                >
-                  <Box color="orange">checkpoints</Box>
-                </button>
-              )}
-              {category === 'rules' && (
-                <button
-                  onClick={() =>
-                    handleNodeAdd({
-                      label: 'conversation_start: true',
-                      type: 'actionNode',
-                      className: 'action',
-                    })
-                  }
-                >
-                  <Box color="orange">conversation_start</Box>
-                </button>
-              )}
+              <button
+                onClick={() =>
+                  handleNodeAdd({
+                    label: 'Checkpoints:',
+                    type: 'actionNode',
+                    className: 'action',
+                    checkpoint: true,
+                  })
+                }
+              >
+                <Box color="orange">checkpoints</Box>
+              </button>
+              <button
+                onClick={() =>
+                  handleNodeAdd({
+                    label: 'conversation_start: true',
+                    type: 'actionNode',
+                    className: 'action',
+                  })
+                }
+              >
+                <Box color="orange">conversation_start</Box>
+              </button>
               <button
                 onClick={() =>
                   handleNodeAdd({
@@ -515,19 +506,17 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
               >
                 <Box color="orange">action_restart</Box>
               </button>
-              {category === 'rules' && (
-                <button
-                  onClick={() =>
-                    handleNodeAdd({
-                      label: 'wait_for_user_input: false',
-                      type: 'actionNode',
-                      className: 'action',
-                    })
-                  }
-                >
-                  <Box color="orange">wait_for_user_input</Box>
-                </button>
-              )}
+              <button
+                onClick={() =>
+                  handleNodeAdd({
+                    label: 'wait_for_user_input: false',
+                    type: 'actionNode',
+                    className: 'action',
+                  })
+                }
+              >
+                <Box color="orange">wait_for_user_input</Box>
+              </button>
             </Track>
           </Collapsible>
         </Track>
