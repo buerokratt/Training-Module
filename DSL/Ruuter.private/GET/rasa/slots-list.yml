@@ -1,7 +1,7 @@
 declaration:
   call: declare
   version: 0.1
-  description: "Decription placeholder for 'FORMS'"
+  description: "Decription placeholder for 'SLOTS'"
   method: get
   accepts: json
   returns: json
@@ -17,20 +17,20 @@ declaration:
       type: string
       description: "Page size"
 
-getForms:
+getSlots:
   call: http.post
   args:
     url: "[#TRAINING_OPENSEARCH]/domain/_search/template"
     body:
       id: "domain-objects-with-pagination"
       params:
-        type: "forms"
+        type: "slots"
         filter: ${incoming.params.filter}
         from: ${incoming.params.from}
         size: ${incoming.params.size}
-  result: getFormsResult
+  result: getSlotsResult
 
 returnSuccess:
-  return: ${getFormsResult.response.body.hits.hits[0].fields.filtered_items[0]}
+  return: ${getSlotsResult.response.body.hits.hits[0].fields.filtered_items[0]}
   wrapper: false
   next: end

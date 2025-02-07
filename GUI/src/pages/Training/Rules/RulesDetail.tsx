@@ -9,8 +9,6 @@ import 'reactflow/dist/style.css';
 
 import { Box, Button, Card, Collapsible, Dialog, FormInput, Icon, Track } from 'components';
 import type { Response } from 'types/response';
-import { Form } from 'types/form';
-import { Slot } from 'types/slot';
 import { useToast } from 'hooks/useToast';
 import { addRule, deleteRule, editRule } from 'services/rules';
 import CustomNode from './CustomNode';
@@ -78,14 +76,10 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   const { filter, setFilter } = useDebouncedFilter();
   // todo reset page size in hook!!!
   // todo add count for responses
-  // todo ask freddy why only intents are open?
-  // todo 'entities' request - from SlotsDetail? - seprate bug
   // todo tingimused + last one
 
-  // todo use domain-objects-with-pagination for forms and slots
-  const { data: slots } = useQuery<Slot[]>({
-    queryKey: ['slots'],
-  });
+  // todo ask freddy why only intents are open?
+  // todo 'entities' request - from SlotsDetail? - seprate bug
 
   useDocumentEscapeListener(() => setEditableTitle(null));
 
@@ -424,7 +418,7 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
             )}
           />
           <NodeList<string>
-            queryKey={['forms', filter]}
+            queryKey={['forms-list', filter]}
             fetchFn={getForms}
             filter={filter}
             title={t('training.forms.title')}
@@ -445,7 +439,7 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
             )}
           />
           <NodeList<string>
-            queryKey={['slots', filter]}
+            queryKey={['slots-list', filter]}
             fetchFn={getSlots}
             filter={filter}
             title={t('training.slots.title')}
@@ -466,27 +460,6 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
             )}
           />
 
-          {/* // ... existing code ... */}
-          {/* {slots && Array.isArray(slots) && (
-            <Collapsible title={t('training.slots.title')}>
-              <Track direction="vertical" align="stretch" gap={4}>
-                {slots.map((slot) => (
-                  <button
-                    key={slot.name}
-                    onClick={() =>
-                      handleNodeAdd({
-                        label: slot.name,
-                        type: 'slotNode',
-                        className: 'slot',
-                      })
-                    }
-                  >
-                    <Box color="dark-blue">{slot.name}</Box>
-                  </button>
-                ))}
-              </Track>
-            </Collapsible>
-          )} */}
           <Collapsible title={t('training.actions.title')}>
             <Track direction="vertical" align="stretch" gap={4}>
               {category === 'rules' && (
