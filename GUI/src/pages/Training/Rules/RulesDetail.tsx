@@ -59,6 +59,9 @@ const actions = [
   { label: 'wait_for_user_input: false', text: 'wait_for_user_input' },
 ];
 
+const filterByText = (items: Array<{ text: string }>, searchText: string) =>
+  items.filter(({ text }) => !searchText || text.toLowerCase().includes(searchText.toLowerCase()));
+
 const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
@@ -266,10 +269,8 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
 
   const title = currentEntityId || t('global.title');
 
-  const filteredActions = actions.filter(({ text }) => !filter || text.toLowerCase().includes(filter.toLowerCase()));
-  const filteredConditions = conditions.filter(
-    ({ text }) => !filter || text.toLowerCase().includes(filter.toLowerCase())
-  );
+  const filteredActions = filterByText(actions, filter);
+  const filteredConditions = filterByText(conditions, filter);
 
   const handleGraphSave = async () => {
     const isRename = editableTitle && editableTitle !== id;
