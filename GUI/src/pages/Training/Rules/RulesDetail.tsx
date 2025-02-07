@@ -26,6 +26,7 @@ import { getResponses } from 'services/responses';
 import NodeList from 'pages/Training/Intents/NodeList';
 import { getIntentIds } from 'services/intents';
 import { IntentId } from 'types/intent';
+import { getForms } from 'services/forms';
 
 const nodeTypes = {
   customNode: CustomNode,
@@ -74,16 +75,14 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   });
 
   const { filter, setFilter } = useDebouncedFilter();
-  //  todo maybe make stories and rules optional if not too hard - in query
   // todo reset page size in hook!!!
   // todo add count for responses
   // todo ask freddy why only intents are open?
   // todo 'entities' request - from SlotsDetail? - seprate bug
 
+  // todo totalCount type for ALL services
+
   // todo use domain-objects-with-pagination for forms and slots
-  const { data: forms } = useQuery<Form[]>({
-    queryKey: ['forms'],
-  });
   const { data: slots } = useQuery<Slot[]>({
     queryKey: ['slots'],
   });
@@ -427,7 +426,29 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
             )}
           />
 
-          {forms && Array.isArray(forms) && (
+          <NodeList<string>
+            queryKey={['forms', filter]}
+            fetchFn={getForms}
+            filter={filter}
+            title={t('training.forms.title')}
+            renderItem={(form, ref) => (
+              <button
+                key={form}
+                onClick={() =>
+                  handleNodeAdd({
+                    label: form,
+                    type: 'formNode',
+                    className: 'form',
+                  })
+                }
+                ref={ref}
+              >
+                <Box color="yellow">{form}</Box>
+              </button>
+            )}
+          />
+
+          {/* {forms && Array.isArray(forms) && (
             <Collapsible title={t('training.forms.title')}>
               <Track direction="vertical" align="stretch" gap={4}>
                 {forms.map((form) => (
@@ -446,7 +467,7 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
                 ))}
               </Track>
             </Collapsible>
-          )}
+          )} */}
 
           {slots && Array.isArray(slots) && (
             <Collapsible title={t('training.slots.title')}>
