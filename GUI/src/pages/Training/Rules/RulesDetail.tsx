@@ -48,6 +48,14 @@ const initialNodes: Node[] = [
   },
 ];
 
+const actions = [
+  { label: 'Checkpoints:', text: 'checkpoints', checkpoint: true },
+  { label: 'conversation_start: true', text: 'conversation_start' },
+  { label: 'action_listen', text: 'action_listen' },
+  { label: 'action_restart', text: 'action_restart' },
+  { label: 'wait_for_user_input: false', text: 'wait_for_user_input' },
+];
+
 const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
@@ -76,6 +84,7 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   const { filter, setFilter } = useDebouncedFilter();
   // todo reset page size in hook!!!
   // todo add count for responses
+  // todo filter and count: first and last
 
   // todo ask freddy why only intents are open?
   // todo 'entities' request - from SlotsDetail? - seprate bug
@@ -259,6 +268,8 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   };
 
   const title = currentEntityId || t('global.title');
+
+  const filteredActions = actions.filter(({ text }) => !filter || text.toLowerCase().includes(filter.toLowerCase()));
 
   const handleGraphSave = async () => {
     const isRename = editableTitle && editableTitle !== id;
@@ -459,15 +470,9 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
             )}
           />
 
-          <Collapsible title={t('training.actions.title')}>
+          <Collapsible title={`${t('training.actions.title')} (${filteredActions.length})`}>
             <Track direction="vertical" align="stretch" gap={4}>
-              {[
-                { label: 'Checkpoints:', text: 'checkpoints', checkpoint: true },
-                { label: 'conversation_start: true', text: 'conversation_start' },
-                { label: 'action_listen', text: 'action_listen' },
-                { label: 'action_restart', text: 'action_restart' },
-                { label: 'wait_for_user_input: false', text: 'wait_for_user_input' },
-              ].map(({ label, text, checkpoint }) => (
+              {filteredActions.map(({ label, text, checkpoint }) => (
                 <button
                   key={text}
                   onClick={() =>

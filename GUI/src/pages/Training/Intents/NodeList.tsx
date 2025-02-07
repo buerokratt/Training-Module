@@ -21,7 +21,6 @@ function NodeList<T>({ queryKey, fetchFn, filter = '', title, defaultOpen, rende
   });
 
   const items = useMemo(() => flattenPaginatedData(data), [data]);
-  const totalCount = data?.pages[0]?.totalCount ? `(${data.pages[0].totalCount})` : '';
   const observer = useRef<IntersectionObserver | null>(null);
 
   const lastElement = useCallback(
@@ -41,7 +40,7 @@ function NodeList<T>({ queryKey, fetchFn, filter = '', title, defaultOpen, rende
   );
 
   return (
-    <Collapsible title={`${title} ${totalCount}`} defaultOpen={defaultOpen}>
+    <Collapsible title={`${title} (${data?.pages[0].totalCount ?? 0})`} defaultOpen={defaultOpen}>
       <Track direction="vertical" align="stretch" gap={4}>
         {items.map((item, index) => renderItem(item, index === items.length - 1 ? lastElement : undefined))}
       </Track>
