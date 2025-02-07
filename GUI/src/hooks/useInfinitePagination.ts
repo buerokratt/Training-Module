@@ -3,7 +3,7 @@ import { PaginatedResponse, PaginationParams } from 'types/api';
 
 interface UseInfinitePaginationProps<T> {
   queryKey: string[];
-  fetchFn: (params: PaginationParams) => Promise<{ response: T[]; totalCount?: number }>;
+  fetchFn: (params: PaginationParams) => Promise<PaginatedResponse<T>>;
   pageSize?: number;
   filter?: string;
 }

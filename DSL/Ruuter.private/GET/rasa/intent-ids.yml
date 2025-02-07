@@ -1,7 +1,7 @@
 declaration:
   call: declare
   version: 0.1
-  description: "Decription placeholder for 'INTENTS'"
+  description: "Decription placeholder for 'INTENT-IDS'"
   method: get
   accepts: json
   returns: json
