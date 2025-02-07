@@ -17,7 +17,6 @@ export function useInfinitePagination<T>({
   return useInfiniteQuery<PaginatedResponse<T>>({
     queryKey: [...queryKey, filter],
     queryFn: ({ pageParam = 0 }) => fetchFn({ pageParam, pageSize, filter }),
-    // todo temp ?
-    getNextPageParam: (lastPage, pages) => (lastPage?.response?.length === 0 ? undefined : pages.length * pageSize),
+    getNextPageParam: (lastPage, pages) => (lastPage.response.length === 0 ? undefined : pages.length * pageSize),
   });
 }
