@@ -6,34 +6,29 @@ declaration:
   accepts: json
   returns: json
   namespace: training
-  params:
-    - field: filter
-      type: string
-      description: "Query string"
-    - field: from
-      type: string
-      description: "Item number"
-    - field: size
-      type: string
-      description: "Page size"
 
 getForms:
-  call: http.post
+  call: http.get
   args:
-    url: "[#TRAINING_OPENSEARCH]/domain/_search/template"
-    body:
-      id: "domain-objects-with-pagination"
-      params:
-        type: "forms"
-        filter: ${incoming.params.filter}
-        from: ${incoming.params.from}
-        size: ${incoming.params.size}
+    url: "[#TRAINING_OPENSEARCH]/domain/_search?size=10000"
   result: getFormsResult
 
-logStep:
-  log: ${getFormsResult.response.body.hits.hits}
+mapFormsData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_forms"
+    headers:
+      type: 'json'
+    body:
+      hits: ${getFormsResult.response.body.hits.hits}
+  result: formsData
+  next: returnSuccess
 
 returnSuccess:
-  return: ${getFormsResult.response.body.hits.hits[0].fields.filtered_items[0]}
+  return: ${formsData.response.body.forms}
   wrapper: false
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
   next: end

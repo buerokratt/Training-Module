@@ -7,7 +7,7 @@ export const getSlots = async ({
   pageSize,
   filter,
 }: PaginationParams): Promise<PaginatedResponse<string>> => {
-  const { data } = await rasaApi.get(`/slots?size=${pageSize}&filter=${filter}&from=${pageParam}`);
+  const { data } = await rasaApi.get(`/slots-list?size=${pageSize}&filter=${filter}&from=${pageParam}`);
   return data;
 };
 
