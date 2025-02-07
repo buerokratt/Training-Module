@@ -83,12 +83,8 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
 
   const { filter, setFilter } = useDebouncedFilter();
   // todo reset page size in hook!!!
-  // todo add count for responses
 
   // todo filter and count: first - can be more elements?
-  // todo separate issue - rules search broken
-  // todo ask Freddy why only intents are open?
-  // todo 'entities' request - from SlotsDetail? - seprate bug
 
   useDocumentEscapeListener(() => setEditableTitle(null));
 
