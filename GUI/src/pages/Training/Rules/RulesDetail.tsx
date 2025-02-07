@@ -79,8 +79,7 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   // todo add count for responses
   // todo ask freddy why only intents are open?
   // todo 'entities' request - from SlotsDetail? - seprate bug
-
-  // todo totalCount type for ALL services
+  // todo tingimused + last one
 
   // todo use domain-objects-with-pagination for forms and slots
   const { data: slots } = useQuery<Slot[]>({
@@ -447,27 +446,6 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
               </button>
             )}
           />
-
-          {/* {forms && Array.isArray(forms) && (
-            <Collapsible title={t('training.forms.title')}>
-              <Track direction="vertical" align="stretch" gap={4}>
-                {forms.map((form) => (
-                  <button
-                    key={form.form}
-                    onClick={() =>
-                      handleNodeAdd({
-                        label: form.form,
-                        type: 'formNode',
-                        className: 'form',
-                      })
-                    }
-                  >
-                    <Box color="gray">{form.form}</Box>
-                  </button>
-                ))}
-              </Track>
-            </Collapsible>
-          )} */}
 
           {slots && Array.isArray(slots) && (
             <Collapsible title={t('training.slots.title')}>

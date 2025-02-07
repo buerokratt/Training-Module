@@ -2,9 +2,11 @@ import { PaginatedResponse, PaginationParams } from 'types/api';
 import { rasaApi } from './api';
 import { Form, FormCreateDTO, FormEditDTO } from 'types/form';
 
-export const getForms = async (
-  { pageParam, pageSize, filter }: PaginationParams = { pageParam: 0, pageSize: 1000, filter: '' }
-): Promise<PaginatedResponse<string>> => {
+export const getForms = async ({
+  pageParam,
+  pageSize,
+  filter,
+}: PaginationParams): Promise<PaginatedResponse<string>> => {
   const { data } = await rasaApi.get(`/forms?size=${pageSize}&filter=${filter}&from=${pageParam}`);
   return data;
 };
