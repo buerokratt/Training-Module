@@ -76,7 +76,6 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   const { filter, setFilter } = useDebouncedFilter();
   // todo reset page size in hook!!!
   // todo add count for responses
-  // todo tingimused + last one
 
   // todo ask freddy why only intents are open?
   // todo 'entities' request - from SlotsDetail? - seprate bug
@@ -459,64 +458,30 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
               </button>
             )}
           />
+
           <Collapsible title={t('training.actions.title')}>
             <Track direction="vertical" align="stretch" gap={4}>
-              <button
-                onClick={() =>
-                  handleNodeAdd({
-                    label: 'Checkpoints:',
-                    type: 'actionNode',
-                    className: 'action',
-                    checkpoint: true,
-                  })
-                }
-              >
-                <Box color="orange">checkpoints</Box>
-              </button>
-              <button
-                onClick={() =>
-                  handleNodeAdd({
-                    label: 'conversation_start: true',
-                    type: 'actionNode',
-                    className: 'action',
-                  })
-                }
-              >
-                <Box color="orange">conversation_start</Box>
-              </button>
-              <button
-                onClick={() =>
-                  handleNodeAdd({
-                    label: 'action_listen',
-                    type: 'actionNode',
-                    className: 'action',
-                  })
-                }
-              >
-                <Box color="orange">action_listen</Box>
-              </button>
-              <button
-                onClick={() =>
-                  handleNodeAdd({
-                    label: 'action_restart',
-                    type: 'actionNode',
-                    className: 'action',
-                  })
-                }
-              >
-                <Box color="orange">action_restart</Box>
-              </button>
-              <button
-                onClick={() =>
-                  handleNodeAdd({
-                    label: 'wait_for_user_input: false',
-                    type: 'actionNode',
-                    className: 'action',
-                  })
-                }
-              >
-                <Box color="orange">wait_for_user_input</Box>
-              </button>
+              {[
+                { label: 'Checkpoints:', text: 'checkpoints', checkpoint: true },
+                { label: 'conversation_start: true', text: 'conversation_start' },
+                { label: 'action_listen', text: 'action_listen' },
+                { label: 'action_restart', text: 'action_restart' },
+                { label: 'wait_for_user_input: false', text: 'wait_for_user_input' },
+              ].map(({ label, text, checkpoint }) => (
+                <button
+                  key={text}
+                  onClick={() =>
+                    handleNodeAdd({
+                      label,
+                      type: 'actionNode',
+                      className: 'action',
+                      ...(checkpoint && { checkpoint }),
+                    })
+                  }
+                >
+                  <Box color="orange">{text}</Box>
+                </button>
+              ))}
             </Track>
           </Collapsible>
         </Track>
