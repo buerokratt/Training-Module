@@ -68,7 +68,7 @@ mapResponsesData:
       rules: ${getRulesResult.response.body.hits.hits}
       stories: ${getStoriesResult.response.body.hits.hits}
       responses: ${getResponsesResult.response.body.hits.hits[0].fields.filtered_responses[0]}
-      # totalCount: ${getResponsesResult.response.body.hits.hits[0].fields.filtered_responses[0].totalCount}
+      totalCount: ${getResponsesResult.response.body.hits.hits[0].fields.total_count[0]}
   result: responsesData
 
 returnSuccess:
