@@ -64,6 +64,8 @@ const ConditionNode: FC<NodeDataProps> = ({ data }) => {
     return () => unsubscribe();
   }, [watch]);
 
+  console.log(forms);
+
   return (
     <>
       <p>
@@ -85,7 +87,8 @@ const ConditionNode: FC<NodeDataProps> = ({ data }) => {
                       onSelectionChange={(selection) => {
                         field.onChange(selection);
                       }}
-                      value={field.value}
+                      // todo wtf types?
+                      value={field.value?.label ?? null}
                       label="active_loop"
                       placeholder={t('training.forms.title') || ''}
                       options={forms.map((f) => ({ label: f, value: f }))}
