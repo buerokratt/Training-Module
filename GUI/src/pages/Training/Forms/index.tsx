@@ -23,10 +23,8 @@ const Forms: FC = () => {
   const { filter, setFilter } = useDebouncedFilter();
   const [deletableForm, setDeletableForm] = useState<string | number | null>(null);
 
-  // todo rename list to just forms
-  // todo fix deletion?
   const { data, refetch, fetchNextPage, isFetching } = useInfinitePagination<string>({
-    queryKey: ['forms-list', filter],
+    queryKey: ['forms', filter],
     fetchFn: getForms,
     filter,
   });
