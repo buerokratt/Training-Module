@@ -21,7 +21,6 @@ const Rules: FC = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  // const [filter, setFilter] = useState('');
   const { filter, setFilter } = useDebouncedFilter();
 
   const { data, fetchNextPage, isFetching } = useInfinitePagination<Rule>({
