@@ -3,11 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { Button, FormInput, FormSelect, Icon, Track } from 'components';
-import { Form } from 'types/form';
 import { MdOutlineDelete } from 'react-icons/md';
 import { Slot } from '../../../types/slot';
 import { useInfinitePagination } from 'hooks/useInfinitePagination';
-import { filter } from 'rxjs';
 import { getForms } from 'services/forms';
 import { flattenPaginatedData } from 'utils/api-utils';
 
@@ -22,11 +20,16 @@ type NodeDataProps = {
   };
 };
 
+type SelectOption = {
+  label: string;
+  value: string;
+};
+
 type Conditions = {
   conditions?: (
     | {
-        active_loop?: string;
-        slot?: string;
+        active_loop?: SelectOption;
+        slot?: SelectOption;
         value?: string;
       }
     | undefined
@@ -35,9 +38,6 @@ type Conditions = {
 
 const ConditionNode: FC<NodeDataProps> = ({ data }) => {
   const { t } = useTranslation();
-  // const { data: forms } = useQuery<Form[]>({
-  //   queryKey: ['forms'],
-  // });
 
   const { data: formsData } = useInfinitePagination<string>({
     queryKey: ['forms'],
@@ -51,7 +51,7 @@ const ConditionNode: FC<NodeDataProps> = ({ data }) => {
   });
   const { control, watch } = useForm<Conditions>({
     defaultValues: {
-      conditions: [{ active_loop: '' }, { slot: '', value: '' }],
+      conditions: [{ active_loop: { label: '', value: '' } }, { slot: { label: '', value: '' }, value: '' }],
     },
   });
   const { fields, append, remove } = useFieldArray({
@@ -63,8 +63,6 @@ const ConditionNode: FC<NodeDataProps> = ({ data }) => {
     const { unsubscribe } = watch((value) => data.onPayloadChange(data.id, value));
     return () => unsubscribe();
   }, [watch]);
-
-  console.log(forms);
 
   return (
     <>
@@ -81,19 +79,21 @@ const ConditionNode: FC<NodeDataProps> = ({ data }) => {
                 <Controller
                   name={`conditions.${index}.active_loop` as const}
                   control={control}
-                  render={({ field }) => (
-                    <FormSelect
-                      {...field}
-                      onSelectionChange={(selection) => {
-                        field.onChange(selection);
-                      }}
-                      // todo wtf types?
-                      value={field.value?.label ?? null}
-                      label="active_loop"
-                      placeholder={t('training.forms.title') || ''}
-                      options={forms.map((f) => ({ label: f, value: f }))}
-                    />
-                  )}
+                  render={({ field }) => {
+                    console.log(field.value);
+                    return (
+                      <FormSelect
+                        {...field}
+                        onSelectionChange={(selection) => {
+                          field.onChange(selection);
+                        }}
+                        value={field.value?.label}
+                        label="active_loop"
+                        placeholder={t('training.forms.title') || ''}
+                        options={forms.map((f) => ({ label: f, value: f }))}
+                      />
+                    );
+                  }}
                 />
               </div>
               <Button appearance="icon" onClick={() => remove(index)}>
