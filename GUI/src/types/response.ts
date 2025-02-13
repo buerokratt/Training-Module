@@ -1,3 +1,12 @@
+export interface Responses {
+  response: ResponseData[];
+}
+
+export interface ResponseData {
+  name: string;
+  response: ResponseDataResponse[];
+}
+
 export interface ResponseDataResponse {
   text: string;
   condition?: Condition[];
@@ -18,6 +27,7 @@ export interface ResponseEdit {
   response: ResponseDataEdit;
 }
 
+// TODO: unify and simplify types later, breaks Responses page currently
 export interface Response {
   response: string;
   text: string;

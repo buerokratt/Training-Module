@@ -7,8 +7,10 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import 'reactflow/dist/style.css';
 
-import { Box, Button, Card, Collapsible, Dialog, FormInput, Icon, Track } from 'components';
-import type { Response } from 'types/response';
+import { Box, Button, Collapsible, Dialog, FormInput, Icon, Track } from 'components';
+import { Responses } from 'types/response';
+import { Form } from 'types/form';
+import { Slot } from 'types/slot';
 import { useToast } from 'hooks/useToast';
 import { addRule, deleteRule, editRule } from 'services/rules';
 import CustomNode from './CustomNode';
@@ -19,13 +21,6 @@ import LoadingDialog from '../../../components/LoadingDialog';
 import { Rule, RuleDTO } from '../../../types/rule';
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
 import './RulesDetail.scss';
-import { useDebouncedFilter } from 'hooks/useDebouncedFilter';
-import { getResponses } from 'services/responses';
-import NodeList from 'pages/Training/Intents/NodeList';
-import { getIntentIds } from 'services/intents';
-import { IntentId } from 'types/intent';
-import { getForms } from 'services/forms';
-import { getSlots } from 'services/slots';
 
 const nodeTypes = {
   customNode: CustomNode,
@@ -47,20 +42,6 @@ const initialNodes: Node[] = [
     draggable: false,
   },
 ];
-
-// More conditions to be added in the future
-const conditions = [{ label: '', text: 'condition', type: 'conditionNode', className: 'condition' }];
-
-const actions = [
-  { label: 'Checkpoints:', text: 'checkpoints', checkpoint: true },
-  { label: 'conversation_start: true', text: 'conversation_start' },
-  { label: 'action_listen', text: 'action_listen' },
-  { label: 'action_restart', text: 'action_restart' },
-  { label: 'wait_for_user_input: false', text: 'wait_for_user_input' },
-];
-
-const filterByText = (items: Array<{ text: string }>, searchText: string) =>
-  items.filter(({ text }) => !searchText || text.toLowerCase().includes(searchText.toLowerCase()));
 
 const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   const { t } = useTranslation();
@@ -87,7 +68,18 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     enabled: !!currentEntityId,
   });
 
-  const { filter, setFilter } = useDebouncedFilter();
+  const { data: intents } = useQuery<string[]>({
+    queryKey: ['intents'],
+  });
+  const { data: responses } = useQuery<Responses>({
+    queryKey: ['responses'],
+  });
+  const { data: forms } = useQuery<Form[]>({
+    queryKey: ['forms'],
+  });
+  const { data: slots } = useQuery<Slot[]>({
+    queryKey: ['slots'],
+  });
 
   useDocumentEscapeListener(() => setEditableTitle(null));
 
@@ -269,9 +261,6 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
 
   const title = currentEntityId || t('global.title');
 
-  const filteredActions = filterByText(actions, filter);
-  const filteredConditions = filterByText(conditions, filter);
-
   const handleGraphSave = async () => {
     const isRename = editableTitle && editableTitle !== id;
     if (!isRename) {
@@ -359,138 +348,171 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
           align="stretch"
           style={{ maxHeight: 'calc(100vh - 100px)', overflow: 'auto', paddingBottom: '5vh' }}
         >
-          <Card>
-            <FormInput
-              label={t('global.search')}
-              name="search"
-              placeholder={t('global.search') + '...'}
-              hideLabel
-              onChange={(e) => setFilter(e.target.value)}
-            />
-          </Card>
-
-          <Collapsible title={`${t('training.conditions')} (${filteredConditions.length})`}>
-            <Track direction="vertical" align="stretch" gap={4}>
-              {filteredConditions.map(({ label, text, type, className }) => (
+          {category === 'rules' && (
+            <Collapsible title={t('training.conditions')}>
+              <Track direction="vertical" align="stretch" gap={4}>
                 <button
-                  key={text}
                   onClick={() =>
                     handleNodeAdd({
-                      label,
-                      type,
-                      className,
+                      label: '',
+                      type: 'conditionNode',
+                      className: 'condition',
                     })
                   }
                 >
-                  <Box color="green">{text}</Box>
+                  <Box color="green">condition</Box>
                 </button>
-              ))}
-            </Track>
-          </Collapsible>
+              </Track>
+            </Collapsible>
+          )}
+          {intents && Array.isArray(intents) && (
+            <Collapsible title={t('training.intents.title')} defaultOpen>
+              <Track direction="vertical" align="stretch" gap={4}>
+                {intents.map((intent) => (
+                  <button
+                    key={intent}
+                    onClick={() =>
+                      handleNodeAdd({
+                        label: intent,
+                        type: 'intentNode',
+                        className: 'intent',
+                      })
+                    }
+                  >
+                    <Box color="blue">{intent}</Box>
+                  </button>
+                ))}
+              </Track>
+            </Collapsible>
+          )}
 
-          <NodeList<IntentId>
-            queryKey={['intent-ids', filter]}
-            fetchFn={getIntentIds}
-            filter={filter}
-            title={t('training.intents.title')}
-            defaultOpen
-            renderItem={(intent, ref) => (
-              <button
-                key={intent.id}
-                onClick={() =>
-                  handleNodeAdd({
-                    label: intent.id,
-                    type: 'intentNode',
-                    className: 'intent',
-                  })
-                }
-                ref={ref}
-              >
-                <Box color="blue">{intent.id}</Box>
-              </button>
-            )}
-          />
-          <NodeList<Response>
-            queryKey={['responses', filter]}
-            fetchFn={getResponses}
-            filter={filter}
-            title={t('training.responses.title')}
-            renderItem={(response, ref) => (
-              <button
-                key={response.response}
-                onClick={() =>
-                  handleNodeAdd({
-                    label: response.response,
-                    type: 'responseNode',
-                    className: 'response',
-                  })
-                }
-                ref={ref}
-              >
-                <Box color="yellow">{response.response}</Box>
-              </button>
-            )}
-          />
-          <NodeList<string>
-            queryKey={['forms-list', filter]}
-            fetchFn={getForms}
-            filter={filter}
-            title={t('training.forms.title')}
-            renderItem={(form, ref) => (
-              <button
-                key={form}
-                onClick={() =>
-                  handleNodeAdd({
-                    label: form,
-                    type: 'formNode',
-                    className: 'form',
-                  })
-                }
-                ref={ref}
-              >
-                <Box color="yellow">{form}</Box>
-              </button>
-            )}
-          />
-          <NodeList<string>
-            queryKey={['slots-list', filter]}
-            fetchFn={getSlots}
-            filter={filter}
-            title={t('training.slots.title')}
-            renderItem={(slot, ref) => (
-              <button
-                key={slot}
-                onClick={() =>
-                  handleNodeAdd({
-                    label: slot,
-                    type: 'slotNode',
-                    className: 'slot',
-                  })
-                }
-                ref={ref}
-              >
-                <Box color="dark-blue">{slot}</Box>
-              </button>
-            )}
-          />
+          {responses && Array.isArray(responses) && (
+            <Collapsible title={t('training.responses.title')}>
+              <Track direction="vertical" align="stretch" gap={4}>
+                {responses.map((response, index) => (
+                  <button
+                    key={response.name}
+                    onClick={() =>
+                      handleNodeAdd({
+                        label: response.name,
+                        type: 'responseNode',
+                        className: 'response',
+                      })
+                    }
+                  >
+                    <Box color="yellow">{response.name}</Box>
+                  </button>
+                ))}
+              </Track>
+            </Collapsible>
+          )}
 
-          <Collapsible title={`${t('training.actions.title')} (${filteredActions.length})`}>
+          {forms && Array.isArray(forms) && (
+            <Collapsible title={t('training.forms.title')}>
+              <Track direction="vertical" align="stretch" gap={4}>
+                {forms.map((form) => (
+                  <button
+                    key={form.form}
+                    onClick={() =>
+                      handleNodeAdd({
+                        label: form.form,
+                        type: 'formNode',
+                        className: 'form',
+                      })
+                    }
+                  >
+                    <Box color="gray">{form.form}</Box>
+                  </button>
+                ))}
+              </Track>
+            </Collapsible>
+          )}
+
+          {slots && Array.isArray(slots) && (
+            <Collapsible title={t('training.slots.title')}>
+              <Track direction="vertical" align="stretch" gap={4}>
+                {slots.map((slot) => (
+                  <button
+                    key={slot.name}
+                    onClick={() =>
+                      handleNodeAdd({
+                        label: slot.name,
+                        type: 'slotNode',
+                        className: 'slot',
+                      })
+                    }
+                  >
+                    <Box color="dark-blue">{slot.name}</Box>
+                  </button>
+                ))}
+              </Track>
+            </Collapsible>
+          )}
+
+          <Collapsible title={t('training.actions.title')}>
             <Track direction="vertical" align="stretch" gap={4}>
-              {filteredActions.map(({ label, text, checkpoint }) => (
+              {category === 'rules' && (
                 <button
-                  key={text}
                   onClick={() =>
                     handleNodeAdd({
-                      label,
+                      label: 'Checkpoints:',
                       type: 'actionNode',
                       className: 'action',
-                      ...(checkpoint && { checkpoint }),
+                      checkpoint: true,
                     })
                   }
                 >
-                  <Box color="orange">{text}</Box>
+                  <Box color="orange">checkpoints</Box>
                 </button>
-              ))}
+              )}
+              {category === 'rules' && (
+                <button
+                  onClick={() =>
+                    handleNodeAdd({
+                      label: 'conversation_start: true',
+                      type: 'actionNode',
+                      className: 'action',
+                    })
+                  }
+                >
+                  <Box color="orange">conversation_start</Box>
+                </button>
+              )}
+              <button
+                onClick={() =>
+                  handleNodeAdd({
+                    label: 'action_listen',
+                    type: 'actionNode',
+                    className: 'action',
+                  })
+                }
+              >
+                <Box color="orange">action_listen</Box>
+              </button>
+              <button
+                onClick={() =>
+                  handleNodeAdd({
+                    label: 'action_restart',
+                    type: 'actionNode',
+                    className: 'action',
+                  })
+                }
+              >
+                <Box color="orange">action_restart</Box>
+              </button>
+              {category === 'rules' && (
+                <button
+                  onClick={() =>
+                    handleNodeAdd({
+                      label: 'wait_for_user_input: false',
+                      type: 'actionNode',
+                      className: 'action',
+                    })
+                  }
+                >
+                  <Box color="orange">wait_for_user_input</Box>
+                </button>
+              )}
             </Track>
           </Collapsible>
         </Track>

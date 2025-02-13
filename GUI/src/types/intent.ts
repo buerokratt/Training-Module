@@ -9,5 +9,3 @@ export interface Intent {
   serviceId: string;
   isCommon?: boolean;
 }
-
-export type IntentId = Pick<Intent, 'id'>;
