@@ -31,7 +31,7 @@ const Responses: FC = () => {
   const { filter, setFilter } = useDebouncedFilter();
   const [responses, setResponses] = useState<Response[]>([]);
   const { data, refetch, fetchNextPage, isFetching } = useInfinitePagination<Response>({
-    queryKey: ['responses', filter],
+    queryKey: ['responses-list', filter],
     fetchFn: getResponses,
     filter,
   });
@@ -56,11 +56,11 @@ const Responses: FC = () => {
   const responseSaveMutation = useMutation({
     mutationFn: ({ id, text }: { id: string; text: string }) => editResponse(id, text),
     onMutate: async () => {
-      await queryClient.cancelQueries(['responses', filter]);
+      await queryClient.cancelQueries(['responses-list', filter]);
       setRefreshing(true);
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['responses', filter]);
+      await queryClient.invalidateQueries(['responses-list', filter]);
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -85,7 +85,7 @@ const Responses: FC = () => {
   const responseDeleteMutation = useMutation({
     mutationFn: (data: { response: string }) => deleteResponse(data),
     onMutate: async () => {
-      await queryClient.invalidateQueries(['responses', filter]);
+      await queryClient.invalidateQueries(['responses-list', filter]);
       setRefreshing(true);
     },
     onSuccess: async () => {
@@ -116,7 +116,7 @@ const Responses: FC = () => {
     mutationFn: ({ name, text }: { name: string; text: string }) =>
       editResponse('utter_' + name.trim().replace(/\s+/g, '_'), text, false),
     onMutate: async () => {
-      await queryClient.invalidateQueries(['responses', filter]);
+      await queryClient.invalidateQueries(['responses-list', filter]);
       setRefreshing(true);
     },
     onSuccess: async () => {
@@ -263,7 +263,7 @@ const Responses: FC = () => {
                       maxLength={RESPONSE_TEXT_LENGTH}
                       showMaxLength
                       onChange={(e) => {
-                        if (!withBackSlash.test(e.target.value) && !e.target.value.startsWith(' ')) {
+                        if(!withBackSlash.test(e.target.value) && !e.target.value.startsWith(' ')) {
                           field.onChange(e.target.value);
                           setEditingTrainingTitle(e.target.value);
                         } else {
@@ -346,25 +346,25 @@ const buildTextCell = (value: string, isEditable: boolean, onEdit: (value: strin
 
   if (isEditable) {
     return (
-      <FormTextarea
-        label="label"
-        name="name"
-        defaultValue={value}
-        hideLabel
-        minRows={1}
-        maxLength={RESPONSE_TEXT_LENGTH}
-        showMaxLength
-        onChange={(e) => {
-          const userInput = e.target.value;
+        <FormTextarea
+            label="label"
+            name="name"
+            defaultValue={value}
+            hideLabel
+            minRows={1}
+            maxLength={RESPONSE_TEXT_LENGTH}
+            showMaxLength
+            onChange={(e) => {
+              const userInput = e.target.value;
 
-          if (withBackSlash.test(userInput)) {
-            e.target.value = lastValidValue;
-          } else {
-            lastValidValue = userInput;
-            onEdit(userInput);
-          }
-        }}
-      />
+              if (withBackSlash.test(userInput)) {
+                e.target.value = lastValidValue;
+              } else {
+                lastValidValue = userInput;
+                onEdit(userInput);
+              }
+            }}
+        />
     );
   }
 

@@ -23,7 +23,6 @@ curl -H "Content-Type: application/x-ndjson" -X PUT "$URL/intents" -ku "$AUTH" -
 if $MOCK_ALLOWED; then curl -H "Content-Type: application/x-ndjson" -X PUT "$URL/intents/_bulk" -ku "$AUTH" --data-binary "@mock/intents.json"; fi
 curl -L -X POST "$URL/_scripts/intent-with-name" -H 'Content-Type: application/json' --data-binary "@templates/intent-with-name.json"
 curl -L -X POST "$URL/_scripts/intents-with-examples-count" -H 'Content-Type: application/json' --data-binary "@templates/intents-with-examples-count.json"
-curl -L -X POST "$URL/_scripts/intents-with-pagination" -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/intents-with-pagination.json"
 
 # rules
 curl -XDELETE "$URL/rules?ignore_unavailable=true" -u "$AUTH" --insecure
@@ -86,8 +85,8 @@ if $MOCK_ALLOWED; then curl -H "Content-Type: application/x-ndjson" -X PUT "$URL
 #Domain
 curl -XDELETE "$URL/domain?ignore_unavailable=true" -u "$AUTH" --insecure
 curl -H "Content-Type: application/x-ndjson" -X PUT "$URL/domain" -ku "$AUTH" --data-binary "@fieldMappings/domain.json"
-curl -L -X POST "$URL/_scripts/domain-objects-with-pagination" -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/domain-objects-with-pagination.json"
 if $MOCK_ALLOWED; then curl -H "Content-Type: application/x-ndjson" -X PUT "$URL/domain/_bulk" -ku "$AUTH" --data-binary "@mock/domain.json"; fi
+curl -L -X POST "$URL/_scripts/entities-with-pagination" -H 'Content-Type: application/json' -H 'Cookie: customJwtCookie=test' --data-binary "@templates/entities-with-pagination.json"
 
 #Config
 curl -XDELETE "$URL/config?ignore_unavailable=true" -u "$AUTH" --insecure
