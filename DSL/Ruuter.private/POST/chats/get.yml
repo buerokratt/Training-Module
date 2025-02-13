@@ -1,7 +1,7 @@
 declaration:
   call: declare
   version: 0.1
-  description: "Decription placeholder for 'GET'"
+  description: "Decription placeholder for 'POST'"
   method: post
   accepts: json
   returns: json
