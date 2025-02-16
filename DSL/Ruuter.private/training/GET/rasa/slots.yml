@@ -1,0 +1,38 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'SLOTS'"
+  method: get
+  accepts: json
+  returns: json
+  namespace: training
+
+getSlots:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]/domain/_search?pretty=true"
+    body:
+      query:
+        match:
+          _id: 'slots'
+  result: getSlotsResult
+
+mapSlotsData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER_HBS]/extract_slot_keys"
+    headers:
+      type: 'json'
+    body:
+      hits: ${getSlotsResult.response.body.hits.hits}
+  result: slotsData
+  next: returnSuccess
+
+returnSuccess:
+  return: ${slotsData.response.body.slots}
+  wrapper: false
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
+  next: end

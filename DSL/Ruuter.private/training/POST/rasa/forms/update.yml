@@ -1,0 +1,124 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'UPDATE'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    body:
+      - field: from
+        type: json
+        description: "Body field 'form'"
+      - field: form_name
+        type: string
+        description: "Body field 'form_name'"
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie field"
+
+assign_values:
+  assign:
+    parameters: ${incoming.body}
+    form: ${parameters.form}
+    formData:
+      required_slots: ${parameters.form.form.required_slots}
+      ignored_intents: ${parameters.form.form.ignored_intents}
+
+getDomainFile:
+  call: http.get
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/internal/domain-file"
+    headers:
+      cookie: ${incoming.headers.cookie}
+  result: domainData
+
+validateForms:
+  switch:
+    - condition: ${domainData.response.body.response.forms[parameters.form_name] != null}
+      next: updateFormData
+  next: returnFormIsMissing
+
+updateFormData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/object/replace/key-value-in-obj"
+    body:
+      object: ${domainData.response.body.response.forms}
+      oldKey: ${parameters.form_name}
+      newKey: ${parameters.form.form.name}
+      newValue: ${formData}
+  result: updatedForms
+
+convertResponseInput:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER_HBS]/get_form_responses"
+    headers:
+      type: "json"
+    body:
+      responses: ${form.responses}
+      form_name: ${parameters.form_name}
+  result: mappedResponses
+
+mergeResponses:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/merge/objects"
+    body:
+      object1: ${domainData.response.body.response.responses}
+      object2: ${mappedResponses.response.body}
+  result: mergedResponses
+
+convertJsonToYaml:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml_domain"
+    body:
+      version: ${domainData.response.body.response.version}
+      intents: ${domainData.response.body.response.intents}
+      entities: ${domainData.response.body.response.entities}
+      slots: ${domainData.response.body.response.slots}
+      forms: ${updatedForms.response.body}
+      actions: ${domainData.response.body.response.actions}
+      responses: ${mergedResponses.response.body}
+      session_config: ${domainData.response.body.response.session_config}
+  result: domainYaml
+
+getFileLocations:
+  call: http.get
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/internal/return-file-locations"
+    headers:
+      cookie: ${incoming.headers.cookie}
+  result: fileLocations
+
+saveDomainFile:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file-manager/create"
+    body:
+      file_path: ${fileLocations.response.body.response.domain_location}
+      content: ${domainYaml.response.body.json}
+  result: fileResult
+  next: updateDomainOpenSearch
+
+updateDomainOpenSearch:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]/bulk/domain"
+    body:
+      input: ${domainYaml.response.body.json}
+  result: updateSearchResult
+
+returnSuccess:
+  return: "Form updated"
+  next: end
+
+returnFormIsMissing:
+  return: "Can't find form to update"
+  wrapper: false
+  status: 409
+  next: end

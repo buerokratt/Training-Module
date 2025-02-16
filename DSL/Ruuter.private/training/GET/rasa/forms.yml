@@ -1,0 +1,34 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'FORMS'"
+  method: get
+  accepts: json
+  returns: json
+  namespace: training
+
+getForms:
+  call: http.get
+  args:
+    url: "[#TRAINING_OPENSEARCH]/domain/_search?size=10000"
+  result: getFormsResult
+
+mapFormsData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER_HBS]/get_forms"
+    headers:
+      type: 'json'
+    body:
+      hits: ${getFormsResult.response.body.hits.hits}
+  result: formsData
+  next: returnSuccess
+
+returnSuccess:
+  return: ${formsData.response.body.forms}
+  wrapper: false
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
+  next: end

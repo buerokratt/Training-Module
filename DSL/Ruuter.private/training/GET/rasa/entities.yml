@@ -1,0 +1,57 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'ENTITIES'"
+  method: get
+  accepts: json
+  returns: json
+  namespace: training
+  params:
+    - field: filter
+      type: string
+      description: "Query string"
+    - field: from
+      type: string
+      description: "Item number"
+    - field: size
+      type: string
+      description: "Page size"
+
+getEntities:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]/domain/_search/template"
+    body:
+      id: "entities-with-pagination"
+      params: ${incoming.params}
+  result: getEntitiesResult
+
+mapEntitiesData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER_HBS]/get_entities"
+    headers:
+      type: "json"
+    body:
+      data: { "hits": "${getEntitiesResult.response.body.hits.hits}" }
+  result: entitiesData
+  next: sortEntities
+
+sortEntities:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER_HBS]/sort_entities"
+    headers:
+      type: "json"
+    body:
+      data: { "hits": "${entitiesData.response.body.entities}" }
+  result: sortedEntities
+  next: returnSuccess
+
+returnSuccess:
+  return: ${sortedEntities.response.body.entities}
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
+  next: end

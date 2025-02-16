@@ -1,0 +1,30 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'RESPONSES'"
+  method: get
+  accepts: json
+  returns: json
+  namespace: training
+
+getResponses:
+  call: http.get
+  args:
+    url: "[#TRAINING_OPENSEARCH]/domain/_search?size=10000"
+  result: getResponsesResult
+
+mapResponsesData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER_HBS]/get_responses"
+    headers:
+      type: 'json'
+    body:
+      hits: ${getResponsesResult.response.body.hits.hits}
+  result: responsesData
+  next: returnSuccess
+
+returnSuccess:
+  return: ${responsesData.response.body.responses}
+  wrapper: false
+  next: end

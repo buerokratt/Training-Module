@@ -1,0 +1,56 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'UNASSIGNED'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    body:
+      - field: page
+        type: number
+        description: "Body field 'page'"
+      - field: page_size
+        type: number
+        description: "Body field 'page_size'"
+      - field: sorting
+        type: string
+        description: "Body field 'sorting'"
+      - field: search
+        type: string
+        description: "Body field 'search'"
+
+get_services:
+  call: http.post
+  args:
+    url: "[#SERVICES_RESQL]/get-services"
+    body:
+      page: ${incoming.body.page}
+      page_size: ${incoming.body.page_size}
+      sorting: ${incoming.body.sorting}
+      search: ${incoming.body.search}
+  result: services_res
+
+get_service_intent_connections:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/get-service-intent-connections"
+  result: connection_res
+
+filter_out_services_connected_to_intent:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER_HBS]/remove_services_connected_to_intent"
+    headers:
+      type: 'json'
+    body:
+      services: "${services_res.response.body}"
+      connections: "${connection_res.response.body}"
+      layout: false
+  result: unused_services_res
+  
+return_result:
+  status: 200
+  return: ${unused_services_res.response.body}
+

@@ -1,0 +1,37 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'EXAMPLES'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+
+assign_values:
+  assign:
+    params: ${incoming.params}
+
+getIntentsWithName:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]/intents/_search/template"
+    body:
+      id: "intent-with-name"
+      params: ${params}
+  result: getIntentsResult
+  next: mapIntentsData
+
+mapIntentsData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER_HBS]/get_examples"
+    headers:
+      type: 'json'
+    body:
+      hits: ${getIntentsResult.response.body.hits.hits}
+  result: intentsData
+  next: returnSuccess
+
+returnSuccess:
+  return: ${intentsData.response.body}
+  next: end
