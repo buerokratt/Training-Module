@@ -1,0 +1,30 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'INTENTS'"
+  method: get
+  accepts: json
+  returns: json
+  namespace: training
+
+getIntents:
+  call: http.get
+  args:
+    url: "[#TRAINING_OPENSEARCH]/intents/_search?size=10000"
+  result: getIntentsResult
+
+mapIntentsData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_intents"
+    headers:
+      type: 'json'
+    body:
+      hits: ${getIntentsResult.response.body.hits.hits}
+  result: intentsData
+  next: returnSuccess
+
+returnSuccess:
+  return: ${intentsData.response.body.intents}
+  wrapper: false
+  next: end
