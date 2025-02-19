@@ -72,7 +72,7 @@ const NewExampleModal: FC<NewExampleModalProps> = ({ message, setMessage, onSubm
                 }}
                 label={t('training.mba.intent')}
                 value={selectedIntent}
-                options={intents.map((intent) => ({ label: intent.intent, value: String(intent.id) }))}
+                options={intents.map((intent) => ({ label: intent.intent ?? '', value: String(intent.id) }))}
               />
             )}
           />

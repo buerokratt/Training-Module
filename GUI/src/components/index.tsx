@@ -23,7 +23,6 @@ import Popover from './Popover';
 import Collapsible from './Collapsible';
 import Box from './Box';
 import Drawer from './Drawer';
-import HistoricalChat from './HistoricalChat';
 import Dialog from './Dialog';
 import Section from './Section';
 import Modal from './Modal';
@@ -53,7 +52,6 @@ export {
   Collapsible,
   Box,
   Drawer,
-  HistoricalChat,
   Dialog,
   Section,
   Modal,
