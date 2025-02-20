@@ -392,7 +392,7 @@
       "active": "Aktiivne",
       "ended": "Lõpetatud"
     },
-    "event": {
+    "events": {
       "answered": "Vastatud {{date}}",
       "terminated": "Määramata {{date}}",
       "sent_to_csa_email": "Vestlus saadetud nõustaja e-posti {{date}}",
@@ -420,6 +420,7 @@
       "requested-chat-forward-accepted": "Vestluse suunamine aktsepteeritud {{date}}",
       "requested-chat-forward-rejected": "Vestluse suunamine tagasi lükatud {{date}}",
       "message-read": "Loetud",
+      "read": "Loetud {{ date }}",
       "contact-information-skipped": "Kontaktandmeid pole esitatud",
       "unavailable-contact-information-fulfilled": "Kontaktandmed on antud",
       "unavailable_organization": "Organisatsioon pole saadaval",
@@ -432,6 +433,7 @@
       "user-reached": "{{name}} võttis kasutajaga ühendust",
       "user-not-reached": "{{name}} ei saanud kasutajaga ühendust",
       "user-authenticated": "{{name}} on autenditud {{date}}",
+      "taken-over": "Klienditeenindaja võttis vestluse üle",
       "ask_to_forward_to_csa": "Paluti vestlus klienditeenindajale üle kanda",
       "forwarded_to_backoffice": "Vestlus suunatakse tagasi kontorisse",
       "continue_chatting_with_bot": "Jätkake vestlust kasutajaga bürokratt"
