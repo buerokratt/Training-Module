@@ -1,11 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PaginationState, SortingState, createColumnHelper } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { AiFillCheckCircle, AiFillCloseCircle } from 'react-icons/ai';
 import { Button, Card, DataTable, Icon } from 'components';
 import { Trigger } from 'types/trigger';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useToast } from 'hooks/useToast';
 import { updateConnectionRequest } from 'services/requests';
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
@@ -21,35 +21,12 @@ const ConnectionRequests: React.FC = () => {
     pageSize: 10,
   });
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [triggers, setTriggers] = useState<Trigger[]>([]);
+  const queryClient = useQueryClient();
 
-  const getTriggers = async () => {
-    let sort = 'requestedAt desc';
-    if (sorting.length > 0) sort = sorting[0].id + ' ' + (sorting[0].desc ? 'desc' : 'asc');
-
-    console.log('REQUEST');
-
-    return rasaApi
-      .post('/services/connection-requests', {
-        page: pagination.pageIndex + 1,
-        page_size: pagination.pageSize,
-        sorting: sort,
-      })
-      .then((res) => setTriggers(res.data.response))
-      .catch((error) => {
-        toast.open({
-          type: 'error',
-          title: t('connectionRequests.toast.failed.requests'),
-          message: '',
-        });
-        console.error(error);
-      });
-  };
-
-  useEffect(() => {
-    console.log('USE EFFECT');
-    getTriggers();
-  }, [pagination, sorting]);
+  const { data: triggers = [] } = useQuery({
+    queryKey: ['connection-requests', pagination, sorting],
+    queryFn: () => fetchConnectionRequests({ pageIndex: pagination.pageIndex, pageSize: pagination.pageSize, sorting }),
+  });
 
   const updateRequestStatus = useMutation({
     mutationFn: (data: { request: Trigger; status: 'approved' | 'declined' }) =>
@@ -64,7 +41,7 @@ const ConnectionRequests: React.FC = () => {
         message: '',
       });
 
-      await getTriggers();
+      await queryClient.invalidateQueries({ queryKey: ['connection-requests'] });
     },
     onError: () => {
       toast.open({
@@ -105,6 +82,29 @@ const ConnectionRequests: React.FC = () => {
       </Card>
     </>
   );
+};
+
+const fetchConnectionRequests = async ({
+  pageIndex,
+  pageSize,
+  sorting,
+}: {
+  pageIndex: number;
+  pageSize: number;
+  sorting: SortingState;
+}) => {
+  let sort = 'requestedAt desc';
+  if (sorting.length > 0) {
+    sort = sorting[0].id + ' ' + (sorting[0].desc ? 'desc' : 'asc');
+  }
+
+  const { data } = await rasaApi.post('/services/connection-requests', {
+    page: pageIndex + 1,
+    page_size: pageSize,
+    sorting: sort,
+  });
+
+  return data.response;
 };
 
 const getColumns = (onApprove: (trigger: Trigger) => void, onDecline: (trigger: Trigger) => void) => {
