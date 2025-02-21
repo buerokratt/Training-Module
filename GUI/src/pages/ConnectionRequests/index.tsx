@@ -28,8 +28,6 @@ const ConnectionRequests: React.FC = () => {
     queryFn: () => fetchConnectionRequests({ pageIndex: pagination.pageIndex, pageSize: pagination.pageSize, sorting }),
   });
 
-  console.log('TRIGGERS', triggers);
-
   const updateRequestStatus = useMutation({
     mutationFn: (data: { request: Trigger; status: 'approved' | 'declined' }) =>
       updateConnectionRequest(data.request, data.status),
