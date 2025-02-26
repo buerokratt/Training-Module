@@ -17,9 +17,9 @@ echo "rules done"
 curl -X POST $PIPELINES/bulk/stories/story --form input=@$MOCK/data/stories.yml
 echo "stories done"
 #regexes
-#for file in $MOCK/data/regex/* ; do
-# curl -X POST $PIPELINES/put/regexes/regex --form input=@$file
-#done
+for file in $MOCK/data/regex/* ; do
+ curl -X POST $PIPELINES/put/regexes/regex --form input=@$file
+done
 echo "regex done"
 #domain
 curl -v -X POST $PIPELINES/bulk/domain --form input=@$MOCK/data/domain.yml
