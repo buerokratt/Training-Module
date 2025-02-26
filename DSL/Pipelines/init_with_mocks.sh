@@ -6,9 +6,10 @@ MOCK=../DMapper/locations
 PIPELINES=${1:-"localhost:3010"}
 
 # intents
-for file in $MOCK/data/nlu/* ; do
- curl -X POST $PIPELINES/put/intents/intent --form input=@$file
-done
+#for file in $MOCK/data/nlu/* ; do
+# curl -X POST $PIPELINES/put/intents/intent --form input=@$file
+#done
+curl -X POST $PIPELINES/bulk/rules/rule --form input=@$MOCK/data/nlu/common_klienditeenindajale_suunamine_nlu.yml
 echo "intents done"
 # rules
 curl -X POST $PIPELINES/bulk/rules/rule --form input=@$MOCK/data/rules.yml
