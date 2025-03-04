@@ -7,7 +7,7 @@ export const getForms = async ({
   pageSize,
   filter,
 }: PaginationParams): Promise<PaginatedResponse<string>> => {
-  const { data } = await rasaApi.get(`/forms-list?size=${pageSize}&filter=${filter}&from=${pageParam}`);
+  const { data } = await rasaApi.get(`/forms?size=${pageSize}&filter=${filter}&from=${pageParam}`);
   return data;
 };
 
