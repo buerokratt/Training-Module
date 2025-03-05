@@ -1,15 +1,12 @@
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createColumnHelper } from '@tanstack/react-table';
 import { AxiosError } from 'axios';
-import { NavigateFunction, useNavigate } from 'react-router-dom';
-import { MdDeleteOutline, MdOutlineModeEditOutline } from 'react-icons/md';
+import { useNavigate } from 'react-router-dom';
 
-import { Button, Card, DataTable, Dialog, FormInput, Icon, Track } from 'components';
+import { Button, Card, DataTable, Dialog, FormInput, Track } from 'components';
 import { useToast } from 'hooks/useToast';
 import { deleteSlot, getSlots } from 'services/slots';
-import i18n from '../../../../i18n';
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
 import { useDebouncedFilter } from 'hooks/useDebouncedFilter';
 import { useInfinitePagination } from 'hooks/useInfinitePagination';
@@ -52,9 +49,7 @@ const Slots: FC = () => {
     onSettled: () => setDeletableSlot(null),
   });
 
-  const slotsColumns = useGetColumns(navigate, setDeletableSlot);
-  // const slotsColumns = useMemo(() => cols, []);
-  // const slotsColumns = useMemo(() => getColumns(navigate, setDeletableSlot), []);
+  const slotsColumns = useGetColumns('slots', setDeletableSlot);
 
   if (!slots) return <>Loading...</>;
 
@@ -99,43 +94,6 @@ const Slots: FC = () => {
       )}
     </>
   );
-};
-
-const getColumns = (navigate: NavigateFunction, setDeletableSlot: (id: string) => void) => {
-  const columnHelper = createColumnHelper<string>();
-  console.log('render COLUMNS FUNCTION');
-
-  return [
-    columnHelper.accessor((row) => row, {
-      header: i18n.t('training.slots.titleOne') || '',
-    }),
-    columnHelper.display({
-      header: '',
-      cell: (props) => (
-        <Button appearance="text" onClick={() => navigate(`/training/slots/${props.row.original}`)}>
-          <Icon label={i18n.t('global.edit')} icon={<MdOutlineModeEditOutline color={'rgba(0,0,0,0.54)'} />} />
-          {i18n.t('global.edit')}
-        </Button>
-      ),
-      id: 'edit',
-      meta: {
-        size: '1%',
-      },
-    }),
-    columnHelper.display({
-      header: '',
-      cell: (props) => (
-        <Button appearance="text" onClick={() => setDeletableSlot(props.row.original)}>
-          <Icon label={i18n.t('global.delete')} icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'} />} />
-          {i18n.t('global.delete')}
-        </Button>
-      ),
-      id: 'delete',
-      meta: {
-        size: '1%',
-      },
-    }),
-  ];
 };
 
 export default withAuthorization(Slots, [
