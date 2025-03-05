@@ -37,6 +37,7 @@ type Conditions = {
 
 const ConditionNode: FC<NodeDataProps> = ({ data }) => {
   const { t } = useTranslation();
+  console.log(data.payload);
 
   const { data: formsData } = useInfinitePagination<string>({
     queryKey: ['forms'],
