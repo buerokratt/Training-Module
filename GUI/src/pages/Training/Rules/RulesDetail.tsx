@@ -432,7 +432,7 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
             )}
           />
           <NodeList<string>
-            queryKey={['forms-list', filter]}
+            queryKey={['forms', filter]}
             fetchFn={getForms}
             filter={filter}
             title={t('training.forms.title')}

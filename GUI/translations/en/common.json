@@ -388,7 +388,7 @@
       "active": "Active",
       "ended": "Ended"
     },
-    "event": {
+    "events": {
       "answered": "Answered {{date}}",
       "terminated": "Unspecified {{date}}",
       "sent_to_csa_email": "Chat sent to CSA email {{date}}",
@@ -416,6 +416,7 @@
       "requested-chat-forward-accepted": "Requested chat forward accepted {{date}}",
       "requested-chat-forward-rejected": "Requested chat forward rejected {{date}}",
       "message-read": "Read",
+      "read": "Read {{ date }}",
       "contact-information-skipped": "Contact Information Skipped",
       "unavailable-contact-information-fulfilled": "Contact information provided",
       "unavailable_organization": "Organization is unavailable",
@@ -428,6 +429,7 @@
       "user-reached": "{{name}} contacted the user",
       "user-not-reached": "{{name}} could not reach the user",
       "user-authenticated": "{{name}} is authenticated {{date}}",
+      "taken-over": "A human took the conversation over",
       "ask_to_forward_to_csa": "Asked to forward the conversation to a customer service agent",
       "forwarded_to_backoffice": "Conversation forwarded to back office",
       "continue_chatting_with_bot": "Continue conversation with bürokratt"

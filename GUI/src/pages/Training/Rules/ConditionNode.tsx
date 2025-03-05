@@ -1,10 +1,8 @@
 import { FC, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useQuery } from '@tanstack/react-query';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { Button, FormInput, FormSelect, Icon, Track } from 'components';
 import { MdOutlineDelete } from 'react-icons/md';
-import { Slot } from '../../../types/slot';
 import { useInfinitePagination } from 'hooks/useInfinitePagination';
 import { getForms } from 'services/forms';
 import { flattenPaginatedData } from 'utils/api-utils';
