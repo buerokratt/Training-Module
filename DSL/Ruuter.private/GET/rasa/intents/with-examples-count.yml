@@ -48,12 +48,28 @@ getIntentsNames:
       hits: ${getIntentsResult.response.body.aggregations.hot.buckets}
   result: getIntentsNamesResult
 
+check_if_intent_list_is_empty:
+  switch:
+    - condition: ${getIntentsNamesResult.response.body.intents.length > 0}
+      next: assignIntentsList
+  next: assignEmptyList
+
+assignIntentsList:
+  assign:
+    intentsList: ${getIntentsNamesResult.response.body.intents}
+  next: getIntentListLastChanged
+
+assignEmptyList:
+  assign:
+    intentsList: ''
+  next: getIntentListLastChanged  
+
 getIntentListLastChanged:
   call: http.post
   args:
     url: "[#TRAINING_RESQL]/get-intents-list-last-changed"
     body:
-      intentsList: ${getIntentsNamesResult.response.body.intents}
+      intentsList: ${intentsList}
   result: getIntentsListLastChangedResult
 
 mapIntentsData:
