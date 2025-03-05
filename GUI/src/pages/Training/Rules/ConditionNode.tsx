@@ -1,13 +1,12 @@
 import { FC, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useQuery } from '@tanstack/react-query';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { Button, FormInput, FormSelect, Icon, Track } from 'components';
 import { MdOutlineDelete } from 'react-icons/md';
-import { Slot } from '../../../types/slot';
 import { useInfinitePagination } from 'hooks/useInfinitePagination';
 import { getForms } from 'services/forms';
 import { flattenPaginatedData } from 'utils/api-utils';
+import { getSlots } from 'services/slots';
 
 type NodeDataProps = {
   data: {
@@ -46,9 +45,13 @@ const ConditionNode: FC<NodeDataProps> = ({ data }) => {
   });
   const forms = useMemo(() => flattenPaginatedData(formsData), [formsData]);
 
-  const { data: slots } = useQuery<Slot[]>({
+  const { data: slotsData } = useInfinitePagination<string>({
     queryKey: ['slots'],
+    fetchFn: getSlots,
+    pageSize: 1000,
   });
+  const slots = useMemo(() => flattenPaginatedData(slotsData), [slotsData]);
+
   const { control, watch } = useForm<Conditions>({
     defaultValues: {
       conditions: [{ active_loop: { label: '', value: '' } }, { slot: { label: '', value: '' }, value: '' }],
@@ -123,12 +126,9 @@ const ConditionNode: FC<NodeDataProps> = ({ data }) => {
                         onSelectionChange={(selection) => {
                           field.onChange(selection);
                         }}
-                        value={field.value?.label ?? null}
+                        value={field.value?.label}
                         label={t('training.slot')}
-                        options={Array.from(new Set(slots || [])).map((f) => ({
-                          label: f.id,
-                          value: String(f.id),
-                        }))}
+                        options={slots.map((f) => ({ label: f, value: f }))}
                       />
                     )}
                   />
@@ -151,10 +151,10 @@ const ConditionNode: FC<NodeDataProps> = ({ data }) => {
         </>
       ))}
       <Track gap={8}>
-        <Button appearance="success" size="s" onClick={() => append({ active_loop: '' })}>
+        <Button appearance="success" size="s" onClick={() => append({ active_loop: { label: '', value: '' } })}>
           {t('global.add')} active_loop
         </Button>
-        <Button appearance="success" size="s" onClick={() => append({ slot: '', value: '' })}>
+        <Button appearance="success" size="s" onClick={() => append({ slot: { label: '', value: '' } })}>
           {t('global.add')} slot
         </Button>
       </Track>
