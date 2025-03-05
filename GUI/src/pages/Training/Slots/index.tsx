@@ -14,6 +14,7 @@ import withAuthorization, { ROLES } from 'hoc/with-authorization';
 import { useDebouncedFilter } from 'hooks/useDebouncedFilter';
 import { useInfinitePagination } from 'hooks/useInfinitePagination';
 import { flattenPaginatedData } from 'utils/api-utils';
+import { useGetColumns } from 'hooks/useGetColumns';
 
 const Slots: FC = () => {
   const { t } = useTranslation();
@@ -51,7 +52,9 @@ const Slots: FC = () => {
     onSettled: () => setDeletableSlot(null),
   });
 
-  const slotsColumns = useMemo(() => getColumns(navigate, setDeletableSlot), []);
+  const slotsColumns = useGetColumns(navigate, setDeletableSlot);
+  // const slotsColumns = useMemo(() => cols, []);
+  // const slotsColumns = useMemo(() => getColumns(navigate, setDeletableSlot), []);
 
   if (!slots) return <>Loading...</>;
 
@@ -100,6 +103,7 @@ const Slots: FC = () => {
 
 const getColumns = (navigate: NavigateFunction, setDeletableSlot: (id: string) => void) => {
   const columnHelper = createColumnHelper<string>();
+  console.log('render COLUMNS FUNCTION');
 
   return [
     columnHelper.accessor((row) => row, {
