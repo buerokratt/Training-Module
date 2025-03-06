@@ -1,0 +1,6 @@
+{
+  "script": {
+    "lang": "mustache",
+    "source": "{\"query\":{\"term\":{\"_id\":\"{{type}}\"}},\"script_fields\":{\"filtered_items\":{\"script\":{\"lang\":\"painless\",\"source\":\"def items = params._source.{{type}}; def isMap = items instanceof Map; def itemSet = isMap ? items.keySet() : items; def searchTerm = '{{filter}}'.toLowerCase(); int from = {{from}}; int size = {{size}}; def filtered = itemSet.findAll(item -> item.toLowerCase().contains(searchTerm)); int start = (int)Math.min(from, filtered.size()); int end = (int)Math.min(from + size, filtered.size()); Map result = new HashMap(); result.put(\\\"totalCount\\\", filtered.size()); result.put(\\\"response\\\", filtered.subList(start, end)); return result;\"}}}}"
+  }
+}

@@ -6,33 +6,31 @@ declaration:
   accepts: json
   returns: json
   namespace: training
+  params:
+    - field: filter
+      type: string
+      description: "Query string"
+    - field: from
+      type: string
+      description: "Item number"
+    - field: size
+      type: string
+      description: "Page size"
 
 getSlots:
   call: http.post
   args:
-    url: "[#TRAINING_OPENSEARCH]/domain/_search?pretty=true"
+    url: "[#TRAINING_OPENSEARCH]/domain/_search/template"
     body:
-      query:
-        match:
-          _id: 'slots'
+      id: "domain-objects-with-pagination"
+      params:
+        type: "slots"
+        filter: ${incoming.params.filter}
+        from: ${incoming.params.from}
+        size: ${incoming.params.size}
   result: getSlotsResult
 
-mapSlotsData:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/hbs/training/extract_slot_keys"
-    headers:
-      type: 'json'
-    body:
-      hits: ${getSlotsResult.response.body.hits.hits}
-  result: slotsData
-  next: returnSuccess
-
 returnSuccess:
-  return: ${slotsData.response.body.slots}
+  return: ${getSlotsResult.response.body.hits.hits[0].fields.filtered_items[0]}
   wrapper: false
-  next: end
-
-returnUnauthorized:
-  return: "error: unauthorized"
   next: end
