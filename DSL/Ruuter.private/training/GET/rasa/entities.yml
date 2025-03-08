@@ -22,8 +22,12 @@ getEntities:
   args:
     url: "[#TRAINING_OPENSEARCH]/domain/_search/template"
     body:
-      id: "entities-with-pagination"
-      params: ${incoming.params}
+      id: "domain-objects-with-pagination"
+      params:
+        type: "entities"
+        filter: ${incoming.params.filter}
+        from: ${incoming.params.from}
+        size: ${incoming.params.size}
   result: getEntitiesResult
 
 mapEntitiesData:

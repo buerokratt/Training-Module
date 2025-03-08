@@ -4,10 +4,11 @@
     "source": {
       "from": "{{from}}",
       "size": "{{size}}",
-      "_source": ["rule"],
+      "track_total_hits": true,
+      "_source": ["intent"],
       "query": {
         "regexp": {
-          "rule": {
+          "intent": {
             "value": ".*{{filter}}.*",
             "case_insensitive": true,
             "flags": "ALL"

@@ -15,12 +15,14 @@ import i18n from '../../../../i18n';
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
 import { useInfinitePagination } from 'hooks/useInfinitePagination';
 import { flattenPaginatedData } from 'utils/api-utils';
+import { useDebouncedFilter } from 'hooks/useDebouncedFilter';
 
 const Rules: FC = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const [filter, setFilter] = useState('');
+  const { filter, setFilter } = useDebouncedFilter();
+
   const { data, fetchNextPage, isFetching } = useInfinitePagination<Rule>({
     queryKey: ['rules', filter],
     fetchFn: getRules,
