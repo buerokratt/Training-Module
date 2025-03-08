@@ -15,7 +15,7 @@ declaration:
 assignValue:
   assign:
     fileName: ${incoming.params.fileName}
-    modelPath: "/DSL/DMapper/locations/models/"
+    modelPath: "/DSL/DMapper/training/locations/models/"
 
 validateName:
   switch:

@@ -51,7 +51,7 @@ services:
     ports:
       - 8082:8082
     volumes:
-      - ./DSL/Resql/training:/DSL
+      - ./DSL/Resql:/DSL
     networks:
       - bykstack
 
@@ -71,7 +71,7 @@ services:
     ports:
       - 8087:8087
     volumes:
-      - ./DSL/Resql/services:/DSL
+      - ./DSL/Resql:/DSL
     networks:
       - bykstack
 
@@ -91,7 +91,7 @@ services:
     ports:
       - 8088:8088
     volumes:
-      - ./DSL/Resql/users:/DSL
+      - ./DSL/Resql:/DSL
     networks:
       - bykstack
 
@@ -119,14 +119,13 @@ services:
     environment:
       - PORT§=3001
       - REACT_APP_API_URL=http://localhost:8080/training
-      - REACT_APP_RUUTER_API_URL=http://localhost:8080//training
-      - REACT_APP_RUUTER_PRIVATE_API_URL=http://localhost:8080//training
+      - REACT_APP_RUUTER_API_URL=http://localhost:8080/training
+      - REACT_APP_RUUTER_PRIVATE_API_URL=http://localhost:8080/training
       - REACT_APP_RUUTER_V2_ANALYTICS_API_URL=http://localhost:3002/training/api
       - REACT_APP_BUEROKRATT_CHATBOT_URL=http://buerokratt-chat:8080
       - REACT_APP_OPENSEARCH_DASHBOARD_URL=https://opensearch.org/
       - REACT_APP_OPENDATAPORT_URL=https://avaandmedtest.eesti.ee
       - REACT_APP_MENU_URL=https://admin.dev.buerokratt.ee
-      - REACT_APP_RUUTER_URL=http://localhost:8080//training
       - REACT_APP_MENU_PATH=/chat/menu.json
       - REACT_APP_APP_PORT=3001
       - REACT_APP_LOCAL=true
@@ -148,7 +147,7 @@ services:
       - REACT_APP_NODE_ENV=development
       - 111REACT_APP_PORT=3001
       - REACT_APP_PUBLIC_URL=http://proto.we.ee/
-      - REACT_APP_RUUTER_URL=http://localhost:8080/training
+      - REACT_APP_RUUTER_URL=http://localhost:8080/training/
       - REACT_APP_NOTIFICATION_NODE_URL=http://localhost:4040
       - REACT_APP_CSP=upgrade-insecure-requests; default-src 'self'; font-src 'self' data:; img-src 'self' data:; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; object-src 'none'; connect-src 'self' http://localhost:8080 http://localhost:8085 http://localhost:4040 https://admin.dev.buerokratt.ee/chat/menu.json;
       - REACT_APP_ENABLE_HIDDEN_FEATURES=TRUE
