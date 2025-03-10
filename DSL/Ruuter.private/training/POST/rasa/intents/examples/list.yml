@@ -1,0 +1,120 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'LIST'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    body:
+      - field: intent
+        type: string
+        description: "Body field 'intent'"
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie field"
+
+assign_values:
+  assign:
+    parameters: ${incoming.body}
+
+getFileLocations:
+  call: http.get
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/internal/return-file-locations"
+    headers:
+      cookie: ${incoming.headers.cookie}
+  result: fileLocations
+
+assignFilePath:
+  assign:
+    file_end: "_nlu.yml"
+
+checkIntentFileYaml:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file-manager/exists"
+    body:
+      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
+  result: fileExists
+
+validateFileExists:
+  switch:
+    - condition: ${fileExists.response.body.error === false}
+      next: getIntentFile
+  next: assignTmpFilePath
+
+assignTmpFilePath:
+  assign:
+    file_end: "_nlu.yml.tmp"
+
+checkIntentFileTmp:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file-manager/exists"
+    body:
+      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
+  result: tmpFileExists
+
+validateTmpFileExists:
+  switch:
+    - condition: ${tmpFileExists.response.body.error === false}
+      next: getIntentFile
+  next: returnIntentFileMissing
+
+getIntentFile:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file-manager/read-file"
+    body:
+      file_path: ${fileLocations.response.body.response.intents_location + parameters.intent + file_end}
+  result: intentFile
+
+convertYamlToJson:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/convert/yaml_to_json"
+    body:
+      file: ${intentFile.response.body.file}
+  result: intentData
+
+replaceString:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/conversion/string-replace"
+    body:
+      data: ${intentData.response.body.nlu[0].examples}
+      search: "- "
+      replace: ""
+  result: replacedString
+
+splitExamples:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/conversion/string-split"
+    body:
+      data: ${replacedString.response.body}
+      separator: "\n"
+  result: splitExamples
+
+mapIntentsData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER_HBS]/get_intent_examples"
+    headers:
+      type: 'json'
+    body:
+      intent: ${parameters.intent}
+      examples: ${splitExamples.response.body}
+  result: mappedIntents
+  next: returnSuccess
+
+returnSuccess:
+  return: ${mappedIntents.response.body}
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
+  next: end
