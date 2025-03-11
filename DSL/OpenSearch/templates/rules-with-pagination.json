@@ -4,9 +4,15 @@
     "source": {
       "from": "{{from}}",
       "size": "{{size}}",
-      "_source": false,
+      "_source": ["rule"],
       "query": {
-        "match_all": {}
+        "regexp": {
+          "rule": {
+            "value": ".*{{filter}}.*",
+            "case_insensitive": true,
+            "flags": "ALL"
+          }
+        }
       }
     },
     "params": {

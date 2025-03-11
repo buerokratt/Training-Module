@@ -1,0 +1,44 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'INTENT-IDS'"
+  method: get
+  accepts: json
+  returns: json
+  namespace: training
+  params:
+    - field: filter
+      type: string
+      description: "Query string"
+    - field: from
+      type: string
+      description: "Item number"
+    - field: size
+      type: string
+      description: "Page size"
+
+getIntents:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]/intents/_search/template"
+    body:
+      id: "intents-with-pagination"
+      params: ${incoming.params}
+  result: getIntentsResult
+
+mapIntentsData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/hbs/training/get_intent_ids"
+    headers:
+      type: "json"
+    body:
+      hits: ${getIntentsResult.response.body.hits}
+  result: intentsData
+  next: returnSuccess
+
+returnSuccess:
+  return: ${intentsData.response.body}
+  # todo
+  wrapper: false
+  next: end

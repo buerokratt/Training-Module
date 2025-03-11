@@ -1,0 +1,44 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'LAST-MODIFIED'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    body:
+      - field: intent
+        type: string
+        description: "Body field 'intent'"
+
+assign_values:
+  assign:
+    params: ${incoming.body}
+
+getIntentLastChanged:
+  call: http.post
+  args:
+    url: "[TRAINING_RESQL]/get-intent-last-changed"
+    body:
+      intent: ${params.intent}
+  result: getIntentLastChangedResult
+
+mapIntentsData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER_HBS]/get_intent_last_changed"
+    headers:
+      type: 'json'
+    body:
+      intent: ${getIntentLastChangedResult.response.body}
+  result: intentsData
+  next: returnSuccess
+
+returnSuccess:
+  return: ${intentsData.response.body}
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
+  next: end

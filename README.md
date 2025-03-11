@@ -41,7 +41,7 @@ To be able to log in locally, manually create a cookie called `customJwtCookie` 
 curl -X POST -H "Content-Type: application/json" -d '{
   "login": "EE30303039914",
   "password": "OK"
-}' http://localhost:8080/auth/login
+}' http://localhost:8080/training/auth/login
 ```
 
 ### DMapper issue

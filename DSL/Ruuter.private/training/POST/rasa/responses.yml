@@ -1,0 +1,42 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'RESPONSES'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+
+assign_values:
+  assign:
+    params: ${incoming.body}
+  next: getResponsesWithNameAndText
+
+getResponsesWithNameAndText:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]/responses/_search/template"
+    body:
+      id: "response-with-name-and-text"
+      params: ${params}
+  result: getResponsesResult
+  next: mapResponsesData
+
+mapResponsesData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER_HBS]/get_responses"
+    headers:
+      type: 'json'
+    body:
+      hits: ${getResponsesResult.response.body.hits.hits}
+  result: responsesData
+  next: returnSuccess
+
+returnSuccess:
+  return: ${responsesData.response.body}
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
+  next: end
