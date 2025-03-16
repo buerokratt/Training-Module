@@ -198,6 +198,7 @@ const Models: FC = () => {
             selectedRow={(row) => row.original.versionNumber === selectedModel?.versionNumber}
             columns={modelsColumns}
             sortable
+            customMaxHeight={50}
             sorting={sorting}
             setSorting={setSorting}
             setSelectedRow={(row: Row<Model>) => setSelectedModel(row.original)}
