@@ -1,0 +1,45 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'UPLOAD'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    params:
+      - field: intentName
+        type: string
+        description: "Parameter 'intentName'"
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie field"
+
+assign_values:
+  assign:
+    intentName: ${incoming.params.intentName}
+
+convertXlsxToJson:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/conversion/xlsx-to-array"
+    body:
+      file: ${incoming.body}
+  result: jsonData
+
+addExamples:
+  call: http.post
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/rasa/intents/examples/add"
+    headers:
+      cookie: ${incoming.headers.cookie}
+    body:
+      intentName: ${intentName}
+      intentExamples: []
+      newExamples: ${jsonData.response.body.flat()}
+  result: addResult
+
+returnSuccess:
+  return: ${addResult.response.body.response}
+  next: end

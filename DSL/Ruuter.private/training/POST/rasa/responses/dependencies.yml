@@ -1,0 +1,84 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'DEPENDENCIES'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    body:
+      - field: response_name
+        type: string
+        description: "Body field 'response_name'"
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie field"
+
+assign_values:
+  assign:
+    params: ${incoming.body}
+  next: getResponsesWithNameAndText
+
+getResponsesWithNameAndText:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]/responses/_search/template"
+    body:
+      id: "response-with-name-and-text"
+      params: ${params}
+  result: getResponsesResult
+
+validateResponse:
+  switch:
+    - condition: ${getResponsesResult.response.body.hits.hits.length > 0}
+      next: ruleResponses
+  next: returnResponseIsMissing
+
+ruleResponses:
+  call: http.post
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/rasa/rules/search"
+    headers:
+      cookie: ${incoming.headers.cookie}
+    body:
+      value: ${params.response_name}
+      type: "responses"
+  result: ruleResponses
+
+storiesResponses:
+  call: http.post
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/rasa/stories/search"
+    headers:
+      cookie: ${incoming.headers.cookie}
+    body:
+      response: ${params.response_name}
+      type: "responses"
+  result: storiesResponses
+
+mapResponsesData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER_HBS]/get_response_dependencies"
+    headers:
+      type: 'json'
+    body:
+      response: ${getResponsesResult.response.body.hits.hits}
+      stories: ${storiesResponses.response.body.response.stories}
+      rules: ${ruleResponses.response.body.response.rules}
+  result: responsesData
+  next: returnSuccess
+
+returnSuccess:
+  return: ${responsesData.response.body}
+  next: end
+
+returnResponseIsMissing:
+  return: "Can't find response"
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
+  next: end

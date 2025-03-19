@@ -41,7 +41,7 @@ services:
     depends_on:
       - database
     environment:
-      - sqlms.datasources.[0].name=training
+      - sqlms.datasources.[0].name=byk
       # - sqlms.datasources.[0].jdbcUrl=jdbc:postgresql://database:5432/training_db # For Local Use
       - sqlms.datasources.[0].jdbcUrl=jdbc:postgresql://171.22.247.13:5434/train_db
       - sqlms.datasources.[0].username=byk
@@ -51,7 +51,7 @@ services:
     ports:
       - 8082:8082
     volumes:
-      - ./DSL/Resql/training:/workspace/app/templates/training
+      - ./DSL/Resql:/DSL
     networks:
       - bykstack
 
@@ -61,7 +61,7 @@ services:
     depends_on:
       - database
     environment:
-      - sqlms.datasources.[0].name=services
+      - sqlms.datasources.[0].name=byk
       # - sqlms.datasources.[0].jdbcUrl=jdbc:postgresql://database:5432/services_db # For Local Use
       - sqlms.datasources.[0].jdbcUrl=jdbc:postgresql://171.22.247.13:5435/services_db
       - sqlms.datasources.[0].username=byk
@@ -71,7 +71,7 @@ services:
     ports:
       - 8087:8087
     volumes:
-      - ./DSL/Resql/services:/workspace/app/templates/services
+      - ./DSL/Resql:/DSL
     networks:
       - bykstack
 
@@ -82,7 +82,7 @@ services:
       - database
     environment:
       - server.port=8088
-      - sqlms.datasources.[0].name=users
+      - sqlms.datasources.[0].name=byk
       # - sqlms.datasources.[0].jdbcUrl=jdbc:postgresql://database:5432/users_db # For Local Use
       - sqlms.datasources.[0].jdbcUrl=jdbc:postgresql://171.22.247.13:5433/byk
       - sqlms.datasources.[0].username=byk
@@ -91,7 +91,7 @@ services:
     ports:
       - 8088:8088
     volumes:
-      - ./DSL/Resql/users:/workspace/app/templates/users
+      - ./DSL/Resql:/DSL
     networks:
       - bykstack
 
@@ -104,9 +104,9 @@ services:
       - RATE_LIMIT_PER_MINUTE=1000
     volumes:
       - ./DSL:/data
-      - ./DSL/DMapper/hbs:/workspace/app/views/training
-      - ./DSL/DMapper/js:/workspace/app/js/training
-      - ./DSL/DMapper/locations:/rasa/locations
+      - ./DSL/DMapper/training/hbs:/workspace/app/views/training
+      - ./DSL/DMapper/training/js:/workspace/app/js/training
+      - ./DSL/DMapper/training/locations:/rasa/locations
       - ./DSL/CronManager:/DSL/CronManager
     ports:
       - 3000:3000
@@ -118,15 +118,14 @@ services:
     # user: root # This root user is only for local development due to permissions
     environment:
       - PORT§=3001
-      - REACT_APP_API_URL=http://localhost:8080
-      - REACT_APP_RUUTER_API_URL=http://localhost:8080
-      - REACT_APP_RUUTER_PRIVATE_API_URL=http://localhost:8080
+      - REACT_APP_API_URL=http://localhost:8080/training
+      - REACT_APP_RUUTER_API_URL=http://localhost:8080/training
+      - REACT_APP_RUUTER_PRIVATE_API_URL=http://localhost:8080/training
       - REACT_APP_RUUTER_V2_ANALYTICS_API_URL=http://localhost:3002/training/api
       - REACT_APP_BUEROKRATT_CHATBOT_URL=http://buerokratt-chat:8080
       - REACT_APP_OPENSEARCH_DASHBOARD_URL=https://opensearch.org/
       - REACT_APP_OPENDATAPORT_URL=https://avaandmedtest.eesti.ee
       - REACT_APP_MENU_URL=https://admin.dev.buerokratt.ee
-      - REACT_APP_RUUTER_URL=http://localhost:8080
       - REACT_APP_MENU_PATH=/chat/menu.json
       - REACT_APP_APP_PORT=3001
       - REACT_APP_LOCAL=true
@@ -148,7 +147,7 @@ services:
       - REACT_APP_NODE_ENV=development
       - 111REACT_APP_PORT=3001
       - REACT_APP_PUBLIC_URL=http://proto.we.ee/
-      - REACT_APP_RUUTER_URL=http://localhost:8080/
+      - REACT_APP_RUUTER_URL=http://localhost:8080/training/
       - REACT_APP_NOTIFICATION_NODE_URL=http://localhost:4040
       - REACT_APP_CSP=upgrade-insecure-requests; default-src 'self'; font-src 'self' data:; img-src 'self' data:; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; object-src 'none'; connect-src 'self' http://localhost:8080 http://localhost:8085 http://localhost:4040 https://admin.dev.buerokratt.ee/chat/menu.json;
       - REACT_APP_ENABLE_HIDDEN_FEATURES=TRUE
