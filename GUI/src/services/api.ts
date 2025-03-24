@@ -7,6 +7,7 @@ const api = axios.create({
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
   },
   withCredentials: true,
 });
@@ -16,6 +17,7 @@ const authApi = axios.create({
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
   },
   withCredentials: true,
 });
@@ -24,6 +26,7 @@ const fileApi = axios.create({
   baseURL: import.meta.env.REACT_APP_RUUTER_URL + 'rasa/',
   headers: {
     'Content-Type': 'multipart/form-data',
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
   },
   withCredentials: true,
 });
@@ -32,6 +35,7 @@ const genericApi = axios.create({
   baseURL: import.meta.env.REACT_APP_RUUTER_URL + 'generic/',
   headers: {
     Accept: 'application/json',
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
   },
   withCredentials: true,
 });
@@ -41,6 +45,7 @@ const rasaApi = axios.create({
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
   },
   withCredentials: true,
 });

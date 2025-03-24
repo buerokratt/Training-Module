@@ -37,7 +37,7 @@ addExamples:
     body:
       intentName: ${intentName}
       intentExamples: []
-      newExamples: ${jsonData.response.body}
+      newExamples: ${jsonData.response.body.flat()}
   result: addResult
 
 returnSuccess:

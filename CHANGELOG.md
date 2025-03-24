@@ -1,5 +1,8 @@
-### 2.1.1 (31, Jan 2025)
+### 2.1.5 (20, Mar 2025)
+## Chores
+- **2**: Bumped Package Version by [<u>@1AhmedYasser</u>](https://www.github.com/1AhmedYasser) in [#9b83bde](https://github.com/buerokratt/Training-Module/commit/9b83bde)
+- **950**: Bumped Header Version (#872) by [<u>@Ahmed yasser</u>](https://www.github.com/Ahmedyasser) in [#2e003b2](https://github.com/buerokratt/Training-Module/commit/2e003b2)
 ## Others
-- Merge branch 'dev' of https://github.com/1AhmedYasser/Training-Module into Hot-fix-stories-rules by [<u>@ahmedyasser</u>](https://www.github.com/ahmedyasser) in [#6a67fd2](https://github.com/buerokratt/Training-Module/commit/6a67fd2)
-- Added Fix for adding rules by [<u>@ahmedyasser</u>](https://www.github.com/ahmedyasser) in [#d7f2575](https://github.com/buerokratt/Training-Module/commit/d7f2575)
-- Added Fix for adding stories by [<u>@ahmedyasser</u>](https://www.github.com/ahmedyasser) in [#e4e6847](https://github.com/buerokratt/Training-Module/commit/e4e6847)
+- Merge pull request #879 from 1AhmedYasser/hot-fix-components-gui by [<u>@KlviG</u>](https://www.github.com/KlviG) in [#2c24d5e](https://github.com/buerokratt/Training-Module/commit/2c24d5e)
+- Create a re usable history page GUI template (#870) by [<u>@Ahmed yasser</u>](https://www.github.com/Ahmedyasser) in [#a1f9cdc](https://github.com/buerokratt/Training-Module/commit/a1f9cdc)
+- Fix (#878) by [<u>@Igor Krupenja</u>](https://www.github.com/IgorKrupenja) in [#302019d](https://github.com/buerokratt/Training-Module/commit/302019d)
