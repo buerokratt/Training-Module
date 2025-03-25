@@ -7,6 +7,5 @@ export async function activateModel(modelData: UpdateModelDTO) {
 }
 
 export async function deleteModel(id: string | number) {
-  const { data } = await rasaApi.get<void>(`model/delete-model?fileName=${id}`);
-  return data;
+  await rasaApi.get<void>(`model/delete-model?fileName=${id}`);
 }
