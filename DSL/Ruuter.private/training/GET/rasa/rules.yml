@@ -26,6 +26,9 @@ getRules:
       params: ${incoming.params}
   result: getRulesResult
 
+igor_log:
+  log: ${getRulesResult.response.body}
+
 mapRulesData:
   call: http.post
   args:
