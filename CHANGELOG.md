@@ -1,4 +1,4 @@
-### 2.1.7 (27, Mar 2025)
+### 2.1.8 (01, Apr 2025)
 ## Features
 - **69**: Added Project Layer by [<u>@1AhmedYasser</u>](https://www.github.com/1AhmedYasser) in [#632edab](https://github.com/buerokratt/Training-Module/commit/632edab)
 ## Fixes
