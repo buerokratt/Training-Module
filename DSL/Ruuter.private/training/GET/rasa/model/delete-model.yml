@@ -15,35 +15,12 @@ declaration:
 assignValue:
   assign:
     fileName: ${incoming.params.fileName}
-    modelPath: "/DSL/DMapper/training/locations/models/"
 
 validateName:
   switch:
     - condition: ${fileName.trim().length !== 0}
-      next: checkFileExists
+      next: getModelDataFromDb
   next: returnError
-
-checkFileExists:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/file-manager/exists"
-    body:
-      file_path: ${modelPath}${fileName}
-  result: modelCreated
-
-validateFileExists:
-  switch:
-    - condition: ${modelCreated.response.body.error === false}
-      next: removeModel
-  next: getModelDataFromDb
-
-removeModel:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/file-manager/delete"
-    body:
-      file_path: ${modelPath}${fileName}
-  result: fileRemoved
 
 getModelDataFromDb:
   call: http.post
@@ -88,5 +65,5 @@ returnSuccess:
 returnError:
   return: "Model not found."
   wrapper: true
-  code: 409
+  status: 409
   next: end
