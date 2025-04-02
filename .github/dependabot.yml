@@ -7,4 +7,3 @@ updates:
       interval: "daily"
     open-pull-requests-limit: 50
     target-branch: "dev"
-    
