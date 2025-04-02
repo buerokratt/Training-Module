@@ -1,0 +1,181 @@
+{
+  "mappings": {
+    "properties": {
+      "version": {
+        "type": "text"
+      },
+      "session_config": {
+        "properties": {
+          "session_expiration_time": {
+            "type": "integer"
+          },
+          "carry_over_slots_to_new_session": {
+            "type": "boolean"
+          }
+        }
+      },
+      "intents": {
+        "type": "array",
+        "properties": {
+          "name": {
+            "type": "text"
+          }
+        }
+      },
+      "entities": {
+        "type": "array",
+        "properties": {
+          "name": {
+            "type": "text"
+          }
+        }
+      },
+      "slots": {
+        "properties": {
+          "common_teenus_ilm_asukoht": {
+            "properties": {
+              "type": {
+                "type": "text"
+              },
+              "influence_conversation": {
+                "type": "boolean"
+              },
+              "mappings": {
+                "type": "array",
+                "properties": {
+                  "type": {
+                    "type": "text"
+                  },
+                  "entity": {
+                    "type": "text"
+                  },
+                  "intent": {
+                    "type": "text"
+                  }
+                }
+              }
+            }
+          },
+          "affirm_deny": {
+            "properties": {
+              "type": {
+                "type": "text"
+              },
+              "influence_conversation": {
+                "type": "boolean"
+              },
+              "mappings": {
+                "type": "array",
+                "properties": {
+                  "type": {
+                    "type": "text"
+                  },
+                  "conditions": {
+                    "type": "array",
+                    "properties": {
+                      "active_loop": {
+                        "type": "text"
+                      },
+                      "requested_slot": {
+                        "type": "text"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "forms": {
+        "properties": {
+          "custom_fallback_form": {
+            "properties": {
+              "required_slots": {
+                "type": "array",
+                "properties": {
+                  "slot": {
+                    "type": "text"
+                  }
+                }
+              }
+            }
+          },
+          "direct_to_customer_support_form": {
+            "properties": {
+              "required_slots": {
+                "type": "array",
+                "properties": {
+                  "slot": {
+                    "type": "text"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "actions": {
+        "type": "array",
+        "properties": {
+          "action": {
+            "type": "text"
+          }
+        }
+      },
+      "responses": {
+        "properties": {
+          "utter_fallback": {
+            "properties": {
+              "text": {
+                "type": "text"
+              }
+            }
+          },
+          "utter_common_ask_csa": {
+            "properties": {
+              "text": {
+                "type": "text"
+              }
+            }
+          },
+          "utter_common_klienditeenindajale_suunamine": {
+            "properties": {
+              "text": {
+                "type": "text"
+              }
+            }
+          },
+          "utter_common_ei_suuna_klienditeenindajale": {
+            "properties": {
+              "text": {
+                "type": "text"
+              }
+            }
+          },
+          "utter_common_hüvasti_jätmine": {
+            "properties": {
+              "text": {
+                "type": "text"
+              }
+            }
+          },
+          "utter_common_tänamine": {
+            "properties": {
+              "text": {
+                "type": "text"
+              }
+            }
+          },
+          "utter_common_tervitus": {
+            "properties": {
+              "text": {
+                "type": "text"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,46 @@
+version: "3.0"
+nlu:
+- intent: common_teenus_nordpool2
+  examples: |
+    - mis ööpäeva [odavaim](np_odav) elektri hind oli
+    - elektri hind päevas [odavaim](np_odav)
+    - kõige [odavam](np_odav) börsi elektri hind päevas
+    - [odavaim](np_odav) elektri hind päevas
+    - tahan teada [parimat](np_odav) elektri hinda viimase päeva jooksul
+    - millal on [hea](np_odav) börsihind olnud 24 tunni sees
+    - millal on kõige [odavam](np_odav) elekter
+    - tahan [head](np_odav) elektri hinda
+    - [hea](np_odav) elekti hind
+    - mis on [odavaim](np_odav) elektri hind täna?
+    - millal tuleb [soodne](np_odav) elektri hind?
+    - [parim](np_odav) hind täna
+    - millal oli eile [odavaim](np_odav) hind?
+    - sooviksin teada, millal on olnud [odav](np_odav) elektri hind
+    - kui madal oli [odavaim](np_odav) elektri hind eile?
+    - mis tundidel oli [odavaim](np_odav) hind täna?
+    - mis kell on homme [odavaim](np_odav) elekter?
+    - kõige [soodsam](np_odav) aeg elektrit kasutada
+    - millal saab [odavalt](np_odav) elektrit?
+    - mis ööpäeva [kallim](np_kallis) elektri hind oli
+    - mis ööpäeva [kalleim](np_kallis) elektri hind oli
+    - elektri hind päevas [kalleim](np_kallis)
+    - kõige [kallim](np_kallis) börsi elektri hind päevas
+    - [kalleim](np_kallis) elektri hind päevas
+    - tahan teada [halvimat](np_kallis) elektri hinda viimase päeva jooksul
+    - millal on [kallis](np_kallis) börsihind olnud 24 tunni sees
+    - [kulukas](np_kallis) elekter
+    - mis on [kõrgeim](np_kallis) elektri hind täna?
+    - millal oli eile [kalleim](np_kallis) hind?
+    - soovin teada, millal elekter on [kallis](np_kallis)
+    - mis tundidel oli [kõige kallim](np_kallis) elekter eile?
+    - mis kell on homme [kalleim](np_kallis) elekter?
+    - millal on olnud [halvim](np_kallis) elektri hind viimase 24 tunni jooksul?
+    - kõige [kulukam](np_kallis) aeg elektrit kasutada
+    - millal on elekter [kallis](np_kallis) olnud viimase nädala jooksul?
+    - mis on [kallim](np_kallis) hind praegu?
+    - millal peaks vältima elektri kasutamist, kui see on [kallis](np_kallis)?
+    - millal oli viimase nädala [odavaim](np_odav) elekter?
+    - kas täna õhtul on [odavam](np_odav) elektri hind?
+    - millal on oodata järgmine kord [odavat](np_odav) elektrit?
+    - soovin teada, mis kell on täna [soodsaim](np_odav) elektri hind
+    - millisel tunnil oli eile [odavaim](np_odav) elektri hind?

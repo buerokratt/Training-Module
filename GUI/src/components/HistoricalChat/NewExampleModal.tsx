@@ -57,7 +57,7 @@ const NewExampleModal: FC<NewExampleModalProps> = ({ message, setMessage, onSubm
       }
     >
       <Track direction='vertical' gap={16} align='left'>
-        <FormInput {...register('example')} label={t('training.intents.example')} defaultValue={decodeURIComponent(message.content || '')} />
+        <FormInput {...register('example')} label={t('training.intents.example')} defaultValue={message.content || ''} />
         {intents && !isNewIntent && (
           <Controller
               disabled={true}
@@ -72,7 +72,7 @@ const NewExampleModal: FC<NewExampleModalProps> = ({ message, setMessage, onSubm
                 }}
                 label={t('training.mba.intent')}
                 value={selectedIntent}
-                options={intents.map((intent) => ({ label: intent.intent, value: String(intent.id) }))}
+                options={intents.map((intent) => ({ label: intent.intent ?? '', value: String(intent.id) }))}
               />
             )}
           />

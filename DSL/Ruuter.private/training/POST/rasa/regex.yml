@@ -1,0 +1,61 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'REGEX'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+
+assign_values:
+  assign:
+    params: ${incoming.body}
+
+getRegexesWithName:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]/regexes/_search/template"
+    body:
+      id: "regex-with-name"
+      params: ${params}
+  result: getRegexesResult
+
+validateRegexesResult:
+  switch:
+    - condition: ${getRegexesResult.response.body.hits.total.value == 0}
+      next: assignEmptyResponse
+  next: convertStringToArray
+
+assignEmptyResponse:
+  assign:
+    examplesArray: ${getRegexesResult.response.body.hits.hits}
+  next: mapRegexesData
+
+convertStringToArray:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/conversion/string-to-array"
+    body:
+      data: ${getRegexesResult.response.body.hits.hits[0]._source.examples}
+  result: convertedArray
+
+assignExamples:
+  assign:
+    examplesArray: ${convertedArray.response.body}
+
+mapRegexesData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER_HBS]/get_regex_details"
+    headers:
+      type: "json"
+    body:
+      hits: ${getRegexesResult.response.body.hits.hits}
+      examplesArray: ${examplesArray}
+      examples: ${params.examples}
+  result: regexesData
+  next: returnSuccess
+
+returnSuccess:
+  return: ${regexesData.response.body}
+  next: end

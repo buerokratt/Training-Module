@@ -1,0 +1,16 @@
+{"index":{"_id":"version"}}
+{"version":"3.0"}
+{"index":{"_id":"session_config"}}
+{"session_config":{"session_expiration_time":60,"carry_over_slots_to_new_session":true}}
+{"index":{"_id":"intents"}}
+{"intents":["common_ask_csa","common_hüvasti_jätmine","common_kinnitamine","common_eitamine","common_tänamine","common_tervitus","common_klienditeenindajale_suunamine"]}
+{"index":{"_id":"entities"}}
+{"entities":["asukoht"]}
+{"index":{"_id":"slots"}}
+{"slots":{"common_teenus_ilm_asukoht":{"type":"text","influence_conversation":true,"mappings":[{"type":"from_entity","entity":"asukoht","intent":"common_teenus_ilm"},{"type":"from_entity","entity":"asukoht","intent":"nlu_fallback"}]}, "affirm_deny":{"type":"text","influence_conversation":true,"mappings":[{"type":"from_text","conditions":[{"active_loop":"custom_fallback_form","requested_slot":"affirm_deny"},{"active_loop":"direct_to_customer_support_form","requested_slot":"affirm_deny"}]}]}}}
+{"index":{"_id":"forms"}}
+{"forms":{"custom_fallback_form":{"required_slots":["affirm_deny"]},"direct_to_customer_support_form":{"required_slots":["affirm_deny"]}}}
+{"index":{"_id":"actions"}}
+{"actions":["action_ask_custom_fallback_form_affirm_deny","action_check_confidence","action_react_to_affirm_deny_in_custom_fallback_form","action_react_to_affirm_deny_in_direct_to_customer_support_form"]}
+{"index":{"_id":"responses"}}
+{"responses":{"utter_fallback":[{"text":"UNKNOWN"}], "utter_common_ask_csa":[{"text":"Kas suunan teid klienditeenindajale? (Jah/Ei)"}], "utter_common_klienditeenindajale_suunamine":[{"text":"Suunan teid klienditeenindajale. Varuge natukene kannatust."}], "utter_common_ei_suuna_klienditeenindajale":[{"text":"Selge. Kuidas saan veel abiks olla?"}], "utter_common_hüvasti_jätmine":[{"text":"Head aega!"}], "utter_common_tänamine":[{"text":"Meeldiv kuulda. Kuidas saan veel abiks olla?"}], "utter_common_tervitus":[{"text":"Kuidas saan abiks olla?"}]}}

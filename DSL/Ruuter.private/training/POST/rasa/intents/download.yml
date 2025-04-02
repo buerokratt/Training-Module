@@ -1,0 +1,90 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'DOWNLOAD'"
+  method: post
+  accepts: json
+  returns: data
+  namespace: training
+  allowlist:
+    body:
+      - field: intentName
+        type: string
+        description: "Body field 'intentName'"
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie field"
+
+assign_values:
+  assign:
+    intentName: ${incoming.body.intentName.replaceAll(/\s+/g, "_")}
+
+getFileLocations:
+  call: http.get
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/internal/return-file-locations"
+    headers:
+      cookie: ${incoming.headers.cookie}
+  result: fileLocations
+
+getIntentFile:
+  call: http.post
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/rasa/intents/get-intent-file"
+    headers:
+      cookie: ${incoming.headers.cookie}
+    body:
+      intentName: ${incoming.body.intentName}
+      returnType: "json"
+  result: intentFile
+
+checkIfIntentEmpty:
+  switch:
+    - condition: ${intentFile.response.body.response === 'Intent file is missing'}
+      next: returnIntentFileMissing
+    - condition: ${intentFile.response.body.response.nlu[0] != undefined && intentFile.response.body.response != 'Intent file is missing' && intentFile.response.body.response.nlu[0].examples.length > 0}
+      next: replaceString
+  next: returnIntentExamplesMissing
+
+replaceString:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/conversion/string-replace"
+    body:
+      data: ${intentFile.response.body.response.nlu[0].examples}
+      search: "- "
+      replace: ""
+  result: replacedString
+
+splitExamples:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/conversion/string-split"
+    body:
+      data: ${replacedString.response.body}
+      separator: "\n"
+  result: splitExamples
+
+getXlsxData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/conversion/array-to-xlsx"
+    body:
+      data: ${[splitExamples.response.body]}
+  result: xlsxData
+
+returnSuccess:
+  wrapper: false
+  return: ${xlsxData.response.body.base64String}
+  next: end
+
+returnIntentFileMissing:
+  return: "Intent file is missing"
+  status: 409
+  next: end
+
+returnIntentExamplesMissing:
+  return: "Intent has no examples"
+  status: 409
+  next: end

@@ -33,7 +33,7 @@ const IntentExamplesEntry: FC<IntentExamplesEntryProps> = ({ value, entities, on
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Entity deleted from example',
+        message: t('toast.entityDeletedFromExample'),
       });
     },
     onError: (error: AxiosError) => {

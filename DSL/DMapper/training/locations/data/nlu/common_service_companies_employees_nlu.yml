@@ -1,0 +1,19 @@
+version: "3.0"
+nlu:
+- intent: common_service_companies_employees
+  examples: |
+    - mitu inimest töötab firmas
+    - kui palju töötajaid on firmas
+    - kui palju on ettevõttes töötajaid
+    - firma töötajate arv
+    - ettevõtte töötajate arv
+    - mitu töötajat on ettevõttes?
+    - kui mitu töötajat on firmas
+    - mitu inimest on ettevõttes tööl
+    - kui palju inimesi firmas töötab?
+    - kui suur on ettevõte?
+    - ettevõtte töötajate arv
+    - töötajate arv firmas
+    - mitu töötajat firmas?
+    - kui palju inimesi on ettevõtte palgal
+    - firma inimesed

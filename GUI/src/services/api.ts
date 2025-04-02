@@ -1,40 +1,136 @@
 import axios, { AxiosError } from 'axios';
+import { useTranslation } from 'react-i18next';
+import { useEffect } from 'react';
 
-const instance = axios.create({
-  baseURL: import.meta.env.REACT_APP_RUUTER_URL + 'rasa/',
+const api = axios.create({
+  baseURL: import.meta.env.REACT_APP_RUUTER_API_URL,
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
   },
   withCredentials: true,
 });
 
-instance.interceptors.response.use(
-  (axiosResponse) => {
-    import.meta.env.DEBUG_ENABLED && console.log(axiosResponse);
-    return axiosResponse;
+const authApi = axios.create({
+  baseURL: import.meta.env.REACT_APP_AUTH_BASE_URL,
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
   },
-  (error: AxiosError) => {
-    import.meta.env.DEBUG_ENABLED && console.log(error);
-    return Promise.reject(new Error(error.message));
-  }
-);
+  withCredentials: true,
+});
 
-instance.interceptors.request.use(
-  (axiosRequest) => {
-    import.meta.env.DEBUG_ENABLED && console.log(axiosRequest);
-    return axiosRequest;
+const fileApi = axios.create({
+  baseURL: import.meta.env.REACT_APP_RUUTER_URL + 'rasa/',
+  headers: {
+    'Content-Type': 'multipart/form-data',
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
   },
-  (error: AxiosError) => {
-    import.meta.env.DEBUG_ENABLED && console.log(error);
-    if (error.response?.status === 401) {
-      // handle unauthorized requests
-    }
-    if (error.response?.status === 403) {
-      // handle unauthorized requests
-    }
-    return Promise.reject(new Error(error.message));
-  }
-);
+  withCredentials: true,
+});
 
-export default instance;
+const genericApi = axios.create({
+  baseURL: import.meta.env.REACT_APP_RUUTER_URL + 'generic/',
+  headers: {
+    Accept: 'application/json',
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+  },
+  withCredentials: true,
+});
+
+const rasaApi = axios.create({
+  baseURL: import.meta.env.REACT_APP_RUUTER_URL + 'rasa/',
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+  },
+  withCredentials: true,
+});
+
+const AxiosInterceptor = ({ children }) => {
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    const resInterceptor = (response: any) => {
+      import.meta.env.DEBUG_ENABLED && console.debug(response);
+
+      return response;
+    };
+
+    const errInterceptor = (error: any) => {
+      import.meta.env.DEBUG_ENABLED && console.debug(error);
+
+      let message = t('global.notificationErrorMsg');
+
+      return Promise.reject(new Error(message));
+    };
+
+    const rasaErrInterceptor = (error: any) => {
+      import.meta.env.DEBUG_ENABLED && console.debug(error);
+
+      let message = t('global.notificationErrorMsg');
+
+      if (error.response && error.response.data) {
+        const data = error.response.data;
+
+        switch (true) {
+          case data.intentExists:
+            message = t('training.intents.error.intentAlreadyExists');
+            break;
+          case data.intentTooShort:
+            message = t('training.intents.error.intentNameTooShort');
+            break;
+          case data.intentParsing:
+            message = t('training.intents.error.intentParsing');
+            break;
+          default:
+            break;
+        }
+      }
+
+      return Promise.reject(new Error(message));
+    };
+
+    const apiInterceptor = api.interceptors.response.use(resInterceptor, errInterceptor);
+    const authApiInterceptor = authApi.interceptors.response.use(resInterceptor, errInterceptor);
+    const fileApiInterceptor = fileApi.interceptors.response.use(resInterceptor, errInterceptor);
+    const genericInterceptor = genericApi.interceptors.response.use(resInterceptor, errInterceptor);
+    const rasaApiInterceptor = rasaApi.interceptors.response.use(resInterceptor, rasaErrInterceptor);
+
+    return () => {
+      api.interceptors.response.eject(apiInterceptor);
+      authApi.interceptors.response.eject(authApiInterceptor);
+      fileApi.interceptors.response.eject(fileApiInterceptor);
+      genericApi.interceptors.response.eject(genericInterceptor);
+      rasaApi.interceptors.response.eject(rasaApiInterceptor);
+    };
+  }, [t]);
+
+  return children;
+};
+
+const handleRequestError = (error: AxiosError) => {
+  import.meta.env.DEBUG_ENABLED && console.debug(error);
+  if (error.response?.status === 401) {
+    // To be added: handle unauthorized requests
+  }
+  if (error.response?.status === 403) {
+    // To be added: handle forbidden requests
+  }
+  return Promise.reject(new Error(error.message));
+};
+
+api.interceptors.request.use((axiosRequest) => axiosRequest, handleRequestError);
+
+authApi.interceptors.request.use((axiosRequest) => axiosRequest, handleRequestError);
+
+fileApi.interceptors.request.use((axiosRequest) => axiosRequest, handleRequestError);
+
+genericApi.interceptors.request.use((axiosRequest) => axiosRequest, handleRequestError);
+
+rasaApi.interceptors.request.use((axiosRequest) => axiosRequest, handleRequestError);
+
+export { api, authApi, fileApi, genericApi, rasaApi, AxiosInterceptor };

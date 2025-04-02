@@ -1,0 +1,8 @@
+{"index":{"_id":"recipe"}}
+{"recipe":"default.v1"}
+{"index":{"_id":"language"}}
+{"language":"et"}
+{"index":{"_id":"pipeline"}}
+{"pipeline":[{"name":"WhitespaceTokenizer"},{"name":"RegexFeaturizer"},{"name":"LexicalSyntacticFeaturizer"},{"name":"CountVectorsFeaturizer"},{"name":"CountVectorsFeaturizer","analyzer":"char_wb","min_ngram":1,"max_ngram":4},{"name":"DIETClassifier","entity_recognition":false,"epochs":30,"random_seed":50},{"name":"RegexEntityExtractor","case_sensitive":false,"use_regexes":true},{"name":"FallbackClassifier","threshold":0.8}]}
+{"index":{"_id":"policies"}}
+{"policies":[{"name":"RulePolicy","core_fallback_threshold":0.8,"restrict_rules":false}]}

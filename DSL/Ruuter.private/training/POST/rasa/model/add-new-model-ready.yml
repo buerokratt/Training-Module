@@ -1,0 +1,70 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Adds a new model to the database with READY status"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    body:
+      - field: fileName
+        type: string
+        description: "Trained model file name"
+      - field: testReport
+        type: json
+        description: "Trained models test report"
+      - field: crossValidationReport
+        type: json
+        description: "Trained models cross validation report"
+      - field: trainingDataChecksum
+        type: string
+        description: "Trained models training data checksum"
+
+getLatestProcessingModelFromDb:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/get-last-processing-model"
+  result: dbModelResult
+
+updateInDatabase:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/add-llm-trainings"
+    body:
+      model_type: ${dbModelResult.response.body[0].modelType}
+      state: "READY"
+      file_name: ${incoming.body.fileName}
+      version_number: ${dbModelResult.response.body[0].versionNumber}
+      model_version: ${dbModelResult.response.body[0].modelVersion}
+      test_report: ${JSON.stringify(incoming.body.testReport)}
+      cross_validation_report: ${JSON.stringify(incoming.body.crossValidationReport)}
+      trained_date: ${dbModelResult.response.body[0].trainedDate}
+      training_data_checksum: ${incoming.body.trainingDataChecksum}
+  result: dbModelResult
+
+clearModelList:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]/notifications/_delete_by_query?conflicts=proceed"
+    body:
+      query:
+        term:
+          channelId: "model-list"
+  result: clear_chat_res
+  next: postNotificationAboutModel
+
+postNotificationAboutModel:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]/notifications/_doc"
+    body:
+      channelId: "model-list"
+      timestamp: ${new Date().toISOString()}
+      payload: { "status": "Status Changed", "state": "READY" }
+  result: notification_result
+
+returnSuccess:
+  return: "Inserted model with READY status. "
+  wrapper: false
+  next: end

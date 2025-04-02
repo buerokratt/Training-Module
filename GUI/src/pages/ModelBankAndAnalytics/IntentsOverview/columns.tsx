@@ -25,10 +25,7 @@ export const getColumns = ({
         cell: (props) => (
           <div>
               {!nonIntents.includes(props.row.original.intent) && <Link
-                  to={props.row.original.intent.startsWith('common')
-                      ? `/training/common-intents?intent=${props.row.original.intent}#tabs`
-                      : `/training/intents?intent=${props.row.original.intent}#tabs`
-                  }
+                  to={`/training/intents?intent=${props.row.original.intent}#tabs`}
                   style={{color: '#005AA3'}}>
                   {i18n.t('training.mba.gotoExample')}
               </Link>}

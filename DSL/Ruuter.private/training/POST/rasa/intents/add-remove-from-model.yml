@@ -1,0 +1,141 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'ADD-REMOVE-FROM-MODEL'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    body:
+      - field: name
+        type: string
+        description: "Body field 'name'"
+      - field: inModel
+        type: boolean
+        description: "Body field 'inModel'"
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie field"
+
+assign_values:
+  assign:
+    intent: ${incoming.body.name.replaceAll(/\s+/g, "_")}
+    inModel: ${incoming.body.inModel}
+
+getFileLocations:
+  call: http.get
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/internal/return-file-locations"
+    headers:
+      cookie: ${incoming.headers.cookie}
+  result: fileLocations
+
+assign_filename:
+  assign:
+    intentFile: ${fileLocations.response.body.response.intents_location + intent + "_nlu.yml"}
+    intentTmpFile: ${fileLocations.response.body.response.intents_location + intent + "_nlu.yml.tmp"}
+
+check_if_intent_is_in_model:
+  switch:
+    - condition: ${inModel}
+      next: rename_back_to_tmp_file
+  next: getDomainFile
+
+rename_back_to_tmp_file:
+  call: http.post
+  args: 
+    url: "[#TRAINING_DMAPPER]/file-manager/move"
+    body:
+      file_path: "${intentFile}"
+      new_path: "${intentTmpFile}"
+  result: movedback
+
+getDomainFile:
+  call: http.get
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/internal/domain-file"
+    headers:
+      cookie: ${incoming.headers.cookie}
+  result: domainData
+
+isInModel:
+  switch:
+    - condition: ${inModel}
+      next: removeFromDomainArray
+
+rename_tmp_file:
+  call: http.post
+  args: 
+    url: "[#TRAINING_DMAPPER]/file-manager/move"
+    body:
+      file_path: "${intentTmpFile}"
+      new_path: "${intentFile}"
+  result: moved
+  next: mergeIntents
+
+removeFromDomainArray:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/merge/remove-array-value"
+    body:
+      array: ${domainData.response.body.response.intents}
+      value: ${intent}
+  result: updatedIntents
+  next: convertDomainJsonToYaml
+
+mergeIntents:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file-manager/merge"
+    body:
+      array1: ${[intent]}
+      array2: ${domainData.response.body.response.intents}
+  result: updatedIntents
+
+convertDomainJsonToYaml:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml_domain"
+    body:
+      version: ${domainData.response.body.response.version}
+      intents: ${updatedIntents.response.body.array ?? updatedIntents.response.body}
+      entities: ${domainData.response.body.response.entities}
+      slots: ${domainData.response.body.response.slots}
+      forms: ${domainData.response.body.response.forms}
+      actions: ${domainData.response.body.response.actions}
+      responses: ${domainData.response.body.response.responses}
+      session_config: ${domainData.response.body.response.session_config}
+  result: domainYaml
+
+updateDomainOpenSearch:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]/bulk/domain"
+    body:
+      input: ${domainYaml.response.body.json}
+  result: updateSearchResult
+
+saveDomainFile:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file-manager/create"
+    body:
+      file_path: ${fileLocations.response.body.response.domain_location}
+      content: ${domainYaml.response.body.json}
+  result: fileResult
+
+returnSuccessText:
+  switch:
+    - condition: ${inModel}
+      next: returnSuccessRemoved
+  next: returnSuccessAdded
+
+returnSuccessAdded:
+  return: "Intent added to model"
+  next: end
+
+returnSuccessRemoved:
+  return: "Intent removed from model"
+  next: end

@@ -22,21 +22,19 @@ import {
   deleteRegexExample,
   downloadExamples,
   editRegex,
-  editRegexExample
+  editRegexExample,
+  getRegexes
 } from 'services/regex';
 import { Entity } from 'types/entity';
 import i18n from '../../../../i18n';
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
+import { getEntities } from 'services/entities';
+import { RegexTeaser } from 'types/regex';
 
 type Regex = {
   readonly id: string;
   name: string;
   examples: string[];
-}
-
-type RegexTeaser = {
-  readonly id: number;
-  name: string;
 }
 
 const RegexDetail: FC = () => {
@@ -55,11 +53,13 @@ const RegexDetail: FC = () => {
   const { data: regex, refetch } = useQuery<Regex>(['regex',id, 'examples']);
   const [deletableRow, setDeletableRow] = useState<string | undefined | null>(null);
   const [deletableRegex, setDeletableRegex] = useState<string | number | null>(null);
-  const { data: entities } = useQuery<Entity[]>({
+  const { data } = useQuery<{ response: Entity[]}>({
     queryKey: ['entities'],
+    queryFn: () => getEntities(),
   });
-  const { data: existingRegexes} = useQuery<RegexTeaser[]>({
+  const { data: existingRegexes } = useQuery<{ response: RegexTeaser[]}>({
     queryKey: ['regexes'],
+    queryFn: () => getRegexes(),
   });
   const [editRegexName, setEditRegexName] = useState<string>('');
 
@@ -79,9 +79,9 @@ const RegexDetail: FC = () => {
     [regex],
   );
 
-  const availableEntities = useMemo(() => entities?.filter((e) => {
-    return !existingRegexes?.some((r) => r.name === e.name);
-  }).map((e) => ({ label: e.name, value: String(e.id) })), [entities, regexList]);
+  const availableEntities = useMemo(() => data?.response.filter((e) => {
+    return !existingRegexes?.response.some((r) => r.name === e.name);
+  }).map((e) => ({ label: e.name, value: String(e.id) })), [data, regexList]);
 
   useEffect(() => {
     const result = regex?.examples.map((e, index) => ({ id: index, value: e }));
@@ -95,7 +95,7 @@ const RegexDetail: FC = () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'New regex example added',
+        message: t('toast.newRegexExampleAdded'),
       });
       refetch();
       navigate(`/training/regex/${editRegexName}`)
@@ -116,7 +116,7 @@ const RegexDetail: FC = () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Regex deleted',
+        message: t('toast.regexDeleted'),
       });
       setTimeout(() => refetch(), 1000);
       navigate(`/training/intents-followup-training`)
@@ -137,7 +137,7 @@ const RegexDetail: FC = () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Example added',
+        message: t('toast.exampleAdded'),
       });
       refetch();
     },
@@ -157,7 +157,7 @@ const RegexDetail: FC = () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Example deleted',
+        message: t('toast.exampleDeleted'),
       });
       refetch();
     },
@@ -183,7 +183,7 @@ const RegexDetail: FC = () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Example changed',
+        message: t('toast.exampleChanged'),
       });
       refetch();
     },
@@ -203,7 +203,7 @@ const RegexDetail: FC = () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: 'Downloaded Examples',
+        message: t('toast.downloadedExamples'),
       });
     },
     onError: (error: AxiosError) => {

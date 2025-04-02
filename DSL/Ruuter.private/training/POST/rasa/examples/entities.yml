@@ -1,0 +1,46 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'ENTITIES'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    body:
+      - field: examples
+        type: array
+        description: "Body field 'examples'"
+
+assign_values:
+  assign:
+    params: ${incoming.body}
+
+getEntitiesWithExamples:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]/examples-entities/_search/template"
+    body:
+      id: "entities-with-examples"
+      params: ${params}
+  result: getEntitiesResult
+
+mapEntitiesData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER_HBS]/get_entities_with_examples"
+    headers:
+      type: 'json'
+    body:
+      hits: ${getEntitiesResult.response.body.hits.hits}
+      examples: ${params.examples}
+  result: entitiesData
+  next: returnSuccess
+
+returnSuccess:
+  return: ${entitiesData.response.body}
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
+  next: end

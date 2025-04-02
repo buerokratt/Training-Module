@@ -1,0 +1,21 @@
+version: "3.0"
+nlu:
+- intent: common_service_companies_contactdetails
+  examples: |
+    - ettevõtte kontaktandmed
+    - mis on firma aadress
+    - ettevõtte aadress
+    - firma telefoninumber
+    - mis on ettevõtte kontaktnumber?
+    - firma kontaktinfo
+    - ettevõtte kontakt
+    - mis on firma aadress
+    - firma aadressi päring
+    - firma kontaktide päring
+    - ettevõtte e-posti aadress
+    - ettevõtte meiliaadress
+    - firma kontaktide päring
+    - ettevõtte kontakt info
+    - firma kontaktid
+    - firma telefon
+    - ettevõtte e-mail

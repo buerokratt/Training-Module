@@ -1,0 +1,19 @@
+version: "3.0"
+nlu:
+- intent: common_service_companies_beneficiaries
+  examples: |
+    - ettevõtte tegelikud kasusaajad
+    - firma kasusaajad
+    - kes on firma tegelikud kasusaajad
+    - palun infot ettevõtte tegelike kasusaajate kohta
+    - ettevõtte kasusaajad
+    - kes on ettevõtte kasusaajad
+    - firma kasusaajad isikud
+    - kes saavad firma tegevusest kasu
+    - firma tegevusest kasu saavad isikud
+    - kasusaajad
+    - kasusaajad firma kohta
+    - firma kasusaajad isikud
+    - ettevõtte kasusaajate info
+    - kasusaajate info ettevõtte kohta
+    - ettevõtte tegelik kasusaaja

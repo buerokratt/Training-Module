@@ -1,0 +1,42 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Get response by intent name"
+  method: get
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    params:
+      - field: intent
+        type: string
+        description: "Intent ID"
+
+assign_values:
+  assign:
+    response_name: ${"utter_" + incoming.params.intent}
+
+getResponsesWithNameAndText:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]/domain/_search/template"
+    body:
+      id: "response"
+      params:
+        response_name: ${response_name}
+  result: getResponsesResult
+
+mapResponsesData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER_HBS]/get_response_by_intent_id"
+    headers:
+      type: "json"
+    body:
+      response: ${getResponsesResult.response.body.hits.hits}
+  result: responsesData
+  next: returnSuccess
+
+returnSuccess:
+  return: ${responsesData.response.body.response}
+  next: end

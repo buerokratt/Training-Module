@@ -1,0 +1,188 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'UPDATE'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    body:
+      - field: intentName
+        type: string
+        description: "Body field 'intentName'"
+      - field: newExample
+        type: string
+        description: "Body field 'newExample'"
+      - field: oldExample
+        type: string
+        description: "Body field 'oldExample'"
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie field"
+
+assign_values:
+  assign:
+    intent: ${incoming.body.intentName.replaceAll(/\s+/g, "_")}
+    oldExample: ${incoming.body.oldExample}
+    newExample: ${incoming.body.newExample}
+
+getFileLocations:
+  call: http.get
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/internal/return-file-locations"
+    headers:
+      cookie: ${incoming.headers.cookie}
+  result: fileLocations
+
+assignFilePath:
+  assign:
+    file_end: "_nlu.yml"
+
+checkIntentFileYaml:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file-manager/exists"
+    body:
+      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
+  result: fileExists
+
+validateFileExists:
+  switch:
+    - condition: ${fileExists.response.body.error === false}
+      next: getIntentFile
+  next: assignTmpFilePath
+
+assignTmpFilePath:
+  assign:
+    file_end: "_nlu.yml.tmp"
+
+checkIntentFileTmp:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file-manager/exists"
+    body:
+      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
+  result: tmpFileExists
+
+validateTmpFileExists:
+  switch:
+    - condition: ${tmpFileExists.response.body.error === false}
+      next: getIntentFile
+  next: returnIntentFileMissing
+
+getIntentFile:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file-manager/read-file"
+    body:
+      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
+  result: intentFile
+
+convertYamlToJson:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/conversion/yaml_to_json"
+    body:
+      file: ${intentFile.response.body.file}
+  result: intentData
+
+convertStringToArray:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/conversion/string-to-array"
+    body:
+      data: ${intentData.response.body.nlu[0].examples}
+  result: convertedArray
+
+validateExample:
+  switch:
+    - condition: ${!convertedArray.response.body.includes(oldExample)}
+      next: returnExampleIsMissing
+    - condition: ${convertedArray.response.body.includes(newExample)}
+      next: returnExampleExists
+    - condition: ${newExample.length >= 500}
+      next: returnExampleTooLong
+  next: replaceExistingExample
+
+replaceExistingExample:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/merge/replace-array-element"
+    body:
+      element: ${oldExample}
+      newValue: ${newExample}
+      array: ${convertedArray.response.body}
+  result: replacedExamples
+
+mapIntentsData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER_HBS]/get_intent_file"
+    headers:
+      type: "json"
+    body:
+      intent: ${intent}
+      examples: ${replacedExamples.response.body}
+  result: intentFileJson
+
+convertJsonToYaml:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml"
+    body:
+      version: "3.0"
+      nlu: ${intentFileJson.response.body}
+  result: intentYaml
+
+addIntentInPipeline:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]/put/intents/intent"
+    body:
+      input: ${intentYaml.response.body.json}
+  result: updateSearchResult
+
+addInDatabase:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/add-intent"
+    body:
+      intent: ${incoming.body.intentName}
+      status: "ACTIVE"
+  result: addInDatabaseResult
+
+saveIntentFile:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file-manager/create"
+    body:
+      file_path: ${fileLocations.response.body.response.intents_location + intent + file_end}
+      content: ${intentYaml.response.body.json}
+  result: fileResult
+  next: returnSuccess
+
+returnSuccess:
+  return: "Example updated"
+  next: end
+
+returnExampleTooLong:
+  return: "Example is too long"
+  status: 409
+  next: end
+
+returnExampleIsMissing:
+  return: "Can't find example"
+  status: 409
+  next: end
+
+returnExampleExists:
+  return: "Example with this name already exists"
+  status: 409
+  next: end
+
+returnIntentFileMissing:
+  return: "Intent file to update is missing"
+  status: 409
+  next: end

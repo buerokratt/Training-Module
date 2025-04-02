@@ -1,0 +1,29 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'RULE-NAMES'"
+  method: get
+  accepts: json
+  returns: json
+  namespace: training
+
+getRules:
+  call: http.get
+  args:
+    url: "[#TRAINING_OPENSEARCH]/rules/_search?size=1000"
+  result: getRulesResult
+
+mapRulesData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER_HBS]/get_rule_names"
+    headers:
+      type: 'json'
+    body:
+      hits: ${getRulesResult.response.body.hits.hits}
+  result: rulesData
+  next: returnSuccess
+
+returnSuccess:
+  return: ${rulesData.response.body}
+  next: end

@@ -1,0 +1,105 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'UPDATE'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    body:
+      - field: entity_name
+        type: string
+        description: "Body field 'entity_name'"
+      - field: entity
+        type: json
+        description: "Body field 'entity'"
+      - field: intent
+        type: string
+        description: "Body field 'intent'"
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie field"
+
+assign_values:
+  assign:
+    parameters: ${incoming.body}
+
+getDomainFile:
+  call: http.get
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/internal/domain-file"
+    headers:
+      cookie: ${incoming.headers.cookie}
+  result: domainData
+
+validateEntities:
+  switch:
+    - condition: ${domainData.response.body.response.entities.includes(parameters.entity_name)}
+      next: replaceExistingEntity
+  next: returnEntityIsMissing
+
+replaceExistingEntity:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/merge/replace-array-element"
+    body:
+      element: ${parameters.entity_name}
+      newValue: ${parameters.entity}
+      array: ${domainData.response.body.response.entities}
+  result: replacedEntities
+
+convertJsonToYaml:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml_domain"
+    body:
+      version: ${domainData.response.body.response.version}
+      intents: ${domainData.response.body.response.intents}
+      entities: ${replacedEntities.response.body}
+      slots: ${domainData.response.body.response.slots}
+      forms: ${domainData.response.body.response.forms}
+      actions: ${domainData.response.body.response.actions}
+      responses: ${domainData.response.body.response.responses}
+      session_config: ${domainData.response.body.response.session_config}
+  result: domainYaml
+
+getFileLocations:
+  call: http.get
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/internal/return-file-locations"
+    headers:
+      cookie: ${incoming.headers.cookie}
+  result: fileLocations
+
+saveDomainFile:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file-manager/create"
+    body:
+      file_path: ${fileLocations.response.body.response.domain_location}
+      content: ${domainYaml.response.body.json}
+  result: fileResult
+
+updateDomainOpenSearch:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]/bulk/domain"
+    body:
+      input: ${domainYaml.response.body.json}
+  result: updateSearchResult
+  next: returnSuccess
+
+returnSuccess:
+  return: "Entity updated"
+  next: end
+
+returnEntityIsMissing:
+  return: "Can't find entity to update"
+  status: 409
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
+  next: end

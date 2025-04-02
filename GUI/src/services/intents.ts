@@ -1,89 +1,109 @@
-import api from './api';
-import fileApi from './file.api';
-import { Intent } from 'types/intent';
+import { IntentId } from 'types/intent';
+import { rasaApi } from './api';
+import { PaginatedResponse, PaginationParams } from 'types/api';
+
+export const getIntentIds = async ({
+  pageParam,
+  pageSize,
+  filter,
+}: PaginationParams): Promise<PaginatedResponse<IntentId>> => {
+  const { data } = await rasaApi.get(`/intent-ids?size=${pageSize}&filter=${filter}&from=${pageParam}`);
+  return data;
+};
 
 export async function addIntent(newIntentData: { name: string }) {
-  const { data } = await api.post('/intents/add', newIntentData);
+  const { data } = await rasaApi.post('/intents/add', newIntentData);
   return data;
 }
 
-export async function addIntentWithExample(newIntentExample: { intentName: string,newExamples: string }) {
-  const { data } = await api.post('/intents/add-with-example', newIntentExample);
+export async function markForService(markData: { name: string; isForService: boolean }) {
+  const { data } = await rasaApi.get(
+    `/intents/mark-for-service?name=${markData.name}&isForService=${markData.isForService}`
+  );
   return data;
 }
 
-export async function editIntent(editIntentData: {oldName: string, newName: string}) {
-  const { data } = await api.post(`intents/update`, editIntentData);
+export async function addIntentWithExample(newIntentExample: { intentName: string; newExamples: string }) {
+  const { data } = await rasaApi.post('/intents/add-with-example', newIntentExample);
+  return data;
+}
+
+export async function editIntent(editIntentData: { oldName: string; newName: string }) {
+  const { data } = await rasaApi.post(`intents/update`, editIntentData);
   return data;
 }
 
 export async function deleteIntent(deleteIntentData: { name: string }) {
-  const { data } = await api.post(`intents/delete`, deleteIntentData);
+  const { data } = await rasaApi.post(`intents/delete`, deleteIntentData);
   return data;
 }
 
-export async function addRemoveIntentModel(intentModelData: {name: string, inModel: boolean}) {
-  const { data } = await api.post(`intents/add-remove-from-model`, intentModelData);
+export async function addRemoveIntentModel(intentModelData: { name: string; inModel: boolean }) {
+  const { data } = await rasaApi.post(`intents/add-remove-from-model`, intentModelData);
   return data;
 }
 
-export async function getLastModified(intentModifiedData: {intentName: string}) {
-  const { data } = await api.post(`intents/last-modified`, intentModifiedData);
+export async function getLastModified(intentModifiedData: { intentName: string }) {
+  const { data } = await rasaApi.post(`intents/last-modified`, intentModifiedData);
   return data;
 }
 
-export async function addExample(addExampleData: { intentName: string, intentExamples: string[], newExamples: string }) {
-  const { data } = await api.post<{ intentName: string; example: string; }>(`intents/examples/add`, addExampleData);
+export async function addExample(addExampleData: {
+  intentName: string;
+  intentExamples: string[];
+  newExamples: string;
+}) {
+  const { data } = await rasaApi.post<{ intentName: string; example: string }>(`intents/examples/add`, addExampleData);
   return data;
 }
 
 export async function addExampleFromHistory(intentName: string, exampleData: { example: string }) {
   const request = { intentName: intentName, intentExamples: [], newExamples: exampleData.example };
-  const {data} = await api.post<{ intentName: string; example: string; }>(`intents/examples/add`, request);
+  const { data } = await rasaApi.post<{ intentName: string; example: string }>(`intents/examples/add`, request);
   return data;
 }
 
-export async function editExample(editExampleData: { intentName: string, oldExample: string, newExample: string }) {
-  const { data } = await api.post<{ intentName: string; example: string; }>(`intents/examples/update`, editExampleData);
+export async function editExample(editExampleData: { intentName: string; oldExample: string; newExample: string }) {
+  const { data } = await rasaApi.post<{ intentName: string; example: string }>(
+    `intents/examples/update`,
+    editExampleData
+  );
   return data;
 }
 
-export async function deleteExample(deleteExampleData: { intentName: string, example: string }) {
-  const { data } = await api.post<{ intentName: string; example: string; }>(`intents/examples/delete`, deleteExampleData);
+export async function deleteExample(deleteExampleData: { intentName: string; example: string }) {
+  const { data } = await rasaApi.post<{ intentName: string; example: string }>(
+    `intents/examples/delete`,
+    deleteExampleData
+  );
   return data;
 }
 
 export async function downloadExamples(downloadExampleData: { intentName: string }) {
-  const { data } = await api.post<{ intentName: string; }>(`intents/download`, downloadExampleData);
+  const { data } = await rasaApi.post<string>(`intents/download`, downloadExampleData);
   return data;
 }
 
-export async function uploadExamples(intentName: string, formData: File) {
-  const formDataRequest = new FormData();
-  formDataRequest.append('file', formData);
+export async function uploadExamples(intentName: string, file: File) {
+  const base64File = await new Promise<string>((resolve) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64 = reader.result as string;
+      // Remove the data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64, prefix
+      resolve(base64.split(',')[1]);
+    };
+    reader.readAsDataURL(file);
+  });
 
-  const { data } = await fileApi.post(`/intents/upload?intentName=${intentName}`, formDataRequest);
+  const { data } = await rasaApi.post(`/intents/upload?intentName=${intentName}`, {
+    file: base64File,
+  });
   return data;
 }
 
-
-export async function turnExampleIntoIntent(data: {
-  exampleName: string;
-  intentName: string;
-}): Promise<void> {
-  await api.post('intents/add', {
+export async function turnExampleIntoIntent(data: { exampleName: string; intentName: string }): Promise<void> {
+  await rasaApi.post('intents/add', {
     intent: data.exampleName,
   });
-  await api.post(
-    'intents/examples/delete',
-    { intent: data.intentName, example: data.exampleName }
-  );
-}
-
-export async function turnIntentIntoService(
-  intent: Intent
-): Promise<void> {
-  await api.post('intents/turn-into-service', {
-    intentName: intent.intent
-  });
+  await rasaApi.post('intents/examples/delete', { intent: data.intentName, example: data.exampleName });
 }

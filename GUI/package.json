@@ -11,9 +11,10 @@
     "prettier": "prettier --write \"{,!(node_modules)/**/}*.{ts,tsx,js,json,css,less,scss}\""
   },
   "dependencies": {
-    "@buerokratt-ria/header": "^0.1.6",
-    "@buerokratt-ria/menu": "^0.1.16",
+    "@buerokratt-ria/header": "^0.1.27",
+    "@buerokratt-ria/menu": "^0.2.6",
     "@buerokratt-ria/styles": "^0.0.1",
+    "@buerokratt-ria/common-gui-components": "^0.0.9",
     "@fontsource/roboto": "^4.5.8",
     "@formkit/auto-animate": "^1.0.0-beta.5",
     "@radix-ui/react-accessible-icon": "^1.0.1",
@@ -28,15 +29,17 @@
     "@tanstack/match-sorter-utils": "^8.7.2",
     "@tanstack/react-query": "^4.20.4",
     "@tanstack/react-table": "^8.7.4",
-    "linkify-react": "^4.1.1",
-    "linkifyjs": "^4.1.1",
     "axios": "^1.2.1",
     "buffer": "^6.0.3",
     "clsx": "^1.2.1",
     "date-fns": "^2.29.3",
     "downshift": "^7.0.5",
+    "howler": "^2.2.4",
     "i18next": "^22.4.5",
     "i18next-browser-languagedetector": "^7.0.1",
+    "linkify-react": "^4.1.1",
+    "linkifyjs": "^4.1.1",
+    "markdown-to-jsx": "7.7.3",
     "papaparse": "^5.3.2",
     "react": "^18.2.0",
     "react-cookie": "^4.1.1",
@@ -51,20 +54,22 @@
     "react-textarea-autosize": "^8.4.0",
     "reactflow": "^11.4.0",
     "regexify-string": "^1.0.19",
+    "rxjs": "^7.8.1",
+    "rich-textarea": "^0.26.4",
     "use-debounce": "^10.0.1",
     "usehooks-ts": "^2.9.1",
-    "zustand": "^4.3.2",
-    "rxjs": "^7.8.1",
-    "howler": "^2.2.4"
+    "zustand": "^4.3.2"
   },
   "devDependencies": {
     "@types/file-saver": "^2.0.5",
+    "@types/howler": "^2.2.11",
     "@types/lodash.debounce": "^4.0.7",
     "@types/node": "^18.11.17",
     "@types/papaparse": "^5.3.7",
     "@types/react": "^18.0.26",
     "@types/react-datepicker": "^4.8.0",
     "@types/react-dom": "^18.0.9",
+    "@types/wicg-file-system-access": "^2023.10.5",
     "@vitejs/plugin-react": "^3.0.0",
     "eslint": "^8.30.0",
     "eslint-config-react-app": "^7.0.1",
@@ -77,8 +82,7 @@
     "vite": "^4.0.0",
     "vite-plugin-env-compatible": "^1.1.1",
     "vite-plugin-svgr": "^2.4.0",
-    "vite-tsconfig-paths": "^4.0.3",
-    "@types/howler": "^2.2.11"
+    "vite-tsconfig-paths": "^4.0.3"
   },
   "browserslist": {
     "production": [

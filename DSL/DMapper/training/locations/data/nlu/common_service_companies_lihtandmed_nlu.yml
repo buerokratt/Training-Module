@@ -1,0 +1,17 @@
+version: "3.0"
+nlu:
+- intent: common_service_companies_lihtandmed
+  examples: |
+    - ettevõtte lihtandmete päring
+    - firma lihtandmed
+    - ettevõtte üldinfo
+    - info ettevõtte kohta
+    - mis on firma registrikood
+    - ettevõtte staatus
+    - ettevõtte info
+    - üldine info ettevõtte kohta
+    - ettevõtte staatuse päring
+    - ettevõtte registrikood nime järgi
+    - firma andmed
+    - üldine firma info
+    - lihtandmed ettevõte

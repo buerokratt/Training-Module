@@ -1,0 +1,22 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'RETURN-FILE-LOCATIONS'"
+  method: get
+  accepts: json
+  returns: json
+  namespace: training
+
+assign_step:
+  assign:
+    locations:
+      rules_location: '/DMapper/training/locations/data/rules.yml'
+      stories_location: '/DMapper/training/locations/data/stories.yml'
+      domain_location: '/DMapper/training/locations/data/domain.yml'
+      test_stories_location: '/DMapper/training/locations/tests/test_stories.yml'
+      intents_location: '/DMapper/training/locations/data/nlu/'
+      regex_location: '/DMapper/training/locations/data/regex/'
+      training_result_location: '/DMapper/training/locations/results'
+      config_location: '/DMapper/training/locations/data/config.yml'
+return_value:
+  return: ${locations}

@@ -1,0 +1,104 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'ADD'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+  allowlist:
+    body:
+      - field: response_name
+        type: string
+        description: "Body field 'response_name'"
+      - field: response
+        type: string
+        description: "Body field 'response'"
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie field"
+
+assign_values:
+  assign:
+    parameters: ${incoming.body}
+
+getDomainFile:
+  call: http.get
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/internal/domain-file"
+    headers:
+      cookie: ${incoming.headers.cookie}
+  result: domainData
+
+validateResponse:
+  switch:
+    - condition: ${domainData.response.body.response.responses[parameters.response_name] != null}
+      next: returnResponseExists
+    - condition: ${parameters.response_name.length >= 500}
+      next: returnResponseTooLong
+  next: mergeResponses
+
+mergeResponses:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/merge/response_objects"
+    body:
+      object1: ${domainData.response.body.response.responses}
+      object2: ${parameters.response}
+  result: mergedResponses
+
+convertJsonToYaml:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/conversion/json_to_yaml_domain"
+    body:
+      version: ${domainData.response.body.response.version}
+      intents: ${domainData.response.body.response.intents}
+      entities: ${domainData.response.body.response.entities}
+      slots: ${domainData.response.body.response.slots}
+      forms: ${domainData.response.body.response.forms}
+      actions: ${domainData.response.body.response.actions}
+      responses: ${mergedResponses.response.body}
+      session_config: ${domainData.response.body.response.session_config}
+  result: domainYaml
+
+getFileLocations:
+  call: http.get
+  args:
+    url: "[#TRAINING_PUBLIC_RUUTER]/internal/return-file-locations"
+    headers:
+      cookie: ${incoming.headers.cookie}
+  result: fileLocations
+
+saveDomainFile:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/file-manager/create"
+    body:
+      file_path: ${fileLocations.response.body.response.domain_location}
+      content: ${domainYaml.response.body.json}
+  result: fileResult
+  next: updateOpenSearch
+
+updateOpenSearch:
+  call: http.post
+  args:
+    url: "[#TRAINING_PIPELINE]/bulk/domain"
+    body:
+      input: ${domainYaml.response.body.json}
+  result: updateSearchResult
+  next: returnSuccess
+
+returnSuccess:
+  return: "Response added"
+  next: end
+
+returnResponseExists:
+  return: "Response exists"
+  status: 409
+  next: end
+
+returnResponseTooLong:
+  return: "Response text is too long"
+  next: end

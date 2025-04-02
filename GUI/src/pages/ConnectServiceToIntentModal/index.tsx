@@ -9,7 +9,7 @@ import { requestServiceIntentConnection } from "services/requests";
 import { useToast } from "hooks/useToast";
 import { useDebounce } from "use-debounce";
 import i18n from "../../../i18n";
-import api from "services/api";
+import { rasaApi } from "services/api";
 
 type ConnectServiceToIntentModalProps = {
   onModalClose: () => void;
@@ -40,7 +40,7 @@ const ConnectServiceToIntentModal: FC<ConnectServiceToIntentModalProps> = ({
     if(sorting.length > 0)
       sort = sorting[0].id + ' ' + (sorting[0].desc ? 'desc' : 'asc');
     
-    api
+    rasaApi
       .post(`services/unassigned`, {
         page: pagination.pageIndex + 1,
         page_size: pagination.pageSize,

@@ -1,0 +1,19 @@
+version: "3.0"
+nlu:
+- intent: common_service_companies_workforce_taxes
+  examples: |
+    - ettevõtte tasutud tööjõumaksud
+    - kui palju maksis ettevõte tööjõumakse
+    - firma poolt tasutud tööjõumaksud
+    - ettevõtte makstud tööjõumaksud
+    - firma tööjõumaksud
+    - ettevõtte tööjõumaksud
+    - kui palju on firma maksnud tööjõumakse?
+    - tööjõumaksud
+    - tööjõumaksud firma järgi
+    - firma töötajate pealt makstud maksud
+    - kui palju on ettevõte maksnud tööjõumakse?
+    - firma tööjõumaksude summa
+    - ettevõtte tööjõumaksudele kulunud summa
+    - kui palju on ettevõte tasunud tööjõumakse
+    - kui palju tööjõumakse on ettevõte tasunud?

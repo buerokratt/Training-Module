@@ -13,6 +13,7 @@
     "search": "Search",
     "notification": "Notification",
     "notificationError": "Error",
+    "notificationErrorMsg": "An error occurred",
     "active": "Active",
     "activate": "Activate",
     "deactivate": "Deactivate",
@@ -51,6 +52,56 @@
       "sunday": "Sunday"
     }
   },
+  "toast": {
+    "newExampleAdded": "New example added",
+    "newResponseAdded": "New response added",
+    "newAppealAdded": "New appeal added",
+    "appealDeleted": "Appeal deleted",
+    "copied": "Copied to clipboard",
+    "modelDeleted": "Model deleted",
+    "modelActivated": "Model has been published",
+    "modelActivationTimedOut": "Model activation expired",
+    "testStoryDeleted": "Test story deleted",
+    "configurationSaved": "Configuration saved",
+    "newFormAdded": "New form added",
+    "formChangesSaved": "Form changes saved",
+    "formDeleted": "Form deleted",
+    "intentRemovedFromModel": "Intent removed from model",
+    "intentAddedToModel": "Intent added to model",
+    "intentUpdated": "Intent Updated",
+    "intentDeleted": "Intent deleted",
+    "examplesSentForDownloading": "Examples sent for downloading",
+    "fileUploadedSuccessfully": "File uploaded successfully",
+    "intentToServiceSuccess": "Intent to Service - success",
+    "newIntentAdded": "New intent added",
+    "intentTitleSaved": "Intent title saved",
+    "entityDeletedFromExample": "Entity deleted from example",
+    "exampleConvertedtoIntent": "Example converted to intent",
+    "exampleDeleted": "Example deleted",
+    "newEntityAdded": "New entity added",
+    "entityChangesSaved": "Entity changes saved",
+    "entityDeleted": "Entity deleted",
+    "newRegexAdded": "New regex added",
+    "regexDeleted": "Regex deleted",
+    "newRegexExampleAdded": "New regex example added",
+    "exampleAdded": "Example added",
+    "exampleChanged": "Example changed",
+    "downloadedExamples": "Downloaded Examples",
+    "responseSaved": "Response saved",
+    "responseDeleted": "Response deleted",
+    "slotDeleted": "Slot deleted",
+    "newSlotAdded": "New slot added",
+    "slotChangesSaved": "Slot changes saved",
+    "ruleDeleted": "Rule deleted",
+    "ruleAdded": "Rule added",
+    "ruleUpdated": "Rule updated",
+    "titleCannotBeEmpty": "Title cannot be empty",
+    "trainSettingsChangesSaved": "Train settings changes saved",
+    "trainingIsInitialized": "Training is Initialized",
+    "trainingSuccess": "The training was successful",
+    "alreadyTrained": "The model is already trained",
+    "trainingFailure": "Training failed"
+  },
   "mainMenu": {
     "menuLabel": "Main navigation",
     "closeMenu": "Close menu",
@@ -71,7 +122,9 @@
     "intents": {
       "title": "Intents",
       "commonIntents": "Common intents",
-      "searchIntentPlaceholder": "Search for intent",
+      "responseTitle": "Response",
+      "searchIntentPlaceholder": "Search for existing intent",
+      "newIntentNamePlaceholder": "New intent name",
       "addToModel": "Add to model",
       "removeFromModel": "Remove from model",
       "examples": "Examples",
@@ -92,13 +145,25 @@
       "regexExampleTitle": "Regex example title",
       "deleteEntity": "Delete entity",
       "turnExampleIntoIntent": "Turn into an intent",
-      "turnIntoService": "Turn into a Service",
       "connectToService": "Connect to a Service",
+      "markForService": "Mark for service",
       "connectToServiceTooltip": "To connect the service, the service must be previously created in the Services module",
       "changeConnectedService": "Change service",
       "deleteTooltip": "Only the Intent is deleted and the service remains, its deletion can be done in the Service module",
       "error": {
+        "intentAlreadyExists": "Intent already exists, please check the existing list",
+        "intentNameTooShort": "Intent name is too short",
+        "intentParsing": "Intent parsing error",
         "turnExampleIntoIntent": "Unable to turn this example into intent"
+      },
+      "sortingType": {
+        "label": "Sorting type",
+        "alphabeticalAsc": "Alphabetical (A-Z)",
+        "alphabeticalDesc": "Alphabetical (Z-A)",
+        "inModelFirst": "In model first",
+        "inModelLast": "In model last",
+        "lastModifiedAsc": "Last modified (oldest first)",
+        "lastModifiedDesc": "Last modified (newest first)"
       }
     },
     "responses": {
@@ -106,8 +171,9 @@
       "searchResponse": "Search response",
       "response": "Response",
       "newResponseTextPlaceholder": "Add a response text for this template",
+      "deleteIntent": "Delete intent",
       "deleteResponse": "Delete response",
-      "deleteStory": "Delete story",
+      "deleteRule": "Delete rule",
       "responseName": "Response name",
       "responseText": "Response text",
       "addNewResponse": "Add new response"
@@ -125,10 +191,8 @@
       "coreFallbackThreshold": "Core fallback threshold",
       "moreFromKratid": "More info from kratid.ee"
     },
-    "stories": {
-      "title": "Stories and rules",
-      "stories": "Stories",
-      "rules": "Rules",
+    "rules": {
+      "title": "Rules",
       "entityWarning": "There are two entities with the same name in intent '{{intent}}'",
       "noEntitiesAvailable": "No Entities available"
     },
@@ -198,9 +262,12 @@
       "version": "Version"
     },
     "trainNew": {
-      "title": "Traing and test",
+      "title": "Training and test",
       "lastTrained": "Last trained {{date}}, {{time}}",
-      "trainNow": "Train now",
+      "trainAndTest": "Train and test",
+      "train": "Train",
+      "trainTooltip": "Train model without testing (Suitable for minor corrections/modifications)",
+      "trainAndTestTooltip": "The train and test model is suitable for major changes (allows feedback and review of topics) Testing takes significantly more time.",
       "warning": "NB! Last training failed. ({{date}}, {{time}})",
       "trainingTitle": "Training and testing data",
       "folds": "Number of folds",
@@ -208,7 +275,16 @@
       "planTitle": "Planned training",
       "date": "Starting from",
       "days": "Days",
-      "time": "Training time"
+      "time": "Training time",
+      "trainingState": "A model is currently being trained with state: {{state}}",
+      "state": {
+        "ready": "Ready",
+        "processing": "Processing",
+        "testing": "Testing",
+        "cross_validating": "Cross validating",
+        "error": "Error",
+        "already_trained": "Already Trained"
+      }
     }
   },
   "roles": {
@@ -225,7 +301,8 @@
       "name": "Name",
       "idCode": "ID code",
       "role": "Role",
-      "displayName": "User title",
+      "displayName": "Display name",
+      "userTitle": "User title",
       "email": "E-mail",
       "addUser": "Add user",
       "editUser": "Edit user",
@@ -238,13 +315,23 @@
       "popupNotifications": "Popup notifications",
       "newUnansweredChat": "New unanswered chat",
       "newForwardedChat": "New forwarded chat",
+      "newValidationMessage": "New message to validate",
       "useAutocorrect": "Text auto corrector"
     }
   },
   "chat": {
     "unanswered": "Unanswered",
     "forwarded": "Forwarded",
+    "pending": "Pending",
     "redirectedMessage": "{{from}} redirected the conversation to user {{to}} {{date}}",
+    "endUser": "End user name",
+    "endUserId": "End user id",
+    "csaName": "Client support name",
+    "endUserEmail": "End User Email",
+    "endUserPhoneNumber": "End User Phone",
+    "startedAt": "Chat started at",
+    "device": "Device",
+    "location": "Location",
     "history": {
       "title": "History",
       "searchChats": "Search chats",
@@ -255,7 +342,15 @@
       "comment": "Comment",
       "label": "Label",
       "nps": "NPS",
-      "forwarded": "Forwarded"
+      "rating": "Rating",
+      "feedback": "Feedback",
+      "forwarded": "Forwarded",
+      "commentAuthor": "Commenter",
+      "commentAddedDate": "Comment added date",
+      "statusAdder": "Status adder",
+      "statusAddedDate": "Status added date",
+      "chosenCsa": "Chosen csa(s)",
+      "chosenColumn": "Chosen column(s)"
     },
     "plainEvents": {
       "answered": "Answered",
@@ -287,18 +382,24 @@
       "inactive-chat-ended": "Ended cue to inactivity",
       "contact-information-skipped": "Contact Information Skipped",
       "unavailable-contact-information-fulfilled": "Contact information provided",
-      "unavailable_organization": "Organization Unavailable",
-      "unavailable_csas": "CSA's Unavailable",
+      "unavailable_organization": "Organization is unavailable",
+      "unavailable_organization_ask_contacts": "Organization is unavailable and asked for contacts",
+      "unavailable_csas": "Advisors are not available",
+      "unavailable_csas_ask_contacts": "Advisors are not available and asked for contacts",
       "unavailable_holiday": "Holiday",
+      "unavailable_holiday_ask_contacts": "Holiday and asked for contacts",
       "message-read": "Read",
       "user-reached": "User contacted",
-      "user-not-reached": "User could not be reached"
+      "user-not-reached": "User could not be reached",
+      "ask_to_forward_to_csa": "Asked to forward the conversation to a customer service agent",
+      "forwarded_to_backoffice": "Conversation forwarded to back office",
+      "continue_chatting_with_bot": "Continue conversation with bürokratt"
     },
     "status": {
       "active": "Active",
       "ended": "Ended"
     },
-    "event": {
+    "events": {
       "answered": "Answered {{date}}",
       "terminated": "Unspecified {{date}}",
       "sent_to_csa_email": "Chat sent to CSA email {{date}}",
@@ -326,15 +427,23 @@
       "requested-chat-forward-accepted": "Requested chat forward accepted {{date}}",
       "requested-chat-forward-rejected": "Requested chat forward rejected {{date}}",
       "message-read": "Read",
+      "read": "Read {{ date }}",
       "contact-information-skipped": "Contact Information Skipped",
       "unavailable-contact-information-fulfilled": "Contact information provided",
-      "unavailable_organization": "Organization Unavailable",
-      "unavailable_csas": "CSA's Unavailable",
+      "unavailable_organization": "Organization is unavailable",
+      "unavailable_organization_ask_contacts": "Organization is unavailable and asked for contacts",
+      "unavailable_csas": "Advisors are not available",
+      "unavailable_csas_ask_contacts": "Advisors are not available and asked for contacts",
       "unavailable_holiday": "Holiday",
+      "unavailable_holiday_ask_contacts": "Holiday and asked for contacts",
       "pending-assigned": "{{name}} assigned to contact user",
       "user-reached": "{{name}} contacted the user",
       "user-not-reached": "{{name}} could not reach the user",
-      "user-authenticated": "{{name}} is authenticated {{date}}"
+      "user-authenticated": "{{name}} is authenticated {{date}}",
+      "taken-over": "A human took the conversation over",
+      "ask_to_forward_to_csa": "Asked to forward the conversation to a customer service agent",
+      "forwarded_to_backoffice": "Conversation forwarded to back office",
+      "continue_chatting_with_bot": "Continue conversation with bürokratt"
     }
   },
   "submit": {
@@ -345,7 +454,8 @@
     "error": {
       "formRulesDependency": "Deleting a form is forbidden because it has relation to rules",
       "formStoriesDependency": "Deleting a form is forbidden because it has relation to stories",
-      "formNotFound": "Can't find form to delete."
+      "formNotFound": "Can't find form to delete.",
+      "conflict": "This change cannot be made."
     }
   },
   "connectionRequests": {

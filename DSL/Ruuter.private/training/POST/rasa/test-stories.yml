@@ -1,0 +1,41 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'TEST-STORIES'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: training
+
+assignValues:
+  assign:
+    params: ${incoming.body}
+  next: getTestStoriesWithName
+
+getTestStoriesWithName:
+  call: http.post
+  args:
+    url: "[#TRAINING_OPENSEARCH]/test-stories/_search/template"
+    body:
+      id: "test-story-with-name"
+      params: ${params}
+  result: getTestStoriesResult
+
+mapTestStoriesData:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER_HBS]/get_test_stories"
+    headers:
+      type: 'json'
+    body:
+      hits: ${getTestStoriesResult.response.body.hits.hits}
+  result: testStoriesData
+  next: returnSuccess
+
+returnSuccess:
+  return: ${testStoriesData.response.body}
+  next: end
+
+returnUnauthorized:
+  return: "error: unauthorized"
+  next: end

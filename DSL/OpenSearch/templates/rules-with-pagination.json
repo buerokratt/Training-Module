@@ -1,0 +1,24 @@
+{
+  "script": {
+    "lang": "mustache",
+    "source": {
+      "from": "{{from}}",
+      "size": "{{size}}",
+      "_source": ["rule"],
+      "query": {
+        "regexp": {
+          "rule": {
+            "value": ".*{{filter}}.*",
+            "case_insensitive": true,
+            "flags": "ALL"
+          }
+        }
+      }
+    },
+    "params": {
+      "from": 0,
+      "size": 10,
+      "filter": ""
+    }
+  }
+}

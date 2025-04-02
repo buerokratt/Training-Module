@@ -1,0 +1,17 @@
+version: "3.0"
+nlu:
+- intent: common_teenus_citizien_initiative_popular
+  examples: |
+    - Mis on hetkel populaarsemad rahvaalgatused?
+    - Millised on viimase aja populaarsed rahvaalgatused
+    - populaarsed rahvaalgatused
+    - populaarsemad rahvaalgatused
+    - viimase aja populaarsed rahvaalgatused
+    - populaarsed käimasolevad rahvaalgatused
+    - millised on populaarsemad käimasolevad rahvaalgatused?
+    - Mis on viis populaarsemat avalikku algatust?
+    - Kas saate loetleda viis populaarsemat avalikku algatust?
+    - Millised on populaarsemad avalikud algatused?
+    - Kus ma saan näha populaarsemaid avalikke algatusi?
+    - Kas te saaksite mulle öelda viis populaarsemat avalikku algatust?
+    - Kust ma leian teavet populaarsemate avalike algatuste kohta?
