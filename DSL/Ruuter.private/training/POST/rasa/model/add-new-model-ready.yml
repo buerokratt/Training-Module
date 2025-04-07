@@ -8,9 +8,9 @@ declaration:
   namespace: training
   allowlist:
     body:
-      - field: fileName
+      - field: filename
         type: string
-        description: "Trained model file name"
+        description: "Trained model filename"
       - field: testReport
         type: json
         description: "Trained models test report"
@@ -34,7 +34,7 @@ updateInDatabase:
     body:
       model_type: ${dbModelResult.response.body[0].modelType}
       state: "READY"
-      file_name: ${incoming.body.fileName}
+      file_name: ${incoming.body.filename}
       version_number: ${dbModelResult.response.body[0].versionNumber}
       model_version: ${dbModelResult.response.body[0].modelVersion}
       test_report: ${JSON.stringify(incoming.body.testReport)}
