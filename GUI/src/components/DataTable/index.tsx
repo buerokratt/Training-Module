@@ -49,6 +49,7 @@ type DataTableProps = {
   pageSizeOptions?: number[];
   selectedRow?: (row: Row<any>) => boolean;
   isFetching?: boolean;
+  customMaxHeight? : number;
   fetchNextPage?: (options?: FetchNextPageOptions) => Promise<
     InfiniteQueryObserverResult<
       {
@@ -118,6 +119,7 @@ const DataTable: FC<DataTableProps> = ({
   selectedRow,
   isFetching,
   fetchNextPage,
+  customMaxHeight,
 }) => {
   const id = useId();
   const { t } = useTranslation();
@@ -189,7 +191,7 @@ const DataTable: FC<DataTableProps> = ({
 
   return (
     <div>
-      <div className="data-table__scrollWrapper" onScroll={(e) => fetchMoreOnBottomReached(e.currentTarget)}>
+      <div className="data-table__scrollWrapper" style={customMaxHeight !== undefined ? { maxHeight: `${customMaxHeight}vh`, overflowY: 'auto' } : {}} onScroll={(e) => fetchMoreOnBottomReached(e.currentTarget)}>
         <table className="data-table">
           {!disableHead && (
             <thead>

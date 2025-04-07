@@ -11,15 +11,13 @@
                 "query": "*{{response_name}}*",
                 "default_field": "name"
               }
-            }
-            {{#response_text}},
+            },
             {
               "query_string": {
                 "query": "*{{response_text}}*",
                 "default_field": "response.text"
               }
             }
-            {{/response_text}}
           ]
         }
       }

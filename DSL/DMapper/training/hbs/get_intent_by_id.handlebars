@@ -7,6 +7,6 @@
     ],
     "inModel": {{isInModel intents.intents.0._source.intent intents}},
     "serviceId": "{{findConnectedServiceId intents.intents.0._source.intent intents}}",
-    "isForService": "{{getObjectKeyFromObjectArray intents/intentsModifiedAt 'intent' intents.intents.0._source.intent 'isforservice'}}",
+    "isForService": {{#if (getObjectKeyFromObjectArray intents/intentsModifiedAt 'intent' intents.intents.0._source.intent 'isforservice')}} {{getObjectKeyFromObjectArray intents/intentsModifiedAt 'intent' intents.intents.0._source.intent 'isforservice'}} {{else}} false {{/if}},
     "modifiedAt": "{{intents.intentsModifiedAt.0.created}}"
 }
