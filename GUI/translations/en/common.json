@@ -42,6 +42,7 @@
     "missing": "Missing",
     "updatingDataHead": "Please wait",
     "updatingDataBody": "Processing request...",
+    "statusClarification": "Status clarification",
     "days": {
       "monday": "Monday",
       "tuesday": "Tuesday",
@@ -316,7 +317,8 @@
       "newUnansweredChat": "New unanswered chat",
       "newForwardedChat": "New forwarded chat",
       "newValidationMessage": "New message to validate",
-      "useAutocorrect": "Text auto corrector"
+      "useAutocorrect": "Text auto corrector",
+      "statusCommentUpdated": "Status clarification updated"
     }
   },
   "chat": {
