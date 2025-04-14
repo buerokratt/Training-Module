@@ -53,6 +53,9 @@
     }
   },
   "toast": {
+    "success": {
+      "chatCommentChanged": "Chat comment changed"
+    },
     "newExampleAdded": "New example added",
     "newResponseAdded": "New response added",
     "newAppealAdded": "New appeal added",
@@ -350,7 +353,8 @@
       "statusAdder": "Status adder",
       "statusAddedDate": "Status added date",
       "chosenCsa": "Chosen csa(s)",
-      "chosenColumn": "Chosen column(s)"
+      "chosenColumn": "Chosen column(s)",
+      "addACommentToTheConversation": "Add a comment to the conversation"
     },
     "plainEvents": {
       "answered": "Answered",

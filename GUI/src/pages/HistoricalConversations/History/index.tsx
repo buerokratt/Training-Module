@@ -94,7 +94,7 @@ const History: FC = () => {
       <ChatHistory
         toastContext={useToast()}
         user={useStore.getState().userInfo}
-        showComment={false}
+        showComment={true}
         showStatus={false}
         onMessageClick={(message: Message) => {
           setMarkedMessage(message);
