@@ -185,15 +185,16 @@ router.post("/delete/object/:index_name", (req, res) => {
   const index_name = req.params.index_name;
   const obj_id = req.body.id;
 
+  console.log(`[DELETE REQUEST] Index: ${index_name}, Object ID: ${obj_id}`);
+
   osDeleteObject(index_name, obj_id)
     .then((ret) => {
-      res.status(200);
-      res.json(JSON.stringify(ret)).end();
+      console.log(`[DELETE SUCCESS] Index: ${index_name}, Object ID: ${obj_id}, Response:`, ret);
+      res.status(200).json(ret).end();
     })
     .catch((e) => {
-      res.status(500);
-      res.end();
-      console.log(e);
+      console.error(`[DELETE ERROR] Index: ${index_name}, Object ID: ${obj_id}, Error:`, e);
+      res.status(500).end();
     });
 });
 
