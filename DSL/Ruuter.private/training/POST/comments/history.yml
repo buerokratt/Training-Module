@@ -27,7 +27,7 @@ extractRequestData:
 setChatComment:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/insert-chat-history-comment"
+    url: "[#TRAINING_USERS_RESQL]/insert-chat-history-comment"
     body:
       comment: ${comment}
       chatId: ${chatId}
