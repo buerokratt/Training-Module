@@ -1,13 +1,14 @@
 import {FC, useState} from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { useForm, Controller, useWatch } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 
-import { Button, Dialog, FormInput, FormSelect, Switch, Track } from 'components';
+import { Button, Dialog, FormInput, Switch, Track } from 'components';
 import { Message } from 'types/message';
 import { Intent } from 'types/intent';
 import Select from 'react-select';
 import './NewExampleModal.scss';
+import { INTENT_EXAMPLE_LENGTH } from 'constants/config';
 
 type NewExampleForm = {
   example: string;
@@ -30,9 +31,11 @@ const NewExampleModal: FC<NewExampleModalProps> = ({ message, setMessage, onSubm
   const { data: intents } = useQuery<Intent[]>({
     queryKey: ['intent-and-id'],
   });
-  const { register, control, handleSubmit } = useForm<NewExampleForm>({
+  const { register, control, handleSubmit, watch } = useForm<NewExampleForm>({
     mode: 'onChange',
   });
+
+  const example = watch('example');
 
   const handleNewExample = handleSubmit((data) => {
     data.intentName = !isNewIntent ? selectedIntent : intentName;
@@ -48,16 +51,26 @@ const NewExampleModal: FC<NewExampleModalProps> = ({ message, setMessage, onSubm
           <Button appearance="secondary" onClick={() => setMessage(null)}>
             {t('global.cancel')}
           </Button>
-          <Button onClick={handleNewExample}>{t('global.save')}</Button>
+          <Button onClick={handleNewExample} disabled={example ? (example?.length ?? 0) > INTENT_EXAMPLE_LENGTH : true}>
+            {t('global.save')}
+          </Button>
         </>
       }
     >
       <Track direction="vertical" gap={16} align="left">
-        <FormInput
-          {...register('example')}
-          label={t('training.intents.example')}
-          defaultValue={message.content || ''}
-        />
+        <Track direction="vertical" gap={2} align="right" style={{ width: '100%' }}>
+          <FormInput
+            {...register('example')}
+            label={t('training.intents.example')}
+            defaultValue={message.content || ''}
+          />
+          <label
+            className="active-chat__message-date"
+            style={{ color: (example?.length ?? 0) > INTENT_EXAMPLE_LENGTH ? 'red' : undefined }}
+          >
+            {`${example?.length ?? 0}/${INTENT_EXAMPLE_LENGTH}`}
+          </label>
+        </Track>
         {intents && !isNewIntent && (
           <Controller
             disabled={true}
