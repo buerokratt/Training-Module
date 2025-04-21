@@ -86,6 +86,8 @@ const AxiosInterceptor = ({ children }) => {
           case data.intentParsing:
             message = t('training.intents.error.intentParsing');
             break;
+          case data.intentConnectedOrHasRequests:
+            message = t('training.intents.error.intentConnectedOrHasRequests');  
           default:
             break;
         }

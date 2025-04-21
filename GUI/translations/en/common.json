@@ -154,7 +154,8 @@
         "intentAlreadyExists": "Intent already exists, please check the existing list",
         "intentNameTooShort": "Intent name is too short",
         "intentParsing": "Intent parsing error",
-        "turnExampleIntoIntent": "Unable to turn this example into intent"
+        "turnExampleIntoIntent": "Unable to turn this example into intent",
+        "intentConnectedOrHasRequests": "You are not able to delete this intent because it's connected or pending connection to a service"
       },
       "sortingType": {
         "label": "Sorting type",
