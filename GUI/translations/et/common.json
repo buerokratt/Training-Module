@@ -43,6 +43,7 @@
     "missing": "Puudub",
     "updatingDataHead": "Palun oota",
     "updatingDataBody": "Andmeid uuendatakse...",
+    "statusClarification": "Staatuse täpsustus",
     "chosen": "Valitud",
     "days": {
       "monday": "Esmaspäev",
@@ -319,7 +320,8 @@
       "newUnansweredChat": "Uus vastamata vestlus",
       "newForwardedChat": "Uus suunatud vestlus",
       "newValidationMessage": "Uus teade kinnitamiseks",
-      "useAutocorrect": "Teksti autokorrektor"
+      "useAutocorrect": "Teksti autokorrektor",
+      "statusCommentUpdated": "Staatuse täpsustus uuendatud"
     }
   },
   "chat": {
