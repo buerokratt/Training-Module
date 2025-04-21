@@ -73,7 +73,7 @@ const AxiosInterceptor = ({ children }) => {
 
       let message = t('global.notificationErrorMsg');
 
-      if (error.response && error.response.data) {
+      if (error.response?.data) {
         const data = error.response.data;
 
         switch (true) {
@@ -87,7 +87,8 @@ const AxiosInterceptor = ({ children }) => {
             message = t('training.intents.error.intentParsing');
             break;
           case data.intentConnectedOrHasRequests:
-            message = t('training.intents.error.intentConnectedOrHasRequests');  
+            message = t('training.intents.error.intentConnectedOrHasRequests');
+            break;
           default:
             break;
         }
