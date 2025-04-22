@@ -40,6 +40,8 @@ function os_open_client() {
   const client = new Client({
     node: `${PROTOCOL}://${AUTH}@${HOST}:${PORT}`,
     ssl: { rejectUnauthorized: false },
+    requestTimeout: parseInt(process.env.OPENSEARCH_TIMEOUT || "30000"),
+    maxRetries: parseInt(process.env.OPENSEARCH_MAX_RETRIES || "3"),
   });
   return client;
 }
