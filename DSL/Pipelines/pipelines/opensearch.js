@@ -49,14 +49,27 @@ function os_open_client() {
 export async function osPut(index_name, document) {
   const client = os_open_client();
 
-  const response = await client.index({
-    index: index_name,
-    id: document.id,
-    body: document,
-    refresh: true,
-  });
-  return response;
+  const startTime = Date.now();
+  console.log(`[${new Date().toISOString()}] Starting index request for ${index_name}/${document.id}`);
+
+  try {
+    const response = await client.index({
+      index: index_name,
+      id: document.id,
+      body: document,
+      refresh: true,
+    });
+    const endTime = Date.now();
+    console.log(`[${new Date().toISOString()}] Completed index request for ${index_name}/${document.id} in ${endTime - startTime} ms`);
+    return response;
+  } catch (e) {
+    const endTime = Date.now();
+    console.error(`[${new Date().toISOString()}] Failed index request for ${index_name}/${document.id} after ${endTime - startTime} ms`);
+    console.error(e);
+    throw e;
+  }
 }
+
 
 export async function osDeleteIndex(index_name) {
   const client = os_open_client();
