@@ -28,6 +28,8 @@ const LinkPreview: React.FC<{ href: string; children: React.ReactNode }> = ({ hr
   );
 };
 
+const hasSpecialFormat = (m: string) => m.includes('\n\n') && m.indexOf('.') > 0 && m.indexOf(':') > m.indexOf('.');
+
 const Markdownify: React.FC<MarkdownifyProps> = ({ message }) => (
   <div className={'reset'}>
     <Markdown
@@ -43,7 +45,7 @@ const Markdownify: React.FC<MarkdownifyProps> = ({ message }) => (
     >
       {message
         ?.replace(/&#x([0-9A-Fa-f]+);/g, (_, hex) => String.fromCharCode(parseInt(hex, 16)))
-        ?.replace(/(?<=\n)\d+\.\s/g, /^.*\..*:\n\n/.test(message) ? '\n\n$&' : '$&') ?? ''}
+        ?.replace(/(?<=\n)\d+\.\s/g, hasSpecialFormat(message) ? '\n\n$&' : '$&') ?? ''}
     </Markdown>
   </div>
 );
