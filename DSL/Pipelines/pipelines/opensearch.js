@@ -89,7 +89,10 @@ router.post(
   upload.single("input"),
   rateLimit,
   (req, res) => {
+    const t0 = performance.now();
     let input = getInput(req);
+    const t1 = performance.now();
+    console.log(`Call to getInput took ${t1 - t0} milliseconds.`);
 
     if (input.nlu) input = input.nlu;
 
@@ -111,10 +114,13 @@ router.post(
       .map((e) => e.replace("- ", ""))
       .filter((e) => e);
 
+    const t2 = performance.now();
     osPut(index_name, obj)
       .then((ret) => {
         res.status(200);
         res.json(JSON.stringify(ret)).end();
+        const t3 = performance.now();
+        console.log(`Call to osPut took ${t3 - t2} milliseconds.`);
       })
       .catch((e) => {
         res.status(500);
