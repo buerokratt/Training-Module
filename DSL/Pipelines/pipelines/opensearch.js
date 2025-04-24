@@ -51,7 +51,7 @@ export async function osPut(index_name, document) {
     index: index_name,
     id: document.id,
     body: document,
-    refresh: false,
+    refresh: true,
   });
   return response;
 }
