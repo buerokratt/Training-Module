@@ -200,7 +200,7 @@ router.post(
 
     input[index_name].forEach((obj) => {
       obj.id = sanitize.sanitize.addDash(obj[index_type]);
-      osPut(index_name, obj, true).catch((e) => {
+      osPut(index_name, obj).catch((e) => {
         res.status(500);
         res.end();
         console.error(e);
