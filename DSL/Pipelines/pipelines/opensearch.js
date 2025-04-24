@@ -53,14 +53,14 @@ export async function osRefresh(index_name) {
   return response;
 }
 
-export async function osPut(index_name, document) {
+export async function osPut(index_name, document, refresh = false) {
   const client = os_open_client();
 
   const response = await client.index({
     index: index_name,
     id: document.id,
     body: document,
-    refresh: false,
+    refresh: refresh,
   });
   return response;
 }
@@ -116,7 +116,7 @@ router.post(
       .map((e) => e.replace("- ", ""))
       .filter((e) => e);
 
-    osPut(index_name, obj)
+    osPut(index_name, obj, true)
       .then((ret) => {
         res.status(200);
         res.json(JSON.stringify(ret)).end();
