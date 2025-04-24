@@ -139,14 +139,37 @@ router.post("/bulk/:index_name", upload.single("input"), rateLimit, (req, res) =
 
   for (let key in input) {
     if (key == "version") continue;
+
     const inp = {};
-    inp[key] = input[key];
+
+     if (index_name === "domain") {
+       if (key === "intents" || key === "entities") {
+         inp[key] = input[key].map((name) => ({ name }));
+       } else if (key === "actions") {
+         inp[key] = input[key].map((action) => ({ action }));
+       } else if (key === "forms") {
+         inp[key] = {};
+         for (let formName in input[key]) {
+           const form = input[key][formName];
+           inp[key][formName] = {};
+           if (form.required_slots) {
+             inp[key][formName].required_slots = form.required_slots.map((slot) => ({ slot }));
+           } else {
+             inp[key][formName] = { ...form };
+           }
+         }
+       } else {
+         inp[key] = input[key];
+       }
+     } else {
+       inp[key] = input[key];
+     }
+
     inp.id = key;
     osPut(index_name, inp).catch(console.error);
   }
   res.end();
 });
-
 /*
 	For rules, regexes and stories with one type of entities in a list
 */
