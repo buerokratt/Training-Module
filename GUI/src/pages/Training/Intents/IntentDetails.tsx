@@ -243,10 +243,12 @@ const IntentDetails: FC<IntentDetailsProps> = ({
 
       try {
         await intentUploadMutation.mutateAsync({
-          intentName: intent?.id || '',
+          intentName: intent?.id ?? '',
           formData: file,
         });
-      } catch (error) {}
+      } catch (error) {
+        console.error(error);
+      }
     });
 
     input.click();
@@ -590,7 +592,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({
                       if (!withBackSlash.test(e.target.value) && !e.target.value.startsWith(' ')) {
                         setResponse({
                           name: response?.name ?? '',
-                          text: e.target.value || '',
+                          text: e.target.value ?? '',
                         });
                       } else {
                         e.target.value = response.text;
