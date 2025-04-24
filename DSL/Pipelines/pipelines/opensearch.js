@@ -51,7 +51,7 @@ export async function osPut(index_name, document) {
     index: index_name,
     id: document.id,
     body: document,
-    refresh: true,
+    refresh: false,
   });
   return response;
 }
@@ -99,10 +99,6 @@ router.post(
     const index_type = req.params.index_type;
 
     const obj = input[0];
-
-    console.log(index_name);
-    console.log(index_type);
-    console.log(obj);
 	  
     if (index_type) obj.id = obj[index_type].replaceAll(/\s+/g, "_");
     // Using multiline string instead of an array for better special characters support
@@ -128,19 +124,55 @@ router.post(
 */
 router.post("/bulk/:index_name", upload.single("input"), rateLimit, (req, res) => {
   const input = getInput(req);
-
   const index_name = req.params.index_name;
 
-  for (let key in input) {
-    if (key == "version") continue;
-    const inp = {};
-    inp[key] = input[key];
-    inp.id = key;
-    osPut(index_name, inp).catch(console.error);
-  }
-  res.end();
+  processInputForBulk(index_name, input)
+    .then(() => res.end())
+    .catch((err) => {
+      console.error(err);
+      res.status(500).end();
+    });
 });
 
+async function processInputForBulk(index_name, input) {
+  for (let key in input) {
+    if (key === "version") continue;
+
+    const inp = prepareInputForIndex(index_name, key, input[key]);
+    inp.id = key;
+
+    await osPut(index_name, inp).catch(console.error);
+  }
+}
+
+function prepareInputForIndex(index_name, key, value) {
+  const inp = {};
+
+  if (index_name === "domain") {
+    if (key === "intents" || key === "entities") {
+      inp[key] = value.map((name) => ({ name }));
+    } else if (key === "actions") {
+      inp[key] = value.map((action) => ({ action }));
+    } else if (key === "forms") {
+      inp[key] = {};
+      for (let formName in value) {
+        const form = value[formName];
+        inp[key][formName] = {};
+        if (form.required_slots) {
+          inp[key][formName].required_slots = form.required_slots.map((slot) => ({ slot }));
+        } else {
+          inp[key][formName] = { ...form };
+        }
+      }
+    } else {
+      inp[key] = value;
+    }
+  } else {
+    inp[key] = value;
+  }
+
+  return inp;
+}
 /*
 	For rules, regexes and stories with one type of entities in a list
 */
