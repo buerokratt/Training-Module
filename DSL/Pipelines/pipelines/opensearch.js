@@ -72,11 +72,10 @@ export async function osDeleteObject(index_name, obj_id) {
   });
 }
 
-async function getInput(req) {
+function getInput(req) {
   if (req.file) {
     const inp = req.file.destination + req.file.filename;
-    const content = await fs.promises.readFile(sanitizeFilename(inp), "utf8");
-    return YAML.parse(content);
+    return YAML.parse(fs.readFileSync(sanitizeFilename(inp), "utf8"));
   } else {
     return YAML.parse(req.body.input);
   }
@@ -89,8 +88,8 @@ router.post(
   "/put/:index_name/:index_type",
   upload.single("input"),
   rateLimit,
-  async (req, res) => {
-    let input = await getInput(req);
+  (req, res) => {
+    let input = getInput(req);
 
     if (input.nlu) input = input.nlu;
 
@@ -101,6 +100,10 @@ router.post(
 
     const obj = input[0];
 
+    console.log(index_name);
+    console.log(index_type);
+    console.log(obj);
+	  
     if (index_type) obj.id = obj[index_type].replaceAll(/\s+/g, "_");
     // Using multiline string instead of an array for better special characters support
     obj.examples = obj.examples
