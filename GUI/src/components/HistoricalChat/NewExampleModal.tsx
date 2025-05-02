@@ -6,6 +6,7 @@ import { useForm, Controller, useWatch } from 'react-hook-form';
 import { Button, Dialog, FormInput, FormSelect, Switch, Track } from 'components';
 import { Message } from 'types/message';
 import { Intent } from 'types/intent';
+import {Select} from "@radix-ui/react-select";
 
 type NewExampleForm = {
   example: string;
@@ -30,6 +31,9 @@ const NewExampleModal: FC<NewExampleModalProps> = ({ message, setMessage, onSubm
   const { register, control, handleSubmit } = useForm<NewExampleForm>({
     mode: 'onChange',
   });
+
+  const requiredText = t('settings.users.required') ?? '*';
+
 
   const watchIntent = useWatch({
     control,
@@ -77,21 +81,49 @@ const NewExampleModal: FC<NewExampleModalProps> = ({ message, setMessage, onSubm
             )}
           />
         )}
+        {/*<Controller*/}
+        {/*  name='newIntent'*/}
+        {/*  control={control}*/}
+        {/*  render={({ field }) => (*/}
+        {/*    <Switch*/}
+        {/*      {...field}*/}
+        {/*      label={t('training.newIntent')}*/}
+        {/*      onLabel={t('global.yes') || ''}*/}
+        {/*      offLabel={t('global.no') || ''}*/}
+        {/*      onCheckedChange={(checked) => {*/}
+        {/*        setIsNewIntent(checked)*/}
+        {/*        field.onChange(checked)*/}
+        {/*      }}*/}
+        {/*    /></>*/}
+        {/*  )}*/}
+        {/*/>*/}
         <Controller
-          name='newIntent'
-          control={control}
-          render={({ field }) => (
-            <Switch
-              {...field}
-              label={t('training.newIntent')}
-              onLabel={t('global.yes') || ''}
-              offLabel={t('global.no') || ''}
-              onCheckedChange={(checked) => {
-                setIsNewIntent(checked)
-                field.onChange(checked)
-              }}
-            />
-          )}
+            control={control}
+            name='newIntent'
+            rules={{ required: requiredText }}
+            render={({ field: { onChange, onBlur, name, ref } }) => (
+                <div className="multiSelect">
+                  <label className="multiSelect__label">
+                    {t('settings.users.userRoles')}
+                  </label>
+                  <div className="multiSelect__wrapper">
+                    <Select
+                        name={name}
+                        maxMenuHeight={165}
+                        ref={ref}
+                        onBlur={onBlur}
+                        required={true}
+                        options={roles}
+                        defaultValue={user?.authorities.map((v) => {
+                          return { label: t(`roles.${v ?? ''}`), value: v };
+                        })}
+                        isMulti={true}
+                        placeholder={t('global.choose')}
+                        onChange={onChange}
+                    />
+                  </div>
+                </div>
+            )}
         />
         {watchIntent && (
           <FormInput {...register('intentName')} label={t('training.intentName')} />
