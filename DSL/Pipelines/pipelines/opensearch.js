@@ -44,14 +44,23 @@ function os_open_client() {
   return client;
 }
 
-export async function osPut(index_name, document) {
+export async function osRefresh(index_name) {
+  const client = os_open_client();
+
+  const response = await client.indices.refresh({
+    index: index_name,
+  });
+  return response;
+}
+
+export async function osPut(index_name, document, refresh = false) {
   const client = os_open_client();
 
   const response = await client.index({
     index: index_name,
     id: document.id,
     body: document,
-    refresh: false,
+    refresh: refresh,
   });
   return response;
 }
@@ -107,7 +116,7 @@ router.post(
       .map((e) => e.replace("- ", ""))
       .filter((e) => e);
 
-    osPut(index_name, obj)
+    osPut(index_name, obj, true)
       .then((ret) => {
         res.status(200);
         res.json(JSON.stringify(ret)).end();
@@ -127,7 +136,10 @@ router.post("/bulk/:index_name", upload.single("input"), rateLimit, (req, res) =
   const index_name = req.params.index_name;
 
   processInputForBulk(index_name, input)
-    .then(() => res.end())
+    .then(async () => {
+      await osRefresh(index_name).catch(console.error);
+      res.end();
+    })
     .catch((err) => {
       console.error(err);
       res.status(500).end();
