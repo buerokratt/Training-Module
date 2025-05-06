@@ -62,7 +62,7 @@ const NewExampleModal: FC<NewExampleModalProps> = ({ message, setMessage, onSubm
           <FormInput
             {...register('example')}
             label={t('training.intents.example')}
-            defaultValue={message.content || ''}
+            defaultValue={message.content ?? ''}
           />
           <label
             className="active-chat__message-date"
@@ -100,8 +100,8 @@ const NewExampleModal: FC<NewExampleModalProps> = ({ message, setMessage, onSubm
             <Switch
               {...field}
               label={t('training.newIntent')}
-              onLabel={t('global.yes') || ''}
-              offLabel={t('global.no') || ''}
+              onLabel={t('global.yes') ?? ''}
+              offLabel={t('global.no') ?? ''}
               onCheckedChange={(checked) => {
                 setIsNewIntent(checked);
                 field.onChange(checked);
