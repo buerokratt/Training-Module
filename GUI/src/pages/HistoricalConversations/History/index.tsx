@@ -95,6 +95,8 @@ const History: FC = () => {
         toastContext={useToast()}
         user={useStore.getState().userInfo}
         showComment={false}
+        showEmail={import.meta.env.REACT_APP_SHOW_HISTORY_EMAIL === 'true'}
+        showSortingLabel={import.meta.env.REACT_APP_SHOW_HISTORY_SORTING === 'true'}
         showStatus={false}
         onMessageClick={(message: Message) => {
           setMarkedMessage(message);
