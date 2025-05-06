@@ -151,7 +151,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({
       setRefreshing(true);
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['intents/with-examples-count']);
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -165,7 +164,8 @@ const IntentDetails: FC<IntentDetailsProps> = ({
         message: error.message,
       });
     },
-    onSettled: () => {
+    onSettled: async () => {
+      await queryClient.invalidateQueries(['intents/with-examples-count']);
       setEditingIntentTitle(null);
       setRefreshing(false);
     },
@@ -243,10 +243,12 @@ const IntentDetails: FC<IntentDetailsProps> = ({
 
       try {
         await intentUploadMutation.mutateAsync({
-          intentName: intent?.id || '',
+          intentName: intent?.id ?? '',
           formData: file,
         });
-      } catch (error) {}
+      } catch (error) {
+        console.error(error);
+      }
     });
 
     input.click();
@@ -468,7 +470,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({
                   hideLabel
                 />
               ) : (
-                <h3>{intent.id.replace(/_/g, ' ')}</h3>
+                <h3>{intent.id?.replace(/_/g, ' ')}</h3>
               )}
               {editingIntentTitle ? (
                 <Button appearance="text" onClick={editIntentName}>
@@ -590,7 +592,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({
                       if (!withBackSlash.test(e.target.value) && !e.target.value.startsWith(' ')) {
                         setResponse({
                           name: response?.name ?? '',
-                          text: e.target.value || '',
+                          text: e.target.value ?? '',
                         });
                       } else {
                         e.target.value = response.text;
