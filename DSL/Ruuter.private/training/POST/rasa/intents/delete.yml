@@ -21,6 +21,21 @@ assign_values:
     parameters: ${incoming.body}
     intent: ${incoming.body.name.replaceAll(/\s+/g, "_")}
 
+check_for_intent_service_connection:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/get-service-trigger-for-intent"
+    body:
+      intent: ${intent}
+  result: connection_res
+  next: check_is_connected_to_service_or_has_requests
+
+check_is_connected_to_service_or_has_requests:
+  switch:
+    - condition: ${connection_res.response.body.length > 0}
+      next: returnIntentIsConnectedOrHasRequests
+  next: getIntentList
+
 getIntentList:
   call: http.get
   args:
@@ -262,4 +277,10 @@ returnIntentFileMissing:
   return: "Intent file to update is missing"
   wrapper: false
   status: 409
+  next: end
+
+returnIntentIsConnectedOrHasRequests:
+  return: "{\"intentConnectedOrHasRequests\": true}"
+  wrapper: false
+  status: 400
   next: end
