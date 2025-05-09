@@ -438,6 +438,15 @@ const buildEditCell = (isSave: boolean, onSaveClick: () => void, onEditClick: ()
   );
 };
 
+const buildMoveExampleCell = (onClick: () => void) => {
+   return (
+      <Button appearance="text" onClick={onClick}>
+        <Icon label={i18n.t('global.edit')} icon={<MdOutlineModeEditOutline color={'rgba(0,0,0,0.54)'} />} />
+        {i18n.t('global.move')}
+      </Button>
+  );
+};
+
 const buildDeleteCell = (onClick: () => void) => {
   return (
     <Button appearance="text" onClick={onClick}>
