@@ -56,6 +56,9 @@
     }
   },
   "toast": {
+    "success": {
+      "chatCommentChanged": "Vestluse kommentaar muudetud"
+    },
     "newExampleAdded": "Uus näide lisatud",
     "newResponseAdded": "Uus vastus lisatud",
     "newAppealAdded": "Uus apellatsioon lisatud",
@@ -356,7 +359,8 @@
       "statusAdder": "Staatuse lisaja",
       "statusAddedDate": "Staatuse lisamise kuupäev",
       "chosenCsa": "Valitud nõustaja(d)",
-      "chosenColumn": "Valitud tulba(d)"
+      "chosenColumn": "Valitud tulba(d)",
+      "addACommentToTheConversation": "Lisa vestlusele kommentaar"
     },
     "plainEvents": {
       "answered": "Vastatud",
