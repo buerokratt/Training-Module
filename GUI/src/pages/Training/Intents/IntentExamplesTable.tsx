@@ -145,33 +145,6 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({intent, updateSelect
         },
     });
 
-    const exampleMoveMutation = useMutation({
-        mutationFn: (editExampleData: { intentName: string; oldExample: string; newExample: string }) =>
-            editExample(editExampleData),
-        onMutate: async () => {
-            setRefreshing(true);
-        },
-        onSuccess: () => {
-            toast.open({
-                type: 'success',
-                title: t('global.notification'),
-                message: t('toast.newExampleAdded'),
-            });
-            updateExampleOnList(oldExampleText, exampleText);
-        },
-        onError: (error: AxiosError) => {
-            toast.open({
-                type: 'error',
-                title: t('global.notificationError'),
-                message: error.message,
-            });
-        },
-        onSettled: () => {
-            setEditableRow(null);
-            setRefreshing(false);
-        },
-    });
-
     const exampleDeleteMutation = useMutation({
         mutationFn: (deleteExampleData: { intentName: string; example: string }) => deleteExample(deleteExampleData),
         onMutate: () => setRefreshing(true),
