@@ -29,6 +29,11 @@ const MoveExampleModal: FC<MoveExampleModalProps> = ({onSubmitExample, onClose, 
         mode: 'onChange',
     });
 
+    const processedIntents = intents?.map((intent) => ({
+        ...intent,
+        displayLabel: intent.intent?.trim().replace(/_/g, ' ') ?? '',
+    }));
+
     const handleNewExample = handleSubmit((data) => {
         onSubmitExample({intent: selectedIntent, example: example});
     });
@@ -49,7 +54,7 @@ const MoveExampleModal: FC<MoveExampleModalProps> = ({onSubmitExample, onClose, 
             }
         >
             <Track direction="vertical" gap={16} align="left">
-                {intents && (
+                {processedIntents && (
                     <Controller
                         disabled={true}
                         name="intent"
@@ -59,8 +64,8 @@ const MoveExampleModal: FC<MoveExampleModalProps> = ({onSubmitExample, onClose, 
                                 <label className="multiSelect__label">{t('training.mba.intent')}</label>
                                 <div className="multiSelect__wrapper">
                                     <Select
-                                        options={intents.map((intent) => ({
-                                            label: intent.intent ?? '',
+                                        options={processedIntents.map((intent) => ({
+                                            label: intent.displayLabel,
                                             value: String(intent.id)
                                         }))}
                                         placeholder={t('global.choose')}
