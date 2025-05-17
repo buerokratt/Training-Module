@@ -129,6 +129,8 @@
       "addToModel": "Add to model",
       "removeFromModel": "Remove from model",
       "examples": "Examples",
+      "moveExample": "Move Example",
+      "newIntentLocation": "Select new Intent",
       "example": "Example",
       "amountOfExamples": "Amount of examples",
       "intentInModel": "Intent is in model",
