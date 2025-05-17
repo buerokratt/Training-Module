@@ -2,7 +2,7 @@ import { Track, FormInput, Button, Icon, Switch, Tooltip, FormTextarea, Dialog }
 import { isHiddenFeaturesEnabled, RESPONSE_TEXT_LENGTH } from 'constants/config';
 import { format } from 'date-fns';
 import { t } from 'i18next';
-import { Dispatch, FC, SetStateAction, useCallback, useEffect, useState } from 'react';
+import {Dispatch, FC, SetStateAction, useCallback, useEffect, useRef, useState} from 'react';
 import { MdOutlineSave, MdOutlineModeEditOutline } from 'react-icons/md';
 import { Intent } from 'types/intent';
 import IntentExamplesTable from './IntentExamplesTable';
@@ -65,6 +65,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [response, setResponse] = useState<Response>({ name: '', text: '' });
   const withBackSlash = /\\/;
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const queryClient = useQueryClient();
   const toast = useToast();
@@ -199,6 +200,13 @@ const IntentDetails: FC<IntentDetailsProps> = ({
     }
     return false;
   };
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [response.text]);
 
   const intentUploadMutation = useMutation({
     mutationFn: ({ intentName, formData }: { intentName: string; formData: File }) =>
@@ -575,15 +583,16 @@ const IntentDetails: FC<IntentDetailsProps> = ({
               />
             </div>
             <div>
-              <Track align="right" justify="between" direction="vertical" gap={100}>
+              <Track align="right" justify="between" direction="vertical" gap={10}>
                 <Track align="left" direction="vertical">
                   <h1>{t('training.intents.responseTitle')}</h1>
                   <FormTextarea
                     label={t('global.addNew')}
                     value={response.text}
                     name="intentResponse"
-                    minRows={7}
-                    maxRows={7}
+                    minRows={3}
+                    ref={textareaRef}
+                    style={{ overflow: 'hidden' }}
                     placeholder={t('global.addNew') + '...' || ''}
                     hideLabel
                     maxLength={RESPONSE_TEXT_LENGTH}
