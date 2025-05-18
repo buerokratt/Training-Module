@@ -18,7 +18,7 @@ declaration:
 getModelByFilenameFromDb:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/get-llm-model-by-filename"
+    url: "[#TRAINING_RESQL]/training/get_llm_model"
     body:
       fileName: ${incoming.body.name}
   result: dbResult
@@ -26,7 +26,7 @@ getModelByFilenameFromDb:
 updateInDatabase:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/add-llm-trainings"
+    url: "[#TRAINING_RESQL]/training/create_llm_trainings"
     body:
       model_type: ${dbResult.response.body[0].modelType}
       state: "ACTIVATING"

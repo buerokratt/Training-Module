@@ -10,13 +10,13 @@ declaration:
 getLatestReadyModelFromDb:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/get-latest-ready-model"
+    url: "[#TRAINING_RESQL]/training/get_latest_ready_model"
   result: dbModelResult
 
 updateInDatabase:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/add-llm-trainings"
+    url: "[#TRAINING_RESQL]/training/create_llm_trainings"
     body:
       model_type: ${dbModelResult.response.body[0].modelType}
       state: "ALREADY_TRAINED"

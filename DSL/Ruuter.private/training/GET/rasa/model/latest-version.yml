@@ -14,7 +14,7 @@ assignDefaultVersion:
 getVersionFromDatabase:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/get-latest-llm-version"
+    url: "[#TRAINING_RESQL]/training/get_latest_llm_version"
   result: dbResult
 
 validateVersion:

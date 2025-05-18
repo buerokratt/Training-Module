@@ -14,7 +14,7 @@ assignCronFileLocation:
 getFromDatabase:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/get-train-settings"
+    url: "[#TRAINING_RESQL]/training/get_train_settings"
   result: dbResult
 
 validateDbRecords:

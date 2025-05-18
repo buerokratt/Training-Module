@@ -206,7 +206,7 @@ deleteInPipeline:
 deleteInDatabase:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/add-intent"
+    url: "[#TRAINING_RESQL]/intent_management/update_intent"
     body:
       intent: ${incoming.body.name}
       status: "DELETED"

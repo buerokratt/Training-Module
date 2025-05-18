@@ -26,7 +26,7 @@ validateName:
 getReportFromDb:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/get-llm-model-report-by-filename"
+    url: "[#TRAINING_RESQL]/training/get_llm_model_report"
     body:
       fileName: ${fileName}
   result: dbResult

@@ -25,7 +25,7 @@ validateName:
 getResultFromDb:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/get-service-intent-connections"
+    url: "[#TRAINING_RESQL]/services_management/list_intent_connections"
   result: dbResult
 
 returnSuccess:

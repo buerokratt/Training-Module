@@ -10,7 +10,7 @@ declaration:
 getModelsFromDB:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/get-llm-trainings"
+    url: "[#TRAINING_RESQL]/training/list_llm_trainings"
   result: dbResult
 
 validateDbRecords:

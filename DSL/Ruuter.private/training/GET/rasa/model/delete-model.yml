@@ -25,7 +25,7 @@ validateName:
 getModelDataFromDb:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/get-llm-model-by-filename"
+    url: "[#TRAINING_RESQL]/training/get_llm_model"
     body:
       fileName: ${fileName}
   result: dbResult
@@ -43,7 +43,7 @@ assignRecord:
 updateInDatabase:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/remove-llm-model-by-filename"
+    url: "[#TRAINING_RESQL]/training/remove_llm_model"
     body:
       model_type: ${model.modelType}
       trained_date: ${model.trainedDate}

@@ -89,7 +89,7 @@ addInPipeline:
 addInDatabase:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/add-intent"
+    url: "[#TRAINING_RESQL]/intent_management/create_intent"
     body:
       intent: ${incoming.body.name}
       status: "ACTIVE"

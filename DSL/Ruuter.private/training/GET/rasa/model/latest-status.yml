@@ -10,7 +10,7 @@ declaration:
 getLatestStatus:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/get-latest-llm-training-status"
+    url: "[#TRAINING_RESQL]/training/get_latest_llm_training_status"
   result: res
 
 check_response:

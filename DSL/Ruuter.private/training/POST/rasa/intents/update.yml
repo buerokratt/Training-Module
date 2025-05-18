@@ -291,7 +291,7 @@ addNewIntentInPipeline:
 addInDatabase:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/add-intent"
+    url: "[#TRAINING_RESQL]/intent_management/update_intent"
     body:
       intent: ${incoming.body.newName}
       status: "ACTIVE"

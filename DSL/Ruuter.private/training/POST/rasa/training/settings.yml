@@ -43,7 +43,7 @@ assignValues:
 updateInDatabase:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/add-train-settings"
+    url: "[#TRAINING_RESQL]/training/create_train_settings"
     body:
       days_of_week: ${daysOfWeek}
       from_date: ${fromDate}

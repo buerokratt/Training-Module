@@ -49,7 +49,7 @@ validateIntentExists:
 updateInDatabase:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/mark-intent-for-service"
+    url: "[#TRAINING_RESQL]/services_management/mark_intent_for_service"
     body:
       intent: ${intent}
       isForService: ${isForService}

@@ -10,7 +10,7 @@ declaration:
 getFromDatabase:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/get-latest-ready-model"
+    url: "[#TRAINING_RESQL]/training/get_latest_ready_model"
   result: dbResult
 
 validateDbRecords:

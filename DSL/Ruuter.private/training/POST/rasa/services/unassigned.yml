@@ -35,7 +35,7 @@ get_services:
 get_service_intent_connections:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/get-service-intent-connections"
+    url: "[#TRAINING_RESQL]/services_management/list_service_intent_connections"
   result: connection_res
 
 filter_out_services_connected_to_intent:

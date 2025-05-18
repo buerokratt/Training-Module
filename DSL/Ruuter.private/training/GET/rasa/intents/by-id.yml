@@ -47,13 +47,13 @@ checkIfIntentExists:
 getServiceIntentConnections:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/get-service-intent-connections"
+    url: "[#TRAINING_RESQL]/services_management/list_intent_connections"
   result: getServiceIntentConnectionsResult
 
 getIntentListLastChanged:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/get-intents-list-last-changed"
+    url: "[#TRAINING_RESQL]/intent_management/list_active_intents"
     body:
       intentsList: ${intent}
   result: getIntentListLastChangedResult
