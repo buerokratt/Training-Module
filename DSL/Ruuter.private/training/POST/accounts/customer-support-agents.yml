@@ -47,7 +47,7 @@ extractRequestData:
 getCustomerSupportAgents:
   call: http.post
   args:
-    url: "[#TRAINING_USERS_RESQL]/get-users-with-roles-by-role"
+    url: "[#TRAINING_USERS_RESQL]/auth_users/list_users_by_role"
     body:
       page: ${page}
       page_size: ${page_size}

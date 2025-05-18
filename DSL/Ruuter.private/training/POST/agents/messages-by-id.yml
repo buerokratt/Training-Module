@@ -19,7 +19,7 @@ extractRequestData:
 getUnavailableEndedChats:
   call: http.post
   args:
-    url: "[#TRAINING_USERS_RESQL]/get-chat-messages"
+    url: "[#TRAINING_USERS_RESQL]/auth_users/list_chat_messages"
     body:
       chatId: ${chatId}
   result: res

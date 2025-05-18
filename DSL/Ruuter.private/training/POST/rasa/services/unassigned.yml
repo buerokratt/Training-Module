@@ -24,7 +24,7 @@ declaration:
 get_services:
   call: http.post
   args:
-    url: "[#SERVICES_RESQL]/get-services"
+    url: "[#SERVICES_RESQL]/services_management/list_services"
     body:
       page: ${incoming.body.page}
       page_size: ${incoming.body.page_size}

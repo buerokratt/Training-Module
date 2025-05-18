@@ -38,7 +38,7 @@ extractRequestData:
 getEndedChats:
   call: http.post
   args:
-    url: "[#TRAINING_USERS_RESQL]/get-cs-all-ended-chats"
+    url: "[#TRAINING_USERS_RESQL]/auth_users/list_chats_cs_ended"
     body:
       start: ${startDate}
       end: ${endDate}

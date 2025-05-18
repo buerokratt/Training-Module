@@ -30,7 +30,7 @@ extract_request_data:
 login_user:
   call: http.post
   args:
-    url: "[#TRAINING_USERS_RESQL]/get-user-by-login"
+    url: "[#TRAINING_USERS_RESQL]/auth_users/get_user_by_login"
     body:
       login: ${login}
       password: ${password}
@@ -46,7 +46,7 @@ check_login_result:
 get_session_length:
   call: http.post
   args:
-    url: "[#TRAINING_USERS_RESQL]/get-configuration"
+    url: "[#TRAINING_USERS_RESQL]/config/get_configuration"
     body:
       key: "session_length"
   result: session_result

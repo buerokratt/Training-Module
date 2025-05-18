@@ -19,7 +19,7 @@ extractRequestData:
 getChatById:
   call: http.post
   args:
-    url: "[#TRAINING_USERS_RESQL]/get-chat-by-id"
+    url: "[#TRAINING_USERS_RESQL]/chat/get_chat_by_id"
     body:
       id: ${chatId}
   result: res
