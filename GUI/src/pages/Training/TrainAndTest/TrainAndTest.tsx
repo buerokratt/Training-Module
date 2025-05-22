@@ -267,7 +267,7 @@ const TrainAndTest = () => {
             </div>
 
             <div className={`${styles.planDays} ${styles.input}`}>
-              <span>{t('training.trainNew.days')}</span>
+              <span style={{ marginRight: '14px' }}>{t('training.trainNew.days')}</span>
               <Controller
                 name="daysOfWeek"
                 control={control}
