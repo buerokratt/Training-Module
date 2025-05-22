@@ -83,7 +83,7 @@ const TrainAndTest = () => {
   useEffect(() => {
     if (settingsData) {
       setFolds(String(settingsData.rasaFolds ?? 8));
-      setDays(convertToDaySelect(settingsData.daysOfWeek || '', days));
+      setDays(convertToDaySelect(settingsData.daysOfWeek ?? '', days));
       setScheduled(settingsData.scheduled);
       setDate(settingsData.fromDate.split('T')[0]);
       setTime(settingsData.fromDate.split('T')[1].split('.')[0]);
