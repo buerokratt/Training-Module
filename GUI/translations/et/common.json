@@ -129,6 +129,8 @@
       "searchIntentPlaceholder": "Otsi olemasolevat teemat",
       "newIntentNamePlaceholder": "Uue teema nimetus",
       "addToModel": "Lisa mudelisse",
+      "moveExample": "Teisalda näide",
+      "newIntentLocation": "Vali uus Teema",
       "removeFromModel": "Eemalda mudelist",
       "examples": "Näited",
       "example": "Näide",
