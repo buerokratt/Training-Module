@@ -3,7 +3,7 @@ declaration:
   version: 0.1
   description: "Fetch the latest LLM training record by ID across all unique version numbers"
   method: get
-  namespace: llm_trainings
+  namespace: training
   returns: json
   allowlist:
     query: []

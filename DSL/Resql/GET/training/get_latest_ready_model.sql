@@ -3,7 +3,7 @@ declaration:
   version: 0.1
   description: "Fetch the most recently trained model in READY state, excluding deleted versions"
   method: get
-  namespace: llm_trainings
+  namespace: training
   returns: json
   allowlist:
     query: []

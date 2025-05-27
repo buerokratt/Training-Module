@@ -3,7 +3,7 @@ declaration:
   version: 0.1
   description: "Fetch the most recently deployed LLM training model"
   method: get
-  namespace: llm_trainings
+  namespace: training
   returns: json
   allowlist:
     query: []

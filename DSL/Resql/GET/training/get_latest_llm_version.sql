@@ -3,7 +3,7 @@ declaration:
   version: 0.1
   description: "Fetch the highest model version number sorted numerically"
   method: get
-  namespace: llm_trainings
+  namespace: training
   returns: json
   allowlist:
     query: []

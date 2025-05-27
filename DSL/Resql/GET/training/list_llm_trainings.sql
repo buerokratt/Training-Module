@@ -3,7 +3,7 @@ declaration:
   version: 0.1
   description: "Fetch LLM training models that are either deployed or the latest ready/activating models, excluding deleted states"
   method: get
-  namespace: llm_trainings
+  namespace: training
   returns: json
   allowlist:
     query: []

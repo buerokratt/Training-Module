@@ -3,7 +3,7 @@ declaration:
   version: 0.1
   description: "Fetch the READY model training entry by specific version number"
   method: get
-  namespace: llm_trainings
+  namespace: training
   returns: json
   allowlist:
     query:

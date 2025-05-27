@@ -3,7 +3,7 @@ declaration:
   version: 0.1
   description: "Fetch the most recent LLM training entry by file name"
   method: get
-  namespace: llm_trainings
+  namespace: training
   returns: json
   allowlist:
     query:

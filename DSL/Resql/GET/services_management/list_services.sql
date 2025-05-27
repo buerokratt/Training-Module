@@ -1,3 +1,37 @@
+/*
+declaration:
+  version: 0.1
+  description: "Fetch paginated and searchable list of deleted services by latest ID per service_id"
+  method: get
+  namespace: service_management
+  returns: json
+  allowlist:
+    query:
+      - field: page
+        type: integer
+        description: "Page number starting from 1"
+      - field: page_size
+        type: integer
+        description: "Number of results per page"
+      - field: sorting
+        type: string
+        enum: ['name asc', 'name desc']
+        description: "Sort order for the service name"
+      - field: search
+        type: string
+        description: "Optional search string to filter by service name"
+  response:
+    fields:
+      - field: name
+        type: string
+        description: "Name of the service"
+      - field: service_id
+        type: string
+        description: "Unique identifier of the service"
+      - field: total_pages
+        type: integer
+        description: "Total number of result pages based on page size"
+*/
 SELECT
   name,
   service_id,
