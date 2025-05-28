@@ -23,10 +23,10 @@ validateName:
   next: returnError
 
 getModelDataFromDb:
-  call: http.post
+  call: http.get
   args:
-    url: "[#TRAINING_RESQL]/training/get_llm_model"
-    body:
+    url: "[#TRAINING_RESQL]/llm/get_llm_model"
+    query:
       fileName: ${fileName}
   result: dbResult
 
@@ -43,7 +43,7 @@ assignRecord:
 updateInDatabase:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/training/remove_llm_model"
+    url: "[#TRAINING_RESQL]/llm/remove_llm_model"
     body:
       model_type: ${model.modelType}
       trained_date: ${model.trainedDate}

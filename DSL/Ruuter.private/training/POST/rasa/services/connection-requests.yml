@@ -19,10 +19,10 @@ declaration:
         description: "Body field 'sorting'"
 
 get_connection_requests:
-  call: http.post
+  call: http.get
   args:
     url: "[#TRAINING_RESQL]/services_management/list_requested_service_triggers"
-    body:
+    query:
       page: ${incoming.body.page}
       page_size: ${incoming.body.page_size}
       sorting: ${incoming.body.sorting}

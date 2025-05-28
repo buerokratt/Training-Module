@@ -45,7 +45,7 @@ checkIfIntentExists:
   next: returnNoIntentFound
 
 getServiceIntentConnections:
-  call: http.post
+  call: http.get
   args:
     url: "[#TRAINING_RESQL]/services_management/list_intent_connections"
   result: getServiceIntentConnectionsResult

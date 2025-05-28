@@ -21,10 +21,10 @@ extractRequestData:
     page_name: ${incoming.params.page_name}
 
 getUserPagePreferences:
-  call: http.post
+  call: http.get
   args:
     url: "[#TRAINING_USERS_RESQL]/auth_users/get_user_page_preferences"
-    body:
+    query:
       user_id: ${user_id}
       page_name: ${page_name}
   result: getUserPagePreferencesResult

@@ -15,9 +15,9 @@ assignDefaultValues:
     modelVersion: "3.0"
 
 getLatestVersionFromDb:
-  call: http.post
+  call: http.get
   args:
-    url: "[#TRAINING_RESQL]/training/get_latest_llm_version"
+    url: "[#TRAINING_RESQL]/llm/get_latest_llm_version"
   result: dbResult
 
 validateDbVersion:
@@ -41,7 +41,7 @@ reAssignVersion:
 updateInDatabase:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/training/create_llm_trainings"
+    url: "[#TRAINING_RESQL]/llm/create_llm_trainings"
     body:
       model_type: ${modelType}
       state: ${state}
@@ -58,7 +58,7 @@ updateInDatabase:
 insertToDatabase:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/training/create_llm_trainings"
+    url: "[#TRAINING_RESQL]/llm/create_llm_trainings"
     body:
       model_type: ${modelType}
       state: ${state}

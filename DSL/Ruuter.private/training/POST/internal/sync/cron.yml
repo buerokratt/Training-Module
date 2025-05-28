@@ -12,9 +12,9 @@ assignCronFileLocation:
     cronFileLocation: "/CronManager/train_bot.yml"
 
 getFromDatabase:
-  call: http.post
+  call: http.get
   args:
-    url: "[#TRAINING_RESQL]/training/get_train_settings"
+    url: "[#TRAINING_RESQL]/llm/get_train_settings"
   result: dbResult
 
 validateDbRecords:

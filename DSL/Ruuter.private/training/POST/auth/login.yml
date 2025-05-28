@@ -28,10 +28,10 @@ extract_request_data:
   next: login_user
 
 login_user:
-  call: http.post
+  call: http.get
   args:
     url: "[#TRAINING_USERS_RESQL]/auth_users/get_user_by_login"
-    body:
+    query:
       login: ${login}
       password: ${password}
   result: results
@@ -44,7 +44,7 @@ check_login_result:
   next: return_user_not_found
 
 get_session_length:
-  call: http.post
+  call: http.get
   args:
     url: "[#TRAINING_USERS_RESQL]/config/get_configuration"
     body:

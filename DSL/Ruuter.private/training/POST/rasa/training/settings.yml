@@ -43,7 +43,7 @@ assignValues:
 updateInDatabase:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/training/create_train_settings"
+    url: "[#TRAINING_RESQL]/llm/create_train_settings"
     body:
       days_of_week: ${daysOfWeek}
       from_date: ${fromDate}
@@ -62,6 +62,6 @@ syncCronTask:
   result: updatedCron
 
 returnSuccess:
-  return: 'Updated Successfully.'
+  return: "Updated Successfully."
   wrapper: false
   next: end

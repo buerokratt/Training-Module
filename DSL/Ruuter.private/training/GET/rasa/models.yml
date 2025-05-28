@@ -8,9 +8,9 @@ declaration:
   namespace: training
 
 getModelsFromDB:
-  call: http.post
+  call: http.get
   args:
-    url: "[#TRAINING_RESQL]/training/list_llm_trainings"
+    url: "[#TRAINING_RESQL]/llm/list_llm_trainings"
   result: dbResult
 
 validateDbRecords:
@@ -24,7 +24,7 @@ checkEntity:
   args:
     url: "[#TRAINING_DMAPPER_HBS]/checkV"
     headers:
-      type: 'json'
+      type: "json"
     body:
       hits: ${dbResult.response.body}
   result: fileResult
@@ -34,7 +34,7 @@ mapModels:
   args:
     url: "[#TRAINING_DMAPPER_HBS]/get_models"
     headers:
-      type: 'json'
+      type: "json"
     body:
       records: ${dbResult.response.body}
   result: mappedModels

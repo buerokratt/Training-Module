@@ -8,15 +8,15 @@ declaration:
   namespace: training
 
 getLatestProcessingModelFromDb:
-  call: http.post
+  call: http.get
   args:
-    url: "[#TRAINING_RESQL]/training/get_last_processing_model"
+    url: "[#TRAINING_RESQL]/llm/get_last_processing_model"
   result: dbModelResult
 
 updateInDatabase:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/training/create_llm_trainings"
+    url: "[#TRAINING_RESQL]/llm/create_llm_trainings"
     body:
       model_type: ${dbModelResult.response.body[0].modelType}
       state: "ERROR"

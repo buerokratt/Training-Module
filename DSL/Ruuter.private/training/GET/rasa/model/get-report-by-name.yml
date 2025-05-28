@@ -24,10 +24,10 @@ validateName:
   next: returnEmptyObject
 
 getReportFromDb:
-  call: http.post
+  call: http.get
   args:
-    url: "[#TRAINING_RESQL]/training/get_llm_model_report"
-    body:
+    url: "[#TRAINING_RESQL]/llm/get_llm_model_report"
+    query:
       fileName: ${fileName}
   result: dbResult
 
