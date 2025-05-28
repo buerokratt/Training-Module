@@ -21,7 +21,7 @@ declaration:
 get_connection_requests:
   call: http.get
   args:
-    url: "[#TRAINING_RESQL]/services_management/list_requested_service_triggers"
+    url: "[#TRAINING_RESQL]/service_management/list_requested_service_triggers"
     query:
       page: ${incoming.body.page}
       page_size: ${incoming.body.page_size}

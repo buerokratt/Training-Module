@@ -35,7 +35,7 @@ extract_request_data:
 add_connection_request:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/services_management/create_service_trigger"
+    url: "[#TRAINING_RESQL]/service_management/create_service_trigger"
     body:
       serviceId: ${serviceId}
       intent: ${intent}

@@ -47,7 +47,7 @@ checkIfIntentExists:
 getServiceIntentConnections:
   call: http.get
   args:
-    url: "[#TRAINING_RESQL]/services_management/list_intent_connections"
+    url: "[#TRAINING_RESQL]/service_management/list_intent_connections"
   result: getServiceIntentConnectionsResult
 
 getIntentListLastChanged:

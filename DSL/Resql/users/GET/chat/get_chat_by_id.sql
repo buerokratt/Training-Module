@@ -20,12 +20,12 @@ SELECT
     c.received_from_name,
     c.forwarded_to_name,
     c.forwarded_to,
+    c.last_message_including_empty_content,
+    c.last_message_timestamp,
     CASE
         WHEN :is_csa_title_visible = 'true' THEN c.csa_title
         ELSE ''
-    END AS csa_title,
-    c.last_message_including_empty_content,
-    c.last_message_timestamp
+    END AS csa_title
 FROM denormalized_chat c
 WHERE chat_id = :id
 ORDER BY denormalized_record_created DESC
