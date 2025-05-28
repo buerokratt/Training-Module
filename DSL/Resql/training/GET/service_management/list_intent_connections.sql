@@ -4,7 +4,7 @@ WITH LatestStatus AS (
            status,
            service_name,
            ROW_NUMBER() OVER (PARTITION BY intent, service ORDER BY created DESC) AS rn
-    FROM service_trigger
+    FROM service_management.service_trigger
 )
 SELECT intent,
        service,

@@ -2,7 +2,7 @@ WITH max_ids AS (
     SELECT
         MAX(id) AS id,
         version_number
-    FROM llm_trainings
+    FROM llm.llm_trainings
     GROUP BY version_number
 ), deployed_model AS (
     SELECT 
@@ -16,11 +16,11 @@ WITH max_ids AS (
         test_report,
         cross_validation_report,
         created
-    FROM llm_trainings
+    FROM llm.llm_trainings
     WHERE state = 'DEPLOYED'
     AND NOT EXISTS (
         SELECT 1
-        FROM llm_trainings AS lt
+        FROM llm.llm_trainings AS lt
         WHERE llm_trainings.version_number = lt.version_number
         AND lt.state = 'DELETED' 
     )
@@ -43,7 +43,7 @@ WITH max_ids AS (
     lt.created, 
     lt.cross_validation_report, 
     lt.training_data_checksum
-    FROM llm_trainings lt
+    FROM llm.llm_trainings lt
     WHERE lt.id IN (SELECT id FROM max_ids)
     AND lt.id NOT IN (
         SELECT id
@@ -51,7 +51,7 @@ WITH max_ids AS (
     )
     AND NOT EXISTS (
         SELECT 1
-        FROM llm_trainings AS lt2
+        FROM llm.llm_trainings AS lt2
         WHERE lt.version_number = lt2.version_number
         AND lt2.state = 'DELETED' 
     )

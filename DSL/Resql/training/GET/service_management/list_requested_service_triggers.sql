@@ -5,13 +5,13 @@ SELECT
     created AS requested_at,
     author_role,
     CEIL(COUNT(*) OVER() / :page_size::DECIMAL) AS total_pages
-FROM service_trigger
+FROM service_management.service_trigger
 WHERE 
     status = 'pending' 
     AND author_role != 'trainer'
     AND id IN (
         SELECT MAX(id)
-        FROM service_trigger
+        FROM service_management.service_trigger
         GROUP BY intent, service
     )
 ORDER BY

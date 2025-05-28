@@ -14,6 +14,6 @@ SELECT m.base_id      AS id,
        rating,
        created,
        updated
-FROM message m
-WHERE id IN (SELECT max(id) FROM message WHERE chat_base_id = :chatId GROUP BY base_id)
+FROM chat.message m
+WHERE id IN (SELECT max(id) FROM chat.message WHERE chat_base_id = :chatId GROUP BY base_id)
 ORDER BY created ASC;
