@@ -14,6 +14,7 @@ declaration:
         description: "Primary key of the training record"
       - field: state
         type: string
+        enum: ['ACTIVATING', 'ALREADY_TRAINED', 'CROSS_VALIDATING', 'DELETED', 'DEPLOYED', 'ERROR', 'PROCESSING', 'READY', 'TESTING']
         description: "Current state of the training process"
       - field: trained_date
         type: timestamp

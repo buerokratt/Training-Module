@@ -26,6 +26,7 @@ declaration:
         description: "Timestamp of model creation"
       - field: state
         type: string
+        enum: ['ACTIVATING', 'ALREADY_TRAINED', 'CROSS_VALIDATING', 'DELETED', 'DEPLOYED', 'ERROR', 'PROCESSING', 'READY', 'TESTING']
         description: "State of the model training process"
       - field: trained_date
         type: timestamp
