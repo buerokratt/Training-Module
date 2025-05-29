@@ -9,10 +9,11 @@ FROM service_trigger
 WHERE 
     status = 'pending' 
     AND author_role != 'trainer'
-    AND id IN (
-        SELECT MAX(id)
-        FROM service_trigger
-        GROUP BY intent, service
+    AND created = (
+        SELECT MAX(created)
+        FROM service_trigger st2
+        WHERE st2.intent = service_trigger.intent 
+        AND st2.service = service_trigger.service
     )
 ORDER BY
     CASE WHEN :sorting = 'intent asc' THEN intent END ASC,
