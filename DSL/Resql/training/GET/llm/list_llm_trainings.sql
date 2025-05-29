@@ -44,16 +44,16 @@ WITH max_ids AS (
     lt.cross_validation_report, 
     lt.training_data_checksum
     FROM llm_trainings lt
-    JOIN max_ids mi ON lt.id = mi.id
-    where mi.id NOT IN (
+    WHERE lt.id IN (SELECT id FROM max_ids)
+    AND lt.id NOT IN (
         SELECT id
         FROM deployed_model
     )
     AND NOT EXISTS (
         SELECT 1
-        FROM llm_trainings AS lt
-        WHERE mi.version_number = lt.version_number
-        AND lt.state = 'DELETED' 
+        FROM llm_trainings AS lt2
+        WHERE lt.version_number = lt2.version_number
+        AND lt2.state = 'DELETED' 
     )
 )
 SELECT 
@@ -91,7 +91,7 @@ FROM (
         created
     FROM deployed_model
 ) AS combined_results
-where state <> 'DELETED'
+WHERE state <> 'DELETED'
 ORDER BY 
     CAST(SPLIT_PART(version_number, '_', 1) AS INTEGER), 
     CAST(SPLIT_PART(version_number, '_', 2) AS INTEGER);

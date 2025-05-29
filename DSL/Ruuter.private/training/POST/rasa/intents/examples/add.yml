@@ -185,10 +185,11 @@ addNewIntentInPipeline:
 addInDatabase:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/add-intent"
+    url: "[#TRAINING_RESQL]/intent_management/create_intent"
     body:
       intent: ${incoming.body.intentName}
       status: "ACTIVE"
+      isForService: false
   result: addInDatabaseResult
 
 returnSuccess:

@@ -13,20 +13,20 @@ declaration:
         description: "Body field 'versionNumber'"
       - field: name
         type: string
-        description: "Trained model file name"  
+        description: "Trained model file name"
 
 getModelByFilenameFromDb:
-  call: http.post
+  call: http.get
   args:
-    url: "[#TRAINING_RESQL]/get-llm-model-by-filename"
-    body:
+    url: "[#TRAINING_RESQL]/llm/get_llm_model"
+    query:
       fileName: ${incoming.body.name}
   result: dbResult
 
 updateInDatabase:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/add-llm-trainings"
+    url: "[#TRAINING_RESQL]/llm/create_llm_trainings"
     body:
       model_type: ${dbResult.response.body[0].modelType}
       state: "ACTIVATING"

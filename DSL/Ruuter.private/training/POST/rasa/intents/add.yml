@@ -89,10 +89,11 @@ addInPipeline:
 addInDatabase:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/add-intent"
+    url: "[#TRAINING_RESQL]/intent_management/create_intent"
     body:
       intent: ${incoming.body.name}
       status: "ACTIVE"
+      isForService: false
   result: addIntentResult
 
 returnSuccess:
@@ -102,17 +103,17 @@ returnSuccess:
 returnTooShortError:
   status: 409
   wrapper: false
-  return: "{\"intentTooShort\": true}"
+  return: '{"intentTooShort": true}'
   next: end
 
 returnIntentExists:
   status: 409
   wrapper: false
-  return: "{\"intentExists\": true}"
+  return: '{"intentExists": true}'
   next: end
 
 returnIntentsError:
   status: 409
   wrapper: false
-  return: "{\"intentParsing\": true}"
+  return: '{"intentParsing": true}'
   next: end

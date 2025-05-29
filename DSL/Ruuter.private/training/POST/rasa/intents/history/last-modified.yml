@@ -17,10 +17,10 @@ assign_values:
     params: ${incoming.body}
 
 getIntentLastChanged:
-  call: http.post
+  call: http.get
   args:
-    url: "[TRAINING_RESQL]/get-intent-last-changed"
-    body:
+    url: "[TRAINING_RESQL]/intent_management/get_active_intent"
+    query:
       intent: ${params.intent}
   result: getIntentLastChangedResult
 
@@ -29,7 +29,7 @@ mapIntentsData:
   args:
     url: "[#TRAINING_DMAPPER_HBS]/get_intent_last_changed"
     headers:
-      type: 'json'
+      type: "json"
     body:
       intent: ${getIntentLastChangedResult.response.body}
   result: intentsData

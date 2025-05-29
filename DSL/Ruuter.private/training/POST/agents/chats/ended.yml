@@ -36,10 +36,10 @@ extractRequestData:
     endDate: "${incoming.body.endDate}"
 
 getEndedChats:
-  call: http.post
+  call: http.get
   args:
-    url: "[#TRAINING_USERS_RESQL]/get-cs-all-ended-chats"
-    body:
+    url: "[#TRAINING_USERS_RESQL]/auth_users/list_chats_cs_ended"
+    query:
       start: ${startDate}
       end: ${endDate}
       page: ${incoming.body.page}

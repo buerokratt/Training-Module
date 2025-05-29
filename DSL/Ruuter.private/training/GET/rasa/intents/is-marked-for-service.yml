@@ -23,9 +23,9 @@ validateName:
   next: returnEmptyName
 
 getResultFromDb:
-  call: http.post
+  call: http.get
   args:
-    url: "[#TRAINING_RESQL]/get-service-intent-connections"
+    url: "[#TRAINING_RESQL]/service_management/list_service_intent_connections"
   result: dbResult
 
 returnSuccess:
@@ -34,6 +34,6 @@ returnSuccess:
   next: end
 
 returnEmptyObject:
-  return: 'Intent name cannot be empty'
+  return: "Intent name cannot be empty"
   wrapper: false
   next: end

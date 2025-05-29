@@ -9,12 +9,12 @@ declaration:
 
 assignDefaultVersion:
   assign:
-    version: '1.0'
+    version: "1.0"
 
 getVersionFromDatabase:
-  call: http.post
+  call: http.get
   args:
-    url: "[#TRAINING_RESQL]/get-latest-llm-version"
+    url: "[#TRAINING_RESQL]/llm/get_latest_llm_version"
   result: dbResult
 
 validateVersion:

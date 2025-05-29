@@ -67,7 +67,7 @@ assignEmptyList:
 getIntentListLastChanged:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/get-intents-list-last-changed"
+    url: "[#TRAINING_RESQL]/intent_management/list_active_intents"
     body:
       intentsList: ${intentsList}
   result: getIntentsListLastChangedResult
