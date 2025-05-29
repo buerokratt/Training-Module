@@ -13,6 +13,7 @@ declaration:
         description: "Type or name of the machine learning model"
       - field: state
         type: string
+        enum: ['ACTIVATING', 'ALREADY_TRAINED', 'CROSS_VALIDATING', 'DELETED', 'DEPLOYED', 'ERROR', 'PROCESSING', 'READY', 'TESTING']
         description: "Current state or status of the training"
       - field: trained_date
         type: string

@@ -14,6 +14,7 @@ declaration:
         description: "Type of the trained model"
       - field: state
         type: string
+        enum: ['ACTIVATING', 'ALREADY_TRAINED', 'CROSS_VALIDATING', 'DELETED', 'DEPLOYED', 'ERROR', 'PROCESSING', 'READY', 'TESTING']
         description: "Model state, expected to be 'READY'"
       - field: trained_date
         type: timestamp

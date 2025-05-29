@@ -20,6 +20,7 @@ declaration:
         description: "Name of the intent"
       - field: status
         type: string
+        enum: ['ACTIVE', 'DELETED']
         description: "Status of the intent (expected to be ACTIVE)"
       - field: created
         type: timestamp

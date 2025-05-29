@@ -13,6 +13,7 @@ declaration:
         description: "Name or identifier of the intent"
       - field: status
         type: string
+        enum: ['ACTIVE', 'DELETED']
         description: "Status of the intent"
 */
 INSERT INTO intent (intent, status, isForService)

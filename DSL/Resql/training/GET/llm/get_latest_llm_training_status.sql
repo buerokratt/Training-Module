@@ -17,6 +17,7 @@ declaration:
         description: "Version identifier in format major_minor"
       - field: state
         type: string
+        enum: ['ACTIVATING', 'ALREADY_TRAINED', 'CROSS_VALIDATING', 'DELETED', 'DEPLOYED', 'ERROR', 'PROCESSING', 'READY', 'TESTING']
         description: "State of the model training process"
 */
 WITH llm_data AS (
