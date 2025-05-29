@@ -1,0 +1,3 @@
+databaseChangeLog:
+  - includeAll:
+      path: changelog/test_data_changelog/

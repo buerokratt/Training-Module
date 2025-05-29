@@ -1,0 +1,3 @@
+model_type,trained_date,file_name,version_number,model_version,test_report,created,cross_validation_report,training_data_checksum,state
+llm,'2025-05-29 19:27:02.793000 +00:00'::TIMESTAMP WITH TIME ZONE,rasa_1_0,1_0,riaee/byk:loba-bot-v0.2,,'2025-05-29 17:27:18.414070 +00:00'::TIMESTAMP WITH TIME ZONE,,,test
+llm,'2025-05-29 19:27:05.803000 +00:00'::TIMESTAMP WITH TIME ZONE,rasa_1_0,1_0,riaee/byk:loba-bot-v0.2,,'2025-05-29 17:27:18.414070 +00:00'::TIMESTAMP WITH TIME ZONE,,,test
