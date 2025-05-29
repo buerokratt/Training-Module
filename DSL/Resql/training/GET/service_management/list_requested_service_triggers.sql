@@ -1,4 +1,44 @@
-SELECT 
+/*
+declaration:
+  version: 0.1
+  description: "Fetch paginated and sorted list of pending service triggers excluding those authored by trainers"
+  method: get
+  namespace: service_management
+  returns: json
+  allowlist:
+    query:
+      - field: page
+        type: integer
+        description: "Page number starting from 1"
+      - field: page_size
+        type: integer
+        description: "Number of results per page"
+      - field: sorting
+        type: string
+        enum: ['intent asc', 'intent desc', 'serviceName asc', 'serviceName desc', 'requestedAt asc', 'requestedAt desc']
+        description: "Sort order for the results"
+  response:
+    fields:
+      - field: intent
+        type: string
+        description: "Intent associated with the service trigger"
+      - field: service
+        type: string
+        description: "Service identifier"
+      - field: service_name
+        type: string
+        description: "Name of the service"
+      - field: requested_at
+        type: timestamp
+        description: "Timestamp of the trigger request"
+      - field: author_role
+        type: string
+        description: "Role of the user who authored the trigger"
+      - field: total_pages
+        type: integer
+        description: "Total number of result pages based on page size"
+*/
+SELECT
     intent,
     service,
     service_name,
