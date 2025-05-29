@@ -129,12 +129,14 @@ WHERE
         FROM denormalized_user_data AS d_2
         WHERE d_1.id_code = d_2.id_code
     )
-    AND (authority_name)::TEXT[] && 
-        (SELECT array_agg(trim(e)) FROM 
-            unnest(string_to_array(
-            btrim(:roles, '[]'), 
-            ','
-            )) AS e)::TEXT ARRAY
+    AND (authority_name)::TEXT []
+    && (
+        SELECT ARRAY_AGG(TRIM(e)) FROM
+            UNNEST(STRING_TO_ARRAY(
+                BTRIM(:roles, '[]'),
+                ','
+            )) AS e
+    )::TEXT ARRAY
     AND (
         :search_display_name_and_csa_title IS NULL
         OR display_name ILIKE '%' || :search_display_name_and_csa_title || '%'
@@ -142,10 +144,12 @@ WHERE
     )
     AND (
         :search_full_name_and_csa_title IS NULL
-        OR (first_name || ' ' || last_name) ILIKE '%' || :search_full_name_and_csa_title || '%'
+        OR (first_name || ' ' || last_name) ILIKE '%'
+        || :search_full_name_and_csa_title
+        || '%'
         OR csa_title ILIKE '%' || :search_full_name_and_csa_title || '%'
     )
-    AND ((:show_active_only)::boolean <> TRUE OR status <> 'offline')
+    AND ((:show_active_only)::BOOLEAN <> TRUE OR status <> 'offline')
     AND (:search_full_name IS NULL OR (
         (first_name || ' ' || last_name) ILIKE '%' || :search_full_name || '%'
     ))

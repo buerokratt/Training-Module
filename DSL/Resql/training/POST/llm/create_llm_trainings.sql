@@ -39,5 +39,27 @@ declaration:
   response:
     fields: []
 */
-INSERT INTO llm_trainings (model_type, state, trained_date, file_name, version_number, model_version, test_report, cross_validation_report, created, training_data_checksum)
-VALUES (:model_type, UPPER(:state)::llm_training_state_type, TO_TIMESTAMP(:trained_date,'YYYY-MM-DD"T"HH24:MI:SS'), :file_name, :version_number , :model_version, :test_report, :cross_validation_report, CURRENT_TIMESTAMP, :training_data_checksum);
+INSERT INTO llm_trainings (
+    model_type,
+    state,
+    trained_date,
+    file_name,
+    version_number,
+    model_version,
+    test_report,
+    cross_validation_report,
+    created,
+    training_data_checksum
+)
+VALUES (
+    :model_type,
+    UPPER(:state)::LLM_TRAINING_STATE_TYPE,
+    TO_TIMESTAMP(:trained_date, 'YYYY-MM-DD"T"HH24:MI:SS'),
+    :file_name,
+    :version_number,
+    :model_version,
+    :test_report,
+    :cross_validation_report,
+    CURRENT_TIMESTAMP,
+    :training_data_checksum
+);
