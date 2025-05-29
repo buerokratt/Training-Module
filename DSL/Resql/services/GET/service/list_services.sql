@@ -2,11 +2,11 @@ SELECT
   name,
   service_id,
   CEIL(COUNT(*) OVER() / :page_size::DECIMAL) AS total_pages
-FROM services
-WHERE id IN (
-  SELECT max(id)
-  FROM services
-  GROUP BY service_id
+FROM services AS s1
+WHERE updated_at = (
+  SELECT max(updated_at)
+  FROM services AS s2
+  WHERE s1.service_id = s2.service_id
 )
 AND deleted IS NOT NULL
 AND (:search IS NULL OR :search = '' OR name LIKE ('%' || :search || '%'))

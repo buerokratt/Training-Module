@@ -4,5 +4,5 @@ WHERE file_name = :fileName
   AND created = (
     SELECT MAX(created)
     FROM llm_trainings
-    WHERE file_name LIKE :fileName
+    WHERE file_name = :fileName
 );
