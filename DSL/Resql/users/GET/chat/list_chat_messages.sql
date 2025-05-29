@@ -15,5 +15,5 @@ SELECT m.base_id      AS id,
        created,
        updated
 FROM message m
-WHERE id IN (SELECT max(id) FROM message WHERE chat_base_id = :chatId GROUP BY base_id)
+WHERE updated = (SELECT max(m2.updated) FROM message AS m2 WHERE m2.base_id = m.base_id AND m2.chat_base_id = :chatId)
 ORDER BY created ASC;
