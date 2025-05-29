@@ -15,5 +15,5 @@ declaration:
         type: string
         description: "Status of the intent"
 */
-INSERT INTO intent (intent, created, status, isForService)
-VALUES (:intent, CURRENT_TIMESTAMP, UPPER(:status)::intent_status_type, :isForService);
+INSERT INTO intent (intent, status, isForService)
+VALUES (:intent, UPPER(:status)::intent_status_type, :isForService);
