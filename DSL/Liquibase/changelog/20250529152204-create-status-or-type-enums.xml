@@ -4,9 +4,9 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
     <changeSet id="20250529152204" author="ahmer-mt">
-        <sqlFile path="changelog/20250529152204-create-status-or-type-enums.sql" />
+        <sqlFile path="changelog/changelog/20250529152204-create-status-or-type-enums.sql" />
         <rollback>
-            <sqlFile path="changelog/20250529152204-rollback.sql" />
+            <sqlFile path="changelog/changelog/20250529152204-rollback.sql" />
         </rollback>
     </changeSet>
 </databaseChangeLog>
