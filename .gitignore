@@ -6,3 +6,4 @@ docker-compose.local.yml
 tim-db
 /data
 .DS_Store
+/exported-data/
