@@ -7,6 +7,7 @@ http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
         <loadData
                 file="changelog/data/test-fixtures/service_trigger.csv"
                 tableName="service_trigger"
+                schemaName="service_management"
         >
             <column name="created" type="COMPUTED"/>
             <column name="status" type="other"/>
