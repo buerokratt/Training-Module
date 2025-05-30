@@ -25,7 +25,11 @@ declaration:
         type: boolean
         description: "Flag indicating whether the intent is for a service"
 */
-SELECT DISTINCT ON (intent) id, intent, created, isForService
+SELECT DISTINCT ON (intent)
+    id,
+    intent,
+    created,
+    is_for_service
 FROM intent
 WHERE intent IN (:intentsList) AND status = 'ACTIVE'
-ORDER BY intent, created DESC;
+ORDER BY intent ASC, created DESC;
