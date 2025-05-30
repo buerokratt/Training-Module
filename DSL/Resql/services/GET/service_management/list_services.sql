@@ -36,11 +36,11 @@ SELECT
     name,
     service_id,
     CEIL(COUNT(*) OVER () / :page_size::DECIMAL) AS total_pages
-FROM service_management.services AS s_1
+FROM services.services AS s_1
 WHERE
     updated_at = (
         SELECT MAX(updated_at)
-        FROM service_management.services AS s_2
+        FROM services.services AS s_2
         WHERE s_1.service_id = s_2.service_id
     )
     AND deleted IS NOT NULL
@@ -48,4 +48,4 @@ WHERE
 ORDER BY
     CASE WHEN :sorting = 'name asc' THEN name END ASC,
     CASE WHEN :sorting = 'name desc' THEN name END DESC
-OFFSET ((GREATEST(:page, 1) - 1) * :page_size) LIMIT :page_size;
+OFFSET ((GREATEST(:page::INTEGER, 1) - 1) * :page_size::INTEGER) LIMIT :page_size::INTEGER;

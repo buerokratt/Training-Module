@@ -29,7 +29,7 @@ SELECT DISTINCT ON (intent)
     id,
     intent,
     created,
-    is_for_service
+    isforservice
 FROM intent_management.intent
-WHERE intent IN (:intentsList) AND status = 'ACTIVE'
+WHERE intent = ANY(STRING_TO_ARRAY(:intentsList, ',')) AND status = 'ACTIVE'
 ORDER BY intent ASC, created DESC;

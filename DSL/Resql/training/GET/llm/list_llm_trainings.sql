@@ -94,7 +94,7 @@ WITH
                 WHEN lt.file_name = '' THEN 'DELETED'
                 ELSE 'READY'
             END AS state
-        FROM llm_trainings AS lt
+        FROM llm.llm_trainings AS lt
         WHERE
             lt.id IN (
                 SELECT id FROM max_ids
@@ -106,7 +106,7 @@ WITH
             )
             AND NOT EXISTS (
                 SELECT 1
-                FROM llm_trainings AS lt_2
+                FROM llm.llm_trainings AS lt_2
                 WHERE
                     lt.version_number = lt_2.version_number
                     AND lt_2.state = 'DELETED'
