@@ -39,7 +39,7 @@ declaration:
   response:
     fields: []
 */
-INSERT INTO llm_trainings (
+INSERT INTO llm.llm_trainings (
     model_type,
     state,
     trained_date,

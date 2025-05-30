@@ -30,6 +30,6 @@ SELECT DISTINCT ON (intent)
     intent,
     created,
     is_for_service
-FROM intent
+FROM intent_management.intent
 WHERE intent IN (:intentsList) AND status = 'ACTIVE'
 ORDER BY intent ASC, created DESC;

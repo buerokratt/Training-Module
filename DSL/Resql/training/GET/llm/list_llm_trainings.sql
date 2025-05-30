@@ -47,7 +47,7 @@ WITH
                 PARTITION BY version_number
                 ORDER BY created DESC
             ) AS rn
-        FROM llm_trainings
+        FROM llm.llm_trainings
     ),
 
     deployed_model AS (
@@ -62,15 +62,15 @@ WITH
             test_report,
             cross_validation_report,
             created
-        FROM llm_trainings
+        FROM llm.llm_trainings AS lt_1
         WHERE
             state = 'DEPLOYED'
             AND NOT EXISTS (
                 SELECT 1
-                FROM llm_trainings AS lt
+                FROM llm.llm_trainings AS lt_2
                 WHERE
-                    llm_trainings.version_number = lt.version_number
-                    AND lt.state = 'DELETED'
+                    lt_1.version_number = lt_2.version_number
+                    AND lt_2.state = 'DELETED'
             )
         ORDER BY created DESC
         LIMIT 1

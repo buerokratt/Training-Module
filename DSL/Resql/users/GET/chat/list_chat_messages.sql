@@ -79,10 +79,10 @@ SELECT
     m.rating,
     m.created,
     m.updated
-FROM message AS m
+FROM chat.message AS m
 WHERE
     m.updated = (
-        SELECT MAX(m_2.updated) FROM message AS m_2
+        SELECT MAX(m_2.updated) FROM chat.message AS m_2
         WHERE m_2.base_id = m.base_id AND m_2.chat_base_id = :chatId
     )
 ORDER BY m.created ASC;

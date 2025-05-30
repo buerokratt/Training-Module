@@ -16,5 +16,5 @@ declaration:
         enum: ['ACTIVE', 'DELETED']
         description: "Status of the intent"
 */
-INSERT INTO intent (intent, created, status, isforservice)
+INSERT INTO intent_management.intent (intent, created, status, isforservice)
 VALUES (:intent, CURRENT_TIMESTAMP, UPPER(:status)::INTENT_STATUS_TYPE, :isForService);

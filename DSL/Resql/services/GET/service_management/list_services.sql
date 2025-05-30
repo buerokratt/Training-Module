@@ -36,11 +36,11 @@ SELECT
     name,
     service_id,
     CEIL(COUNT(*) OVER () / :page_size::DECIMAL) AS total_pages
-FROM services AS s_1
+FROM service_management.services AS s_1
 WHERE
     updated_at = (
         SELECT MAX(updated_at)
-        FROM services AS s_2
+        FROM service_management.services AS s_2
         WHERE s_1.service_id = s_2.service_id
     )
     AND deleted IS NOT NULL

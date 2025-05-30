@@ -31,7 +31,7 @@ WITH
                 PARTITION BY version_number
                 ORDER BY created DESC
             ) AS rn
-        FROM llm_trainings
+        FROM llm.llm_trainings
     )
 
 SELECT
