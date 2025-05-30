@@ -30,7 +30,7 @@ declaration:
     fields: []
 */
 
-INSERT INTO train_settings (
+INSERT INTO llm.train_settings (
     rasa_folds,
     scheduled,
     days_of_week,

@@ -43,7 +43,7 @@ SELECT
     page_results,
     page_name,
     user_id
-FROM user_page_preferences
+FROM auth_users.user_page_preferences
 WHERE
     user_id = :user_id
     AND page_name = :page_name

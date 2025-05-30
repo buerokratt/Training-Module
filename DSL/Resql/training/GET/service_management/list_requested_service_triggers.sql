@@ -45,16 +45,16 @@ SELECT
     created AS requested_at,
     author_role,
     CEIL(COUNT(*) OVER () / :page_size::DECIMAL) AS total_pages
-FROM service_trigger
+FROM service_management.service_trigger AS st_1
 WHERE
     status = 'pending'
     AND author_role != 'trainer'
     AND created = (
         SELECT MAX(created)
-        FROM service_trigger AS st_2
+        FROM service_management.service_trigger AS st_2
         WHERE
-            st_2.intent = service_trigger.intent
-            AND st_2.service = service_trigger.service
+            st_1.intent = st_2.intent
+            AND st_1.service = st_2.service
     )
 ORDER BY
     CASE WHEN :sorting = 'intent asc' THEN intent END ASC,

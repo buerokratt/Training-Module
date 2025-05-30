@@ -3,13 +3,10 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
-    <changeSet id="20250529160956" author="Artsiom Beida" context="@test">
-        <loadData
-                file="changelog/data/test-fixtures/intent.csv"
-                tableName="intent"
-                schemaName="intent_management"
-        >
-            <column name="created" type="COMPUTED"/>
-        </loadData>
+    <changeSet id="20250530152658" author="athar-mt">
+        <sqlFile path="changelog/changelog/20250530152658-create-separate-schemas.sql" />
+        <rollback>
+            <sqlFile path="changelog/changelog/20250530152658-rollback.sql" />
+        </rollback>
     </changeSet>
 </databaseChangeLog>

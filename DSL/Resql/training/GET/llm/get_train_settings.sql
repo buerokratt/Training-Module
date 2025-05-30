@@ -43,6 +43,6 @@ SELECT
     last_modified,
     modifier_id,
     modifier_name
-FROM train_settings
+FROM llm.train_settings
 ORDER BY last_modified DESC
 LIMIT 1;

@@ -34,11 +34,11 @@ SELECT
     value,
     deleted,
     created
-FROM configuration AS c_1
+FROM config.configuration AS c_1
 WHERE
     key = :key
     AND created = (
-        SELECT MAX(c_2.created) FROM configuration AS c_2
+        SELECT MAX(c_2.created) FROM config.configuration AS c_2
         WHERE c_2.key = c_1.key
     )
     AND NOT deleted;

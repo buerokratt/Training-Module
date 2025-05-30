@@ -169,7 +169,7 @@ WITH
             END AS csa_title,
             last_message_event,
             all_messages
-        FROM denormalized_chat
+        FROM chat.denormalized_chat
         ORDER BY chat_id ASC, id DESC
     )
 

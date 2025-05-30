@@ -52,15 +52,15 @@ SELECT
     cross_validation_report,
     created,
     training_data_checksum
-FROM llm_trainings
+FROM llm.llm_trainings AS lt_1
 WHERE
-    trained_date = (SELECT MAX(trained_date) FROM llm_trainings)
+    trained_date = (SELECT MAX(trained_date) FROM llm.llm_trainings)
     AND NOT EXISTS (
         SELECT 1
-        FROM llm_trainings AS lt
+        FROM llm.llm_trainings AS lt_2
         WHERE
-            llm_trainings.version_number = lt.version_number
-            AND lt.state = 'DELETED'
+            lt_1.version_number = lt_2.version_number
+            AND lt_2.state = 'DELETED'
     )
     AND state = 'READY'
 LIMIT 1;

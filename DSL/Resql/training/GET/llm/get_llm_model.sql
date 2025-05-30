@@ -59,11 +59,11 @@ SELECT
     cross_validation_report,
     created,
     training_data_checksum
-FROM llm_trainings
+FROM llm.llm_trainings
 WHERE
     file_name = :fileName
     AND created = (
         SELECT MAX(created)
-        FROM llm_trainings
+        FROM llm.llm_trainings
         WHERE file_name = :fileName
     );
