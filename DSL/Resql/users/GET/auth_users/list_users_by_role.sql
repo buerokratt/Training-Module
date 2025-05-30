@@ -1,3 +1,108 @@
+/*
+declaration:
+  version: 0.1
+  description: "Fetch paginated, searchable, and filtered list of active CSA users with profile and authority data"
+  method: get
+  namespace: auth_users
+  returns: json
+  allowlist:
+    query:
+      - field: page
+        type: integer
+        description: "Page number starting from 1"
+      - field: page_size
+        type: integer
+        description: "Number of results per page"
+      - field: sorting
+        type: string
+        enum: ['name asc', 'name desc', 'idCode asc', 'idCode desc', 'Role asc', 'Role desc', 'displayName asc', 'displayName desc', 'csaTitle asc', 'csaTitle desc', 'csaEmail asc', 'csaEmail desc', 'department asc', 'department desc', 'customerSupportStatus asc', 'customerSupportStatus desc']
+        description: "Sort order for results"
+      - field: roles
+        type: string
+        description: "Comma-separated list of roles to filter by (array format)"
+      - field: is_csa_title_visible
+        type: string
+        enum: ['true', 'false']
+        description: "Controls whether CSA title is included in response"
+      - field: search_display_name_and_csa_title
+        type: string
+        description: "Search filter for display name or CSA title"
+      - field: search_full_name_and_csa_title
+        type: string
+        description: "Search filter for full name or CSA title"
+      - field: show_active_only
+        type: boolean
+        description: "Filter out offline users if true"
+      - field: search_full_name
+        type: string
+        description: "Search filter for full name"
+      - field: search_id_code
+        type: string
+        description: "Search filter for user ID code"
+      - field: search_display_name
+        type: string
+        description: "Search filter for display name"
+      - field: search_csa_title
+        type: string
+        description: "Search filter for CSA title"
+      - field: search_csa_email
+        type: string
+        description: "Search filter for CSA email"
+      - field: search_authority
+        type: string
+        description: "Search filter for authority name"
+      - field: search_department
+        type: string
+        description: "Search filter for department"
+      - field: excluded_users
+        type: string
+        description: "Comma-separated list of user ID codes to exclude (array format)"
+  response:
+    fields:
+      - field: login
+        type: string
+        description: "User login name"
+      - field: first_name
+        type: string
+        description: "User's first name"
+      - field: last_name
+        type: string
+        description: "User's last name"
+      - field: id_code
+        type: string
+        description: "Unique identifier for the user"
+      - field: display_name
+        type: string
+        description: "Full display name"
+      - field: csa_title
+        type: string
+        description: "CSA title, conditionally included"
+      - field: csa_email
+        type: string
+        description: "CSA email address"
+      - field: department
+        type: string
+        description: "User department"
+      - field: authorities
+        type: []
+        items:
+          type: string
+          enum: ['ROLE_ADMINISTRATOR', 'ROLE_SERVICE_MANAGER', 'ROLE_CUSTOMER_SUPPORT_AGENT', 'ROLE_CHATBOT_TRAINER', 'ROLE_ANALYST', 'ROLE_UNAUTHENTICATED']
+        description: "List of user authorities"
+      - field: customer_support_status
+        type: string
+        enum: ['online', 'idle', 'offline']
+        description: "Current support status of the user"
+      - field: status_comment
+        type: string
+        description: "Comment on user's status"
+      - field: status_comment_time_stamp
+        type: timestamp
+        description: "Timestamp of the status comment"
+      - field: total_pages
+        type: integer
+        description: "Total number of result pages based on filters and page size"
+*/
 SELECT
     login,
     first_name,
@@ -24,12 +129,14 @@ WHERE
         FROM auth_users.denormalized_user_data AS d_2
         WHERE d_1.id_code = d_2.id_code
     )
-    AND (authority_name)::TEXT[] && 
-        (SELECT array_agg(trim(e)) FROM 
-            unnest(string_to_array(
-            btrim(:roles, '[]'), 
-            ','
-            )) AS e)::TEXT ARRAY
+    AND (authority_name)::TEXT []
+    && (
+        SELECT ARRAY_AGG(TRIM(e)) FROM
+            UNNEST(STRING_TO_ARRAY(
+                BTRIM(:roles, '[]'),
+                ','
+            )) AS e
+    )::TEXT ARRAY
     AND (
         :search_display_name_and_csa_title IS NULL
         OR display_name ILIKE '%' || :search_display_name_and_csa_title || '%'
@@ -37,10 +144,12 @@ WHERE
     )
     AND (
         :search_full_name_and_csa_title IS NULL
-        OR (first_name || ' ' || last_name) ILIKE '%' || :search_full_name_and_csa_title || '%'
+        OR (first_name || ' ' || last_name) ILIKE '%'
+        || :search_full_name_and_csa_title
+        || '%'
         OR csa_title ILIKE '%' || :search_full_name_and_csa_title || '%'
     )
-    AND ((:show_active_only)::boolean <> TRUE OR status <> 'offline')
+    AND ((:show_active_only)::BOOLEAN <> TRUE OR status <> 'offline')
     AND (:search_full_name IS NULL OR (
         (first_name || ' ' || last_name) ILIKE '%' || :search_full_name || '%'
     ))
