@@ -22,9 +22,6 @@ declaration:
         items:
           type: string
         description: "List of selected columns"
-      - field: created
-        type: timestamp
-        description: "Timestamp when the preference was created"
 */
 INSERT INTO auth_users.user_page_preferences (
     user_id, page_name, page_results, selected_columns, created
