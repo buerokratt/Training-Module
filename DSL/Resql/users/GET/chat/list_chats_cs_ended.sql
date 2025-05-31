@@ -204,7 +204,7 @@ SELECT
     latest_chat_records.feedback_rating,
     latest_chat_records.csa_title,
     latest_chat_records.last_message_event,
-    CEIL(COUNT(*) OVER () / latest_chat_records.:page_size::DECIMAL) AS total_pages
+    CEIL(COUNT(*) OVER () / :page_size::DECIMAL) AS total_pages
 FROM latest_chat_records
 WHERE
     (
@@ -217,9 +217,9 @@ WHERE
         AND latest_chat_records.last_message <> 'message-read'
     )
     AND (
-        LENGTH(latest_chat_records.:customerSupportIds) = 0
+        LENGTH(:customerSupportIds) = 0
         OR latest_chat_records.customer_support_id
-        = ANY(STRING_TO_ARRAY(latest_chat_records.:customerSupportIds, ','))
+        = ANY(STRING_TO_ARRAY(:customerSupportIds, ','))
     )
     AND (
         :search IS NULL
@@ -274,10 +274,10 @@ ORDER BY
             THEN latest_chat_records.first_message_timestamp
     END DESC,
     CASE
-        WHEN latest_chat_records.:sorting = 'ended asc' THEN latest_chat_records.ended
+        WHEN :sorting = 'ended asc' THEN latest_chat_records.ended
     END ASC,
     CASE
-        WHEN latest_chat_records.:sorting = 'ended desc' THEN latest_chat_records.ended
+        WHEN :sorting = 'ended desc' THEN latest_chat_records.ended
     END DESC,
     CASE
         WHEN
@@ -300,10 +300,10 @@ ORDER BY
             THEN latest_chat_records.end_user_first_name
     END DESC,
     CASE
-        WHEN latest_chat_records.:sorting = 'endUserEmail asc' THEN c.end_user_email
+        WHEN :sorting = 'endUserEmail asc' THEN c.end_user_email
     END ASC,
     CASE
-        WHEN latest_chat_records.:sorting = 'endUserEmail desc' THEN c.end_user_email
+        WHEN :sorting = 'endUserEmail desc' THEN c.end_user_email
     END DESC,
     CASE
         WHEN
@@ -336,7 +336,7 @@ ORDER BY
             THEN latest_chat_records.comment
     END DESC,
     CASE
-        WHEN latest_chat_records.:sorting = 'labels asc' THEN latest_chat_records.labels
+        WHEN :sorting = 'labels asc' THEN latest_chat_records.labels
     END ASC,
     CASE
         WHEN
@@ -344,7 +344,7 @@ ORDER BY
             THEN latest_chat_records.labels
     END DESC,
     CASE
-        WHEN latest_chat_records.:sorting = 'status asc' THEN
+        WHEN :sorting = 'status asc' THEN
             CASE
                 WHEN
                     latest_chat_records.last_message_event IS NULL
@@ -354,7 +354,7 @@ ORDER BY
             END
     END ASC NULLS LAST,
     CASE
-        WHEN latest_chat_records.:sorting = 'status desc' THEN
+        WHEN :sorting = 'status desc' THEN
             CASE
                 WHEN
                     latest_chat_records.last_message_event IS NULL
@@ -374,7 +374,7 @@ ORDER BY
             THEN latest_chat_records.feedback_rating
     END ASC,
     CASE
-        WHEN latest_chat_records.:sorting = 'customerSupportFullName desc' THEN
+        WHEN :sorting = 'customerSupportFullName desc' THEN
             (
                 latest_chat_records.customer_support_first_name
                 || ' '
@@ -382,7 +382,7 @@ ORDER BY
             )
     END DESC NULLS LAST,
     CASE
-        WHEN latest_chat_records.:sorting = 'customerSupportFullName asc' THEN
+        WHEN :sorting = 'customerSupportFullName asc' THEN
             (
                 latest_chat_records.customer_support_first_name
                 || ' '
@@ -390,9 +390,9 @@ ORDER BY
             )
     END ASC NULLS LAST,
     CASE
-        WHEN latest_chat_records.:sorting = 'id asc' THEN latest_chat_records.chat_id
+        WHEN :sorting = 'id asc' THEN latest_chat_records.chat_id
     END ASC,
     CASE
-        WHEN latest_chat_records.:sorting = 'id desc' THEN latest_chat_records.chat_id
+        WHEN :sorting = 'id desc' THEN latest_chat_records.chat_id
     END DESC
 LIMIT :page_size::INTEGER OFFSET ((GREATEST(:page::INTEGER, 1) - 1) * :page_size::INTEGER);
