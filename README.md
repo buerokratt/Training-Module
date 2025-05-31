@@ -135,3 +135,23 @@ Due to Resql variables and templating syntax used in this project, SQLFluff may 
 - No unintended changes were made to templated sections
 
 It's recommended to test your SQL queries after SQLFluff formatting to ensure they still work correctly with the Resql engine.
+
+### Load test data
+
+Loading test data is a liquibase operation in `DSL/Liquibase/test_data_changelog`.
+CSV files are located in `DSL/Liquibase/data/test-fixtures`.
+This command will load test data to database: `./load-test-data.sh`
+
+### Export service
+
+Export service reads `DSL/Export` folder. Each subfolder represents export task.
+Export task should contain 2 SQL files: `select.sql` and `delete.sql`.
+`select.sql` file selects that, which is saved to CSV.
+`delete.sql` file deletes data.
+
+Export service have documentation page. After starting all services in docker-compose.yml
+it's available by [this link](http://0.0.0.0:8888/docs).
+POST request to `/exports` endpoint will trigger all tasks.
+POST request to `/exports/{task_name}` endpoint will trigger specified task only.
+GET request to `/exports` endpoint will return all available tasks.
+GET request to `/exports/{task_name}` endpoint will return only selected task.
