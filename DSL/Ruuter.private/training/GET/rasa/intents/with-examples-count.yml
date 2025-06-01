@@ -61,14 +61,14 @@ assignIntentsList:
 
 assignEmptyList:
   assign:
-    intentsList: ''
-  next: getIntentListLastChanged  
+    intentsList: ""
+  next: getIntentListLastChanged
 
 getIntentListLastChanged:
-  call: http.post
+  call: http.get
   args:
     url: "[#TRAINING_RESQL]/intent_management/list_active_intents"
-    body:
+    query:
       intentsList: ${intentsList}
   result: getIntentsListLastChangedResult
 

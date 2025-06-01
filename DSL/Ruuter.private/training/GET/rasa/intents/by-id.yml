@@ -51,10 +51,10 @@ getServiceIntentConnections:
   result: getServiceIntentConnectionsResult
 
 getIntentListLastChanged:
-  call: http.post
+  call: http.get
   args:
     url: "[#TRAINING_RESQL]/intent_management/list_active_intents"
-    body:
+    query:
       intentsList: ${intent}
   result: getIntentListLastChangedResult
 

@@ -50,8 +50,8 @@ WHERE
     AND password_hash = :password
     AND ARRAY_LENGTH(authority_name, 1) > 0
     AND created = (
-        SELECT MAX(created)
+        SELECT MAX(d_2.created)
         FROM auth_users.denormalized_user_data AS d_2
-        WHERE d_2.user_id = d_1.user_id
+        WHERE d_2.id_code = d_1.id_code
     )
 LIMIT 1;

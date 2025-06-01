@@ -17,11 +17,11 @@ assignParameters:
     intent: ${incoming.body.intentName}
 
 getLastChanged:
-  call: http.post
+  call: http.get
   args:
-    url: "[#TRAINING_RESQL]/intent_management/get_intent_last_changed"
-    body:
-        intent: ${intent}
+    url: "[#TRAINING_RESQL]/intent_management/get_active_intent"
+    query:
+      intent: ${intent}
   result: lastChangedResult
 
 checkIfIntentLastChangeExists:
@@ -37,4 +37,4 @@ returnStep:
 
 return_empty_change:
   return: ""
-  next: end    
+  next: end
