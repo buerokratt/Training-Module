@@ -26,8 +26,12 @@ declaration:
         type: timestamp
         description: "Timestamp when the intent was created"
 */
-SELECT id, intent, status, created
-FROM intent
+SELECT
+    id,
+    intent,
+    status,
+    created
+FROM intent_management.intent
 WHERE intent = :intent AND status = 'ACTIVE'
 ORDER BY created DESC
 LIMIT 1;

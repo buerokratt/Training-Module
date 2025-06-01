@@ -44,14 +44,14 @@ SELECT
     id_code,
     display_name,
     authority_name AS authorities
-FROM denormalized_user_data d1
+FROM auth_users.denormalized_user_data AS d_1
 WHERE
-    login = :login
+    id_code = :login
     AND password_hash = :password
-    AND array_length(authority_name, 1) > 0
+    AND ARRAY_LENGTH(authority_name, 1) > 0
     AND created = (
-        SELECT max(created)
-        FROM denormalized_user_data d2
-        WHERE d2.user_id = d1.user_id
+        SELECT MAX(d_2.created)
+        FROM auth_users.denormalized_user_data AS d_2
+        WHERE d_2.id_code = d_1.id_code
     )
 LIMIT 1;

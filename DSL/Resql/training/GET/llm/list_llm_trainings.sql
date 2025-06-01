@@ -38,98 +38,115 @@ declaration:
         type: timestamp
         description: "Timestamp of model creation"
 */
-WITH max_ids AS (
-   SELECT
-       id,
-       version_number,
-       ROW_NUMBER() OVER (PARTITION BY version_number ORDER BY created DESC) as rn
-   FROM llm_trainings
-), deployed_model AS (
-   SELECT 
-       id,
-       model_type,
-       state,
-       trained_date,
-       file_name,
-       version_number,
-       model_version, 
-       test_report,
-       cross_validation_report,
-       created
-   FROM llm_trainings
-   WHERE state = 'DEPLOYED'
-   AND NOT EXISTS (
-       SELECT 1
-       FROM llm_trainings AS lt
-       WHERE llm_trainings.version_number = lt.version_number
-       AND lt.state = 'DELETED' 
-   )
-   ORDER BY created DESC
-   LIMIT 1
-), latest_ready_activating_models AS (
- SELECT 
-   lt.id, lt.model_type,
-   CASE 
-       WHEN lt.state = 'ACTIVATING' THEN 'ACTIVATING'
-       WHEN lt.state = 'DELETED' THEN 'DELETED'
-       WHEN lt.file_name = '' THEN 'DELETED'
-       ELSE 'READY'
-   END AS state,
-   lt.trained_date, 
-   lt.file_name, 
-   lt.version_number, 
-   lt.model_version, 
-   lt.test_report, 
-   lt.created, 
-   lt.cross_validation_report, 
-   lt.training_data_checksum
-   FROM llm_trainings lt
-   WHERE lt.id IN (SELECT id FROM max_ids WHERE rn = 1)
-   AND lt.id NOT IN (
-       SELECT id
-       FROM deployed_model
-   )
-   AND NOT EXISTS (
-       SELECT 1
-       FROM llm_trainings AS lt2
-       WHERE lt.version_number = lt2.version_number
-       AND lt2.state = 'DELETED' 
-   )
-)
-SELECT 
-   model_type,
-   state,
-   trained_date,
-   file_name,
-   version_number,
-   model_version, 
-   test_report,
-   cross_validation_report,
-   created
+WITH
+    max_ids AS (
+        SELECT
+            id,
+            version_number,
+            ROW_NUMBER() OVER (
+                PARTITION BY version_number
+                ORDER BY created DESC
+            ) AS rn
+        FROM llm.llm_trainings
+    ),
+
+    deployed_model AS (
+        SELECT
+            id,
+            model_type,
+            state,
+            trained_date,
+            file_name,
+            version_number,
+            model_version,
+            test_report,
+            cross_validation_report,
+            created
+        FROM llm.llm_trainings AS lt_1
+        WHERE
+            state = 'DEPLOYED'
+            AND NOT EXISTS (
+                SELECT 1
+                FROM llm.llm_trainings AS lt_2
+                WHERE
+                    lt_1.version_number = lt_2.version_number
+                    AND lt_2.state = 'DELETED'
+            )
+        ORDER BY created DESC
+        LIMIT 1
+    ),
+
+    latest_ready_activating_models AS (
+        SELECT
+            lt.id,
+            lt.model_type,
+            lt.trained_date,
+            lt.file_name,
+            lt.version_number,
+            lt.model_version,
+            lt.test_report,
+            lt.created,
+            lt.cross_validation_report,
+            lt.training_data_checksum,
+            CASE
+                WHEN lt.state = 'ACTIVATING' THEN 'ACTIVATING'
+                WHEN lt.state = 'DELETED' THEN 'DELETED'
+                WHEN lt.file_name = '' THEN 'DELETED'
+                ELSE 'READY'
+            END AS state
+        FROM llm.llm_trainings AS lt
+        WHERE
+            lt.id IN (
+                SELECT id FROM max_ids
+                WHERE rn = 1
+            )
+            AND lt.id NOT IN (
+                SELECT id
+                FROM deployed_model
+            )
+            AND NOT EXISTS (
+                SELECT 1
+                FROM llm.llm_trainings AS lt_2
+                WHERE
+                    lt.version_number = lt_2.version_number
+                    AND lt_2.state = 'DELETED'
+            )
+    )
+
+SELECT
+    model_type,
+    state,
+    trained_date,
+    file_name,
+    version_number,
+    model_version,
+    test_report,
+    cross_validation_report,
+    created
 FROM (
-   SELECT 
-       model_type,
-       state,
-       trained_date,
-       file_name,
-       version_number,
-       model_version, 
-       test_report,
-       cross_validation_report,
-       created
-   FROM latest_ready_activating_models
-   UNION ALL
-   SELECT 
-       model_type,
-       state,
-       trained_date,
-       file_name,
-       version_number,
-       model_version, 
-       test_report,
-       cross_validation_report,
-       created
-   FROM deployed_model
+    SELECT
+        model_type,
+        state,
+        trained_date,
+        file_name,
+        version_number,
+        model_version,
+        test_report,
+        cross_validation_report,
+        created
+    FROM latest_ready_activating_models
+    UNION ALL
+    SELECT
+        model_type,
+        state,
+        trained_date,
+        file_name,
+        version_number,
+        model_version,
+        test_report,
+        cross_validation_report,
+        created
+    FROM deployed_model
 ) AS combined_results
 WHERE state <> 'DELETED'
-ORDER BY string_to_array(version_number, '_')::int[];
+ORDER BY STRING_TO_ARRAY(version_number, '_')::INT [];

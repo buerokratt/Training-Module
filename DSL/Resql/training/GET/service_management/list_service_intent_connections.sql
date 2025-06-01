@@ -19,17 +19,24 @@ declaration:
         type: string
         description: "Name of the service (latest approved)"
 */
-WITH LatestStatus AS (
-    SELECT intent,
-           service,
-           status,
-           service_name,
-           ROW_NUMBER() OVER (PARTITION BY intent, service ORDER BY created DESC) AS rn
-    FROM service_trigger
-)
-SELECT intent,
-       service,
-       MAX(service_name) AS service_name
-FROM LatestStatus
+WITH
+    latest_status AS (
+        SELECT
+            intent,
+            service,
+            status,
+            service_name,
+            ROW_NUMBER() OVER (
+                PARTITION BY intent, service
+                ORDER BY created DESC
+            ) AS rn
+        FROM service_management.service_trigger
+    )
+
+SELECT
+    intent,
+    service,
+    MAX(service_name) AS service_name
+FROM latest_status
 WHERE rn = 1 AND status = 'approved'
 GROUP BY intent, service;

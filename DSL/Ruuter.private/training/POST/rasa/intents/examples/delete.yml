@@ -153,6 +153,7 @@ addInDatabase:
     body:
       intent: ${incoming.body.intentName}
       status: "ACTIVE"
+      isForService: false
   result: addInDatabaseResult
 
 saveIntentFile:

@@ -15,6 +15,9 @@ declaration:
         type: string
         enum: ['ACTIVE', 'DELETED']
         description: "Status of the intent"
+      - field: isForService
+        type: boolean
+        description: "Flag indicating whether the intent is for a service"
 */
-INSERT INTO intent (intent, status, isForService)
-VALUES (:intent, UPPER(:status)::intent_status_type, :isForService);
+INSERT INTO intent_management.intent (intent, created, status, isforservice)
+VALUES (:intent, CURRENT_TIMESTAMP, UPPER(:status)::INTENT_STATUS_TYPE, :isForService);

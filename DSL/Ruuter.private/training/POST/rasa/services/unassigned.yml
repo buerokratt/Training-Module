@@ -22,10 +22,10 @@ declaration:
         description: "Body field 'search'"
 
 get_services:
-  call: http.post
+  call: http.get
   args:
-    url: "[#SERVICES_RESQL]/service/list_services"
-    body:
+    url: "[#SERVICES_RESQL]/service_management/list_services"
+    query:
       page: ${incoming.body.page}
       page_size: ${incoming.body.page_size}
       sorting: ${incoming.body.sorting}
@@ -35,7 +35,7 @@ get_services:
 get_service_intent_connections:
   call: http.get
   args:
-    url: "[#TRAINING_RESQL]/intent_management/list_service_intent_connections"
+    url: "[#TRAINING_RESQL]/service_management/list_service_intent_connections"
   result: connection_res
 
 filter_out_services_connected_to_intent:

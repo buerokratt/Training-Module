@@ -34,7 +34,15 @@ declaration:
         type: string
         description: "Name of the user who last modified the settings"
 */
-SELECT id, rasa_folds, scheduled, days_of_week, from_date, last_modified, modifier_id, modifier_name
-FROM train_settings
+SELECT
+    id,
+    rasa_folds,
+    scheduled,
+    days_of_week,
+    from_date,
+    last_modified,
+    modifier_id,
+    modifier_name
+FROM llm.train_settings
 ORDER BY last_modified DESC
 LIMIT 1;

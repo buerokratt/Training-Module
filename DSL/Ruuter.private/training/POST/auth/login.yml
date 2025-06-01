@@ -47,7 +47,7 @@ get_session_length:
   call: http.get
   args:
     url: "[#TRAINING_USERS_RESQL]/config/get_configuration"
-    body:
+    query:
       key: "session_length"
   result: session_result
   next: check_session_length_result

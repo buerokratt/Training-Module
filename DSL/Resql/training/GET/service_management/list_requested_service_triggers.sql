@@ -44,16 +44,17 @@ SELECT
     service_name,
     created AS requested_at,
     author_role,
-    CEIL(COUNT(*) OVER() / :page_size::DECIMAL) AS total_pages
-FROM service_trigger
-WHERE 
-    status = 'pending' 
+    CEIL(COUNT(*) OVER () / :page_size::DECIMAL) AS total_pages
+FROM service_management.service_trigger AS st_1
+WHERE
+    status = 'pending'
     AND author_role != 'trainer'
     AND created = (
         SELECT MAX(created)
-        FROM service_trigger st2
-        WHERE st2.intent = service_trigger.intent 
-        AND st2.service = service_trigger.service
+        FROM service_management.service_trigger AS st_2
+        WHERE
+            st_1.intent = st_2.intent
+            AND st_1.service = st_2.service
     )
 ORDER BY
     CASE WHEN :sorting = 'intent asc' THEN intent END ASC,
@@ -62,5 +63,4 @@ ORDER BY
     CASE WHEN :sorting = 'serviceName desc' THEN service_name END DESC,
     CASE WHEN :sorting = 'requestedAt asc' THEN created END ASC,
     CASE WHEN :sorting = 'requestedAt desc' THEN created END DESC
-OFFSET ((GREATEST(:page, 1) - 1) * :page_size)
-LIMIT :page_size;
+OFFSET ((GREATEST(:page::INTEGER, 1) - 1) * :page_size::INTEGER) LIMIT :page_size::INTEGER;

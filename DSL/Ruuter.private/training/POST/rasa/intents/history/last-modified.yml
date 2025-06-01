@@ -19,7 +19,7 @@ assign_values:
 getIntentLastChanged:
   call: http.get
   args:
-    url: "[TRAINING_RESQL]/intent_management/get_active_intent"
+    url: "[#TRAINING_RESQL]/intent_management/get_active_intent"
     query:
       intent: ${params.intent}
   result: getIntentLastChangedResult

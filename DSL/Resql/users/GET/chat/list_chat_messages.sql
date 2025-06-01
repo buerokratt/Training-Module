@@ -62,22 +62,27 @@ declaration:
         type: timestamp
         description: "Last update timestamp of the message version"
 */
-SELECT m.base_id      AS id,
-       m.chat_base_id AS chat_id,
-       m.content,
-       m.buttons,
-       m.event,
-       m.author_id,
-       m.author_timestamp,
-       m.author_first_name,
-       m.author_last_name,
-       m.author_role,
-       m.forwarded_by_user,
-       m.forwarded_from_csa,
-       m.forwarded_to_csa,
-       rating,
-       created,
-       updated
-FROM message m
-WHERE updated = (SELECT max(m2.updated) FROM message AS m2 WHERE m2.base_id = m.base_id AND m2.chat_base_id = :chatId)
-ORDER BY created ASC;
+SELECT
+    m.base_id AS id,
+    m.chat_base_id AS chat_id,
+    m.content,
+    m.buttons,
+    m.event,
+    m.author_id,
+    m.author_timestamp,
+    m.author_first_name,
+    m.author_last_name,
+    m.author_role,
+    m.forwarded_by_user,
+    m.forwarded_from_csa,
+    m.forwarded_to_csa,
+    m.rating,
+    m.created,
+    m.updated
+FROM chat.message AS m
+WHERE
+    m.updated = (
+        SELECT MAX(m_2.updated) FROM chat.message AS m_2
+        WHERE m_2.base_id = m.base_id AND m_2.chat_base_id = :chatId
+    )
+ORDER BY m.created ASC;

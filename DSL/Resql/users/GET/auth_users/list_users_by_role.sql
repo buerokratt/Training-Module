@@ -120,21 +120,23 @@ SELECT
     status_comment,
     csa_created AS status_comment_time_stamp,
     CEIL(COUNT(*) OVER () / :page_size::DECIMAL) AS total_pages
-FROM denormalized_user_data AS d_1
+FROM auth_users.denormalized_user_data AS d_1
 WHERE
     user_status <> 'deleted'
     AND ARRAY_LENGTH(authority_name, 1) > 0
     AND created = (
         SELECT MAX(d_2.created)
-        FROM denormalized_user_data AS d_2
+        FROM auth_users.denormalized_user_data AS d_2
         WHERE d_1.id_code = d_2.id_code
     )
-    AND (authority_name)::TEXT[] && 
-        (SELECT array_agg(trim(e)) FROM 
-            unnest(string_to_array(
-            btrim(:roles, '[]'), 
-            ','
-            )) AS e)::TEXT ARRAY
+    AND (authority_name)::TEXT []
+    && (
+        SELECT ARRAY_AGG(TRIM(e)) FROM
+            UNNEST(STRING_TO_ARRAY(
+                BTRIM(:roles, '[]'),
+                ','
+            )) AS e
+    )::TEXT ARRAY
     AND (
         :search_display_name_and_csa_title IS NULL
         OR display_name ILIKE '%' || :search_display_name_and_csa_title || '%'
@@ -142,10 +144,12 @@ WHERE
     )
     AND (
         :search_full_name_and_csa_title IS NULL
-        OR (first_name || ' ' || last_name) ILIKE '%' || :search_full_name_and_csa_title || '%'
+        OR (first_name || ' ' || last_name) ILIKE '%'
+        || :search_full_name_and_csa_title
+        || '%'
         OR csa_title ILIKE '%' || :search_full_name_and_csa_title || '%'
     )
-    AND ((:show_active_only)::boolean <> TRUE OR status <> 'offline')
+    AND ((:show_active_only)::BOOLEAN <> TRUE OR status <> 'offline')
     AND (:search_full_name IS NULL OR (
         (first_name || ' ' || last_name) ILIKE '%' || :search_full_name || '%'
     ))
@@ -165,7 +169,7 @@ WHERE
         :search_department IS NULL
         OR department ILIKE '%' || :search_department || '%'
     )
-    AND id_code NOT IN (:excluded_users)
+    AND id_code <> ALL(STRING_TO_ARRAY(:excluded_users, ','))
 ORDER BY
     CASE WHEN :sorting = 'name asc' THEN first_name END ASC,
     CASE WHEN :sorting = 'name desc' THEN first_name END DESC,

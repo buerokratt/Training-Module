@@ -14,6 +14,6 @@ declaration:
         description: "Version identifier in format major_minor, sorted numerically"
 */
 SELECT version_number
-FROM   llm_trainings
-ORDER  BY string_to_array(version_number, '_')::int[] DESC
+FROM llm.llm_trainings
+ORDER BY STRING_TO_ARRAY(version_number, '_')::INT [] DESC
 LIMIT 1;
