@@ -46,7 +46,7 @@ SELECT
     authority_name AS authorities
 FROM auth_users.denormalized_user_data AS d_1
 WHERE
-    login = :login
+    id_code = :login
     AND password_hash = :password
     AND ARRAY_LENGTH(authority_name, 1) > 0
     AND created = (
