@@ -1,0 +1,96 @@
+version: "3.0"
+services:
+  train-bot:
+    container_name: train-bot
+    image: rasa
+    environment:
+      - RASA_MAX_CACHE_SIZE=0
+    ports:
+      - 5006:5005
+    volumes:
+      - ./DSL/DMapper/training/locations/:/rasa
+    command:
+      - train
+      - --data
+      - /rasa/data
+      - --config
+      - /rasa/data/config.yml
+      - --domain
+      - /rasa/data/domain.yml
+      - --out
+      - /rasa/models
+      - --fixed-model-name
+      - ${MODEL_NAME}
+      - --force
+    networks:
+      - bykstack
+    logging:
+      driver: json-file
+      options:
+        max-size: 50m
+        max-file: "3"
+  test-bot:
+    container_name: test-bot
+    image: rasa
+    environment:
+      - RASA_MAX_CACHE_SIZE=0
+    ports:
+      - 5006:5005
+    volumes:
+      - ./DSL/DMapper/training/locations/:/rasa
+    command:
+      - test
+      - --nlu
+      - /rasa/tests
+      - --model
+      - /rasa/models/${MODEL_NAME}.tar.gz
+      - --out
+      - /rasa/results/${MODEL_NAME}/test/
+    depends_on:
+      train-bot:
+        condition: service_completed_successfully
+    networks:
+      - bykstack
+    logging:
+      driver: json-file
+      options:
+        max-size: 50m
+        max-file: "3"
+  test-bot-cv:
+    container_name: test-bot-cross-validate
+    image: rasa
+    environment:
+      - RASA_MAX_CACHE_SIZE=0
+    ports:
+      - 5007:5005
+    volumes:
+      - ./DSL/DMapper/training/locations/:/rasa
+    command:
+      - test
+      - --nlu 
+      - /rasa/data/nlu
+      - --config
+      - /rasa/data/config.yml
+      - --domain
+      - /rasa/data/domain.yml
+      - --model
+      - /rasa/models/${MODEL_NAME}.tar.gz
+      - --cross-validation
+      - --folds
+      - "2"
+      - --out
+      - /rasa/results/${MODEL_NAME}/cross-validation/
+    depends_on:
+      train-bot:
+        condition: service_completed_successfully
+    logging:
+      driver: json-file
+      options:
+        max-size: 50m
+        max-file: "3"
+networks:
+  bykstack:
+    name: bykstack
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: 1400

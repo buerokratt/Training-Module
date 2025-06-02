@@ -12,7 +12,7 @@ services:
       - application.logging.displayResponseContent=true
       - application.logging.printStackTrace=true
       - application.internalRequests.disabled=true
-      - application.externalAuthAllowed=rasa/model/add-new-model-processing,rasa/model/add-new-model-testing,rasa/model/add-new-model-cross-validating,rasa/model/add-new-model-ready,rasa/model/add-new-model-already-trained,rasa/model/add-new-model-error,rasa/model/add-new-model-deployed
+      - application.externalAuthAllowed=rasa/model/add-new-model-processing,rasa/model/add-new-model-ready,rasa/model/add-new-model-already-trained,rasa/model/add-new-model-deployed,rasa/model/state
     volumes:
       - ./DSL/Ruuter.private:/DSL
       - ./constants.ini:/app/constants.ini
@@ -220,6 +220,7 @@ services:
     volumes:
       - rasa-training-data:/data
       - ./DSL/CronManager:/DSL
+      - ./DSL/DMapper/training/locations:/rasa
     environment:
       - server.port=9010
     ports:
