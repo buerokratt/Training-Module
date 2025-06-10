@@ -1,11 +1,11 @@
 -- liquibase formatted sql
--- changeset athar-mt:20250530152957 ignore:true
-CREATE OR REPLACE FUNCTION COPY_ROW_WITH_MODIFICATIONS(
+-- changeset Artsiom Beida:20250424191943 ignore:true
+CREATE OR REPLACE FUNCTION copy_row_with_modifications(
     table_name_to_copy_from VARCHAR,
     id_column_name VARCHAR,
     id_column_conversion_expression VARCHAR,
     id_to_copy VARCHAR,
-    modifications VARCHAR []
+    modifications VARCHAR[]
 ) RETURNS VARCHAR LANGUAGE plpgsql AS '
 DECLARE
     columns VARCHAR [];
@@ -27,8 +27,8 @@ BEGIN
     SELECT ARRAY_AGG(column_name)
     INTO columns
     FROM information_schema.columns
-    WHERE table_schema = schema_name 
-      AND table_name = table_name_only 
+    WHERE table_schema = schema_name
+      AND table_name = table_name_only
       AND column_name <> id_column_name;
 
     FOR i IN 1..array_length(modifications, 1) BY 3
