@@ -4,9 +4,9 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
     <changeSet id="20250531013556" author="ahmer-mt">
-        <sqlFile path="changelog/changelog/20250531013556-create-request-nonce-table-indexes.sql" />
+        <sqlFile path="changelog/20250531013556-create-request-nonce-table-indexes.sql" />
         <rollback>
-            <sqlFile path="changelog/changelog/20250531013556-rollback.sql" />
+            <sqlFile path="changelog/20250531013556-rollback.sql" />
         </rollback>
     </changeSet>
 </databaseChangeLog>

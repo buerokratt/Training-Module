@@ -4,9 +4,9 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
     <changeSet id="20250530152957" author="athar-mt">
-        <sqlFile path="changelog/changelog/20250530152957-add-copy-row-with-modifications-function.sql" />
+        <sqlFile path="changelog/20250530152957-add-copy-row-with-modifications-function.sql" />
         <rollback>
-            <sqlFile path="changelog/changelog/20250530152957-rollback.sql" />
+            <sqlFile path="changelog/20250530152957-rollback.sql" />
         </rollback>
     </changeSet>
 </databaseChangeLog>
