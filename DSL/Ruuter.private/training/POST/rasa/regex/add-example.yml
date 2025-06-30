@@ -9,7 +9,7 @@ declaration:
   allowlist:
     body:
       - field: examples
-        type: array
+        type: object
         description: "Body field 'examples'"
       - field: regex_name
         type: string

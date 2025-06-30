@@ -12,7 +12,7 @@ declaration:
         type: string
         description: "Body field 'response_name'"
       - field: response
-        type: json
+        type: object
         description: "Body field 'response'"
     headers:
       - field: cookie

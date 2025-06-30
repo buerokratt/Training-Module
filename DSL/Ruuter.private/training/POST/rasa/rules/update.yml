@@ -9,7 +9,7 @@ declaration:
   allowlist:
     body:
       - field: data
-        type: json
+        type: object
         description: "Body field 'data'"
       - field: id
         type: string

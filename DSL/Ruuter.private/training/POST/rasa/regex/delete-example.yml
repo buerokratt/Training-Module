@@ -9,7 +9,7 @@ declaration:
   allowlist:
     body:
       - field: example
-        type: json
+        type: object
         description: "Body field 'example'"
       - field: regex_name
         type: string
