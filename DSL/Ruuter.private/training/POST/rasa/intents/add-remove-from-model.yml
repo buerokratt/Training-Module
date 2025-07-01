@@ -14,7 +14,7 @@ declaration:
       - field: inModel
         type: boolean
         description: "Body field 'inModel'"
-    headers:
+    header:
       - field: cookie
         type: string
         description: "Cookie field"

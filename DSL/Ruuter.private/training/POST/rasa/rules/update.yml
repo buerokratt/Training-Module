@@ -14,7 +14,7 @@ declaration:
       - field: id
         type: string
         description: "Body field 'id'"
-    headers:
+    header:
       - field: cookie
         type: string
         description: "Cookie field"

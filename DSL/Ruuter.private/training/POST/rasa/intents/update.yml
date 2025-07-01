@@ -14,7 +14,7 @@ declaration:
       - field: oldName
         type: string
         description: "Body field 'oldName'"
-    headers:
+    header:
       - field: cookie
         type: string
         description: "Cookie field"

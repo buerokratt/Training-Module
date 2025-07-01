@@ -14,7 +14,7 @@ declaration:
       - field: story
         type: object
         description: "Body field 'story'"
-    headers:
+    header:
       - field: cookie
         type: string
         description: "Cookie field"

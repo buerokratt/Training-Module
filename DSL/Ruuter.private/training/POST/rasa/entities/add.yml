@@ -11,7 +11,7 @@ declaration:
       - field: entity
         type: object
         description: "Body field 'entity'"
-    headers:
+    header:
       - field: cookie
         type: string
         description: "Cookie field"

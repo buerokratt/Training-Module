@@ -11,7 +11,7 @@ declaration:
       - field: rule
         type: string
         description: "Body field 'rule'"
-    headers:
+    header:
       - field: cookie
         type: string
         description: "Cookie field"

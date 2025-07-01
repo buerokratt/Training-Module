@@ -17,7 +17,7 @@ declaration:
       - field: intent
         type: string
         description: "Body field 'intent'"
-    headers:
+    header:
       - field: cookie
         type: string
         description: "Cookie field"

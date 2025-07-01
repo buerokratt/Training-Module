@@ -20,7 +20,7 @@ declaration:
       - field: policies
         type: string
         description: "Body field 'policies'"
-    headers:
+    header:
       - field: cookie
         type: string
         description: "Cookie field"
