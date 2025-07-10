@@ -129,6 +129,8 @@
       "searchIntentPlaceholder": "Otsi olemasolevat teemat",
       "newIntentNamePlaceholder": "Uue teema nimetus",
       "addToModel": "Lisa mudelisse",
+      "moveExample": "Teisalda näide",
+      "newIntentLocation": "Vali uus Teema",
       "removeFromModel": "Eemalda mudelist",
       "examples": "Näited",
       "example": "Näide",
@@ -157,7 +159,8 @@
         "intentAlreadyExists": "Teema on juba olemas, palun kontrolli olemasolevast nimekirjast",
         "intentNameTooShort": "Teema nimi on liiga lühike",
         "intentParsing": "Teema parsimise viga",
-        "turnExampleIntoIntent": "Näidet ei saa teenuseks muuta"
+        "turnExampleIntoIntent": "Näidet ei saa teenuseks muuta",
+        "intentConnectedOrHasRequests": "Te ei saa seda kavatsust kustutada, kuna see on ühendatud või ootab ühenduse loomist teenusega"
       },
       "sortingType": {
         "label": "Sorteerimise tüüp",
