@@ -11,7 +11,7 @@ declaration:
       - field: slotName
         type: string
         description: "Body field 'slotName'"
-    headers:
+    header:
       - field: cookie
         type: string
         description: "Cookie field"

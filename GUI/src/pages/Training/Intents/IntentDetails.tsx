@@ -2,7 +2,7 @@ import { Track, FormInput, Button, Icon, Switch, Tooltip, FormTextarea, Dialog }
 import { isHiddenFeaturesEnabled, RESPONSE_TEXT_LENGTH } from 'constants/config';
 import { format } from 'date-fns';
 import { t } from 'i18next';
-import { Dispatch, FC, SetStateAction, useCallback, useEffect, useState } from 'react';
+import {Dispatch, FC, SetStateAction, useCallback, useEffect, useRef, useState} from 'react';
 import { MdOutlineSave, MdOutlineModeEditOutline } from 'react-icons/md';
 import { Intent } from 'types/intent';
 import IntentExamplesTable from './IntentExamplesTable';
@@ -65,6 +65,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [response, setResponse] = useState<Response>({ name: '', text: '' });
   const withBackSlash = /\\/;
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const queryClient = useQueryClient();
   const toast = useToast();
@@ -151,7 +152,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({
       setRefreshing(true);
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['intents/with-examples-count']);
       toast.open({
         type: 'success',
         title: t('global.notification'),
@@ -165,7 +165,8 @@ const IntentDetails: FC<IntentDetailsProps> = ({
         message: error.message,
       });
     },
-    onSettled: () => {
+    onSettled: async () => {
+      await queryClient.invalidateQueries(['intents/with-examples-count']);
       setEditingIntentTitle(null);
       setRefreshing(false);
     },
@@ -199,6 +200,13 @@ const IntentDetails: FC<IntentDetailsProps> = ({
     }
     return false;
   };
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [response.text]);
 
   const intentUploadMutation = useMutation({
     mutationFn: ({ intentName, formData }: { intentName: string; formData: File }) =>
@@ -243,10 +251,12 @@ const IntentDetails: FC<IntentDetailsProps> = ({
 
       try {
         await intentUploadMutation.mutateAsync({
-          intentName: intent?.id || '',
+          intentName: intent?.id ?? '',
           formData: file,
         });
-      } catch (error) {}
+      } catch (error) {
+        console.error(error);
+      }
     });
 
     input.click();
@@ -468,7 +478,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({
                   hideLabel
                 />
               ) : (
-                <h3>{intent.id.replace(/_/g, ' ')}</h3>
+                <h3>{intent.id?.replace(/_/g, ' ')}</h3>
               )}
               {editingIntentTitle ? (
                 <Button appearance="text" onClick={editIntentName}>
@@ -573,15 +583,16 @@ const IntentDetails: FC<IntentDetailsProps> = ({
               />
             </div>
             <div>
-              <Track align="right" justify="between" direction="vertical" gap={100}>
+              <Track align="right" justify="between" direction="vertical" gap={10}>
                 <Track align="left" direction="vertical">
                   <h1>{t('training.intents.responseTitle')}</h1>
                   <FormTextarea
                     label={t('global.addNew')}
                     value={response.text}
                     name="intentResponse"
-                    minRows={7}
-                    maxRows={7}
+                    minRows={3}
+                    ref={textareaRef}
+                    style={{ overflow: 'hidden' }}
                     placeholder={t('global.addNew') + '...' || ''}
                     hideLabel
                     maxLength={RESPONSE_TEXT_LENGTH}
@@ -590,7 +601,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({
                       if (!withBackSlash.test(e.target.value) && !e.target.value.startsWith(' ')) {
                         setResponse({
                           name: response?.name ?? '',
-                          text: e.target.value || '',
+                          text: e.target.value ?? '',
                         });
                       } else {
                         e.target.value = response.text;

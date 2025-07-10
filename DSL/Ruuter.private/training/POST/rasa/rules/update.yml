@@ -9,12 +9,12 @@ declaration:
   allowlist:
     body:
       - field: data
-        type: json
+        type: object
         description: "Body field 'data'"
       - field: id
         type: string
         description: "Body field 'id'"
-    headers:
+    header:
       - field: cookie
         type: string
         description: "Cookie field"

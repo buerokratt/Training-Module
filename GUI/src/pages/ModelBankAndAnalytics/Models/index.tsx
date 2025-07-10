@@ -192,7 +192,7 @@ const Models: FC = () => {
       )}
 
       {models && (
-        <Card header={<h2 className="h3">{t('training.mba.allModels')}</h2>}>
+        <Card header={<h2 className="h3">{t('training.mba.allModels')}</h2>} style={{ height: 'auto', overflow: 'auto' }}>
           <DataTable
             data={models}
             selectedRow={(row) => row.original.versionNumber === selectedModel?.versionNumber}
