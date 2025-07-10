@@ -14,7 +14,7 @@ declaration:
       - field: isForService
         type: boolean
         description: "Value of isForService to mark intent for service use or not."
-    headers:
+    header:
       - field: cookie
         type: string
         description: "Cookie field"
