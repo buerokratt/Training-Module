@@ -42,6 +42,7 @@
     "missing": "Missing",
     "updatingDataHead": "Please wait",
     "updatingDataBody": "Processing request...",
+    "statusClarification": "Status clarification",
     "days": {
       "monday": "Monday",
       "tuesday": "Tuesday",
@@ -128,6 +129,8 @@
       "addToModel": "Add to model",
       "removeFromModel": "Remove from model",
       "examples": "Examples",
+      "moveExample": "Move Example",
+      "newIntentLocation": "Select new Intent",
       "example": "Example",
       "amountOfExamples": "Amount of examples",
       "intentInModel": "Intent is in model",
@@ -154,7 +157,8 @@
         "intentAlreadyExists": "Intent already exists, please check the existing list",
         "intentNameTooShort": "Intent name is too short",
         "intentParsing": "Intent parsing error",
-        "turnExampleIntoIntent": "Unable to turn this example into intent"
+        "turnExampleIntoIntent": "Unable to turn this example into intent",
+        "intentConnectedOrHasRequests": "You are not able to delete this intent because it's connected or pending connection to a service"
       },
       "sortingType": {
         "label": "Sorting type",
@@ -316,7 +320,8 @@
       "newUnansweredChat": "New unanswered chat",
       "newForwardedChat": "New forwarded chat",
       "newValidationMessage": "New message to validate",
-      "useAutocorrect": "Text auto corrector"
+      "useAutocorrect": "Text auto corrector",
+      "statusCommentUpdated": "Status clarification updated"
     }
   },
   "chat": {

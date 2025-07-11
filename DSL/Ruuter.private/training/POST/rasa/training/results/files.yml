@@ -14,7 +14,7 @@ declaration:
       - field: trained_model
         type: string
         description: "Body field 'trained_model'"
-    headers:
+    header:
       - field: cookie
         type: string
         description: "Cookie field"
