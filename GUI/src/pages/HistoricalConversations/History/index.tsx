@@ -94,7 +94,7 @@ const History: FC = () => {
       <ChatHistory
         toastContext={useToast()}
         user={useStore.getState().userInfo}
-        showComment={false}
+        showComment={true}
         showEmail={import.meta.env.REACT_APP_SHOW_HISTORY_EMAIL === 'true'}
         showSortingLabel={import.meta.env.REACT_APP_SHOW_HISTORY_SORTING === 'true'}
         showStatus={false}
