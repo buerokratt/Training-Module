@@ -163,7 +163,7 @@
         "intentNameTooShort": "Teema nimi on liiga lühike",
         "intentParsing": "Teema parsimise viga",
         "turnExampleIntoIntent": "Näidet ei saa teenuseks muuta",
-        "intentConnectedOrHasRequests": "Te ei saa seda kavatsust kustutada, kuna see on ühendatud või ootab ühenduse loomist teenusega"
+        "intentConnectedOrHasRequests": "Teemat ei ole võimalik kustutada kuna teema on teenusega ühenduses."
       },
       "sortingType": {
         "label": "Sorteerimise tüüp",
