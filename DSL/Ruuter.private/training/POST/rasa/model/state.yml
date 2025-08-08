@@ -1,11 +1,16 @@
 declaration:
   call: declare
   version: 0.1
-  description: "Adds a new model to the database with TESTING status"
-  method: get
+  description: "Adds a new model state"
+  method: post
   accepts: json
   returns: json
   namespace: training
+  allowlist:
+    body:
+      - field: state
+        type: string
+        description: "Model state"
 
 getLatestProcessingModelFromDb:
   call: http.post
@@ -19,7 +24,7 @@ updateInDatabase:
     url: "[#TRAINING_RESQL]/add-llm-trainings"
     body:
       model_type: ${dbModelResult.response.body[0].modelType}
-      state: "TESTING"
+      state: ${incoming.body.state}
       file_name: ${dbModelResult.response.body[0].fileName}
       version_number: ${dbModelResult.response.body[0].versionNumber}
       model_version: ${dbModelResult.response.body[0].modelVersion}
@@ -47,10 +52,10 @@ postNotificationAboutModel:
     body:
       channelId: "model-list"
       timestamp: ${new Date().toISOString()}
-      payload: { "status": "Status Changed", "state": "TESTING" }
+      payload: { "status": "Status Changed", "state": "${incoming.body.state}" }
   result: notification_result
 
 returnSuccess:
-  return: "Inserted model with TESTING status. "
+  return: "Inserted model with ${incoming.body.state} status."
   wrapper: false
   next: end
