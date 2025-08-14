@@ -312,7 +312,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({intent, updateSelect
                 {t('training.intents.examples')}
             </h4>
 
-            <Track direction="horizontal" align="center" gap={8}
+            <Track direction="horizontal" align="center" gap={10}
                    style={{paddingBottom: '19px', borderBottom: '1px solid grey'}}>
                 <FormTextarea
                     ref={newExampleRef}
@@ -328,7 +328,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({intent, updateSelect
                 />
                 <Button appearance="text" onClick={handleNewExampleSubmit}
                         disabled={exampleText.length === 0}
-
+                        style={{ width: '6%'}}
                 >
                     <Icon icon={<MdAddCircle color={'rgba(0,0,0,0.54)'}/>}/>
                     {t('global.add')}

@@ -580,9 +580,9 @@ const IntentDetails: FC<IntentDetailsProps> = ({
                             flex: 1,
                             height: forCommonIntentsPage ? 'calc(100vh - 500px)' : 'calc(100vh - 400px)'
                         }}>
-                            <div style={{padding: "0 20px 0 10px"}}>
+                            <div style={{padding: "0 0 20px 0"}}>
+                                <h3 style={{ paddingBottom: '17px'}}>{t('training.intents.responseTitle')}</h3>
                                 <Track align="center" direction="horizontal" gap={15} justify={"between"}>
-                                    <h3>{t('training.intents.responseTitle')}</h3>
                                     <FormTextarea
                                         label={t('global.addNew')}
                                         value={response.text}
@@ -607,7 +607,9 @@ const IntentDetails: FC<IntentDetailsProps> = ({
                                             }
                                         }}
                                     />
-                                    <Button appearance="text" onClick={() => handleIntentResponseSubmit()}>
+                                    <Button appearance="text" onClick={() => handleIntentResponseSubmit()}
+                                            style={{ width: '6%'}}
+                                    >
                                         {t('global.save')}
                                     </Button>
                                 </Track>
