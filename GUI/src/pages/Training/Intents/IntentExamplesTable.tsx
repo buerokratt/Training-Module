@@ -2,14 +2,14 @@ import React, {FC, useMemo, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {createColumnHelper} from '@tanstack/react-table';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
-import {AxiosError, HttpStatusCode} from 'axios';
+import {AxiosError} from 'axios';
 import {MdAddCircle, MdDeleteOutline, MdOutlineModeEditOutline, MdOutlineSave, MdOutlineSwapVert} from 'react-icons/md';
 
 import {Button, DataTable, Dialog, FormTextarea, Icon, Track} from 'components';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import {INTENT_EXAMPLE_LENGTH} from 'constants/config';
 import type {Entity} from 'types/entity';
-import {addExample, deleteExample, editExample, turnExampleIntoIntent} from 'services/intents';
+import {addExample, deleteExample, editExample} from 'services/intents';
 import {useToast} from 'hooks/useToast';
 import IntentExamplesEntry from './IntentExamplesEntry';
 import {Intent} from '../../../types/intent';
@@ -50,10 +50,6 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({intent, updateSelect
         intentName: string;
         value: string;
     } | null>(null);
-    const [exampleToIntent, setExampleToIntent] = useState<{
-        intentName: string;
-        value: string;
-    } | null>(null);
     const columnHelper = createColumnHelper<{ id: string; value: string }>();
     const [showModal, setShowModal] = useState<boolean>(false);
     const queryClient = useQueryClient();
@@ -91,32 +87,6 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({intent, updateSelect
         updatedIntent.examples = examplesArray;
         updateSelectedIntent(updatedIntent);
     };
-
-    const exampleToIntentMutation = useMutation({
-        mutationFn: ({exampleName}: { intentName: string; exampleName: string }) =>
-            turnExampleIntoIntent({
-                intentName: intent.id,
-                exampleName: exampleName,
-            }),
-        onSuccess: () => {
-            toast.open({
-                type: 'success',
-                title: t('global.notification'),
-                message: t('toast.exampleConvertedtoIntent'),
-            });
-        },
-        onError: (error: AxiosError) => {
-            toast.open({
-                type: 'error',
-                title: t('global.notificationError'),
-                message:
-                    error.response?.status === HttpStatusCode.Conflict
-                        ? t('training.intents.error.turnExampleIntoIntent')
-                        : error.message,
-            });
-        },
-        onSettled: () => setExampleToIntent(null),
-    });
 
     const exampleEditMutation = useMutation({
         mutationFn: (editExampleData: { intentName: string; oldExample: string; newExample: string }) =>
@@ -321,7 +291,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({intent, updateSelect
                 meta: {
                     size: '1%',
                     align: 'right'
-                    },
+                },
             }),
         ],
         [
@@ -338,8 +308,12 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({intent, updateSelect
 
     return (
         <>
-            <h4>{t('training.intents.examples')}</h4>
-            <Track direction="horizontal" align="center" gap={8}  style={{ paddingBottom: '19px'}}>
+            <h4 style={{marginBottom: '13px'}}>
+                {t('training.intents.examples')}
+            </h4>
+
+            <Track direction="horizontal" align="center" gap={8}
+                   style={{paddingBottom: '19px', borderBottom: '1px solid grey'}}>
                 <FormTextarea
                     ref={newExampleRef}
                     label={t('global.addNew')}
@@ -364,12 +338,13 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({intent, updateSelect
             <DataTable
                 data={examples}
                 columns={examplesColumns}
+                disableHead={true}
                 tableBodyPrefix={
-                    <tr style={{ border: 'none', padding: '0', margin: '0'}}>
-                        <td style={{ width: '40%'}}></td>
-                        <td style={{ width: '60px'}}></td>
-                        <td style={{ width: '60px'}}></td>
-                        <td style={{ width: '60px'}}></td>
+                    <tr>
+                        <td style={{width: '87%'}}></td>
+                        <td style={{width: '60px'}}></td>
+                        <td style={{width: '60px'}}></td>
+                        <td style={{width: '60px'}}></td>
                     </tr>
                 }
             />
@@ -473,7 +448,7 @@ const buildMoveExampleCell = (onClick: () => void) => {
 
 const buildDeleteCell = (onClick: () => void) => {
     return (
-        <Button appearance="text" onClick={onClick} title= {i18n.t('global.delete') || 'Delete'}>
+        <Button appearance="text" onClick={onClick} title={i18n.t('global.delete') || 'Delete'}>
             <Icon label={i18n.t('global.delete')} icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'}/>}/>
         </Button>
     );
