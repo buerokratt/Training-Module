@@ -101,6 +101,7 @@ const History: FC = () => {
         onMessageClick={(message: Message) => {
           setMarkedMessage(message);
         }}
+        userDomains={useStore}
       />
       {markedMessage && (
         <>
