@@ -19,7 +19,7 @@ extractRequestData:
 getDomains:
   call: http.post
   args:
-    url: "[#TRAINING_USERS_RESQL/get-widget-domains"
+    url: "[#TRAINING_USERS_RESQL]/get-widget-domains"
   result: domains
 
 getUserDomains:
