@@ -115,6 +115,10 @@
     "openMenuIcon": "Ava menüü ikoon",
     "closeMenuIcon": "Sulge menüü ikoon"
   },
+  "multiDomains": {
+    "selectDomains": "Vali Domeenid",
+    "noDomains": "Domeene ei ole saadaval. Palun võtke ühendust süsteemiadministraatoriga."
+  },
   "training": {
     "intent": "Teema",
     "response": "Vastus",
