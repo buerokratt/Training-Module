@@ -49,6 +49,7 @@ type DataTableProps = {
   pageSizeOptions?: number[];
   selectedRow?: (row: Row<any>) => boolean;
   isFetching?: boolean;
+  noHeaderBorder?: boolean;
   customMaxHeight? : number;
   fetchNextPage?: (options?: FetchNextPageOptions) => Promise<
     InfiniteQueryObserverResult<
@@ -64,6 +65,7 @@ type ColumnMeta = {
   meta: {
     size: number | string;
     sticky: 'left' | 'right';
+    align: number | string;
   };
 };
 
@@ -103,6 +105,7 @@ const DataTable: FC<DataTableProps> = ({
   tableBodyPrefix,
   sortable,
   filterable,
+  noHeaderBorder = false,
   sorting,
   pagination,
   setPagination,
@@ -189,10 +192,18 @@ const DataTable: FC<DataTableProps> = ({
   };
   const pageIndexes = getShownPageIndexes();
 
+  const sizeToCss = (s?: number | string) => {
+    if (s === undefined || s === null) return undefined;
+    return typeof s === 'number' ? `${s}px` : s;
+  };
+
+
   return (
     <div>
       <div className="data-table__scrollWrapper" style={customMaxHeight !== undefined ? { maxHeight: `${customMaxHeight}vh`, overflowY: 'auto' } : {}} onScroll={(e) => fetchMoreOnBottomReached(e.currentTarget)}>
-        <table className="data-table">
+        <table className={clsx("data-table", {
+          "no-header-border": noHeaderBorder,
+        })}>
           {!disableHead && (
             <thead>
               {table.getHeaderGroups().map((headerGroup) => (
@@ -201,7 +212,8 @@ const DataTable: FC<DataTableProps> = ({
                     <th
                       key={header.id}
                       style={{
-                        width: header.column.columnDef.size,
+                        width: sizeToCss(header.column.columnDef.meta?.size ?? header.column.columnDef.size),
+                        minWidth: sizeToCss(header.column.columnDef.meta?.size ?? header.column.columnDef.size),
                         position: header.column.columnDef.meta?.sticky ? 'sticky' : undefined,
                         left:
                           header.column.columnDef.meta?.sticky === 'left'
@@ -213,6 +225,7 @@ const DataTable: FC<DataTableProps> = ({
                             : undefined,
                         backgroundColor: 'white',
                         zIndex: header.column.columnDef.meta?.sticky ? 1 : 0,
+                        textAlign: header.column.columnDef.meta?.align ?? undefined,
                       }}
                     >
                       {header.isPlaceholder ? null : (
