@@ -2,14 +2,14 @@ import React, {FC, useMemo, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {createColumnHelper} from '@tanstack/react-table';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
-import {AxiosError, HttpStatusCode} from 'axios';
-import {MdAddCircle, MdDeleteOutline, MdOutlineModeEditOutline, MdOutlineSave} from 'react-icons/md';
+import {AxiosError} from 'axios';
+import {MdAddCircle, MdDeleteOutline, MdOutlineModeEditOutline, MdOutlineSave, MdOutlineSwapVert} from 'react-icons/md';
 
-import {Button, DataTable, Dialog, FormTextarea, Icon} from 'components';
+import {Button, DataTable, Dialog, FormTextarea, Icon, Track} from 'components';
 import useDocumentEscapeListener from 'hooks/useDocumentEscapeListener';
 import {INTENT_EXAMPLE_LENGTH} from 'constants/config';
 import type {Entity} from 'types/entity';
-import {addExample, deleteExample, editExample, turnExampleIntoIntent} from 'services/intents';
+import {addExample, deleteExample, editExample} from 'services/intents';
 import {useToast} from 'hooks/useToast';
 import IntentExamplesEntry from './IntentExamplesEntry';
 import {Intent} from '../../../types/intent';
@@ -50,10 +50,6 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({intent, updateSelect
         intentName: string;
         value: string;
     } | null>(null);
-    const [exampleToIntent, setExampleToIntent] = useState<{
-        intentName: string;
-        value: string;
-    } | null>(null);
     const columnHelper = createColumnHelper<{ id: string; value: string }>();
     const [showModal, setShowModal] = useState<boolean>(false);
     const queryClient = useQueryClient();
@@ -91,32 +87,6 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({intent, updateSelect
         updatedIntent.examples = examplesArray;
         updateSelectedIntent(updatedIntent);
     };
-
-    const exampleToIntentMutation = useMutation({
-        mutationFn: ({exampleName}: { intentName: string; exampleName: string }) =>
-            turnExampleIntoIntent({
-                intentName: intent.id,
-                exampleName: exampleName,
-            }),
-        onSuccess: () => {
-            toast.open({
-                type: 'success',
-                title: t('global.notification'),
-                message: t('toast.exampleConvertedtoIntent'),
-            });
-        },
-        onError: (error: AxiosError) => {
-            toast.open({
-                type: 'error',
-                title: t('global.notificationError'),
-                message:
-                    error.response?.status === HttpStatusCode.Conflict
-                        ? t('training.intents.error.turnExampleIntoIntent')
-                        : error.message,
-            });
-        },
-        onSettled: () => setExampleToIntent(null),
-    });
 
     const exampleEditMutation = useMutation({
         mutationFn: (editExampleData: { intentName: string; oldExample: string; newExample: string }) =>
@@ -246,7 +216,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({intent, updateSelect
     const examplesColumns = useMemo(
         () => [
             columnHelper.accessor('value', {
-                header: t('training.intents.examples') || '',
+                header: '',
                 cell: (props) =>
                     buildValueCell(
                         editableRow,
@@ -255,17 +225,9 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({intent, updateSelect
                         props.row.original.id,
                         props.getValue()
                     ),
-            }),
-            columnHelper.display({
-                header: '',
-                cell: ({
-                           row: {
-                               original: {id, value: name},
-                           },
-                       }) => buildTurnExampleToIntentCell(() => setExampleToIntent({intentName: id, value: name})),
-                id: 'turnExampleIntoIntent',
                 meta: {
-                    size: '1%',
+                    align: 'left',
+                    size: '1%'
                 },
             }),
             columnHelper.display({
@@ -313,6 +275,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({intent, updateSelect
                 id: 'moveExample',
                 meta: {
                     size: '1%',
+                    align: 'right'
                 },
             }),
             columnHelper.display({
@@ -327,6 +290,7 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({intent, updateSelect
                 id: 'delete',
                 meta: {
                     size: '1%',
+                    align: 'right'
                 },
             }),
         ],
@@ -344,32 +308,43 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({intent, updateSelect
 
     return (
         <>
+            <h4 style={{marginBottom: '13px'}}>
+                {t('training.intents.examples')}
+            </h4>
+
+            <Track direction="horizontal" align="center" gap={10}
+                   style={{paddingBottom: '19px', borderBottom: '1px solid grey'}}>
+                <FormTextarea
+                    ref={newExampleRef}
+                    label={t('global.addNew')}
+                    name="newExample"
+                    minRows={1}
+                    placeholder={t('global.addNew') + '...' || ''}
+                    hideLabel
+                    maxLength={INTENT_EXAMPLE_LENGTH}
+                    showMaxLength
+                    onChange={(e) => setExampleText(e.target.value)}
+                    disableHeightResize
+                />
+                <Button appearance="text" onClick={handleNewExampleSubmit}
+                        disabled={exampleText.length === 0}
+                        style={{ width: '6%'}}
+                >
+                    <Icon icon={<MdAddCircle color={'rgba(0,0,0,0.54)'}/>}/>
+                    {t('global.add')}
+                </Button>
+            </Track>
+
             <DataTable
                 data={examples}
                 columns={examplesColumns}
+                disableHead={true}
                 tableBodyPrefix={
                     <tr>
-                        <td>
-                            <FormTextarea
-                                ref={newExampleRef}
-                                label={t('global.addNew')}
-                                name="newExample"
-                                minRows={1}
-                                placeholder={t('global.addNew') + '...' || ''}
-                                hideLabel
-                                maxLength={INTENT_EXAMPLE_LENGTH}
-                                showMaxLength
-                                onChange={(e) => setExampleText(e.target.value)}
-                                disableHeightResize
-                            />
-                        </td>
-                        <td>
-                            <Button appearance="text" onClick={handleNewExampleSubmit}
-                                    disabled={exampleText.length === 0}>
-                                <Icon icon={<MdAddCircle color={'rgba(0,0,0,0.54)'}/>}/>
-                                {t('global.add')}
-                            </Button>
-                        </td>
+                        <td style={{width: '87%'}}></td>
+                        <td style={{width: '60px'}}></td>
+                        <td style={{width: '60px'}}></td>
+                        <td style={{width: '60px'}}></td>
                     </tr>
                 }
             />
@@ -402,32 +377,6 @@ const IntentExamplesTable: FC<IntentExamplesTableProps> = ({intent, updateSelect
                 </Dialog>
             )}
 
-            {exampleToIntent !== null && (
-                <Dialog
-                    title={t('training.intents.turnExampleIntoIntent')}
-                    onClose={() => setExampleToIntent(null)}
-                    footer={
-                        <>
-                            <Button appearance="secondary" onClick={() => setExampleToIntent(null)}>
-                                {t('global.no')}
-                            </Button>
-                            <Button
-                                appearance="error"
-                                onClick={() => {
-                                    exampleToIntentMutation.mutate({
-                                        intentName: exampleToIntent.intentName,
-                                        exampleName: exampleToIntent.value,
-                                    });
-                                }}
-                            >
-                                {t('global.yes')}
-                            </Button>
-                        </>
-                    }
-                >
-                    <p>{t('global.removeValidation')}</p>
-                </Dialog>
-            )}
             {refreshing && (
                 <LoadingDialog title={t('global.updatingDataHead')}>
                     <p>{t('global.updatingDataBody')}</p>
@@ -473,50 +422,34 @@ const buildValueCell = (
     return <IntentExamplesEntry value={value} entities={entities}/>;
 };
 
-const buildTurnExampleToIntentCell = (onClick: () => void) => {
-    return (
-        <Button appearance="text" onClick={onClick}>
-            <Icon
-                label={i18n.t('training.intents.turnExampleIntoIntent')}
-                icon={<MdOutlineModeEditOutline color={'rgba(0,0,0,0.54)'}/>}
-            />
-            {i18n.t('training.intents.turnExampleIntoIntent')}
-        </Button>
-    );
-};
-
 const buildEditCell = (isSave: boolean, onSaveClick: () => void, onEditClick: () => void) => {
     if (isSave) {
         return (
-            <Button appearance="text" onClick={onSaveClick}>
+            <Button appearance="text" onClick={onSaveClick} title={i18n.t('global.save') || 'Save'}>
                 <Icon label={i18n.t('global.save')} icon={<MdOutlineSave color={'rgba(0,0,0,0.54)'}/>}/>
-                {i18n.t('global.save')}
             </Button>
         );
     }
 
     return (
-        <Button appearance="text" onClick={onEditClick}>
+        <Button appearance="text" onClick={onEditClick} title={i18n.t('global.edit') || 'Edit'}>
             <Icon label={i18n.t('global.edit')} icon={<MdOutlineModeEditOutline color={'rgba(0,0,0,0.54)'}/>}/>
-            {i18n.t('global.edit')}
         </Button>
     );
 };
 
 const buildMoveExampleCell = (onClick: () => void) => {
     return (
-        <Button appearance="text" onClick={onClick}>
-            <Icon label={i18n.t('global.edit')} icon={<MdOutlineModeEditOutline color={'rgba(0,0,0,0.54)'}/>}/>
-            {i18n.t('training.intents.moveExample')}
+        <Button appearance="text" onClick={onClick} title={i18n.t('training.intents.moveExample') || 'Move Example'}>
+            <Icon label={i18n.t('global.edit')} icon={<MdOutlineSwapVert color={'rgba(0,0,0,0.54)'}/>}/>
         </Button>
     );
 };
 
 const buildDeleteCell = (onClick: () => void) => {
     return (
-        <Button appearance="text" onClick={onClick}>
+        <Button appearance="text" onClick={onClick} title={i18n.t('global.delete') || 'Delete'}>
             <Icon label={i18n.t('global.delete')} icon={<MdDeleteOutline color={'rgba(0,0,0,0.54)'}/>}/>
-            {i18n.t('global.delete')}
         </Button>
     );
 };

@@ -115,6 +115,10 @@
     "openMenuIcon": "Ava menüü ikoon",
     "closeMenuIcon": "Sulge menüü ikoon"
   },
+  "multiDomains": {
+    "selectDomains": "Vali Domeenid",
+    "noDomains": "Domeene ei ole saadaval. Palun võtke ühendust süsteemiadministraatoriga."
+  },
   "training": {
     "intent": "Teema",
     "response": "Vastus",
@@ -163,7 +167,7 @@
         "intentNameTooShort": "Teema nimi on liiga lühike",
         "intentParsing": "Teema parsimise viga",
         "turnExampleIntoIntent": "Näidet ei saa teenuseks muuta",
-        "intentConnectedOrHasRequests": "Te ei saa seda kavatsust kustutada, kuna see on ühendatud või ootab ühenduse loomist teenusega"
+        "intentConnectedOrHasRequests": "Teemat ei ole võimalik kustutada kuna see on teenusega ühenduses või ühenduse loomise ootel"
       },
       "sortingType": {
         "label": "Sorteerimise tüüp",
