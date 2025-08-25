@@ -75,6 +75,8 @@ FROM chat
 WHERE ended IS NOT NULL
   AND status <> 'IDLE'
   AND ended::date BETWEEN :start::date AND :end::date
+  AND (array_length(ARRAY[:urls]::TEXT[], 1) IS NULL
+        OR chat.end_user_url LIKE ANY(ARRAY[:urls]::TEXT[]))
 GROUP BY base_id
     ),
     EndedChatMessages AS (
@@ -266,8 +268,24 @@ ORDER BY
         END DESC NULLS LAST,
     CASE WHEN :sorting = 'feedbackRating desc' THEN c.feedback_rating END DESC NULLS LAST,
     CASE WHEN :sorting = 'feedbackRating asc' THEN c.feedback_rating END ASC,
-    CASE WHEN :sorting = 'customerSupportFullName desc' THEN (cu.first_name || ' ' || cu.last_name) END DESC NULLS LAST,
-    CASE WHEN :sorting = 'customerSupportFullName asc' THEN (cu.first_name || ' ' || cu.last_name) END ASC NULLS LAST,
+    CASE WHEN :sorting = 'customerSupportFullName asc' THEN
+             COALESCE(
+                     NULLIF(array_to_string(CSAFullNames.all_csa_names, ', '), ''),
+                     CASE
+                         WHEN c.customer_support_id = 'chatbot'
+                             THEN 'Bürokratt'
+                         END
+             )
+        END ASC NULLS LAST,
+    CASE WHEN :sorting = 'customerSupportFullName desc' THEN
+             COALESCE(
+                     NULLIF(array_to_string(CSAFullNames.all_csa_names, ', '), ''),
+                     CASE
+                         WHEN c.customer_support_id = 'chatbot'
+                             THEN 'Bürokratt'
+                         END
+             )
+        END DESC NULLS LAST,
     CASE WHEN :sorting = 'id asc' THEN c.base_id END ASC,
     CASE WHEN :sorting = 'id desc' THEN c.base_id END DESC
 OFFSET ((GREATEST(:page, 1) - 1) * :page_size) LIMIT :page_size;

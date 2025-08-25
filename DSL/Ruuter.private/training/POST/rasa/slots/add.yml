@@ -12,9 +12,9 @@ declaration:
         type: string
         description: "Body field 'slot_name'"
       - field: slot
-        type: json
+        type: object
         description: "Body field 'slot'"
-    headers:
+    header:
       - field: cookie
         type: string
         description: "Cookie field"

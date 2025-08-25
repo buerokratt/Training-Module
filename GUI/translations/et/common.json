@@ -56,6 +56,9 @@
     }
   },
   "toast": {
+    "success": {
+      "chatCommentChanged": "Vestluse kommentaar muudetud"
+    },
     "newExampleAdded": "Uus näide lisatud",
     "newResponseAdded": "Uus vastus lisatud",
     "newAppealAdded": "Uus apellatsioon lisatud",
@@ -112,6 +115,10 @@
     "openMenuIcon": "Ava menüü ikoon",
     "closeMenuIcon": "Sulge menüü ikoon"
   },
+  "multiDomains": {
+    "selectDomains": "Vali Domeenid",
+    "noDomains": "Domeene ei ole saadaval. Palun võtke ühendust süsteemiadministraatoriga."
+  },
   "training": {
     "intent": "Teema",
     "response": "Vastus",
@@ -129,6 +136,8 @@
       "searchIntentPlaceholder": "Otsi olemasolevat teemat",
       "newIntentNamePlaceholder": "Uue teema nimetus",
       "addToModel": "Lisa mudelisse",
+      "moveExample": "Teisalda näide",
+      "newIntentLocation": "Vali uus Teema",
       "removeFromModel": "Eemalda mudelist",
       "examples": "Näited",
       "example": "Näide",
@@ -157,7 +166,8 @@
         "intentAlreadyExists": "Teema on juba olemas, palun kontrolli olemasolevast nimekirjast",
         "intentNameTooShort": "Teema nimi on liiga lühike",
         "intentParsing": "Teema parsimise viga",
-        "turnExampleIntoIntent": "Näidet ei saa teenuseks muuta"
+        "turnExampleIntoIntent": "Näidet ei saa teenuseks muuta",
+        "intentConnectedOrHasRequests": "Teemat ei ole võimalik kustutada kuna see on teenusega ühenduses või ühenduse loomise ootel"
       },
       "sortingType": {
         "label": "Sorteerimise tüüp",
@@ -356,7 +366,8 @@
       "statusAdder": "Staatuse lisaja",
       "statusAddedDate": "Staatuse lisamise kuupäev",
       "chosenCsa": "Valitud nõustaja(d)",
-      "chosenColumn": "Valitud tulba(d)"
+      "chosenColumn": "Valitud tulba(d)",
+      "addACommentToTheConversation": "Lisa vestlusele kommentaar"
     },
     "plainEvents": {
       "answered": "Vastatud",

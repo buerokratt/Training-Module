@@ -26,7 +26,7 @@ declaration:
       - field: scheduled
         type: string
         description: "Body field 'scheduled'"
-    headers:
+    header:
       - field: cookie
         type: string
         description: "Cookie field"
