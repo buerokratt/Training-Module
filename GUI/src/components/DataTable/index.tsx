@@ -200,7 +200,8 @@ const DataTable: FC<DataTableProps> = ({
 
   return (
     <div>
-      <div className="data-table__scrollWrapper" style={customMaxHeight !== undefined ? { maxHeight: `${customMaxHeight}vh`, overflowY: 'auto' } : {}} onScroll={(e) => fetchMoreOnBottomReached(e.currentTarget)}>
+      <div className="data-table__container">
+      <div className="data-table__scrollWrapper" style={customMaxHeight !== undefined ? { height: `${customMaxHeight}vh`, overflowY: 'auto' } : {}} onScroll={(e) => fetchMoreOnBottomReached(e.currentTarget)}>
         <table className={clsx("data-table", {
           "no-header-border": noHeaderBorder,
         })}>
@@ -286,120 +287,8 @@ const DataTable: FC<DataTableProps> = ({
           </tbody>
         </table>
       </div>
-      {pagination && (
-        <div className="data-table__pagination-wrapper">
-          {table.getPageCount() * table.getState().pagination.pageSize > table.getState().pagination.pageSize && (
-            <div className="data-table__pagination">
-              <button
-                className="previous"
-                onClick={() => {
-                  table.previousPage();
-                  setSearchParams((params) => {
-                    params.set('page', String(Number(searchParams.get('page') ?? '1') - 1));
-                    return params;
-                  });
-                }}
-                disabled={!table.getCanPreviousPage()}
-              >
-                <MdOutlineWest />
-              </button>
-              <nav role="navigation" aria-label={t('global.paginationNavigation') ?? ''}>
-                <ul className="links">
-                  {pageIndexes[0] > 0 && (
-                    <>
-                      <li key={`${id}-0`}>
-                        <button
-                          onClick={() => {
-                            table.setPageIndex(0);
-                            setSearchParams((params) => {
-                              params.set('page', '1');
-                              return params;
-                            });
-                          }}
-                          aria-label={t('global.gotoPage') + 0}
-                          aria-current={table.getState().pagination.pageIndex === 0}
-                        >
-                          1
-                        </button>
-                      </li>
-                      {pageIndexes[0] > 1 && <li>...</li>}
-                    </>
-                  )}
-                  {pageIndexes.map((index) => (
-                    <li
-                      key={`${id}-${index}`}
-                      className={clsx({ active: table.getState().pagination.pageIndex === index })}
-                    >
-                      <button
-                        onClick={() => {
-                          table.setPageIndex(index);
-                          setSearchParams((params) => {
-                            params.set('page', String(index + 1));
-                            return params;
-                          });
-                        }}
-                        aria-label={t('global.gotoPage') + index}
-                        aria-current={table.getState().pagination.pageIndex === index}
-                      >
-                        {index + 1}
-                      </button>
-                    </li>
-                  ))}
-                  {pageIndexes[pageIndexes.length - 1] < table.getPageCount() - 1 && (
-                    <>
-                      {pageIndexes[pageIndexes.length - 1] < table.getPageCount() - 2 && <li>...</li>}
-                      <li key={`${id}-${table.getPageCount() - 1}`}>
-                        <button
-                          onClick={() => {
-                            table.setPageIndex(table.getPageCount() - 1);
-                            setSearchParams((params) => {
-                              params.set('page', '' + table.getPageCount());
-                              return params;
-                            });
-                          }}
-                          aria-label={t('global.gotoPage') + (table.getPageCount() - 1)}
-                          aria-current={table.getState().pagination.pageIndex === table.getPageCount() - 1}
-                        >
-                          {table.getPageCount()}
-                        </button>
-                      </li>
-                    </>
-                  )}
-                </ul>
-              </nav>
-              <button
-                className="next"
-                onClick={() => {
-                  table.nextPage();
-                  setSearchParams((params) => {
-                    params.set('page', String(Number(searchParams.get('page') ?? '1') + 1));
-                    return params;
-                  });
-                }}
-                disabled={!table.getCanNextPage()}
-              >
-                <MdOutlineEast />
-              </button>
-            </div>
-          )}
-          <div className="data-table__page-size">
-            <label htmlFor={id}>{t('global.resultCount')}</label>
-            <select
-              id={id}
-              value={table.getState().pagination.pageSize}
-              onChange={(e) => {
-                table.setPageSize(Number(e.target.value));
-              }}
-            >
-              {pageSizeOptions.map((pageSize) => (
-                <option key={pageSize} value={pageSize}>
-                  {pageSize}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-      )}
+
+      </div>
     </div>
   );
 };
