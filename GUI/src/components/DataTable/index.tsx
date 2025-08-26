@@ -1,296 +1,328 @@
-import React, { CSSProperties, FC, ReactNode, useId } from 'react';
+import React, {CSSProperties, FC, ReactNode, useId, useLayoutEffect} from 'react';
 import {
-  ColumnDef,
-  useReactTable,
-  getCoreRowModel,
-  flexRender,
-  getSortedRowModel,
-  SortingState,
-  FilterFn,
-  getFilteredRowModel,
-  VisibilityState,
-  getPaginationRowModel,
-  PaginationState,
-  TableMeta,
-  Row,
-  RowData,
-  ColumnFiltersState,
+    ColumnDef,
+    ColumnFiltersState,
+    FilterFn,
+    flexRender,
+    getCoreRowModel,
+    getFilteredRowModel,
+    getPaginationRowModel,
+    getSortedRowModel,
+    PaginationState,
+    Row,
+    RowData,
+    SortingState,
+    TableMeta,
+    useReactTable,
+    VisibilityState,
 } from '@tanstack/react-table';
-import { RankingInfo, rankItem } from '@tanstack/match-sorter-utils';
-import { MdUnfoldMore, MdExpandMore, MdExpandLess, MdOutlineEast, MdOutlineWest } from 'react-icons/md';
+import {RankingInfo, rankItem} from '@tanstack/match-sorter-utils';
+import {MdExpandLess, MdExpandMore, MdUnfoldMore} from 'react-icons/md';
 import clsx from 'clsx';
-import { useSearchParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+import {useSearchParams} from 'react-router-dom';
+import {useTranslation} from 'react-i18next';
 
-import { Icon, Track } from 'components';
+import {Icon, Track} from 'components';
 import Filter from './Filter';
 import './DataTable.scss';
-import { FetchNextPageOptions, InfiniteQueryObserverResult } from '@tanstack/react-query';
+import {FetchNextPageOptions, InfiniteQueryObserverResult} from '@tanstack/react-query';
 
 type DataTableProps = {
-  data: any;
-  columns: ColumnDef<any, any>[];
-  tableBodyPrefix?: ReactNode;
-  isClientSide?: boolean;
-  sortable?: boolean;
-  filterable?: boolean;
-  pagination?: PaginationState;
-  sorting?: SortingState;
-  setPagination?: (state: PaginationState) => void;
-  setSorting?: (state: SortingState) => void;
-  globalFilter?: string;
-  setGlobalFilter?: React.Dispatch<React.SetStateAction<string>>;
-  columnVisibility?: VisibilityState;
-  setColumnVisibility?: React.Dispatch<React.SetStateAction<VisibilityState>>;
-  disableHead?: boolean;
-  pagesCount?: number;
-  meta?: TableMeta<any>;
-  setSelectedRow?: (row: Row<any>) => void;
-  pageSizeOptions?: number[];
-  selectedRow?: (row: Row<any>) => boolean;
-  isFetching?: boolean;
-  noHeaderBorder?: boolean;
-  customMaxHeight? : number;
-  fetchNextPage?: (options?: FetchNextPageOptions) => Promise<
-    InfiniteQueryObserverResult<
-      {
-        response: unknown[];
-      },
-      unknown
-    >
-  >;
+    data: any;
+    columns: ColumnDef<any, any>[];
+    tableBodyPrefix?: ReactNode;
+    isClientSide?: boolean;
+    sortable?: boolean;
+    filterable?: boolean;
+    pagination?: PaginationState;
+    sorting?: SortingState;
+    setPagination?: (state: PaginationState) => void;
+    setSorting?: (state: SortingState) => void;
+    globalFilter?: string;
+    setGlobalFilter?: React.Dispatch<React.SetStateAction<string>>;
+    columnVisibility?: VisibilityState;
+    setColumnVisibility?: React.Dispatch<React.SetStateAction<VisibilityState>>;
+    disableHead?: boolean;
+    pagesCount?: number;
+    meta?: TableMeta<any>;
+    setSelectedRow?: (row: Row<any>) => void;
+    pageSizeOptions?: number[];
+    selectedRow?: (row: Row<any>) => boolean;
+    isFetching?: boolean;
+    noHeaderBorder?: boolean;
+    customMaxHeight?: number;
+    fetchNextPage?: (options?: FetchNextPageOptions) => Promise<
+        InfiniteQueryObserverResult<
+            {
+                response: unknown[];
+            },
+            unknown
+        >
+    >;
 };
 
 type ColumnMeta = {
-  meta: {
-    size: number | string;
-    sticky: 'left' | 'right';
-    align: number | string;
-  };
+    meta: {
+        size: number | string;
+        sticky: 'left' | 'right';
+        align: number | string;
+    };
 };
 
 type CustomColumnDef = ColumnDef<any> & ColumnMeta;
 
 declare module '@tanstack/table-core' {
-  interface FilterFns {
-    fuzzy: FilterFn<unknown>;
-  }
+    interface FilterFns {
+        fuzzy: FilterFn<unknown>;
+    }
 
-  interface FilterMeta {
-    itemRank: RankingInfo;
-  }
+    interface FilterMeta {
+        itemRank: RankingInfo;
+    }
 }
 
 declare module '@tanstack/react-table' {
-  interface TableMeta<TData extends RowData> {
-    getRowStyles: (row: Row<TData>) => CSSProperties;
-  }
-  class Column<TData extends RowData> {
-    columnDef: CustomColumnDef;
-  }
+    interface TableMeta<TData extends RowData> {
+        getRowStyles: (row: Row<TData>) => CSSProperties;
+    }
+
+    class Column<TData extends RowData> {
+        columnDef: CustomColumnDef;
+    }
 }
 
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
-  const itemRank = rankItem(row.getValue(columnId), value);
-  addMeta({
-    itemRank,
-  });
-  return itemRank.passed;
+    const itemRank = rankItem(row.getValue(columnId), value);
+    addMeta({
+        itemRank,
+    });
+    return itemRank.passed;
 };
 
 const DataTable: FC<DataTableProps> = ({
-  data,
-  columns,
-  isClientSide = true,
-  tableBodyPrefix,
-  sortable,
-  filterable,
-  noHeaderBorder = false,
-  sorting,
-  pagination,
-  setPagination,
-  setSorting,
-  globalFilter,
-  setGlobalFilter,
-  columnVisibility,
-  setColumnVisibility,
-  disableHead,
-  pagesCount,
-  meta,
-  setSelectedRow,
-  pageSizeOptions = [10, 20, 30, 40, 50],
-  selectedRow,
-  isFetching,
-  fetchNextPage,
-  customMaxHeight,
-}) => {
-  const id = useId();
-  const { t } = useTranslation();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+                                           data,
+                                           columns,
+                                           isClientSide = true,
+                                           tableBodyPrefix,
+                                           sortable,
+                                           filterable,
+                                           noHeaderBorder = false,
+                                           sorting,
+                                           pagination,
+                                           setPagination,
+                                           setSorting,
+                                           globalFilter,
+                                           setGlobalFilter,
+                                           columnVisibility,
+                                           setColumnVisibility,
+                                           disableHead,
+                                           pagesCount,
+                                           meta,
+                                           setSelectedRow,
+                                           pageSizeOptions = [10, 20, 30, 40, 50],
+                                           selectedRow,
+                                           isFetching,
+                                           fetchNextPage,
+                                           customMaxHeight,
+                                       }) => {
+    const id = useId();
+    const {t} = useTranslation();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
 
-  const fetchMoreOnBottomReached = React.useCallback(
-    (containerRefElement?: HTMLDivElement | null) => {
-      if (containerRefElement) {
-        const { scrollHeight, scrollTop, clientHeight } = containerRefElement;
-        // Once the user has scrolled within 500px of the bottom of the table
-        if (scrollHeight - scrollTop - clientHeight < 500 && !isFetching && fetchNextPage) {
-          fetchNextPage();
+    const containerRef = React.useRef<HTMLDivElement | null>(null);
+    const wrapperRef = React.useRef<HTMLDivElement | null>(null);
+    const paginationRef = React.useRef<HTMLDivElement | null>(null);
+
+    useLayoutEffect(() => {
+        const wrapper = wrapperRef.current;
+        const container = containerRef.current;
+        const footer = paginationRef.current;
+        const bottomOffset = 55;
+        if (!wrapper || !container) return;
+
+        const update = () => {
+            const cRect = container.getBoundingClientRect();
+            const footerHeight = footer ? footer.getBoundingClientRect().height : 0;
+            const available = window.innerHeight - cRect.top - footerHeight - bottomOffset;
+
+            wrapper.style.minHeight = `${available}px`;
+            wrapper.style.maxHeight = `${available}px`;
+            wrapper.style.overflowY = 'auto';
+        };
+
+        update();
+        window.addEventListener('resize', update);
+        return () => window.removeEventListener('resize', update);
+    }, []);
+
+
+    const fetchMoreOnBottomReached = React.useCallback(
+        (containerRefElement?: HTMLDivElement | null) => {
+            if (containerRefElement) {
+                const {scrollHeight, scrollTop, clientHeight} = containerRefElement;
+                // Once the user has scrolled within 500px of the bottom of the table
+                if (scrollHeight - scrollTop - clientHeight < 500 && !isFetching && fetchNextPage) {
+                    fetchNextPage();
+                }
+            }
+        },
+        [fetchNextPage, isFetching]
+    );
+
+    const table = useReactTable({
+        data,
+        columns,
+        filterFns: {
+            fuzzy: fuzzyFilter,
+        },
+        state: {
+            sorting,
+            columnFilters,
+            globalFilter,
+            columnVisibility,
+            ...{pagination},
+        },
+        meta,
+        onColumnFiltersChange: setColumnFilters,
+        onGlobalFilterChange: setGlobalFilter,
+        onColumnVisibilityChange: setColumnVisibility,
+        globalFilterFn: fuzzyFilter,
+        onSortingChange: (updater) => {
+            if (typeof updater !== 'function') return;
+            setSorting?.(updater(table.getState().sorting));
+        },
+        onPaginationChange: (updater) => {
+            if (typeof updater !== 'function') return;
+            setPagination?.(updater(table.getState().pagination));
+        },
+        getCoreRowModel: getCoreRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        ...(pagination && {getPaginationRowModel: getPaginationRowModel()}),
+        ...(sortable && {getSortedRowModel: getSortedRowModel()}),
+        manualPagination: !isClientSide,
+        manualSorting: !isClientSide,
+        pageCount: isClientSide ? undefined : pagesCount,
+    });
+
+    const getShownPageIndexes = () => {
+        if (!table.getState().pagination) return [];
+
+        const pageOffset = 2;
+        const currentPage = table.getState().pagination.pageIndex;
+        const startPage = Math.max(0, currentPage - pageOffset);
+        const endPage = Math.min(table.getPageCount() - 1, currentPage + pageOffset);
+        const pages = [];
+        for (let i = startPage; i <= endPage; i++) {
+            pages.push(i);
         }
-      }
-    },
-    [fetchNextPage, isFetching]
-  );
+        return pages;
+    };
+    const pageIndexes = getShownPageIndexes();
 
-  const table = useReactTable({
-    data,
-    columns,
-    filterFns: {
-      fuzzy: fuzzyFilter,
-    },
-    state: {
-      sorting,
-      columnFilters,
-      globalFilter,
-      columnVisibility,
-      ...{ pagination },
-    },
-    meta,
-    onColumnFiltersChange: setColumnFilters,
-    onGlobalFilterChange: setGlobalFilter,
-    onColumnVisibilityChange: setColumnVisibility,
-    globalFilterFn: fuzzyFilter,
-    onSortingChange: (updater) => {
-      if (typeof updater !== 'function') return;
-      setSorting?.(updater(table.getState().sorting));
-    },
-    onPaginationChange: (updater) => {
-      if (typeof updater !== 'function') return;
-      setPagination?.(updater(table.getState().pagination));
-    },
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    ...(pagination && { getPaginationRowModel: getPaginationRowModel() }),
-    ...(sortable && { getSortedRowModel: getSortedRowModel() }),
-    manualPagination: !isClientSide,
-    manualSorting: !isClientSide,
-    pageCount: isClientSide ? undefined : pagesCount,
-  });
-
-  const getShownPageIndexes = () => {
-    if (!table.getState().pagination) return [];
-
-    const pageOffset = 2;
-    const currentPage = table.getState().pagination.pageIndex;
-    const startPage = Math.max(0, currentPage - pageOffset);
-    const endPage = Math.min(table.getPageCount() - 1, currentPage + pageOffset);
-    const pages = [];
-    for (let i = startPage; i <= endPage; i++) {
-      pages.push(i);
-    }
-    return pages;
-  };
-  const pageIndexes = getShownPageIndexes();
-
-  const sizeToCss = (s?: number | string) => {
-    if (s === undefined || s === null) return undefined;
-    return typeof s === 'number' ? `${s}px` : s;
-  };
+    const sizeToCss = (s?: number | string) => {
+        if (s === undefined || s === null) return undefined;
+        return typeof s === 'number' ? `${s}px` : s;
+    };
 
 
-  return (
-    <div>
-      <div className="data-table__container">
-      <div className="data-table__scrollWrapper" style={customMaxHeight !== undefined ? { height: `${customMaxHeight}vh`, overflowY: 'auto' } : {}} onScroll={(e) => fetchMoreOnBottomReached(e.currentTarget)}>
-        <table className={clsx("data-table", {
-          "no-header-border": noHeaderBorder,
-        })}>
-          {!disableHead && (
-            <thead>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <tr key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <th
-                      key={header.id}
-                      style={{
-                        width: sizeToCss(header.column.columnDef.meta?.size ?? header.column.columnDef.size),
-                        minWidth: sizeToCss(header.column.columnDef.meta?.size ?? header.column.columnDef.size),
-                        position: header.column.columnDef.meta?.sticky ? 'sticky' : undefined,
-                        left:
-                          header.column.columnDef.meta?.sticky === 'left'
-                            ? `${header.column.getAfter('left') * 0.675}px`
-                            : undefined,
-                        right:
-                          header.column.columnDef.meta?.sticky === 'right'
-                            ? `${header.column.getAfter('right') * 0.675}px`
-                            : undefined,
-                        backgroundColor: 'white',
-                        zIndex: header.column.columnDef.meta?.sticky ? 1 : 0,
-                        textAlign: header.column.columnDef.meta?.align ?? undefined,
-                      }}
-                    >
-                      {header.isPlaceholder ? null : (
-                        <Track gap={8}>
-                          {sortable && header.column.getCanSort() && (
-                            <button onClick={header.column.getToggleSortingHandler()}>
-                              {{
-                                asc: <Icon icon={<MdExpandMore fontSize={20} />} size="medium" />,
-                                desc: <Icon icon={<MdExpandLess fontSize={20} />} size="medium" />,
-                              }[header.column.getIsSorted() as string] ?? (
-                                <Icon icon={<MdUnfoldMore fontSize={22} />} size="medium" />
-                              )}
-                            </button>
-                          )}
-                          {flexRender(header.column.columnDef.header, header.getContext())}
-                          {filterable && header.column.getCanFilter() && (
-                            <Filter column={header.column} table={table} />
-                          )}
-                        </Track>
-                      )}
-                    </th>
-                  ))}
-                </tr>
-              ))}
-            </thead>
-          )}
-          <tbody>
-            {tableBodyPrefix}
-            {table.getRowModel().rows.map((row) => (
-              <tr
-                key={row.id}
-                onClick={() => setSelectedRow && setSelectedRow(row)}
-                style={table.options.meta?.getRowStyles(row)}
-                className={selectedRow?.(row) ? 'highlighted' : 'default'}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <td
-                    key={cell.id}
-                    className={selectedRow?.(row) ? 'highlighted' : 'default'}
-                    style={{
-                      position: cell.column.columnDef.meta?.sticky ? 'sticky' : undefined,
-                      left:
-                        cell.column.columnDef.meta?.sticky === 'left'
-                          ? `${cell.column.getAfter('left') * 0.675}px`
-                          : undefined,
-                      right:
-                        cell.column.columnDef.meta?.sticky === 'right'
-                          ? `${cell.column.getAfter('right') * 0.675}px`
-                          : undefined,
-                      zIndex: cell.column.columnDef.meta?.sticky ? 1 : 0,
-                    }}
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+    return (
+        <div className="data-table__container"
+             ref={containerRef}>
+            <div className="data-table__scrollWrapper"
+                 ref={wrapperRef}
+                 style={customMaxHeight !== undefined ? {height: `${customMaxHeight}vh`, overflowY: 'auto'} : {}}
+                 onScroll={(e) => fetchMoreOnBottomReached(e.currentTarget)}>
+                <table className={clsx("data-table", {
+                    "no-header-border": noHeaderBorder,
+                })}>
+                    {!disableHead && (
+                        <thead>
+                        {table.getHeaderGroups().map((headerGroup) => (
+                            <tr key={headerGroup.id}>
+                                {headerGroup.headers.map((header) => (
+                                    <th
+                                        key={header.id}
+                                        style={{
+                                            width: sizeToCss(header.column.columnDef.meta?.size ?? header.column.columnDef.size),
+                                            minWidth: sizeToCss(header.column.columnDef.meta?.size ?? header.column.columnDef.size),
+                                            position: header.column.columnDef.meta?.sticky ? 'sticky' : undefined,
+                                            left:
+                                                header.column.columnDef.meta?.sticky === 'left'
+                                                    ? `${header.column.getAfter('left') * 0.675}px`
+                                                    : undefined,
+                                            right:
+                                                header.column.columnDef.meta?.sticky === 'right'
+                                                    ? `${header.column.getAfter('right') * 0.675}px`
+                                                    : undefined,
+                                            backgroundColor: 'white',
+                                            zIndex: header.column.columnDef.meta?.sticky ? 1 : 0,
+                                            textAlign: header.column.columnDef.meta?.align ?? undefined,
+                                        }}
+                                    >
+                                        {header.isPlaceholder ? null : (
+                                            <Track gap={8}>
+                                                {sortable && header.column.getCanSort() && (
+                                                    <button onClick={header.column.getToggleSortingHandler()}>
+                                                        {{
+                                                            asc: <Icon icon={<MdExpandMore fontSize={20}/>}
+                                                                       size="medium"/>,
+                                                            desc: <Icon icon={<MdExpandLess fontSize={20}/>}
+                                                                        size="medium"/>,
+                                                        }[header.column.getIsSorted() as string] ?? (
+                                                            <Icon icon={<MdUnfoldMore fontSize={22}/>} size="medium"/>
+                                                        )}
+                                                    </button>
+                                                )}
+                                                {flexRender(header.column.columnDef.header, header.getContext())}
+                                                {filterable && header.column.getCanFilter() && (
+                                                    <Filter column={header.column} table={table}/>
+                                                )}
+                                            </Track>
+                                        )}
+                                    </th>
+                                ))}
+                            </tr>
+                        ))}
+                        </thead>
+                    )}
+                    <tbody>
+                    {tableBodyPrefix}
+                    {table.getRowModel().rows.map((row) => (
+                        <tr
+                            key={row.id}
+                            onClick={() => setSelectedRow && setSelectedRow(row)}
+                            style={table.options.meta?.getRowStyles(row)}
+                            className={selectedRow?.(row) ? 'highlighted' : 'default'}
+                        >
+                            {row.getVisibleCells().map((cell) => (
+                                <td
+                                    key={cell.id}
+                                    className={selectedRow?.(row) ? 'highlighted' : 'default'}
+                                    style={{
+                                        position: cell.column.columnDef.meta?.sticky ? 'sticky' : undefined,
+                                        left:
+                                            cell.column.columnDef.meta?.sticky === 'left'
+                                                ? `${cell.column.getAfter('left') * 0.675}px`
+                                                : undefined,
+                                        right:
+                                            cell.column.columnDef.meta?.sticky === 'right'
+                                                ? `${cell.column.getAfter('right') * 0.675}px`
+                                                : undefined,
+                                        zIndex: cell.column.columnDef.meta?.sticky ? 1 : 0,
+                                    }}
+                                >
+                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                </td>
+                            ))}
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>
+            </div>
 
-      </div>
-    </div>
-  );
+        </div>
+    );
 };
 
 export default DataTable;
