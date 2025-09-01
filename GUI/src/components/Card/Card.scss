@@ -5,6 +5,7 @@
 
 .card {
   $self: &;
+  max-height: 100vh !important;
   background-color: get-color(white);
   border: 1px solid get-color(black-coral-2);
   border-radius: $veera-radius-s;
