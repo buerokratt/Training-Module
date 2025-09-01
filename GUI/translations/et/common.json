@@ -53,7 +53,8 @@
       "friday": "Reede",
       "saturday": "Laupäev",
       "sunday": "Pühapäev"
-    }
+    },
+    "test": "Test"
   },
   "toast": {
     "success": {

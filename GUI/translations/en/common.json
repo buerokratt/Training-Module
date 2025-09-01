@@ -51,7 +51,8 @@
       "friday": "Friday",
       "saturday": "Saturday",
       "sunday": "Sunday"
-    }
+    },
+    "test": "Test"
   },
   "toast": {
     "success": {
