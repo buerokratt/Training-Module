@@ -113,6 +113,10 @@
     "openIcon": "Open menu icon",
     "closeIcon": "Close menu icon"
   },
+  "multiDomains": {
+    "selectDomains": "Select Domains",
+    "noDomains": "No domains available. Please contact your system administrator."
+  },
   "training": {
     "intent": "intent",
     "response": "response",

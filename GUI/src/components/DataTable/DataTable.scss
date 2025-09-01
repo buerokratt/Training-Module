@@ -197,3 +197,13 @@
 .default {
   background-color: white;
 }
+
+.data-table.no-header-border {
+  thead {
+    border-top: none;
+  }
+  th {
+    border-top: none;
+    padding-top: 0;
+  }
+}

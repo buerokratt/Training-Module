@@ -17,6 +17,8 @@ interface StoreState {
   forwordedChats: () => ChatType[];
   unansweredChatsLength: () => number;
   forwordedChatsLength: () => number;
+  userDomains: string[];
+  setUserDomains: (domains: string[]) => void;
 }
 
 const useStore = create<StoreState>((set, get, store) => ({
@@ -24,10 +26,12 @@ const useStore = create<StoreState>((set, get, store) => ({
   userId: '',
   activeChats: [],
   selectedChatId: null,
+  userDomains: [],
   chatCsaActive: false,
   setActiveChats: (chats) => set({ activeChats: chats }),
   setUserInfo: (data) => set({ userInfo: data, userId: data?.idCode || '' }),
   setSelectedChatId: (id) => set({ selectedChatId: id }),
+  setUserDomains: (data: string[]) => set({ userDomains: data}),
   setChatCsaActive: (active) => set({ chatCsaActive: active }),
 
   selectedChat: () => {
