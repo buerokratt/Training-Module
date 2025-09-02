@@ -58,6 +58,7 @@
   },
   "toast": {
     "success": {
+      "updateSuccess": "Värskendamine õnnestus",
       "chatCommentChanged": "Vestluse kommentaar muudetud"
     },
     "newExampleAdded": "Uus näide lisatud",
