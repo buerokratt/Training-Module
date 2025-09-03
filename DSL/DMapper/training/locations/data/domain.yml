@@ -53,7 +53,7 @@ entities:
   - currency
   
 slots:
-  common_teenus_ilm_asukoht:
+  common_teenus_ilm:
     type: text
     influence_conversation: true
     mappings:
@@ -325,7 +325,7 @@ responses:
   utter_common_teenus_ilm:
     - condition:
         - type: slot
-          name: common_teenus_ilm_asukoht
+          name: common_teenus_ilm
           value: null
       text: "Hetkel oskan ma öelda ilma Eesti raames piirkonnapõhiselt. Palun sisestage korrektne piirkonna nimi."
     - text: "UNKNOWN"
