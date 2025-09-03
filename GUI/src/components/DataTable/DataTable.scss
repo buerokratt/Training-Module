@@ -10,11 +10,10 @@
   display: table;
 
     &__scrollWrapper {
-      height: 100%;
       overflow-x: auto;
       white-space: nowrap;
       display: block;
-      max-height: 60vh;
+      min-height: 0;
     }
 
     thead, tbody {

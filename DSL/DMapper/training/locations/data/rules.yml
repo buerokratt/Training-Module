@@ -51,6 +51,8 @@ rules:
 
 - rule: common_teenus_ilm
   steps:
+  - slot_was_set:
+    - asukoht: true
   - intent: common_teenus_ilm
   - action: utter_common_teenus_ilm
   - action: action_restart
