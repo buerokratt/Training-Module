@@ -51,10 +51,12 @@
       "friday": "Friday",
       "saturday": "Saturday",
       "sunday": "Sunday"
-    }
+    },
+    "test": "Test"
   },
   "toast": {
     "success": {
+      "updateSuccess": "Updated Successfully",
       "chatCommentChanged": "Chat comment changed"
     },
     "newExampleAdded": "New example added",
