@@ -1,0 +1,6 @@
+version: "3.0"
+nlu:
+  - intent: igorcorrect
+    examples: |
+      - sddssdds
+      - dsdsd
