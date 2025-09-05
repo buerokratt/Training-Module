@@ -294,7 +294,7 @@ addInDatabase:
     url: "[#TRAINING_RESQL]/add-intent"
     body:
       intent: ${incoming.body.newName}
-      status: "ACTIVE"
+      status: "ACTIVE" # todo which status?
   result: addInDatabaseResult
 
 deleteOldIntentFile:
