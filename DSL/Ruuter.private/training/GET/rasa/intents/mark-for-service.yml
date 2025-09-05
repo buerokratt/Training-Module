@@ -53,7 +53,6 @@ updateInDatabase:
     body:
       intent: ${intent}
       isForService: ${isForService}
-      status: "ACTIVE" # todo which status?
   result: addIntentResult
 
 returnSuccess:
