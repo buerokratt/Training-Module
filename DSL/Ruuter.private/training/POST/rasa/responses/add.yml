@@ -88,6 +88,16 @@ updateOpenSearch:
     body:
       input: ${domainYaml.response.body.json}
   result: updateSearchResult
+  next: updateIntentStatus
+
+updateIntentStatus:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/update-intent"
+    body:
+      intent: ${intent}
+      status: "NOT_TRAINED"
+  result: updateIntentStatusResult
   next: returnSuccess
 
 returnSuccess:
