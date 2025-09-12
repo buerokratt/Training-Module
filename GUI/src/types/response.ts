@@ -16,6 +16,8 @@ export interface ResponseDataEdit {
 export interface ResponseEdit {
   response_name: string;
   response: ResponseDataEdit;
+  // todo optional? check service method usages
+  intent: string;
 }
 
 export interface Response {
