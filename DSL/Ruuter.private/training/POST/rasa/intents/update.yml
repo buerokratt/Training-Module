@@ -296,7 +296,7 @@ addInDatabase:
       intent: ${incoming.body.newName}
       # todo also: rules
       # todo also: responses
-      # todo: migration rollbak
+      # todo: migration rollback
   result: addInDatabaseResult
 
 deleteOldIntentFile:
