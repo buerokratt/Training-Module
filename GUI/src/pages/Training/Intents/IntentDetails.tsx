@@ -147,7 +147,6 @@ const IntentDetails: FC<IntentDetailsProps> = ({
   };
 
   const intentEditMutation = useMutation({
-    // todo here intent edit
     mutationFn: (editIntentData: { oldName: string; newName: string }) => editIntent(editIntentData),
     onMutate: () => {
       setRefreshing(true);
