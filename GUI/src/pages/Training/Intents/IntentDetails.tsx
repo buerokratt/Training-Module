@@ -337,7 +337,7 @@ const IntentDetails: FC<IntentDetailsProps> = ({
 
   const addOrEditResponseMutation = useMutation({
     mutationFn: (intentResponseData: { id: string; responseText: string; update: boolean }) =>
-      editResponse(intentResponseData.id, intentResponseData.responseText, intentResponseData.update),
+      editResponse(intentResponseData.id, intentResponseData.responseText, intentResponseData.update, intent?.id),
     onMutate: () => {
       setRefreshing(true);
     },
