@@ -297,6 +297,7 @@ addInDatabase:
       # todo also: rules
       # todo also: responses
       # todo: migration rollback
+      # todo pr in chatbot repo
   result: addInDatabaseResult
 
 deleteOldIntentFile:
