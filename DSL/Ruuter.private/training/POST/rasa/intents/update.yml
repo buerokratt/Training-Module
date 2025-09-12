@@ -295,7 +295,6 @@ addInDatabase:
     body:
       intent: ${incoming.body.newName}
       # todo also: rules add AND update
-      # todo: migration rollback
       # todo pr in chatbot repo
       # todo On model switch
   result: addInDatabaseResult
