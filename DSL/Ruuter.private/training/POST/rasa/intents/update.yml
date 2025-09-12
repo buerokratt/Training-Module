@@ -294,7 +294,6 @@ addInDatabase:
     url: "[#TRAINING_RESQL]/add-intent"
     body:
       intent: ${incoming.body.newName}
-      status: "NOT_TRAINED" # todo preserve old status, we are only editing the name
       # todo also: rules
       # todo also: responses
       # todo: migration rollbak
