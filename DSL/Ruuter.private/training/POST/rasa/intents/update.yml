@@ -295,8 +295,8 @@ addInDatabase:
     body:
       intent: ${incoming.body.newName}
       status: "NOT_TRAINED" # todo preserve old status, we are only editing the name
-      # todo also: rules/add
-      # todo also: response/add
+      # todo also: rules
+      # todo also: responses
   result: addInDatabaseResult
 
 deleteOldIntentFile:
