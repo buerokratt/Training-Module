@@ -97,6 +97,7 @@ const History: FC = () => {
         showComment={true}
         showEmail={import.meta.env.REACT_APP_SHOW_HISTORY_EMAIL === 'true'}
         showSortingLabel={import.meta.env.REACT_APP_SHOW_HISTORY_SORTING === 'true'}
+        showDownload={true}
         showStatus={false}
         onMessageClick={(message: Message) => {
           setMarkedMessage(message);
