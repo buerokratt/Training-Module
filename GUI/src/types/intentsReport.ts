@@ -16,8 +16,8 @@ export interface IntentsReportResult {
 
 interface EvaluationResult {
   report: IntentsReportResult;
-  precision: number;
-  f1_score: number;
+  precision: number | null;
+  f1_score: number | null;
   errors: {
     text: string;
     intent: string;
@@ -25,7 +25,7 @@ interface EvaluationResult {
       name: string;
       confidence: number;
     };
-  };
+  }[];
 }
 
 export interface IntentsReport {

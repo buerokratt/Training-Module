@@ -4,13 +4,13 @@ import { useQuery } from '@tanstack/react-query';
 import { MdOutlineSettingsInputAntenna } from 'react-icons/md';
 
 import { Card, DataTable, FormInput, FormSelect, Icon, Track } from 'components';
-import { Metrics, IntentsReport, SummaryMetrics } from 'types/intentsReport';
+import { Metrics, IntentsReport } from 'types/intentsReport';
 import { Model } from 'types/model';
 import { getColumns } from './columns';
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
 import { isHiddenFeaturesEnabled } from 'constants/config';
 
-const intentsReport = {
+const intentsReport: IntentsReport = {
   intent_evaluation: {
     report: {
       common_service_estimated_subsistence_minimum: {
@@ -1795,7 +1795,7 @@ const IntentsOverview: FC = () => {
     () =>
       intentsReport
         ? Object.keys(intentsReport.intent_evaluation.report).map((intent) => {
-            const report = intentsReport.intent_evaluation.report as Record<string, number | Metrics>;
+            const report = intentsReport.intent_evaluation.report;
             const metrics = report[intent] as Metrics;
             return {
               intent,
