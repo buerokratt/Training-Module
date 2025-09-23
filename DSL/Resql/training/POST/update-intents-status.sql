@@ -1,6 +1,7 @@
 -- Insert new rows for multiple intents with specified status
 -- This finds the latest version of each intent and creates new rows with updated status
 -- Expects :intents parameter to be an array of intent names and :status to be the new status
+-- Optional :modelTrainedDate parameter - if provided, only updates intents where modelTrainedDate > created
 INSERT INTO intent (intent, created, status, isForService)
 SELECT 
     intent_name,
@@ -21,4 +22,5 @@ JOIN (
     FROM intent
     WHERE intent = ANY(:intents)
     ORDER BY intent, created DESC
-) AS latest_intent ON latest_intent.intent = intent_list.intent_name;
+) AS latest_intent ON latest_intent.intent = intent_list.intent_name
+WHERE (:modelTrainedDate IS NULL OR :modelTrainedDate > latest_intent.created);

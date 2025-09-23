@@ -55,7 +55,7 @@ compareModelIntents:
   args:
     url: "[#TRAINING_DMAPPER]/utils/compare-model-intent-reports"
     body:
-      newModelReport: ${dbModelResult.response.body[0].crossValidationReport.intent_evaluation.report}
+      newModelReport: ${dbResult.response.body[0].crossValidationReport.intent_evaluation.report}
       oldModelReport: ${previousModelResult.response.body[0].crossValidationReport.intent_evaluation.report}
   result: compareModelIntentsResult
 
@@ -68,7 +68,15 @@ updateOldIntentsStatus:
       status: "NOT_TRAINED"
   result: updateOldIntentsResult
 
-# todo handle edge case when intent changed after NEW model was trained
+updateNewIntentsStatus:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/update-intents-status"
+    body:
+      intents: ${compareModelIntentsResult.newModelUniqueIntents}
+      status: "TRAINED"
+      modelTrainedDate: ${dbResult.response.body[0].trainedDate}
+  result: updateNewIntentsResult
 
 loadTrainedModel:
   call: http.post
