@@ -294,7 +294,7 @@ addInDatabase:
     url: "[#TRAINING_RESQL]/add-intent"
     body:
       intent: ${incoming.body.newName}
-      # todo also: rules add AND update - under rules UI, check if add and remove intentst to rules
+      # todo also: rules add AND update - under rules UI, check if add and remove intents to rules
       # todo On model switch
   result: addInDatabaseResult
 
