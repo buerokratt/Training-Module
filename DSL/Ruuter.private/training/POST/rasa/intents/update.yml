@@ -294,7 +294,6 @@ addInDatabase:
     url: "[#TRAINING_RESQL]/add-intent"
     body:
       intent: ${incoming.body.newName}
-      # todo also: rules add AND update AND delete - under rules UI, check if add and remove intents to rules
   result: addInDatabaseResult
 
 deleteOldIntentFile:

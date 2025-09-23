@@ -91,6 +91,8 @@ mergeRules:
       iteratee: "rule"
   result: mergedRules
 
+# todo also: rules add AND update AND delete - under rules UI, check if add and remove intents to rules
+
 convertJsonToYaml:
   call: http.post
   args:
