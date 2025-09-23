@@ -1,3 +1,5 @@
+-- todo unused for now
+-- todo need to be used with on model switch but with list of intents provided
 -- Insert new rows for intents that are not DELETED and not already TRAINED, setting status to TRAINED
 -- This finds the latest version of each intent and creates a new row with TRAINED status
 INSERT INTO intent (intent, created, status, isForService)

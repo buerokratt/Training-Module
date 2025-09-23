@@ -43,12 +43,6 @@ updateInDatabase:
       training_data_checksum: ${incoming.body.trainingDataChecksum}
   result: dbModelResult
 
-updateIntentStatus:
-  call: http.post
-  args:
-    url: "[#TRAINING_RESQL]/update-intent-status-to-trained"
-  result: updateIntentStatusResult
-
 clearModelList:
   call: http.post
   args:
