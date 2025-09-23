@@ -1,4 +1,4 @@
-export interface IntentMetrics {
+export interface Metrics {
   precision: number;
   recall: number;
   'f1-score': number;
@@ -6,19 +6,12 @@ export interface IntentMetrics {
   confused_with?: Record<string, number>;
 }
 
-export interface SummaryMetrics {
-  precision: number;
-  recall: number;
-  'f1-score': number;
-  support: number;
-}
-
 export interface IntentsReportResult {
-  [intentName: string]: IntentMetrics | number | SummaryMetrics;
+  [intentName: string]: Metrics | number;
   accuracy: number;
-  'macro avg': SummaryMetrics;
-  'weighted avg': SummaryMetrics;
-  'micro avg': SummaryMetrics;
+  'macro avg': Metrics;
+  'weighted avg': Metrics;
+  'micro avg': Metrics;
 }
 
 interface EvaluationResult {
@@ -41,4 +34,4 @@ export interface IntentsReport {
   response_selection_evaluation: EvaluationResult;
 }
 
-export type IntentReport = IntentMetrics & { intent: string };
+export type IntentReport = Metrics & { intent: string };

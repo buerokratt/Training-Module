@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { MdOutlineSettingsInputAntenna } from 'react-icons/md';
 
 import { Card, DataTable, FormInput, FormSelect, Icon, Track } from 'components';
-import { IntentMetrics, IntentsReport, SummaryMetrics } from 'types/intentsReport';
+import { Metrics, IntentsReport, SummaryMetrics } from 'types/intentsReport';
 import { Model } from 'types/model';
 import { getColumns } from './columns';
 import withAuthorization, { ROLES } from 'hoc/with-authorization';
@@ -1795,11 +1795,8 @@ const IntentsOverview: FC = () => {
     () =>
       intentsReport
         ? Object.keys(intentsReport.intent_evaluation.report).map((intent) => {
-            const report = intentsReport.intent_evaluation.report as Record<
-              string,
-              IntentMetrics | number | SummaryMetrics
-            >;
-            const metrics = report[intent] as IntentMetrics;
+            const report = intentsReport.intent_evaluation.report as Record<string, number | Metrics>;
+            const metrics = report[intent] as Metrics;
             return {
               intent,
               ...metrics,
