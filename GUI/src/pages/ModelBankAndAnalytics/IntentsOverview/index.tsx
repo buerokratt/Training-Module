@@ -1780,17 +1780,6 @@ const IntentsOverview: FC = () => {
 
   console.log(intentsReport?.intent_evaluation?.report);
 
-  // const isIntentMetrics = (value: any): value is IntentMetrics => {
-  //   return (
-  //     typeof value === 'object' &&
-  //     value !== null &&
-  //     typeof value.precision === 'number' &&
-  //     typeof value.recall === 'number' &&
-  //     typeof value['f1-score'] === 'number' &&
-  //     typeof value.support === 'number'
-  //   );
-  // };
-
   const formattedIntentsReport = useMemo(
     () =>
       intentsReport
