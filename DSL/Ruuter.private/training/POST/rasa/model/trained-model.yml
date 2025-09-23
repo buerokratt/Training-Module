@@ -77,7 +77,6 @@ updateNewIntentsStatus:
       status: "TRAINED"
       # Only update intents that were last modified before the new model was trained
       # Otherwise, the model needs to be trained again to reflect changes in intents
-      # So any intents that are NOT_TRAINED need to be trained again
       cutoffDate: ${dbResult.response.body[0].trainedDate}
   result: updateNewIntentsResult
 
