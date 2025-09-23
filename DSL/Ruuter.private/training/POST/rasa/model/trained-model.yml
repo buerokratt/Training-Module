@@ -59,6 +59,15 @@ compareModelIntents:
       oldModelReport: ${previousModelResult.response.body[0].crossValidationReport.intent_evaluation.report}
   result: compareModelIntentsResult
 
+updateOldIntentsStatus:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/update-intents-status"
+    body:
+      intents: ${compareModelIntentsResult.oldModelUniqueIntents}
+      status: "NOT_TRAINED"
+  result: updateOldIntentsResult
+
 # todo handle edge case when intent changed after NEW model was trained
 
 loadTrainedModel:
