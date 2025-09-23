@@ -7,11 +7,11 @@ export interface Metrics {
 }
 
 export interface IntentsReportResult {
-  [intentName: string]: Metrics | number;
   accuracy: number;
   'macro avg': Metrics;
   'weighted avg': Metrics;
   'micro avg': Metrics;
+  [intentName: string]: Metrics | number;
 }
 
 interface EvaluationResult {
