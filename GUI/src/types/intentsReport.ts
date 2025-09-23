@@ -6,7 +6,7 @@ export interface Metrics {
   confused_with?: Record<string, number>;
 }
 
-export interface IntentsReportResult {
+interface IntentsReportResult {
   accuracy: number;
   'macro avg': Metrics;
   'weighted avg': Metrics;
