@@ -26,6 +26,7 @@ import { getIntentIds } from 'services/intents';
 import { IntentId } from 'types/intent';
 import { getForms } from 'services/forms';
 import { getSlots } from 'services/slots';
+import { t } from 'i18next';
 
 const nodeTypes = {
   customNode: CustomNode,
@@ -81,6 +82,7 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const onConnect = useCallback((params: Connection) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
+  const [initialIntents, setInitialIntents] = useState<string[]>([]);
 
   const { data: currentEntityData, refetch: refetchCurrentEntity } = useQuery<Rule>({
     queryKey: ['rule-by-name', currentEntityId],
@@ -92,6 +94,24 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   useDocumentEscapeListener(() => setEditableTitle(null));
 
   useEffect(() => {
+    console.log('currentEntityData UPDATED', currentEntityData);
+    const steps = currentEntityData?.steps;
+    const intents: string[] = [];
+
+    if (Array.isArray(steps)) {
+      steps.forEach((step) => {
+        if (step.intent) intents.push(step.intent);
+      });
+    } else if (steps?.intent) {
+      intents.push(steps.intent);
+    }
+
+    setInitialIntents(intents);
+  }, [currentEntityData]);
+
+  console.log('initialIntents', initialIntents);
+
+  useEffect(() => {
     if (location.state?.category) {
       setCategory(location.state.category);
       if (location.state.id) {
@@ -100,11 +120,16 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     }
 
     setCurrentEntity(currentEntityData ?? null);
+    // console.log('currentEntityData', currentEntityData);
 
     let nodes = [...initialNodes];
     let edges: any[] = [];
 
+    // console.log('currentEntityData?.steps', currentEntityData?.steps);
+    // console.log('currentEntity?.steps', currentEntity?.steps);
+
     generateNodesFromRuleSteps(currentEntityData?.steps || currentEntity?.steps || []).forEach((x) => {
+      // console.log('generateNodesFromRuleSteps', x);
       edges.push(generateNewEdge(nodes, edges));
       nodes.push(generateNewNode({ ...x, nodes, handleNodeDelete, handleNodePayloadChange }));
     });
