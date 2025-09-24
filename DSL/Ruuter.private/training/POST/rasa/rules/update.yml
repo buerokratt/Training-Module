@@ -119,6 +119,40 @@ updateOpenSearch:
     body:
       input: ${rulesYaml.response.body.json}
   result: updateSearchResult
+  next: getOldRuleIntents
+
+getOldRuleIntents:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/utils/get-intents-from-rule-steps"
+    body:
+      steps: ${ruleResult.response.body.response.steps}
+  result: oldRuleIntentsResult
+  next: getNewRuleIntents
+
+getNewRuleIntents:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/utils/get-intents-from-rule-steps"
+    body:
+      steps: ${ruleData.steps}
+  result: newRuleIntentsResult
+  next: assignIntents
+
+assignIntents:
+  assign:
+    oldIntents: ${oldRuleIntentsResult.response.body}
+    newIntents: ${newRuleIntentsResult.response.body}
+  next: updateIntentsStatus
+
+updateIntentsStatus:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/update-intents-status"
+    body:
+      intents: ${[...oldIntents.filter(item => !newIntents.includes(item)), ...newIntents.filter(item => !oldIntents.includes(item))]}
+      status: "NOT_TRAINED"
+  result: updateIntentsResult
   next: returnSuccess
 
 returnSuccess:
