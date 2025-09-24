@@ -126,7 +126,6 @@ updateIntentsStatus:
     body:
       intents: ${ruleIntentsResult.response.body}
       status: "NOT_TRAINED"
-      cutoffDate: "null"
   result: updateIntentsResult
   next: returnSuccess
 

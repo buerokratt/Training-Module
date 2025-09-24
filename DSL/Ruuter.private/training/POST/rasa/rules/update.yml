@@ -139,19 +139,21 @@ getNewRuleIntents:
   result: newRuleIntentsResult
   next: compareIntents
 
+# assignIntents:
+#   assign:
+#     oldIntents: ${oldRuleIntentsResult.response.body}
+#     newIntents: ${newRuleIntentsResult.response.body}
+#   next: compareIntents
+
 compareIntents:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/utils/compare-arrays"
+    url: "[#TRAINING_DMAPPER]/utils/compare-model-intent-reports"
     body:
       oldArray: ${oldRuleIntentsResult.response.body}
       newArray: ${newRuleIntentsResult.response.body}
   result: compareIntentsResult
-  next: assignIntentsToUpdate
-
-assignIntentsToUpdate:
-  assign:
-    intentsToUpdate: ${compareIntentsResult.response.body.newUniqueItems.concat(compareIntentsResult.response.body.oldUniqueItems)}
+  next: updateIntentsStatus
 
 updateIntentsStatus:
   call: http.post
@@ -161,9 +163,7 @@ updateIntentsStatus:
       # Setting NOT_TRAINED for intents that:
       # - have been added to the rule
       # - have been removed from the rule
-      intents: ${intentsToUpdate}
-      status: "NOT_TRAINED"
-      cutoffDate: "null"
+      intents: ${[...compareIntentsResult.response.body.newUniqueItems, ...compareIntentsResult.response.body.oldUniqueItems]}
   result: updateIntentsResult
   next: returnSuccess
 
