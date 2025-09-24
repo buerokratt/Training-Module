@@ -26,7 +26,6 @@ import { getIntentIds } from 'services/intents';
 import { IntentId } from 'types/intent';
 import { getForms } from 'services/forms';
 import { getSlots } from 'services/slots';
-import { t } from 'i18next';
 
 const nodeTypes = {
   customNode: CustomNode,
@@ -94,24 +93,6 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   useDocumentEscapeListener(() => setEditableTitle(null));
 
   useEffect(() => {
-    console.log('currentEntityData UPDATED', currentEntityData);
-    const steps = currentEntityData?.steps;
-    const intents = new Set<string>();
-
-    if (Array.isArray(steps)) {
-      steps.forEach((step) => {
-        if (step.intent) intents.add(step.intent);
-      });
-    } else if (steps?.intent) {
-      intents.add(steps.intent);
-    }
-
-    setInitialIntents(Array.from(intents));
-  }, [currentEntityData]);
-
-  console.log('initialIntents', initialIntents);
-
-  useEffect(() => {
     if (location.state?.category) {
       setCategory(location.state.category);
       if (location.state.id) {
@@ -120,16 +101,11 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
     }
 
     setCurrentEntity(currentEntityData ?? null);
-    // console.log('currentEntityData', currentEntityData);
 
     let nodes = [...initialNodes];
     let edges: any[] = [];
 
-    // console.log('currentEntityData?.steps', currentEntityData?.steps);
-    // console.log('currentEntity?.steps', currentEntity?.steps);
-
     generateNodesFromRuleSteps(currentEntityData?.steps || currentEntity?.steps || []).forEach((x) => {
-      // console.log('generateNodesFromRuleSteps', x);
       edges.push(generateNewEdge(nodes, edges));
       nodes.push(generateNewNode({ ...x, nodes, handleNodeDelete, handleNodePayloadChange }));
     });

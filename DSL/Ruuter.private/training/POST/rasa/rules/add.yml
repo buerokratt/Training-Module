@@ -30,6 +30,7 @@ assign_values:
 log_step_igor:
   log: ${body}
 
+# todo remove
 #   2025-09-24 07:29:50.204Z  INFO [,] --- [nio-8080-exec-7] e.b.ruuter.domain.steps.LogStep          : [                 ] - - - - - LOG: {rule: "igorraaaa", steps: [{intent: "common_ask_csa", entities: []}, {intent: "common_ask_csa", entities: []}]}
 # 2025-09-24 07:29:50.205Z  INFO [,] --- [nio-8080-exec-7] e.b.ruuter.domain.steps.DslStep          : [              log] - - - - 10 Executed: log_step_igor
 
@@ -127,6 +128,25 @@ updateOpenSearch:
     body:
       input: ${rulesYaml.response.body.json}
   result: updateSearchResult
+  next: getRuleIntents
+
+getRuleIntents:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/utils/get-intents-from-rule-steps"
+    body:
+      steps: ${body.steps}
+  result: ruleIntentsResult
+  next: updateIntentsStatus
+
+updateIntentsStatus:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/update-intents-status"
+    body:
+      intents: ${ruleIntentsResult.response.body}
+      status: "NOT_TRAINED"
+  result: updateIntentsResult
   next: returnSuccess
 
 returnSuccess:

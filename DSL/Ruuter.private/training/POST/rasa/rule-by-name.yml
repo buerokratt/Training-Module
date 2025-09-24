@@ -20,9 +20,6 @@ getRulesWithName:
       params: ${params}
   result: getRulesResult
 
-log_rules_data_igor:
-  log: ${getRulesResult.response.body.hits.hits[0]._source.steps}a
-
 mapRulesData:
   call: http.post
   args:
