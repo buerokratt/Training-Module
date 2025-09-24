@@ -164,6 +164,7 @@ updateIntentsStatus:
       # - have been added to the rule
       # - have been removed from the rule
       intents: ${[...compareIntentsResult.response.body.newUniqueItems, ...compareIntentsResult.response.body.oldUniqueItems]}
+      status: "NOT_TRAINED"
   result: updateIntentsResult
   next: returnSuccess
 
