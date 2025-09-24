@@ -96,17 +96,17 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   useEffect(() => {
     console.log('currentEntityData UPDATED', currentEntityData);
     const steps = currentEntityData?.steps;
-    const intents: string[] = [];
+    const intents = new Set<string>();
 
     if (Array.isArray(steps)) {
       steps.forEach((step) => {
-        if (step.intent) intents.push(step.intent);
+        if (step.intent) intents.add(step.intent);
       });
     } else if (steps?.intent) {
-      intents.push(steps.intent);
+      intents.add(steps.intent);
     }
 
-    setInitialIntents(intents);
+    setInitialIntents(Array.from(intents));
   }, [currentEntityData]);
 
   console.log('initialIntents', initialIntents);
