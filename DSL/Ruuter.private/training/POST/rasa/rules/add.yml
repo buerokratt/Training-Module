@@ -26,14 +26,6 @@ assign_values:
   assign:
     body: ${incoming.body}
 
-# todo remove
-log_step_igor:
-  log: ${body}
-
-# todo remove
-#   2025-09-24 07:29:50.204Z  INFO [,] --- [nio-8080-exec-7] e.b.ruuter.domain.steps.LogStep          : [                 ] - - - - - LOG: {rule: "igorraaaa", steps: [{intent: "common_ask_csa", entities: []}, {intent: "common_ask_csa", entities: []}]}
-# 2025-09-24 07:29:50.205Z  INFO [,] --- [nio-8080-exec-7] e.b.ruuter.domain.steps.DslStep          : [              log] - - - - 10 Executed: log_step_igor
-
 validateRules:
   call: http.post
   args:
