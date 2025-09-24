@@ -150,6 +150,9 @@ updateIntentsStatus:
   args:
     url: "[#TRAINING_RESQL]/update-intents-status"
     body:
+      # Setting NOT_TRAINED for intents that:
+      # - have been added to the rule
+      # - have been removed from the rule
       intents: ${[...oldIntents.filter(item => !newIntents.includes(item)), ...newIntents.filter(item => !oldIntents.includes(item))]}
       status: "NOT_TRAINED"
   result: updateIntentsResult
