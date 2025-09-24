@@ -139,12 +139,6 @@ getNewRuleIntents:
   result: newRuleIntentsResult
   next: compareIntents
 
-# assignIntents:
-#   assign:
-#     oldIntents: ${oldRuleIntentsResult.response.body}
-#     newIntents: ${newRuleIntentsResult.response.body}
-#   next: compareIntents
-
 compareIntents:
   call: http.post
   args:
