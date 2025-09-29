@@ -29,7 +29,7 @@ getIntents:
 mapIntentsData:
   call: http.post
   args:
-    url: "[#TRAINING_DMAPPER]/hbs/training/get_intent_ids"
+    url: "[#TRAINING_DMAPPER_HBS]/get_intent_ids"
     headers:
       type: "json"
     body:
