@@ -39,6 +39,5 @@ mapIntentsData:
 
 returnSuccess:
   return: ${intentsData.response.body}
-  # todo
   wrapper: false
   next: end

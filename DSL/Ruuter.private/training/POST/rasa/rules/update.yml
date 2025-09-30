@@ -119,6 +119,47 @@ updateOpenSearch:
     body:
       input: ${rulesYaml.response.body.json}
   result: updateSearchResult
+  next: getOldRuleIntents
+
+getOldRuleIntents:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/utils/get-intents-from-rule-steps"
+    body:
+      steps: ${ruleResult.response.body.response.steps}
+  result: oldRuleIntentsResult
+  next: getNewRuleIntents
+
+getNewRuleIntents:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/utils/get-intents-from-rule-steps"
+    body:
+      steps: ${ruleData.steps}
+  result: newRuleIntentsResult
+  next: compareIntents
+
+compareIntents:
+  call: http.post
+  args:
+    url: "[#TRAINING_DMAPPER]/utils/compare-model-intent-reports"
+    body:
+      oldArray: ${oldRuleIntentsResult.response.body}
+      newArray: ${newRuleIntentsResult.response.body}
+  result: compareIntentsResult
+  next: updateIntentsStatus
+
+updateIntentsStatus:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/update-intents-status"
+    body:
+      # Setting NOT_TRAINED for intents that:
+      # - have been added to the rule
+      # - have been removed from the rule
+      intents: ${[...compareIntentsResult.response.body.newUniqueItems, ...compareIntentsResult.response.body.oldUniqueItems]}
+      status: "NOT_TRAINED"
+  result: updateIntentsResult
   next: returnSuccess
 
 returnSuccess:
