@@ -81,6 +81,7 @@ const RulesDetail: FC<{ mode: 'new' | 'edit' }> = ({ mode }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const onConnect = useCallback((params: Connection) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
+  const [initialIntents, setInitialIntents] = useState<string[]>([]);
 
   const { data: currentEntityData, refetch: refetchCurrentEntity } = useQuery<Rule>({
     queryKey: ['rule-by-name', currentEntityId],
