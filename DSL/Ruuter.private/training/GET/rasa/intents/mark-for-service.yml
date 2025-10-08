@@ -53,7 +53,7 @@ updateInDatabase:
     body:
       intent: ${intent}
       isForService: ${isForService}
-      status: null
+      status: ""
   result: addIntentResult
 
 returnSuccess:
