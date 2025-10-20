@@ -331,6 +331,8 @@
       "popupNotifications": "Popup notifications",
       "newUnansweredChat": "New unanswered chat",
       "newForwardedChat": "New forwarded chat",
+      "newForwardedChatTitle": "Forwarded chat",
+      "newForwardedChatMessage": "You have new forwarded chat!",
       "newValidationMessage": "New message to validate",
       "useAutocorrect": "Text auto corrector",
       "statusCommentUpdated": "Status clarification updated"
