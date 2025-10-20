@@ -6,3 +6,8 @@ export const POPUP_DURATION = 5; // seconds
 export const isHiddenFeaturesEnabled = 
   import.meta.env.REACT_APP_ENABLE_HIDDEN_FEATURES?.toLowerCase().trim() == 'true' ||
   import.meta.env.REACT_APP_ENABLE_HIDDEN_FEATURES?.toLowerCase().trim() == '1';
+
+export enum CHAT_SESSIONS {
+    SESSION_ID_KEY = "tabId",
+    SESSION_STATE_KEY = "sessionTabs"
+}
