@@ -10,7 +10,7 @@ declare global {
 }
 
 const useTabCloseEffect = () => {
-  if(import.meta.env.REACT_APP_LOCAL?.toLowerCase() !== 'true') return;
+  if(import.meta.env.REACT_APP_LOCAL?.toLowerCase() === 'true') return;
   const baseUrl = import.meta.env.REACT_APP_NOTIFICATION_NODE_URL;
   const logoutPath = '/add-to-logout-queue';
   const cancelLogoutPath = '/remove-from-logout-queue'
