@@ -105,7 +105,6 @@ updateIntentStatus:
     url: "[#TRAINING_RESQL]/update-intent"
     body:
       intent: ${intent}
-      isForService: ""
       status: "NOT_TRAINED"
   result: updateIntentStatusResult
   next: returnSuccess

@@ -6,14 +6,8 @@ INSERT INTO intent (intent, created, status, isForService)
 SELECT 
     :intent,
     CURRENT_TIMESTAMP,
-    COALESCE(NULLIF(:status, ''), latest_intent.status),
-    COALESCE(
-        CASE 
-            WHEN CAST(:isForService AS TEXT) = '' THEN NULL 
-            ELSE CAST(:isForService AS BOOLEAN) 
-        END,
-        latest_intent.isForService
-    )
+    COALESCE(:status, latest_intent.status),
+    COALESCE(:isForService, latest_intent.isForService)
 FROM (
     -- Find the latest version of the specific intent
     SELECT DISTINCT ON (intent) 
