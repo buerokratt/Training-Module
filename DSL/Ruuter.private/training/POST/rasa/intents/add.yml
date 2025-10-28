@@ -92,7 +92,7 @@ addInDatabase:
     url: "[#TRAINING_RESQL]/add-intent"
     body:
       intent: ${incoming.body.name}
-      status: "ACTIVE"
+      status: "NOT_TRAINED"
   result: addIntentResult
 
 returnSuccess:
