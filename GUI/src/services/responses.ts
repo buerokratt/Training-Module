@@ -1,6 +1,6 @@
 import { PaginationParams } from 'types/api';
 import { rasaApi } from './api';
-import { ResponseEdit, Response } from 'types/response';
+import { ResponseEdit, ResponseDataEdit, Response } from 'types/response';
 
 export const getResponses = async ({
   pageParam,
@@ -11,22 +11,24 @@ export const getResponses = async ({
   return data;
 };
 
-export async function editResponse(id: string, responseText: string, update = true, intent?: string) {
+export async function editResponse(id: string, responseText: string, update = true) {
   if (responseText.startsWith('"') && responseText.endsWith('"')) {
     responseText = responseText.slice(1, -1);
   }
+  const responseEditData = <ResponseEdit>{};
+  const responseDataEdit = <ResponseDataEdit>{};
 
-  const responseEditData: ResponseEdit = {
-    response_name: id,
-    response: {
-      [id]: [{ text: responseText }],
-    },
-    intent,
-  };
+  responseEditData.response_name = id;
+  responseDataEdit[id] = [{ text: responseText }];
+  responseEditData.response = responseDataEdit;
 
-  const endpoint = update ? 'responses/update' : 'responses/add';
-  const { data } = await rasaApi.post<{ response: string }>(endpoint, responseEditData);
-  return data;
+  if (update) {
+    const { data } = await rasaApi.post<{ response: string }>(`responses/update`, responseEditData);
+    return data;
+  } else {
+    const { data } = await rasaApi.post<{ response: string }>(`responses/add`, responseEditData);
+    return data;
+  }
 }
 
 export async function deleteResponse(response: { response: string }) {

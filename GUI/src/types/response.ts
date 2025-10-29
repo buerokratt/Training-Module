@@ -9,14 +9,13 @@ export interface Condition {
   value: null;
 }
 
-interface ResponseDataEdit {
+export interface ResponseDataEdit {
   [key: string]: ResponseDataResponse[];
 }
 
 export interface ResponseEdit {
   response_name: string;
   response: ResponseDataEdit;
-  intent?: string;
 }
 
 export interface Response {

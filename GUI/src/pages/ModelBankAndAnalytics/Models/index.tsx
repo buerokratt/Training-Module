@@ -5,9 +5,17 @@ import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns';
 import { AxiosError } from 'axios';
 import { MdOutlineSettingsInputAntenna } from 'react-icons/md';
-import './Models.scss';
+import './Models.scss'
 
-import { Button, Card, DataTable, Dialog, Icon, Loader, Track } from 'components';
+import {
+  Button,
+  Card,
+  DataTable,
+  Dialog,
+  Icon,
+  Loader,
+  Track,
+} from 'components';
 import { Model, ModelStateType, UpdateModelDTO } from 'types/model';
 import { activateModel, deleteModel } from 'services/models';
 import { useToast } from 'hooks/useToast';
@@ -26,8 +34,12 @@ const Models: FC = () => {
   const [currentlyLoadedModel, setCurrentlyLoadedModel] = useState<Model>();
   const [previouslyLoadedModel, setPreviouslyLoadedModel] = useState<Model>();
   const [isFetching, setIsFetching] = useState(false);
-  const [modelConfirmation, setModelConfirmation] = useState<string | number | null>(null);
-  const [deletableModel, setDeletableModel] = useState<string | number | null>(null);
+  const [modelConfirmation, setModelConfirmation] = useState<
+    string | number | null
+  >(null);
+  const [deletableModel, setDeletableModel] = useState<string | number | null>(
+    null
+  );
   const { data: models, refetch } = useQuery<Model[]>({
     queryKey: ['models'],
   });
@@ -79,7 +91,7 @@ const Models: FC = () => {
     setCurrentlyLoadedModel(deployedModel);
     setPreviouslyLoadedModel(deployedModel);
 
-    const activatingModel = models?.find((m) => m.state === 'ACTIVATING');
+    const activatingModel = models?.find((m) => m.state === 'ACTIVATING')
     if (activatingModel) {
       setSelectedModel(activatingModel);
       setCurrentlyLoadedModel(activatingModel);
@@ -117,23 +129,37 @@ const Models: FC = () => {
         clearTimeout(timeoutId);
       };
     }
-  }, [isFetching, refetch, currentlyLoadedModel, previouslyLoadedModel, toast, t]);
+  }, [
+    isFetching,
+    refetch,
+    currentlyLoadedModel,
+    previouslyLoadedModel,
+    toast,
+    t,
+  ]);
 
   return (
     <>
       <h1>{t('training.mba.models')}</h1>
 
       {selectedModel && (
-        <Card header={<h2 className="h3">{t('training.mba.selectedModel')}</h2>}>
+        <Card
+          header={<h2 className="h3">{t('training.mba.selectedModel')}</h2>}
+        >
           <Track gap={16} isMultiline>
             <p style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>
-              {`${i18n.t('training.mba.version')} ${selectedModel.versionNumber}`}
+              {`${i18n.t('training.mba.version')} ${
+                selectedModel.versionNumber
+              }`}
             </p>
             <p style={{ whiteSpace: 'nowrap' }}>{`(${selectedModel.name})`}</p>
 
             {selectedModel.state === 'DEPLOYED' && (
               <Track gap={8} style={{ whiteSpace: 'nowrap', color: '#308653' }}>
-                <Icon icon={<MdOutlineSettingsInputAntenna fontSize={24} />} size="medium" />
+                <Icon
+                  icon={<MdOutlineSettingsInputAntenna fontSize={24} />}
+                  size="medium"
+                />
                 <p>{t('training.mba.modelInUse')}</p>
               </Track>
             )}
@@ -148,8 +174,13 @@ const Models: FC = () => {
             </Button>
 
             {selectedModel.state !== 'DEPLOYED' && (
-              <Button appearance="success" disabled={isFetching} onClick={() => setModelConfirmation(selectedModel.id)}>
-                {isFetching && currentlyLoadedModel?.id !== previouslyLoadedModel?.id ? (
+              <Button
+                appearance="success"
+                disabled={isFetching}
+                onClick={() => setModelConfirmation(selectedModel.id)}
+              >
+                {isFetching &&
+                currentlyLoadedModel?.id !== previouslyLoadedModel?.id ? (
                   <Loader />
                 ) : (
                   t('training.mba.activateModel')
@@ -161,10 +192,7 @@ const Models: FC = () => {
       )}
 
       {models && (
-        <Card
-          header={<h2 className="h3">{t('training.mba.allModels')}</h2>}
-          style={{ height: 'auto', overflow: 'auto' }}
-        >
+        <Card header={<h2 className="h3">{t('training.mba.allModels')}</h2>} style={{ height: 'auto', overflow: 'auto' }}>
           <DataTable
             data={models}
             selectedRow={(row) => row.original.versionNumber === selectedModel?.versionNumber}
@@ -176,7 +204,7 @@ const Models: FC = () => {
             setSelectedRow={(row: Row<Model>) => setSelectedModel(row.original)}
             meta={{
               getRowStyles: (row: Row<Model>) => ({
-                cursor: 'pointer',
+                cursor: 'pointer'
               }),
             }}
           />
@@ -189,10 +217,18 @@ const Models: FC = () => {
           onClose={() => setDeletableModel(null)}
           footer={
             <>
-              <Button appearance="secondary" onClick={() => setDeletableModel(null)}>
+              <Button
+                appearance="secondary"
+                onClick={() => setDeletableModel(null)}
+              >
                 {t('global.no')}
               </Button>
-              <Button appearance="error" onClick={() => deleteModelMutation.mutate({ id: deletableModel })}>
+              <Button
+                appearance="error"
+                onClick={() =>
+                  deleteModelMutation.mutate({ id: deletableModel })
+                }
+              >
                 {t('global.yes')}
               </Button>
             </>
@@ -208,7 +244,10 @@ const Models: FC = () => {
           onClose={() => setModelConfirmation(null)}
           footer={
             <>
-              <Button appearance="secondary" onClick={() => setModelConfirmation(null)}>
+              <Button
+                appearance="secondary"
+                onClick={() => setModelConfirmation(null)}
+              >
                 {t('global.no')}
               </Button>
               <Button
@@ -241,7 +280,10 @@ const getColumns = (setSelectedModel: (model: Model) => void) => {
 
     return (
       <Track gap={8} style={{ whiteSpace: 'nowrap', color: '#308653' }}>
-        <Icon icon={<MdOutlineSettingsInputAntenna fontSize={24} />} size="medium" />
+        <Icon
+          icon={<MdOutlineSettingsInputAntenna fontSize={24} />}
+          size="medium"
+        />
         <p>{i18n.t('training.mba.modelInUse')}</p>
       </Track>
     );
@@ -258,7 +300,10 @@ const getColumns = (setSelectedModel: (model: Model) => void) => {
     }),
     columnHelper.accessor('lastTrained', {
       header: i18n.t('training.mba.lastTrained') ?? '',
-      cell: (props) => (props.getValue() ? format(new Date(props.getValue()), DATETIME_FORMAT) : null),
+      cell: (props) =>
+        props.getValue()
+          ? format(new Date(props.getValue()), DATETIME_FORMAT)
+          : null,
     }),
     columnHelper.accessor('state', {
       header: i18n.t('training.mba.live') ?? '',

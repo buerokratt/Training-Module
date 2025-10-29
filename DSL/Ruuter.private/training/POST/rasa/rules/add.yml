@@ -91,8 +91,6 @@ mergeRules:
       iteratee: "rule"
   result: mergedRules
 
-# todo also: rules add AND update AND delete - under rules UI, check if add and remove intents to rules
-
 convertJsonToYaml:
   call: http.post
   args:
@@ -120,25 +118,6 @@ updateOpenSearch:
     body:
       input: ${rulesYaml.response.body.json}
   result: updateSearchResult
-  next: getRuleIntents
-
-getRuleIntents:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/utils/get-intents-from-rule-steps"
-    body:
-      steps: ${body.steps}
-  result: ruleIntentsResult
-  next: updateIntentsStatus
-
-updateIntentsStatus:
-  call: http.post
-  args:
-    url: "[#TRAINING_RESQL]/update-intents-status"
-    body:
-      intents: ${ruleIntentsResult.response.body}
-      status: "NOT_TRAINED"
-  result: updateIntentsResult
   next: returnSuccess
 
 returnSuccess:
