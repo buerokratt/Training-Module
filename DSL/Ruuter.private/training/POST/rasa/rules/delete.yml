@@ -108,26 +108,6 @@ deleteOpenSearchEntry:
     body:
       id: ${rule}
   result: deleteSearchResult
-  next: getRuleIntents
-
-getRuleIntents:
-  call: http.post
-  args:
-    url: "[#TRAINING_DMAPPER]/utils/get-intents-from-rule-steps"
-    body:
-      steps: ${ruleResult.response.body.response.steps}
-  result: ruleIntentsResult
-  next: updateIntentsStatus
-
-updateIntentsStatus:
-  call: http.post
-  args:
-    url: "[#TRAINING_RESQL]/update-intents-status"
-    body:
-      intents: ${ruleIntentsResult.response.body}
-      status: "NOT_TRAINED"
-  result: updateIntentsResult
-  next: returnSuccess
 
 returnSuccess:
   return: "Rule deleted"

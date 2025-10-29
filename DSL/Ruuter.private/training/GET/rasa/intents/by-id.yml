@@ -60,7 +60,7 @@ getIntentListLastChanged:
 
 assignResults:
   assign:
-    # Ideally, should use a single object, not array
+    # TODO: Ideally, should use a single object, not array
     intents:
       intents: ${getIntentResult.response.body.hits.hits.filter((item) => item._id == intent)}
       inmodel: ${getDomainDataResult.response.body.response.intents}

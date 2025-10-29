@@ -291,10 +291,10 @@ addNewIntentInPipeline:
 addInDatabase:
   call: http.post
   args:
-    url: "[#TRAINING_RESQL]/update-intent-name"
+    url: "[#TRAINING_RESQL]/add-intent"
     body:
-      oldIntent: ${incoming.body.oldName}
-      newIntent: ${incoming.body.newName}
+      intent: ${incoming.body.newName}
+      status: "ACTIVE"
   result: addInDatabaseResult
 
 deleteOldIntentFile:
