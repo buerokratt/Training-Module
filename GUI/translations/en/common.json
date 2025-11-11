@@ -1,7 +1,7 @@
 {
   "global": {
     "save": "Save",
-    "noReports": "No reports yet exists for selected model",
+    "noReports": "No cross validation done for selected model",
     "add": "Add",
     "edit": "Edit",
     "delete": "Delete",
