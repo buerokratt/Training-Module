@@ -1,6 +1,7 @@
 {
   "global": {
     "save": "Salvesta",
+    "noReports": "Antud mudelit ei ole ristvalideeritud.",
     "add": "Lisa",
     "edit": "Muuda",
     "delete": "Kustuta",
