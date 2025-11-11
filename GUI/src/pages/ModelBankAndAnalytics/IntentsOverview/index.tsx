@@ -14,7 +14,7 @@ const IntentsOverview: FC = () => {
     const {t} = useTranslation();
     const [filter, setFilter] = useState('');
     const [selectedModelId, setSelectedModelId] = useState('');
-
+    const [showReportData, setShowReportData] = useState<boolean>(false);
     const {data: models} = useQuery<Model[]>({
         queryKey: ['models'],
     });
@@ -52,16 +52,18 @@ const IntentsOverview: FC = () => {
 
     useEffect(() => {
         if (intentsReport?.intent_evaluation?.report) {
+            setShowReportData(true)
             setAccuracyValue(intentsReport?.intent_evaluation?.report['accuracy']);
+        } else {
+            setShowReportData(false)
         }
     }, [intentsReport]);
 
-    const formattedIntentsReport = useMemo(
-        () => intentsReport
-            ? Object.keys(intentsReport.intent_evaluation.report).map((intent) => ({intent, ...intentsReport.intent_evaluation.report[intent]}))
-            : [],
-        [intentsReport],
-    );
+    const formattedIntentsReport = useMemo(() => {
+        const report = intentsReport?.intent_evaluation?.report;
+        if (!report) return [];
+        return Object.keys(report).map(intent => ({ intent, ...report[intent] }));
+    }, [intentsReport]);
 
     const intentsReportColumns = useMemo(() => getColumns({ accuracyValue, nonIntents}), [accuracyValue]);
 
@@ -117,13 +119,21 @@ const IntentsOverview: FC = () => {
                     onChange={(e) => setFilter(e.target.value)}
                 />
             }>
-                <DataTable
-                    data={formattedIntentsReport}
-                    columns={intentsReportColumns}
-                    globalFilter={filter}
-                    setGlobalFilter={setFilter}
-                    columnVisibility={isHiddenFeaturesEnabled ? {} : {"precision": false, "recall": false, "suggestion": false}}
-                />
+                {showReportData ? (
+                    <DataTable
+                        data={formattedIntentsReport}
+                        columns={intentsReportColumns}
+                        globalFilter={filter}
+                        setGlobalFilter={setFilter}
+                        columnVisibility={isHiddenFeaturesEnabled ? {} : {
+                            "precision": false,
+                            "recall": false,
+                            "suggestion": false
+                        }}
+                    />
+                ) : (
+                    <span>No reports generated</span>
+                )}
             </Card>
         </>
     );
