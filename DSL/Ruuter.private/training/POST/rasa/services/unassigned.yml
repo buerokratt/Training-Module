@@ -29,7 +29,7 @@ get_services:
       page: ${incoming.body.page}
       page_size: ${incoming.body.page_size}
       sorting: ${incoming.body.sorting}
-      search: ${incoming.body.search}
+      search: ${incoming.body.search ?? ""}
   result: services_res
 
 get_service_intent_connections:
@@ -52,5 +52,5 @@ filter_out_services_connected_to_intent:
   
 return_result:
   status: 200
-  return: ${unused_services_res.response.body}
+  return: ${unused_services_res.response.body.result}
 

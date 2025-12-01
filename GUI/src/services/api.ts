@@ -22,6 +22,16 @@ const authApi = axios.create({
   withCredentials: true,
 });
 
+const notificationApiDev = axios.create({
+  baseURL: import.meta.env.REACT_APP_NOTIFICATION_NODE_URL,
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+  },
+  withCredentials: false,
+});
+
 const fileApi = axios.create({
   baseURL: import.meta.env.REACT_APP_RUUTER_URL + 'rasa/',
   headers: {
@@ -73,7 +83,7 @@ const AxiosInterceptor = ({ children }) => {
 
       let message = t('global.notificationErrorMsg');
 
-      if (error.response && error.response.data) {
+      if (error.response?.data) {
         const data = error.response.data;
 
         switch (true) {
@@ -85,6 +95,9 @@ const AxiosInterceptor = ({ children }) => {
             break;
           case data.intentParsing:
             message = t('training.intents.error.intentParsing');
+            break;
+          case data.intentConnectedOrHasRequests:
+            message = t('training.intents.error.intentConnectedOrHasRequests');
             break;
           default:
             break;
@@ -99,6 +112,7 @@ const AxiosInterceptor = ({ children }) => {
     const fileApiInterceptor = fileApi.interceptors.response.use(resInterceptor, errInterceptor);
     const genericInterceptor = genericApi.interceptors.response.use(resInterceptor, errInterceptor);
     const rasaApiInterceptor = rasaApi.interceptors.response.use(resInterceptor, rasaErrInterceptor);
+    const notificationApiDevInterceptor = notificationApiDev.interceptors.response.use(resInterceptor, errInterceptor);
 
     return () => {
       api.interceptors.response.eject(apiInterceptor);
@@ -106,6 +120,7 @@ const AxiosInterceptor = ({ children }) => {
       fileApi.interceptors.response.eject(fileApiInterceptor);
       genericApi.interceptors.response.eject(genericInterceptor);
       rasaApi.interceptors.response.eject(rasaApiInterceptor);
+      notificationApiDev.interceptors.response.eject(notificationApiDevInterceptor)
     };
   }, [t]);
 
@@ -133,4 +148,6 @@ genericApi.interceptors.request.use((axiosRequest) => axiosRequest, handleReques
 
 rasaApi.interceptors.request.use((axiosRequest) => axiosRequest, handleRequestError);
 
-export { api, authApi, fileApi, genericApi, rasaApi, AxiosInterceptor };
+notificationApiDev.interceptors.request.use((axiosRequest) => axiosRequest,handleRequestError);
+
+export { api, authApi, fileApi, genericApi, rasaApi, notificationApiDev,AxiosInterceptor };

@@ -53,7 +53,7 @@ entities:
   - currency
   
 slots:
-  common_teenus_ilm_asukoht:
+  common_teenus_ilm:
     type: text
     influence_conversation: true
     mappings:
@@ -325,10 +325,10 @@ responses:
   utter_common_teenus_ilm:
     - condition:
         - type: slot
-          name: common_teenus_ilm_asukoht
+          name: common_teenus_ilm
           value: null
       text: "Hetkel oskan ma öelda ilma Eesti raames piirkonnapõhiselt. Palun sisestage korrektne piirkonna nimi."
-    - text: "#common_service, /POST/weather/EE, ({common_teenus_ilm_asukoht})"
+    - text: "UNKNOWN"
 
   utter_ask_company_name:
   - text: "Mis firma kohta sa infot soovid?"
@@ -338,42 +338,42 @@ responses:
         - type: slot
           name: trigger_intent
           value: common_service_companies_employees
-      text: "#common_service, /POST/companies/search, (employees, {company_name})"
+      text: "UNKNOWN"
     - condition:
         - type: slot
           name: trigger_intent
           value: common_service_companies_revenue
-      text: "#common_service, /POST/companies/search, (revenue, {company_name})"
+      text: "UNKNOWN"
     - condition:
         - type: slot
           name: trigger_intent
           value: common_service_companies_workforce_taxes
-      text: "#common_service, /POST/companies/search, (work-force-taxes, {company_name})"
+      text: "UNKNOWN"
     - condition:
         - type: slot
           name: trigger_intent
           value: common_service_companies_national_taxes
-      text: "#common_service, /POST/companies/search, (national-taxes, {company_name})"
+      text: "UNKNOWN"
     - condition:
         - type: slot
           name: trigger_intent
           value: common_service_companies_beneficiaries
-      text: "#common_service, /POST/companies/search, (company-beneficial-owners, {company_name})"
+      text: "UNKNOWN"
     - condition:
         - type: slot
           name: trigger_intent
           value: common_service_companies_related_persons
-      text: "#common_service, /POST/companies/search, (company-related-persons, {company_name})"
+      text: "UNKNOWN"
     - condition:
         - type: slot
           name: trigger_intent
           value: common_service_companies_contactdetails
-      text: "#common_service, /POST/companies/search, (detailed-company-data, {company_name})"
+      text: "UNKNOWN"
     - condition:
         - type: slot
           name: trigger_intent
           value: common_service_companies_lihtandmed
-      text: "#common_service, /POST/companies/search, (simple-company-data, {company_name})"
+      text: "UNKNOWN"
 
   utter_fallback:
   - text: "UNKNOWN"
@@ -397,10 +397,10 @@ responses:
   - text: "Kuidas saan abiks olla?"
 
   utter_common_teenus_citizien_initiative:
-  - text: "#common_service, /GET/public-initiatives/most-recent"
+  - text: "UNKNOWN"
 
   utter_common_teenus_citizien_initiative_popular:
-  - text: "#common_service, /GET/public-initiatives/most-popular"
+  - text: "UNKNOWN"
 
   utter_common_teenus_rk_isiku_kohalolu:
     - condition:
@@ -408,103 +408,103 @@ responses:
           name: rk_liige
           value: null
       text: "Riigikogu liikme kohaloleku nägemiseks palun proovige uuesti, kasutades Riigikogu liikme täisnime."
-    - text: "#common_service, /GET/riigikogu/members-participation, ({rk_liige})"
+    - text: "UNKNOWN"
 
   utter_common_teenus_rk_hääletus_viimane:
-  - text: "#common_service, /GET/riigikogu/recent-voting"
+  - text: "UNKNOWN"
 
   utter_common_teenus_rk_hääletus_viimased:
-  - text: "#common_service, /GET/riigikogu/five-most-recent"
+  - text: "UNKNOWN"
 
   utter_common_teenus_rk_hääletus_fallback:
   - text: "Ma ei saanud täpselt aru. Palun proovige uuesti!"
 
   utter_common_teenus_nordpool:
-  - text: "#common_service, /GET/electricity/current-price"
+  - text: "UNKNOWN"
 
   utter_common_teenus_nordpool_odav:
-  - text: "#common_service, /GET/electricity/lowest-price"
+  - text: "UNKNOWN"
 
   utter_common_teenus_nordpool_kallis:
-  - text: "#common_service, /GET/electricity/highest-price"
+  - text: "UNKNOWN"
 
   utter_common_service_CPI_fallback:
-  - text: "#common_service, /GET/statistics-estonia/consumer-price-index"
+  - text: "UNKNOWN"
 
   utter_common_service_CPI_previous_year:
-  - text: "#common_service, /GET/statistics-estonia/consumer-price-index, (previous_year,,{by_year_statistics})"
+  - text: "UNKNOWN"
 
   utter_common_service_CPI_previous_month:
-  - text: "#common_service, /GET/statistics-estonia/consumer-price-index, (previous_month,{by_month_statistics},)"
+  - text: "UNKNOWN"
 
   utter_common_service_CPI_time_horizon:
-  - text: "#common_service, /GET/statistics-estonia/consumer-price-index, (previous_year,{by_month_statistics},{by_year_statistics})"
+  - text: "UNKNOWN"
 
   utter_common_service_unemployment_rate:
-  - text: "#common_service, /GET/statistics-estonia/unemployment-rate, ({by_year_statistics})"
+  - text: "UNKNOWN"
 
   utter_common_service_unemployment_rate_fallback:
-  - text: "#common_service, /GET/statistics-estonia/unemployment-rate"
+  - text: "UNKNOWN"
 
   utter_common_service_estimated_subsistence_minimum:
-  - text: "#common_service, /GET/statistics-estonia/estimated-subsistence-minimum"
+  - text: "UNKNOWN"
 
   utter_common_service_holidays:
-  - text: "#common_service, /GET/calendar/national-holidays/national-holidays"
+  - text: "UNKNOWN"
 
   utter_common_service_holidays_next_holidays:
-  - text: "#common_service, /GET/calendar/national-holidays/eoy"
+  - text: "UNKNOWN"
 
   utter_common_service_holidays_last_holidays:
-  - text: "#common_service, /GET/calendar/national-holidays/ytd"
+  - text: "UNKNOWN"
 
   utter_common_service_holidays_last_holiday:
-  - text: "#common_service, /GET/calendar/national-holidays/previous"
+  - text: "UNKNOWN"
 
   utter_common_service_holidays_next_holiday:
-  - text: "#common_service, /GET/calendar/national-holidays/next"
+  - text: "UNKNOWN"
 
   utter_common_service_holidays_today:
-  - text: "#common_service, /GET/calendar/national-holidays/today"
+  - text: "UNKNOWN"
 
   utter_common_service_holidays_by_name:
-  - text: "#common_service, /GET/calendar/national-holidays/find/by-name, ({by_name_holiday})"
+  - text: "UNKNOWN"
 
   utter_common_service_holidays_by_month:
-  - text: "#common_service, /GET/calendar/national-holidays/find/by-month, ({by_month_holiday})"
+  - text: "#UNKNOWN"
 
   utter_ask_reg_number:
   - text: "Mootorsõidukimaksu päringu tegemiseks palun sisestage Eestis registreeritud sõiduki kehtiv registreerimismärk."
 
   utter_common_service_motor_vehicle_tax:
-  - text: "#common_service, /GET/motor-vehicle-tax/registration-number, ({reg_number})"
+  - text: "UNKNOWN"
 
   utter_common_service_school_holiday:
-  - text: "#common_service, /GET/calendar/school-holidays/school-holidays"
+  - text: "UNKNOWN"
 
   utter_common_service_school_holiday_next_holidays:
-  - text: "#common_service, /GET/calendar/school-holidays/eoy"
+  - text: "UNKNOWN"
 
   utter_common_service_school_holiday_last_holidays:
-  - text: "#common_service, /GET/calendar/school-holidays/ytd"
+  - text: "UNKNOWN"
 
   utter_common_service_school_holiday_last_holiday:
-  - text: "#common_service, /GET/calendar/school-holidays/previous"
+  - text: "UNKNOWN"
 
   utter_common_service_school_holiday_next_holiday:
-  - text: "#common_service, /GET/calendar/school-holidays/next"
+  - text: "UNKNOWN"
 
   utter_common_service_school_holiday_today:
-  - text: "#common_service, /GET/calendar/school-holidays/today"
+  - text: "UNKNOWN"
 
   utter_common_service_school_holiday_by_name:
-  - text: "#common_service, /GET/calendar/school-holidays/find/by-name, ({by_name_school_holiday})"
+  - text: "UNKNOWN"
 
   utter_common_service_school_holiday_by_month:
-  - text: "#common_service, /GET/calendar/school-holidays/find/by-month, ({by_month_school_holiday})"
+  - text: "UNKNOWN"
 
   utter_common_service_nba_results:
-  - text: "#common_service, /GET/sports/nba-results"
+  - text: "UNKNOWN"
 
   utter_common_service_exchange_rate:
     - condition:
@@ -512,5 +512,5 @@ responses:
           name: currency
           value: null
       text: "Palun korrake küsimust, kasutades valuuta koodi, mille kurssi soovite saada."
-    - text: "#service, /GET/currency, ({currency})"
+    - text: "UNKNOWN"
   

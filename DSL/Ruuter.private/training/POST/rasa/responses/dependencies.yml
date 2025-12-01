@@ -11,7 +11,7 @@ declaration:
       - field: response_name
         type: string
         description: "Body field 'response_name'"
-    headers:
+    header:
       - field: cookie
         type: string
         description: "Cookie field"

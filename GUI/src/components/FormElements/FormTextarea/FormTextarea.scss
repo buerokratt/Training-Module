@@ -56,6 +56,19 @@
     pointer-events: none;
   }
 
+  &__max-length-locked {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    font-size: $veera-font-size-80;
+    color: get-color(black-coral-12);
+    pointer-events: none;
+  }
+
+  &__locked {
+    height: var(--locked-height) !important;
+  }
+
   textarea {
     width: 100%;
     display: block;

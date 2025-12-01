@@ -8,7 +8,7 @@
         "type": "text"
       },
       "pipeline": {
-        "type": "array",
+        "type": "nested",
         "properties": {
           "name": {
             "type": "text"
@@ -43,7 +43,7 @@
         }
       },
       "policies": {
-        "type": "array",
+        "type": "nested",
         "properties": {
           "name": {
             "type": "text"

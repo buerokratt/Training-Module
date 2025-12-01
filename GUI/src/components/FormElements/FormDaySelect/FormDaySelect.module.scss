@@ -24,10 +24,12 @@
 
         &:checked {
             background: get-color(sapphire-blue-10);
+            border-radius: 3px;
         }
 
         &:checked + label {
             background: get-color(sapphire-blue-10);
+            border-radius: 3px;
         }
     }
 

@@ -10,11 +10,10 @@
   display: table;
 
     &__scrollWrapper {
-      height: 100%;
       overflow-x: auto;
       white-space: nowrap;
       display: block;
-      max-height: 60vh;
+      min-height: 0;
     }
 
     thead, tbody {
@@ -196,4 +195,14 @@
 
 .default {
   background-color: white;
+}
+
+.data-table.no-header-border {
+  thead {
+    border-top: none;
+  }
+  th {
+    border-top: none;
+    padding-top: 0;
+  }
 }

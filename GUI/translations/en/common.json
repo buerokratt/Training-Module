@@ -1,6 +1,7 @@
 {
   "global": {
     "save": "Save",
+    "noReports": "No cross validation done for selected model",
     "add": "Add",
     "edit": "Edit",
     "delete": "Delete",
@@ -42,6 +43,7 @@
     "missing": "Missing",
     "updatingDataHead": "Please wait",
     "updatingDataBody": "Processing request...",
+    "statusClarification": "Status clarification",
     "days": {
       "monday": "Monday",
       "tuesday": "Tuesday",
@@ -50,9 +52,17 @@
       "friday": "Friday",
       "saturday": "Saturday",
       "sunday": "Sunday"
-    }
+    },
+    "test": "Test"
+  },
+  "files": {
+    "download_xlsx": "Download XLSX"
   },
   "toast": {
+    "success": {
+      "updateSuccess": "Updated Successfully",
+      "chatCommentChanged": "Chat comment changed"
+    },
     "newExampleAdded": "New example added",
     "newResponseAdded": "New response added",
     "newAppealAdded": "New appeal added",
@@ -109,6 +119,10 @@
     "openIcon": "Open menu icon",
     "closeIcon": "Close menu icon"
   },
+  "multiDomains": {
+    "selectDomains": "Select Domains",
+    "noDomains": "No domains available. Please contact your system administrator."
+  },
   "training": {
     "intent": "intent",
     "response": "response",
@@ -128,6 +142,8 @@
       "addToModel": "Add to model",
       "removeFromModel": "Remove from model",
       "examples": "Examples",
+      "moveExample": "Move Example",
+      "newIntentLocation": "Select new Intent",
       "example": "Example",
       "amountOfExamples": "Amount of examples",
       "intentInModel": "Intent is in model",
@@ -154,7 +170,8 @@
         "intentAlreadyExists": "Intent already exists, please check the existing list",
         "intentNameTooShort": "Intent name is too short",
         "intentParsing": "Intent parsing error",
-        "turnExampleIntoIntent": "Unable to turn this example into intent"
+        "turnExampleIntoIntent": "Unable to turn this example into intent",
+        "intentConnectedOrHasRequests": "You are not able to delete this intent because it's connected or pending connection to a service"
       },
       "sortingType": {
         "label": "Sorting type",
@@ -315,8 +332,11 @@
       "popupNotifications": "Popup notifications",
       "newUnansweredChat": "New unanswered chat",
       "newForwardedChat": "New forwarded chat",
+      "newForwardedChatTitle": "Forwarded chat",
+      "newForwardedChatMessage": "You have new forwarded chat!",
       "newValidationMessage": "New message to validate",
-      "useAutocorrect": "Text auto corrector"
+      "useAutocorrect": "Text auto corrector",
+      "statusCommentUpdated": "Status clarification updated"
     }
   },
   "chat": {
@@ -350,7 +370,8 @@
       "statusAdder": "Status adder",
       "statusAddedDate": "Status added date",
       "chosenCsa": "Chosen csa(s)",
-      "chosenColumn": "Chosen column(s)"
+      "chosenColumn": "Chosen column(s)",
+      "addACommentToTheConversation": "Add a comment to the conversation"
     },
     "plainEvents": {
       "answered": "Answered",

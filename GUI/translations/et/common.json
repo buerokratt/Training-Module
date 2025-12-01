@@ -1,6 +1,7 @@
 {
   "global": {
     "save": "Salvesta",
+    "noReports": "Antud mudelit ei ole ristvalideeritud.",
     "add": "Lisa",
     "edit": "Muuda",
     "delete": "Kustuta",
@@ -43,6 +44,7 @@
     "missing": "Puudub",
     "updatingDataHead": "Palun oota",
     "updatingDataBody": "Andmeid uuendatakse...",
+    "statusClarification": "Staatuse täpsustus",
     "chosen": "Valitud",
     "days": {
       "monday": "Esmaspäev",
@@ -52,9 +54,17 @@
       "friday": "Reede",
       "saturday": "Laupäev",
       "sunday": "Pühapäev"
-    }
+    },
+    "test": "Test"
+  },
+  "files": {
+    "download_xlsx": "Lae alla XLSX"
   },
   "toast": {
+    "success": {
+      "updateSuccess": "Värskendamine õnnestus",
+      "chatCommentChanged": "Vestluse kommentaar muudetud"
+    },
     "newExampleAdded": "Uus näide lisatud",
     "newResponseAdded": "Uus vastus lisatud",
     "newAppealAdded": "Uus apellatsioon lisatud",
@@ -111,6 +121,10 @@
     "openMenuIcon": "Ava menüü ikoon",
     "closeMenuIcon": "Sulge menüü ikoon"
   },
+  "multiDomains": {
+    "selectDomains": "Vali Domeenid",
+    "noDomains": "Domeene ei ole saadaval. Palun võtke ühendust süsteemiadministraatoriga."
+  },
   "training": {
     "intent": "Teema",
     "response": "Vastus",
@@ -128,6 +142,8 @@
       "searchIntentPlaceholder": "Otsi olemasolevat teemat",
       "newIntentNamePlaceholder": "Uue teema nimetus",
       "addToModel": "Lisa mudelisse",
+      "moveExample": "Teisalda näide",
+      "newIntentLocation": "Vali uus Teema",
       "removeFromModel": "Eemalda mudelist",
       "examples": "Näited",
       "example": "Näide",
@@ -156,7 +172,8 @@
         "intentAlreadyExists": "Teema on juba olemas, palun kontrolli olemasolevast nimekirjast",
         "intentNameTooShort": "Teema nimi on liiga lühike",
         "intentParsing": "Teema parsimise viga",
-        "turnExampleIntoIntent": "Näidet ei saa teenuseks muuta"
+        "turnExampleIntoIntent": "Näidet ei saa teenuseks muuta",
+        "intentConnectedOrHasRequests": "Teemat ei ole võimalik kustutada kuna see on teenusega ühenduses või ühenduse loomise ootel"
       },
       "sortingType": {
         "label": "Sorteerimise tüüp",
@@ -318,8 +335,11 @@
       "popupNotifications": "Pop-up märguanded",
       "newUnansweredChat": "Uus vastamata vestlus",
       "newForwardedChat": "Uus suunatud vestlus",
+      "newForwardedChatTitle": "Suunatud vestlus",
+      "newForwardedChatMessage": "Sulle suunati uus vestlus!",
       "newValidationMessage": "Uus teade kinnitamiseks",
-      "useAutocorrect": "Teksti autokorrektor"
+      "useAutocorrect": "Teksti autokorrektor",
+      "statusCommentUpdated": "Staatuse täpsustus uuendatud"
     }
   },
   "chat": {
@@ -354,7 +374,8 @@
       "statusAdder": "Staatuse lisaja",
       "statusAddedDate": "Staatuse lisamise kuupäev",
       "chosenCsa": "Valitud nõustaja(d)",
-      "chosenColumn": "Valitud tulba(d)"
+      "chosenColumn": "Valitud tulba(d)",
+      "addACommentToTheConversation": "Lisa vestlusele kommentaar"
     },
     "plainEvents": {
       "answered": "Vastatud",
