@@ -110,7 +110,8 @@
     "trainingIsInitialized": "Training is Initialized",
     "trainingSuccess": "The training was successful",
     "alreadyTrained": "The model is already trained",
-    "trainingFailure": "Training failed"
+    "trainingFailure": "Training failed",
+    "modelDescriptionUpdated": "Model description updated"
   },
   "mainMenu": {
     "menuLabel": "Main navigation",
@@ -277,7 +278,8 @@
       "testStoryExists": "Test story exists",
       "lastModified": "Last modified at {{date}}",
       "version": "Version",
-      "description": "Description"
+      "description": "Description",
+      "enterModelDescription": "Enter model description..."
     },
     "trainNew": {
       "title": "Training and test",

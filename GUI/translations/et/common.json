@@ -112,7 +112,8 @@
     "trainingIsInitialized": "Treenimine käivitati",
     "trainingSuccess": "Treenimine õnnestus",
     "alreadyTrained": "Praeguste andmetega on mudel juba treenitud",
-    "trainingFailure": "Treenimine ebaõnnestus"
+    "trainingFailure": "Treenimine ebaõnnestus",
+    "modelDescriptionUpdated": "Mudeli kirjeldus on uuendatud"
   },
   "mainMenu": {
     "menuLabel": "Peamenüü",
@@ -280,7 +281,8 @@
       "exampleCountLow": "Näidete arv madal",
       "lastModified": "Viimati muudetud {{date}}",
       "version": "Versioon",
-      "description": "Kirjeldus"
+      "description": "Kirjeldus",
+      "enterModelDescription": "Sisesta mudeli kirjeldus..."
     },
     "trainNew": {
       "title": "Treeni ja testi",
