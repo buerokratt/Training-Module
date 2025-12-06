@@ -92,6 +92,7 @@ const Models: FC = () => {
             editableRow?.modelName === props.row.original.name,
             props.row.original
           ),
+        meta: { size: '25%' },
       }),
       columnHelper.accessor('lastTrained', {
         header: i18n.t('training.mba.lastTrained') ?? '',
@@ -106,7 +107,7 @@ const Models: FC = () => {
   };
 
   const buildTextCell = (modelName: string, description: string, isEditable: boolean, model: Model) => {
-    const MAX_DISPLAY_LENGTH = 50;
+    const MAX_DISPLAY_LENGTH = 40;
     const truncatedDescription = description.length > MAX_DISPLAY_LENGTH 
       ? description.substring(0, MAX_DISPLAY_LENGTH) + '...' 
       : description;
