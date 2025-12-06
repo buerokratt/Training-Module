@@ -279,7 +279,8 @@
       "testStoryExists": "Testlugu on olemas",
       "exampleCountLow": "Näidete arv madal",
       "lastModified": "Viimati muudetud {{date}}",
-      "version": "Versioon"
+      "version": "Versioon",
+      "description": "Kirjeldus"
     },
     "trainNew": {
       "title": "Treeni ja testi",

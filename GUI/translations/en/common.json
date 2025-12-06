@@ -276,7 +276,8 @@
       "modelResults": "Model results",
       "testStoryExists": "Test story exists",
       "lastModified": "Last modified at {{date}}",
-      "version": "Version"
+      "version": "Version",
+      "description": "Description"
     },
     "trainNew": {
       "title": "Training and test",

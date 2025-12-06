@@ -298,12 +298,13 @@ const getColumns = (setSelectedModel: (model: Model) => void) => {
       header: i18n.t('global.name') ?? '',
       cell: (props) => props.getValue(),
     }),
+    columnHelper.accessor('description', {
+      header: i18n.t('training.mba.description') ?? '',
+      cell: (props) => props.getValue(),
+    }),
     columnHelper.accessor('lastTrained', {
       header: i18n.t('training.mba.lastTrained') ?? '',
-      cell: (props) =>
-        props.getValue()
-          ? format(new Date(props.getValue()), DATETIME_FORMAT)
-          : null,
+      cell: (props) => (props.getValue() ? format(new Date(props.getValue()), DATETIME_FORMAT) : null),
     }),
     columnHelper.accessor('state', {
       header: i18n.t('training.mba.live') ?? '',

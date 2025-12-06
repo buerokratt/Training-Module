@@ -52,6 +52,7 @@ updateInDatabase:
       cross_validation_report: ""
       trained_date: ${new Date().toISOString()}
       training_data_checksum: ""
+      description: ""
   result: dbResult
   next: clearModelList
 
@@ -69,6 +70,7 @@ insertToDatabase:
       cross_validation_report: ""
       trained_date: ${new Date().toISOString()}
       training_data_checksum: ""
+      description: ""
   result: dbResult
 
 clearModelList:
