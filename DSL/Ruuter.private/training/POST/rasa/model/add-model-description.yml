@@ -1,26 +1,26 @@
 declaration:
   call: declare
   version: 0.1
-  description: "Decription placeholder for 'TRAINED-MODEL'"
+  description: "Adds a description to an existing model in the database"
   method: post
   accepts: json
   returns: json
-  namespace: model
+  namespace: training
   allowlist:
     body:
-      - field: versionNumber
+      - field: fileName
         type: string
-        description: "Body field 'versionNumber'"
-      - field: name
+        description: "Model file name"
+      - field: description
         type: string
-        description: "Trained model file name"  
+        description: "Model description to be added"  
 
 getModelByFilenameFromDb:
   call: http.post
   args:
     url: "[#TRAINING_RESQL]/get-llm-model-by-filename"
     body:
-      fileName: ${incoming.body.name}
+      fileName: ${incoming.body.fileName}
   result: dbResult
 
 updateInDatabase:
@@ -29,24 +29,16 @@ updateInDatabase:
     url: "[#TRAINING_RESQL]/add-llm-trainings"
     body:
       model_type: ${dbResult.response.body[0].modelType}
-      state: "ACTIVATING"
+      state: ${dbResult.response.body[0].state}
       file_name: ${dbResult.response.body[0].fileName}
       version_number: ${dbResult.response.body[0].versionNumber}
       model_version: ${dbResult.response.body[0].modelVersion}
       test_report: ${dbResult.response.body[0].testReport}
       cross_validation_report: ${dbResult.response.body[0].crossValidationReport}
       trained_date: ${dbResult.response.body[0].trainedDate}
-      training_data_checksum: ""
-      description: ${dbResult.response.body[0].description}
+      training_data_checksum: ${dbResult.response.body[0].trainingDataChecksum}
+      description: ${incoming.body.description}
   result: dbModelResult
 
-loadTrainedModel:
-  call: http.post
-  args:
-    url: "[#CRON_INSTANCE]/execute/load_trained_model/load_trained_model_now?versionNumber=${incoming.body.versionNumber}"
-  next: returnSuccess
-
-returnSuccess:
-  return: "Model copied and loaded successfully"
-  wrapper: false
-  next: end
+return_result:
+  return: "Model description added successfully"

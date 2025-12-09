@@ -34,6 +34,7 @@ updateInDatabase:
       cross_validation_report: ${dbResult.response.body[0].crossValidationReport}
       trained_date: ${dbResult.response.body[0].trainedDate}
       training_data_checksum: ""
+      description: ${dbResult.response.body[0].description}
   result: dbModelResult
 
 clearModelList:

@@ -8,7 +8,8 @@ SELECT
   test_report,
   cross_validation_report,
   created,
-  training_data_checksum
+  training_data_checksum,
+  description
 FROM llm_trainings
 WHERE trained_date = (SELECT MAX(trained_date) FROM llm_trainings)
 AND NOT EXISTS (
