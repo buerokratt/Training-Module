@@ -5,7 +5,8 @@
             "name": "{{ this.fileName }}",
             "lastTrained": "{{ this.trainedDate }}",
             "state": "{{ this.state }}",
-            "versionNumber": "{{ this.versionNumber }}"
+            "versionNumber": "{{ this.versionNumber }}",
+            "description": "{{ this.description }}"
         }{{#unless @last}},{{/unless}}
     {{/each}}
 ]

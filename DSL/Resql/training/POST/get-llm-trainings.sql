@@ -15,7 +15,8 @@ WITH max_ids AS (
         model_version, 
         test_report,
         cross_validation_report,
-        created
+        created,
+        description
     FROM llm_trainings
     WHERE state = 'DEPLOYED'
     AND NOT EXISTS (
@@ -42,7 +43,8 @@ WITH max_ids AS (
     lt.test_report, 
     lt.created, 
     lt.cross_validation_report, 
-    lt.training_data_checksum
+    lt.training_data_checksum,
+    lt.description
     FROM llm_trainings lt
     JOIN max_ids mi ON lt.id = mi.id
     where mi.id NOT IN (
@@ -65,7 +67,8 @@ SELECT
     model_version, 
     test_report,
     cross_validation_report,
-    created
+    created,
+    description
 FROM (
     SELECT 
         model_type,
@@ -76,7 +79,8 @@ FROM (
         model_version, 
         test_report,
         cross_validation_report,
-        created
+        created,
+        description
     FROM latest_ready_activating_models
     UNION ALL
     SELECT 
@@ -88,7 +92,8 @@ FROM (
         model_version, 
         test_report,
         cross_validation_report,
-        created
+        created,
+        description
     FROM deployed_model
 ) AS combined_results
 where state <> 'DELETED'
