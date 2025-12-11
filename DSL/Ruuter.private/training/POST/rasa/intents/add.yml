@@ -93,6 +93,7 @@ addInDatabase:
     body:
       intent: ${incoming.body.name}
       status: "ACTIVE"
+      isForService: false
   result: addIntentResult
 
 returnSuccess:
