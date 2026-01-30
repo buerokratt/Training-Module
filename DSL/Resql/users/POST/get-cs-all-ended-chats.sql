@@ -81,7 +81,7 @@ MaxChats AS (
     FROM chat
     WHERE ended IS NOT NULL
       AND status <> 'IDLE'
-      AND ended::date BETWEEN :start::date AND :end::date
+      AND ended::timestamptz BETWEEN :start::timestamptz AND :end::timestamptz
       AND (array_length(ARRAY[:urls]::TEXT[], 1) IS NULL
         OR chat.end_user_url LIKE ANY(ARRAY[:urls]::TEXT[]))
     GROUP BY base_id
@@ -271,8 +271,12 @@ ORDER BY
     CASE WHEN :sorting = 'customerSupportDisplayName desc' THEN c.customer_support_display_name END DESC,
     CASE WHEN :sorting = 'endUserName asc' THEN c.end_user_first_name END ASC,
     CASE WHEN :sorting = 'endUserName desc' THEN c.end_user_first_name END DESC,
+    CASE WHEN :sorting = 'endUserEmail asc' THEN c.end_user_email END ASC,
+    CASE WHEN :sorting = 'endUserEmail desc' THEN c.end_user_email END DESC,
     CASE WHEN :sorting = 'endUserId asc' THEN c.end_user_id END ASC,
-    CASE WHEN :sorting = 'endUserId desc' THEN c.end_user_id END desc,
+    CASE WHEN :sorting = 'endUserId desc' THEN c.end_user_id END DESC,
+    CASE WHEN :sorting = 'www asc' THEN c.end_user_url END ASC,
+    CASE WHEN :sorting = 'www desc' THEN c.end_user_url END DESC,
     CASE WHEN :sorting = 'contactsMessage asc' THEN ContactsMessage.content END ASC,
     CASE WHEN :sorting = 'contactsMessage desc' THEN ContactsMessage.content END DESC,
     CASE WHEN :sorting = 'comment asc' THEN s.comment END ASC,
@@ -326,5 +330,6 @@ ORDER BY
         )
     END DESC NULLS LAST,
     CASE WHEN :sorting = 'id asc' THEN c.base_id END ASC,
-    CASE WHEN :sorting = 'id desc' THEN c.base_id END DESC
+    CASE WHEN :sorting = 'id desc' THEN c.base_id END DESC,
+    c.base_id ASC
 OFFSET ((GREATEST(:page, 1) - 1) * :page_size) LIMIT :page_size;
