@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Markdown from 'markdown-to-jsx';
 import './HistoricalChat.scss';
+import sanitizeHtml from 'sanitize-html';
 
 interface MarkdownifyProps {
   message: string | undefined;
@@ -31,15 +32,23 @@ const LinkPreview: React.FC<{ href: string; children: React.ReactNode }> = ({ hr
 const hasSpecialFormat = (m: string) => m.includes('\n\n') && m.indexOf('.') > 0 && m.indexOf(':') > m.indexOf('.');
 
 function formatMessage(message?: string): string {
-  if (!message) return '';
+  const sanitizedMessage = sanitizeHtml(message ?? '');
 
-  const filteredMessage = message
+  if (!sanitizedMessage) return '';
+
+  const filteredMessage = sanitizedMessage
     .replaceAll(/\\?\$b\w*/g, '')
     .replaceAll(/\\?\$v\w*/g, '')
     .replaceAll(/\\?\$g\w*/g, '');
 
   return filteredMessage
     .replaceAll(/&#x([0-9A-Fa-f]+);/g, (_, hex: string) => String.fromCharCode(parseInt(hex, 16)))
+    .replaceAll('&amp;', '&')
+    .replaceAll('&gt;', '>')
+    .replaceAll('&lt;', '<')
+    .replaceAll('&quot;', '"')
+    .replaceAll('&#39;', "'")
+    .replaceAll('&apos;', "'")
     .replaceAll(/(^|\n)(\d{4})\.\s/g, (match, prefix, year) => {
       const remainingText = filteredMessage.substring(filteredMessage.indexOf(match) + match.length);
       const sentenceEnd = remainingText.indexOf('\n\n');
@@ -51,7 +60,8 @@ function formatMessage(message?: string): string {
       }
       return `${prefix}${year}\\. `;
     })
-    .replace(/(?<=\n)\d+\.\s/g, hasSpecialFormat(filteredMessage) ? '\n\n$&' : '$&');
+    .replaceAll(/(?<=\n)\d+\.\s/g, hasSpecialFormat(filteredMessage) ? '\n\n$&' : '$&')
+    .replaceAll(/^(\s+)/g, (match) => match.replaceAll(' ', '&nbsp;'));
 }
 
 const Markdownify: React.FC<MarkdownifyProps> = ({ message }) => (
