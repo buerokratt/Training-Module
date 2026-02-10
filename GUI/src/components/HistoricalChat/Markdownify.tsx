@@ -7,25 +7,57 @@ interface MarkdownifyProps {
   message: string | undefined;
 }
 
-const LinkPreview: React.FC<{ href: string; children: React.ReactNode }> = ({ href, children }) => {
+const isValidImageUrl = (s: string): boolean => {
+  try {
+    const u = new URL(s);
+    if (!/^(https?|data):$/i.test(u.protocol)) return false;
+    if (s.startsWith('data:image/')) {
+      return /^data:image\/(png|jpe?g|gif|webp|svg\+xml|bmp);(base64,|charset=utf-8;)/i.test(s);
+    }
+    const path = u.pathname.toLowerCase();
+    const search = u.search.toLowerCase();
+    if (/\.(png|jpe?g|gif|webp|svg|ico|bmp|tiff?|avif|heic|heif|apng)([?#]|$)/i.test(path)) {
+      return true;
+    }
+    if (/\/(images?|img|photos?|pictures?|media|uploads?|thumb|avatar)\//i.test(path)) {
+      return true;
+    }
+    return /[?&](format|type|image|img|photo)=(png|jpe?g|gif|webp|svg|ico)/i.test(search);
+  } catch {
+    return false;
+  }
+};
+
+const LinkPreview: React.FC<{
+  href: string;
+  children: React.ReactNode;
+}> = ({ href, children }) => {
   const [hasError, setHasError] = useState(false);
   const basicAuthPattern = /^[a-zA-Z][a-zA-Z\d+\-.]*:\/\/[^@]+@/;
 
   if (basicAuthPattern.test(href)) {
     return null;
   }
-  
-  return !hasError ? (
+
+  if (!isValidImageUrl(href)) {
+    return (
+      <a href={href} target="_blank" rel="noopener noreferrer">
+        {children}
+      </a>
+    );
+  }
+
+  return hasError ? (
+    <a href={href} target="_blank" rel="noopener noreferrer">
+      {children}
+    </a>
+  ) : (
     <img
       src={href}
       alt={typeof children === 'string' ? children : 'Preview'}
       style={{ maxWidth: '100%', height: 'auto', borderRadius: '20px' }}
       onError={() => setHasError(true)}
     />
-  ) : (
-    <a href={href} target="_blank" rel="noopener noreferrer">
-      {children}
-    </a>
   );
 };
 
@@ -41,8 +73,14 @@ function formatMessage(message?: string): string {
     .replaceAll(/\\?\$v\w*/g, '')
     .replaceAll(/\\?\$g\w*/g, '');
 
-  return filteredMessage
-    .replaceAll(/&#x([0-9A-Fa-f]+);/g, (_, hex: string) => String.fromCharCode(parseInt(hex, 16)))
+  const dataImagePattern = /((?:^|\s))(data:image\/[a-z0-9+]+;[^)\s]+)/gi;
+  const finalMessage = filteredMessage.replaceAll(
+    dataImagePattern,
+    (_, prefix, dataUrl) => `${prefix}[image](${dataUrl})`
+  );
+
+  return finalMessage
+    .replaceAll(/&#x([0-9A-F]+);/gi, (_, hex: string) => String.fromCharCode(parseInt(hex, 16)))
     .replaceAll('&amp;', '&')
     .replaceAll('&gt;', '>')
     .replaceAll('&lt;', '<')
@@ -50,7 +88,7 @@ function formatMessage(message?: string): string {
     .replaceAll('&#39;', "'")
     .replaceAll('&apos;', "'")
     .replaceAll(/(^|\n)(\d{4})\.\s/g, (match, prefix, year) => {
-      const remainingText = filteredMessage.substring(filteredMessage.indexOf(match) + match.length);
+      const remainingText = finalMessage.substring(finalMessage.indexOf(match) + match.length);
       const sentenceEnd = remainingText.indexOf('\n\n');
       if (sentenceEnd !== -1) {
         const currentSentence = remainingText.substring(0, sentenceEnd);
@@ -60,7 +98,7 @@ function formatMessage(message?: string): string {
       }
       return `${prefix}${year}\\. `;
     })
-    .replaceAll(/(?<=\n)\d+\.\s/g, hasSpecialFormat(filteredMessage) ? '\n\n$&' : '$&')
+    .replaceAll(/(?<=\n)\d+\.\s/g, hasSpecialFormat(finalMessage) ? '\n\n$&' : '$&')
     .replaceAll(/^(\s+)/g, (match) => match.replaceAll(' ', '&nbsp;'));
 }
 
