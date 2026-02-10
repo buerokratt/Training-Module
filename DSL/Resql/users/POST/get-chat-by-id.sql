@@ -12,6 +12,15 @@ csa_title_config AS (
       AND id IN (SELECT max(id) FROM configuration WHERE key = 'is_csa_title_visible' GROUP BY key)
       AND NOT deleted
 ),
+chat_history_comments AS (
+    SELECT
+        comment,
+        chat_id,
+        created,
+        author_display_name
+    FROM chat_history_comments
+    where id in (SELECT MAX(id) AS maxId FROM chat_history_comments GROUP BY chat_id)
+),
 chatById AS(
   SELECT 
     base_id,
@@ -72,8 +81,12 @@ SELECT c.base_id AS id,
              ELSE '' 
         END) AS csa_title,
        m.content AS last_message,
-       m.updated AS last_message_timestamp
+       m.updated AS last_message_timestamp,
+       s.comment,
+       s.created as comment_added_date,
+       s.author_display_name as comment_author
 FROM chatById AS c
 JOIN message AS m ON c.base_id = m.chat_base_id
+LEFT JOIN chat_history_comments AS s ON s.chat_id = m.chat_base_id
 ORDER BY m.updated DESC
 LIMIT 1;
