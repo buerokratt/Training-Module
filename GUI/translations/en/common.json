@@ -469,7 +469,8 @@
       "ask_to_forward_to_csa": "Asked to forward the conversation to a customer service agent",
       "forwarded_to_backoffice": "Conversation forwarded to back office",
       "continue_chatting_with_bot": "Continue conversation with bürokratt",
-      "approved_validation": "Approved Validation"
+      "approved_validation": "Approved Validation",
+      "waiting_validation": "Waiting for validation"
     }
   },
   "submit": {

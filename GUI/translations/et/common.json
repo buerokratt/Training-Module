@@ -473,7 +473,8 @@
       "ask_to_forward_to_csa": "Paluti vestlus klienditeenindajale üle kanda",
       "forwarded_to_backoffice": "Vestlus suunatakse tagasi kontorisse",
       "continue_chatting_with_bot": "Jätkake vestlust kasutajaga bürokratt",
-      "approved_validation": "Kinnitatud valideerimine"
+      "approved_validation": "Kinnitatud valideerimine",
+      "waiting_validation": "Vastust koostatakse"
     }
   },
   "submit": {
