@@ -146,6 +146,14 @@ addNewIntentInPipeline:
       input: ${intentYaml.response.body.json}
   result: updateSearchResult
 
+getIntentLatestState:
+  call: http.post
+  args:
+    url: "[#TRAINING_RESQL]/get-intent-last-changed"
+    body:
+      intent: ${incoming.body.intentName}
+  result: latestStateRes  
+
 addInDatabase:
   call: http.post
   args:
@@ -153,6 +161,7 @@ addInDatabase:
     body:
       intent: ${incoming.body.intentName}
       status: "ACTIVE"
+      isForService: ${latestStateRes.response.body[0].isforservice ?? false}
   result: addInDatabaseResult
 
 saveIntentFile:

@@ -44,6 +44,7 @@
     "updatingDataHead": "Please wait",
     "updatingDataBody": "Processing request...",
     "statusClarification": "Status clarification",
+    "selectAll": "Select all",
     "days": {
       "monday": "Monday",
       "tuesday": "Tuesday",
@@ -110,7 +111,8 @@
     "trainingIsInitialized": "Training is Initialized",
     "trainingSuccess": "The training was successful",
     "alreadyTrained": "The model is already trained",
-    "trainingFailure": "Training failed"
+    "trainingFailure": "Training failed",
+    "modelDescriptionUpdated": "Model description updated"
   },
   "mainMenu": {
     "menuLabel": "Main navigation",
@@ -276,7 +278,9 @@
       "modelResults": "Model results",
       "testStoryExists": "Test story exists",
       "lastModified": "Last modified at {{date}}",
-      "version": "Version"
+      "version": "Version",
+      "description": "Description",
+      "enterModelDescription": "Enter model description..."
     },
     "trainNew": {
       "title": "Training and test",
@@ -464,7 +468,9 @@
       "taken-over": "A human took the conversation over",
       "ask_to_forward_to_csa": "Asked to forward the conversation to a customer service agent",
       "forwarded_to_backoffice": "Conversation forwarded to back office",
-      "continue_chatting_with_bot": "Continue conversation with bürokratt"
+      "continue_chatting_with_bot": "Continue conversation with bürokratt",
+      "approved_validation": "Approved Validation",
+      "waiting_validation": "Waiting for validation"
     }
   },
   "submit": {

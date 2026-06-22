@@ -45,6 +45,7 @@
     "updatingDataHead": "Palun oota",
     "updatingDataBody": "Andmeid uuendatakse...",
     "statusClarification": "Staatuse täpsustus",
+    "selectAll": "Vali kõik",
     "chosen": "Valitud",
     "days": {
       "monday": "Esmaspäev",
@@ -112,7 +113,8 @@
     "trainingIsInitialized": "Treenimine käivitati",
     "trainingSuccess": "Treenimine õnnestus",
     "alreadyTrained": "Praeguste andmetega on mudel juba treenitud",
-    "trainingFailure": "Treenimine ebaõnnestus"
+    "trainingFailure": "Treenimine ebaõnnestus",
+    "modelDescriptionUpdated": "Mudeli kirjeldus on uuendatud"
   },
   "mainMenu": {
     "menuLabel": "Peamenüü",
@@ -279,7 +281,9 @@
       "testStoryExists": "Testlugu on olemas",
       "exampleCountLow": "Näidete arv madal",
       "lastModified": "Viimati muudetud {{date}}",
-      "version": "Versioon"
+      "version": "Versioon",
+      "description": "Kirjeldus",
+      "enterModelDescription": "Sisesta mudeli kirjeldus..."
     },
     "trainNew": {
       "title": "Treeni ja testi",
@@ -468,7 +472,9 @@
       "taken-over": "Klienditeenindaja võttis vestluse üle",
       "ask_to_forward_to_csa": "Paluti vestlus klienditeenindajale üle kanda",
       "forwarded_to_backoffice": "Vestlus suunatakse tagasi kontorisse",
-      "continue_chatting_with_bot": "Jätkake vestlust kasutajaga bürokratt"
+      "continue_chatting_with_bot": "Jätkake vestlust kasutajaga bürokratt",
+      "approved_validation": "Kinnitatud valideerimine",
+      "waiting_validation": "Vastust koostatakse"
     }
   },
   "submit": {

@@ -9,3 +9,11 @@ export async function activateModel(modelData: UpdateModelDTO) {
 export async function deleteModel(id: string | number) {
   await rasaApi.get<void>(`model/delete-model?fileName=${id}`);
 }
+
+export async function addModelDescription(fileName: string, description: string) {
+  const { data } = await rasaApi.post<{ message: string }>('model/add-model-description', {
+    fileName,
+    description,
+  });
+  return data;
+}

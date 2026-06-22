@@ -3,6 +3,8 @@
 @import 'src/styles/settings/variables/typography';
 
 .tooltip {
+  white-space: pre-line;
+  word-wrap: break-word;
   background-color: get-color(white);
   padding: 4px;
   border-radius: 4px;
