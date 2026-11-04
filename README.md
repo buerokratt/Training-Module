@@ -1,3 +1,9 @@
+# ⛔️ DEPRECATED
+
+This repository is no longer actively maintained or supported. 
+
+---
+
 # Bürokratt's Training Module
 
 Bürokratt's Training Module is a tool to help primarily customer support agents and service managers to create, edit and otherwise manipulate Bürokratt's e-services via a graphical user interface. This includes setting up Ruuter- and Rasa-based user stories, making X-road / REST / database requests where and when appropriate and so forth.
